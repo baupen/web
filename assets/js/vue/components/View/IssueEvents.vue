@@ -1,21 +1,21 @@
 <template>
-  <loading-indicator-secondary :spin="issueProtocolEntries === null">
+  <loading-indicator-secondary :spin="issueIssueEvents === null">
     <div class="row mb-2">
       <div class="col-3">
-        {{ $t('protocol_entry._plural_short') }}
+        {{ $t('issue_event._plural_short') }}
       </div>
       <div class="col">
-        <add-protocol-entry-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
-                                   @added="newProtocolEntries.push($event)"/>
+        <add-issue-event-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
+                                   @added="newIssueEvents.push($event)"/>
       </div>
     </div>
 
-    <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
-                    :last="index+1 === orderedProtocolEntries.length"
-                    :protocol-entry="entry"
+    <issue-event v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
+                    :last="index+1 === orderedIssueEvents.length"
+                    :issue-event="entry"
                     :root="getRoot(entry)"
-                    :is-context="!(issueProtocolEntries.includes(entry) || newProtocolEntries.includes(entry))"
-                    :is-removable="newProtocolEntries.includes(entry)"
+                    :is-context="!(issueIssueEvents.includes(entry) || newIssueEvents.includes(entry))"
+                    :is-removable="newIssueEvents.includes(entry)"
                     :created-by="responsiblesLookup[entry['createdBy']]"
     />
   </loading-indicator-secondary>
@@ -24,27 +24,27 @@
 <script>
 
 import {api, iriToId} from "../../services/api";
-import ProtocolEntry from "./ProtocolEntry.vue";
+import IssueEvent from "./IssueEvent.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
-import AddProtocolEntryButton from "../Action/AddProtocolEntryButton.vue";
+import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
 import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
-import {sortProtocolEntries} from "../../services/sorters";
+import {sortIssueEvents} from "../../services/sorters";
 
 export default {
   components: {
     CustomCheckbox,
     CustomCheckboxField,
-    AddProtocolEntryButton,
+    AddIssueEventButton,
     LoadingIndicatorSecondary,
-    ProtocolEntry,
+    IssueEvent,
   },
   data() {
     return {
-      newProtocolEntries: [],
-      issueProtocolEntries: null,
-      craftsmanProtocolEntries: null,
-      constructionSiteProtocolEntries: null,
+      newIssueEvents: [],
+      issueIssueEvents: null,
+      craftsmanIssueEvents: null,
+      constructionSiteIssueEvents: null,
       showSecondaryEntries: false
     }
   },
@@ -78,22 +78,22 @@ export default {
 
       return responsiblesLookup
     },
-    orderedProtocolEntries: function () {
-      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteProtocolEntries ?? [])]
+    orderedIssueEvents: function () {
+      const issueEvents = [...this.newIssueEvents, ...(this.issueIssueEvents ?? []), ...(this.craftsmanIssueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
           .filter(entry => !entry.isDeleted)
-      sortProtocolEntries(protocolEntries)
-      return protocolEntries
+      sortIssueEvents(issueEvents)
+      return issueEvents
     },
     craftsman: function () {
       return this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.craftsman);
     }
   },
   methods: {
-    getRoot: function (protocolEntry) {
-      if (this.craftsmanProtocolEntries?.includes(protocolEntry)) {
+    getRoot: function (issueEvent) {
+      if (this.craftsmanIssueEvents?.includes(issueEvent)) {
         return this.craftsman
       }
-      if (this.constructionSiteProtocolEntries?.includes(protocolEntry)) {
+      if (this.constructionSiteIssueEvents?.includes(issueEvent)) {
         return this.constructionSite
       }
 
@@ -101,19 +101,19 @@ export default {
     },
   },
   mounted() {
-    api.getProtocolEntries(this.constructionSite, this.issue)
+    api.getIssueEvents(this.constructionSite, this.issue)
         .then(entries => {
-          this.issueProtocolEntries = entries
+          this.issueIssueEvents = entries
         })
     if (this.craftsman) {
-      api.getProtocolEntries(this.constructionSite, this.craftsman)
+      api.getIssueEvents(this.constructionSite, this.craftsman)
           .then(entries => {
-            this.craftsmanProtocolEntries = entries
+            this.craftsmanIssueEvents = entries
           })
     }
-    api.getProtocolEntries(this.constructionSite, this.constructionSite)
+    api.getIssueEvents(this.constructionSite, this.constructionSite)
         .then(entries => {
-          this.constructionSiteProtocolEntries = entries
+          this.constructionSiteIssueEvents = entries
         })
   }
 }

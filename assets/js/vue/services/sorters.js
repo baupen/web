@@ -1,6 +1,6 @@
-const statusProtocolEntries = ['STATUS_SET', 'STATUS_UNSET']
-const statusProtocolEntryOrder = (protocolEntry) => {
-  switch (protocolEntry.payload) {
+const statusIssueEvents = ['STATUS_SET', 'STATUS_UNSET']
+const statusIssueEventOrder = (issueEvent) => {
+  switch (issueEvent.payload) {
     case 'CREATED':
       return 1
     case 'REGISTERED':
@@ -11,11 +11,11 @@ const statusProtocolEntryOrder = (protocolEntry) => {
       return 4
   }
 }
-export const sortProtocolEntries = (protocolEntries) => {
-  protocolEntries.sort((a, b) => {
-    if (b.createdAt === a.createdAt && statusProtocolEntries.includes(a.type) && statusProtocolEntries.includes(b.type)) {
-      const aOrder = statusProtocolEntryOrder(a)
-      const bOrder = statusProtocolEntryOrder(b)
+export const sortIssueEvents = (issueEvents) => {
+  issueEvents.sort((a, b) => {
+    if (b.createdAt === a.createdAt && statusIssueEvents.includes(a.type) && statusIssueEvents.includes(b.type)) {
+      const aOrder = statusIssueEventOrder(a)
+      const bOrder = statusIssueEventOrder(b)
 
       // use reversed order when the second one is unset (as then want the second one first)
       if (b.type === 'STATUS_UNSET') {

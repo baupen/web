@@ -1,14 +1,14 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('_action.remove_protocol_entry.title')" :can-confirm="canConfirm"
+      :title="$t('_action.remove_issue_event.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
 
     <p class="alert alert-info">
-      {{ $t('_action.remove_protocol_entry.help') }}
+      {{ $t('_action.remove_issue_event.help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -35,14 +35,14 @@ export default {
     }
   },
   props: {
-    protocolEntry: {
+    issueEvent: {
       type: Object,
       required: true
     }
   },
   methods: {
     confirm: function () {
-      api.delete(this.protocolEntry, this.$t('_action.remove_protocol_entry.removed'))
+      api.delete(this.issueEvent, this.$t('_action.remove_issue_event.removed'))
           .then(_ => this.$emit('removed'))
     },
   }

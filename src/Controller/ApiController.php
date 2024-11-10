@@ -215,7 +215,7 @@ class ApiController extends BaseController
 
         $issueEventFile = $storageService->uploadIssueEventFile($file, $issueEvent);
         if (!$issueEventFile instanceof IssueEventFile) {
-            throw new BadRequestException('The protocol entry file could not be stored');
+            throw new BadRequestException('The issue event file could not be stored');
         }
 
         DoctrineHelper::persistAndFlush($registry, $issueEvent, $issueEventFile);

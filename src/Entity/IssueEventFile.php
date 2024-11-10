@@ -18,7 +18,7 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * A IssueEventFile is a file attached together with the protocol entry.
+ * A IssueEventFile is a file attached together with the issue event.
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]

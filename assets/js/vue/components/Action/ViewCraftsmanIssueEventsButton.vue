@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       modal-size="mmd"
-      :title="$t('_action.view_craftsman_timeline.title')">
+      :title="$t('_action.view_craftsman_issue_events.title')">
 
     <template v-slot:footer>
       <span class="d-none"></span>
@@ -37,7 +37,7 @@
 
     <hr/>
 
-    <craftsman-timeline
+    <craftsman-issues-events
         :construction-site="constructionSite" :craftsman="craftsman"
         :construction-managers="constructionManagers" :authority-iri="constructionManagerIri"
     />
@@ -47,11 +47,11 @@
 <script>
 
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import CraftsmanTimeline from "../View/CraftsmanTimeline.vue";
+import CraftsmanIssuesEvents from "../View/CraftsmanIssuesEvents.vue";
 
 export default {
   components: {
-    CraftsmanTimeline,
+    CraftsmanIssuesEvents,
     ButtonWithModalConfirm
   },
   props: {

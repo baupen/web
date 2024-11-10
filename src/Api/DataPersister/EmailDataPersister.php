@@ -92,7 +92,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             $craftsmanReport = $this->reportService->createCraftsmanReport($craftsman, $craftsman->getLastVisitOnline());
             $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
 
-            // add to protocol
+            // add event
             $issueEvent = new IssueEvent();
             $issueEvent->setConstructionSite($craftsman->getConstructionSite());
             $issueEvent->setRoot($craftsman->getId());

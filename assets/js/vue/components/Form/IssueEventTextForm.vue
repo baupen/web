@@ -1,10 +1,10 @@
 <template>
-  <form-field for-id="payload" :label="textMode ? $t('protocol_entry.text_payload') : $t('protocol_entry.file_payload')"
+  <form-field for-id="payload" :label="textMode ? $t('issue_event.text_payload') : $t('issue_event.file_payload')"
               :required="textMode">
         <textarea id="payload" class="form-control"
                   :class="{'is-valid': fields.payload.dirty && !fields.payload.errors.length, 'is-invalid': fields.payload.dirty && fields.payload.errors.length }"
                   @blur="fields.payload.dirty = true"
-                  v-model="protocolEntry.payload"
+                  v-model="issueEvent.payload"
                   @input="validate('payload')"
                   :rows="textMode ? 3 : 1"
         >
@@ -12,11 +12,11 @@
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
 
-  <form-field for-id="createdAt" :label="$t('protocol_entry.created_at')" :required="false">
+  <form-field for-id="createdAt" :label="$t('issue_event.created_at')" :required="false">
     <span ref="createdAt-anchor"/>
     <flat-pickr
         id="createdAt" class="form-control"
-        v-model="protocolEntry.createdAt"
+        v-model="issueEvent.createdAt"
         :config="dateTimePickerConfig"
         @blur="fields.createdAt.dirty = true"
         @change="validate('createdAt')">
@@ -47,7 +47,7 @@ export default {
   emits: ['update'],
   data() {
     return {
-      protocolEntry: {
+      issueEvent: {
         payload: null,
         createdAt: (new Date()).toISOString()
       },
@@ -81,14 +81,14 @@ export default {
   },
   methods: {
     validate: function (field) {
-      validateField(this.fields[field], this.protocolEntry[field])
+      validateField(this.fields[field], this.issueEvent[field])
     },
     setFromTemplate: function () {
       if (this.template) {
-        this.protocolEntry = Object.assign({}, this.protocolEntry, this.template)
+        this.issueEvent = Object.assign({}, this.issueEvent, this.template)
       }
 
-      validateFields(this.fields, this.protocolEntry)
+      validateFields(this.fields, this.issueEvent)
     }
   },
   computed: {
@@ -114,7 +114,7 @@ export default {
         return null
       }
 
-      return this.protocolEntry
+      return this.issueEvent
     },
   },
   mounted() {

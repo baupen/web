@@ -77,7 +77,7 @@
 
     <hr/>
 
-    <issue-timeline
+    <issue-events
         :construction-site="constructionSite" :issue="issue"
         :craftsmen="craftsmen" :construction-managers="constructionManagers"
         :authority-iri="constructionManagerIri"
@@ -102,12 +102,11 @@ import ToggleIcon from '../Library/View/ToggleIcon'
 import { constructionManagerFormatter } from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import IssueRenderLightbox from '../View/IssueRenderLightbox'
-import IssueTimeline from "../View/IssueTimeline.vue";
-import AddProtocolEntryButton from "./AddProtocolEntryButton.vue";
+import IssueEvents from "../View/IssueEvents.vue";
 
 export default {
   components: {
-    IssueTimeline,
+    IssueEvents,
     IssueRenderLightbox,
     DateTimeHumanReadable,
     ToggleIcon,
