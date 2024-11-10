@@ -80,7 +80,12 @@ export default {
   computed: {
     orderedTasks: function () {
       const openTasks = [...this.tasks]
-      openTasks.sort((a, b) => (a.deadline).localeCompare(b.deadline))
+      openTasks.sort((a, b) => {
+        if (a.deadline === null && b.deadline === null) {
+          return a.createdAt.localeCompare(b.createdAt)
+        }
+        return (a.deadline ?? "z").localeCompare(b.deadline ?? "z")
+      })
       return openTasks
     },
   },
