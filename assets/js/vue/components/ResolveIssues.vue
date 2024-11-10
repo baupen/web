@@ -114,8 +114,6 @@ export default {
         const element = newDisplayedMap.$el
         const newDisplayedMapOffset = element.getBoundingClientRect().top + window.scrollY
 
-        console.log(newDisplayedMapOffset, window.scrollY)
-
         window.scrollTo({
           top: newDisplayedMapOffset,
           behavior: 'smooth' // This enables smooth scrolling

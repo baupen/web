@@ -52,7 +52,6 @@ export default {
       const belowMinSpacer = Math.max((maxValue - minValue) * 0.3, 10) // reduce min so graph does not look empty
       const exactTargetMin = Math.max(minValue - belowMinSpacer, 0) // calculate optimal min
       const exactTargetMax = maxValue + Math.ceil((maxValue-exactTargetMin)*0.1) // add to max so graph has space to breath
-      console.log(maxValue, exactTargetMin, exactTargetMax)
 
       // adjust to full numbers
       const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
