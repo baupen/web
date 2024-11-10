@@ -116,6 +116,7 @@ export default {
         root: iriToId(this.root['@id']),
         type: this.entryType,
         createdBy: iriToId(this.authorityIri),
+        lastChangedBy: iriToId(this.authorityIri),
         ...this.post
       })
 

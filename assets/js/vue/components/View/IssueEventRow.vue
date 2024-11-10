@@ -38,7 +38,8 @@
           <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
             {{ $t('_view.issue_event.show_email_body') }}
           </a>
-          <span v-if="showEmailBody" class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
+          <span v-if="showEmailBody"
+                class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
             {{ emailPayload.body }}
           </span>
         </p>
@@ -47,13 +48,14 @@
         <span v-if="isContext">
           {{ rootTypeName + ", " }}
         </span>
-        <date-time-human-readable :value="issueEvent.createdAt"/>
-        <span>, </span>
-        {{ createdByName }}
+        <date-time-human-readable :value="issueEvent.timestamp"/>
       </p>
     </div>
-    <div class="col-auto" v-if="isRemovable">
-      <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
+    <div class="col-auto">
+      <div class="btn-group">
+        <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy" :last-changed-by="createdBy" />
+        <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
+      </div>
     </div>
   </div>
 </template>
@@ -66,10 +68,12 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import ImageLightbox from "./ImageLightbox.vue";
 import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
 import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
+import EditIssueEventButton from "../Action/EditIssueEventButton.vue";
 
 export default {
   emits: ['removed'],
   components: {
+    EditIssueEventButton,
     RemoveIssueEventButton,
     ButtonWithModal,
     ImageLightbox,
@@ -86,11 +90,19 @@ export default {
       type: Object,
       required: true
     },
+    authorityIri: {
+      type: String,
+      required: true
+    },
     root: {
       type: Object,
       required: true
     },
     createdBy: {
+      type: Object,
+      required: false
+    },
+    lastChangedBy: {
       type: Object,
       required: false
     },
@@ -102,15 +114,8 @@ export default {
       type: Boolean,
       default: false
     },
-    isRemovable: {
-      type: Boolean,
-      default: false
-    }
   },
   computed: {
-    createdByName: function () {
-      return this.createdBy ? entityFormatter.name(this.createdBy) : null
-    },
     rootTypeName: function () {
       if (this.root['@id'].includes('issues')) {
         return this.$t('issue._name')
