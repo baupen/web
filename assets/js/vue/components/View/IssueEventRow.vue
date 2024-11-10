@@ -43,8 +43,9 @@
           </span>
       </p>
       <p class="text-secondary mb-0">
-        <span v-if="isContext" class="d-inline-block me-2">
-          <strong class="text-black">{{ rootTypeName }}</strong>
+        <span class="d-inline-block text-black me-2">
+          <strong v-if="isContext">{{ rootTypeName }}</strong>
+          <span v-else>{{ createdByName }}</span>
         </span>
         <date-time-human-readable :value="issueEvent.timestamp"/>
       </p>
@@ -52,7 +53,7 @@
     <div class="col-auto" v-if="canEdit">
       <div class="btn-group">
         <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
-                                 :last-changed-by="createdBy"/>
+                                 :last-changed-by="lastChangedBy"/>
         <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
       </div>
     </div>
@@ -67,6 +68,7 @@ import ImageLightbox from "./ImageLightbox.vue";
 import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
 import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
 import EditIssueEventButton from "../Action/EditIssueEventButton.vue";
+import {entityFormatter} from "../../services/formatters";
 
 export default {
   emits: ['removed'],
@@ -122,6 +124,9 @@ export default {
       } else if (this.root['@id'].includes('construction_sites')) {
         return this.$t('construction_site._name')
       }
+    },
+    createdByName: function () {
+      return this.createdBy ? entityFormatter.name(this.createdBy) : null
     },
     canEdit: function () {
       return !this.isContext && ['TEXT', 'IMAGE', 'FILE'].includes(this.issueEvent.type)
