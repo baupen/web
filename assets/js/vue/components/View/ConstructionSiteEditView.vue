@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-hover border">
+  <table class="table table-hover border shadow">
     <tbody>
     <tr>
       <td class="w-thumbnail">
