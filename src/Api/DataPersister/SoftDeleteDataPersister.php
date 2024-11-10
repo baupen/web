@@ -13,8 +13,8 @@ namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Craftsman;
+use App\Entity\IssueEvent;
 use App\Entity\Map;
-use App\Entity\ProtocolEntry;
 use App\Entity\Traits\SoftDeleteTrait;
 
 class SoftDeleteDataPersister implements ContextAwareDataPersisterInterface
@@ -28,7 +28,7 @@ class SoftDeleteDataPersister implements ContextAwareDataPersisterInterface
 
     public function supports($data, array $context = []): bool
     {
-        return ($data instanceof Craftsman || $data instanceof Map || $data instanceof ProtocolEntry)
+        return ($data instanceof Craftsman || $data instanceof Map || $data instanceof IssueEvent)
             && $this->decorated->supports($data, $context);
     }
 

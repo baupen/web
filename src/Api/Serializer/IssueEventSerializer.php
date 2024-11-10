@@ -11,11 +11,11 @@
 
 namespace App\Api\Serializer;
 
-use App\Entity\ProtocolEntry;
+use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ProtocolEntrySerializer implements NormalizerInterface
+class IssueEventSerializer implements NormalizerInterface
 {
     private NormalizerInterface $decorated;
     private UrlGeneratorInterface $urlGenerator;
@@ -28,21 +28,21 @@ class ProtocolEntrySerializer implements NormalizerInterface
 
     public function supportsNormalization($data, ?string $format = null): bool
     {
-        return $data instanceof ProtocolEntry
+        return $data instanceof IssueEvent
             && $this->decorated->supportsNormalization($data, $format);
     }
 
     /**
-     * @param ProtocolEntry $object
+     * @param IssueEvent $object
      */
     public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
         if (null !== $object->getFile()) {
-            $url = $this->urlGenerator->generate('protocol_entry_file', [
-                'protocolEntry' => $object->getId(),
-                'protocolEntryFile' => $object->getFile()->getId(),
+            $url = $this->urlGenerator->generate('issue_event_file', [
+                'issueEvent' => $object->getId(),
+                'issueEventFile' => $object->getFile()->getId(),
                 'filename' => $object->getFile()->getFilename(),
             ]);
 

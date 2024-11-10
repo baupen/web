@@ -18,25 +18,25 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * A ProtocolEntryFile is a file attached together with the protocol entry.
+ * A IssueEventFile is a file attached together with the protocol entry.
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class ProtocolEntryFile extends BaseEntity
+class IssueEventFile extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use FileTrait;
 
-    #[ORM\ManyToOne(targetEntity: ProtocolEntry::class)]
-    private ProtocolEntry $createdFor;
+    #[ORM\ManyToOne(targetEntity: IssueEvent::class)]
+    private IssueEvent $createdFor;
 
-    public function getCreatedFor(): ProtocolEntry
+    public function getCreatedFor(): IssueEvent
     {
         return $this->createdFor;
     }
 
-    public function setCreatedFor(ProtocolEntry $createdFor): void
+    public function setCreatedFor(IssueEvent $createdFor): void
     {
         $this->createdFor = $createdFor;
     }

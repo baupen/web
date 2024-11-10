@@ -12,9 +12,9 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSiteImage;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntryFile;
 
 interface CacheServiceInterface
 {
@@ -22,7 +22,7 @@ interface CacheServiceInterface
 
     public function warmUpCacheForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage): void;
 
-    public function warmUpCacheForProtocolEntryFile(ProtocolEntryFile $protocolEntryFile): void;
+    public function warmUpCacheForIssueEventFile(IssueEventFile $issueEventFile): void;
 
     public function warmUpCacheForMapFile(MapFile $mapFile): void;
 }

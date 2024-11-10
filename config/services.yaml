@@ -105,5 +105,5 @@ services:
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\MapSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\ProtocolEntrySerializer':
+    'App\Api\Serializer\IssueEventSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }

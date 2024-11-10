@@ -13,9 +13,9 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntryFile;
 
 /**
  * exposes paths.
@@ -48,7 +48,7 @@ interface PathServiceInterface
 
     public function getFolderForIssueImages(ConstructionSite $constructionSite): string;
 
-    public function getFolderForProtocolEntryFiles(ConstructionSite $constructionSite): string;
+    public function getFolderForIssueEventFiles(ConstructionSite $constructionSite): string;
 
     public function getTransientFolderForAuthorization(): string;
 
@@ -64,7 +64,7 @@ interface PathServiceInterface
 
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string;
 
-    public function getTransientFolderForProtocolEntryFile(ProtocolEntryFile $protocolEntryFile): string;
+    public function getTransientFolderForIssueEventFile(IssueEventFile $issueEventFile): string;
 
     public function getTransientFolderForMapFileRenders(MapFile $mapFile): string;
 

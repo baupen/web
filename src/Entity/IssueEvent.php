@@ -22,7 +22,7 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
-use App\Enum\ProtocolEntryTypes;
+use App\Enum\IssueEventTypes;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -33,11 +33,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('PROTOCOL_ENTRY_MODIFY', object)", "denormalization_context"={"groups"={"protocol-entry-create"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"protocol-entry-create"}}},
  *      },
  *      itemOperations={
- *       "get" = {"security" = "is_granted('PROTOCOL_ENTRY_VIEW', object)"},
- *       "delete" = {"security" = "is_granted('PROTOCOL_ENTRY_MODIFY', object)"},
+ *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
+ *       "delete" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
  *      },
  *      denormalizationContext={"groups"={"protocol-entry-create"}},
  *      normalizationContext={"groups"={"protocol-entry-read"}, "skip_null_values"=false}
@@ -51,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use SoftDeleteTrait;
@@ -75,8 +75,8 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
 
     #[Assert\NotBlank]
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: ProtocolEntryTypes::class)]
-    private ProtocolEntryTypes $type = ProtocolEntryTypes::Text;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
+    private IssueEventTypes $type = IssueEventTypes::Text;
 
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
@@ -95,11 +95,11 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
 
-    #[ORM\ManyToOne(targetEntity: ProtocolEntryFile::class, cascade: ['persist', 'remove'])]
-    private ?ProtocolEntryFile $file = null;
+    #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]
+    private ?IssueEventFile $file = null;
 
     /**
-     * @return ProtocolEntry[]
+     * @return IssueEvent[]
      */
     public static function createFromChangedIssue(?array $previousState, Issue $current, string $authority): array
     {
@@ -118,7 +118,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         if (!$previousState || null === $previousState['createdAt']) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_CREATED_TEXT);
-            $entry->setType(ProtocolEntryTypes::StatusSet);
+            $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
         }
@@ -126,7 +126,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         if ((!$previousState || null === $previousState['registeredAt']) && $current->getRegisteredAt()) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_REGISTERED_TEXT);
-            $entry->setType(ProtocolEntryTypes::StatusSet);
+            $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
         }
@@ -135,7 +135,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         if ($previousState && ($previousState['resolvedAt'] != $current->getResolvedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
-            $entry->setType($current->getResolvedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
+            $entry->setType($current->getResolvedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
             $entry->setCreatedBy($current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority);
 
             $entries[] = $entry;
@@ -145,7 +145,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         if ($previousState && ($previousState['closedAt'] != $current->getClosedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);
-            $entry->setType($current->getClosedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
+            $entry->setType($current->getClosedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
 
             $entries[] = $entry;
         }
@@ -173,12 +173,12 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->root = $root;
     }
 
-    public function getType(): ProtocolEntryTypes
+    public function getType(): IssueEventTypes
     {
         return $this->type;
     }
 
-    public function setType(ProtocolEntryTypes $type): void
+    public function setType(IssueEventTypes $type): void
     {
         $this->type = $type;
     }
@@ -213,12 +213,12 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->createdAt = $createdAt;
     }
 
-    public function getFile(): ?ProtocolEntryFile
+    public function getFile(): ?IssueEventFile
     {
         return $this->file;
     }
 
-    public function setFile(?ProtocolEntryFile $file): void
+    public function setFile(?IssueEventFile $file): void
     {
         $this->file = $file;
     }

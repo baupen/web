@@ -13,7 +13,7 @@ namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Issue;
-use App\Entity\ProtocolEntry;
+use App\Entity\IssueEvent;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use Doctrine\Persistence\ManagerRegistry;
@@ -63,7 +63,7 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
         }
 
         $authority = $this->tryGetAuthority($this->tokenStorage->getToken());
-        $protocolEntries = ProtocolEntry::createFromChangedIssue($previousState, $result, $authority);
+        $protocolEntries = IssueEvent::createFromChangedIssue($previousState, $result, $authority);
         DoctrineHelper::persistAndFlush($this->doctrine, ...$protocolEntries);
     }
 

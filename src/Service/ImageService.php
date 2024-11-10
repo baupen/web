@@ -13,10 +13,10 @@ namespace App\Service;
 
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntryFile;
 use App\Helper\FileHelper;
 use App\Service\Image\ContentDrawingService;
 use App\Service\Image\GdService;
@@ -77,12 +77,12 @@ class ImageService implements ImageServiceInterface
         return $this->renderSizeFor($sourcePath, $targetFolder, $size);
     }
 
-    public function resizeProtocolEntryImage(ProtocolEntryFile $protocolEntryFile, string $size = self::SIZE_THUMBNAIL): ?string
+    public function resizeIssueEventImage(IssueEventFile $issueEventFile, string $size = self::SIZE_THUMBNAIL): ?string
     {
         // setup paths
-        $sourceFolder = $this->pathService->getFolderForProtocolEntryFiles($protocolEntryFile->getCreatedFor()->getConstructionSite());
-        $sourcePath = $sourceFolder.\DIRECTORY_SEPARATOR.$protocolEntryFile->getFilename();
-        $targetFolder = $this->pathService->getTransientFolderForProtocolEntryFile($protocolEntryFile);
+        $sourceFolder = $this->pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite());
+        $sourcePath = $sourceFolder.\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
+        $targetFolder = $this->pathService->getTransientFolderForIssueEventFile($issueEventFile);
 
         return $this->renderSizeFor($sourcePath, $targetFolder, $size);
     }

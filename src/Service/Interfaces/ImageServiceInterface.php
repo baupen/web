@@ -13,9 +13,9 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntryFile;
 
 interface ImageServiceInterface
 {
@@ -41,7 +41,7 @@ interface ImageServiceInterface
 
     public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string;
 
-    public function resizeProtocolEntryImage(ProtocolEntryFile $protocolEntryFile, string $size = self::SIZE_THUMBNAIL): ?string;
+    public function resizeIssueEventImage(IssueEventFile $issueEventFile, string $size = self::SIZE_THUMBNAIL): ?string;
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string;
 

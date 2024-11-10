@@ -14,17 +14,17 @@ namespace App\Tests\Api;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Craftsman;
-use App\Enum\ProtocolEntryTypes;
+use App\Enum\IssueEventTypes;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
-use App\Tests\DataFixtures\TestProtocolEntryFixtures;
+use App\Tests\DataFixtures\TestIssueEventFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\FixturesTrait;
 use App\Tests\Traits\TestDataTrait;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProtocolEntryTest extends ApiTestCase
+class IssueEventTest extends ApiTestCase
 {
     use FixturesTrait;
     use AssertApiTrait;
@@ -34,7 +34,7 @@ class ProtocolEntryTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
@@ -50,7 +50,7 @@ class ProtocolEntryTest extends ApiTestCase
     public function testGet(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/protocol_entries');
@@ -63,7 +63,7 @@ class ProtocolEntryTest extends ApiTestCase
     public function testPostAndDelete(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerId = $this->getIriFromItem($constructionManager);
 
@@ -80,7 +80,7 @@ class ProtocolEntryTest extends ApiTestCase
         ];
 
         $optionalProperties = [
-            'type' => ProtocolEntryTypes::Text->value,
+            'type' => IssueEventTypes::Text->value,
             'payload' => 'Hello World',
         ];
 
@@ -88,39 +88,39 @@ class ProtocolEntryTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/protocol_entries', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/protocol_entries', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $response);
-        $protocolEntryId = json_decode($response->getContent(), true)['@id'];
+        $issueEventId = json_decode($response->getContent(), true)['@id'];
 
-        $this->assertApiDeleteOk($client, $protocolEntryId);
+        $this->assertApiDeleteOk($client, $issueEventId);
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $response);
     }
 
     public function testIsDeletedFilter(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $protocolEntry = $constructionSite->getProtocolEntries()[0];
-        $this->assertFalse($protocolEntry->getIsDeleted(), 'ensure not deleted, else the following tests will fail');
+        $issueEvent = $constructionSite->getProtocolEntries()[0];
+        $this->assertFalse($issueEvent->getIsDeleted(), 'ensure not deleted, else the following tests will fail');
 
-        $protocolEntryIri = $this->getIriFromItem($protocolEntry);
-        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $protocolEntryIri);
-        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=false', $protocolEntryIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=true', $protocolEntryIri);
+        $issueEventIri = $this->getIriFromItem($issueEvent);
+        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $issueEventIri);
+        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=false', $issueEventIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=true', $issueEventIri);
     }
 
     public function testCreatedAtFilter(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $protocolEntry = $constructionSite->getProtocolEntries()[0];
-        $protocolEntryIri = $this->getIriFromItem($protocolEntry);
+        $issueEvent = $constructionSite->getProtocolEntries()[0];
+        $issueEventIri = $this->getIriFromItem($issueEvent);
 
-        $this->assertApiCollectionFilterDateTime($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&', $protocolEntryIri, 'createdAt', $protocolEntry->getCreatedAt());
+        $this->assertApiCollectionFilterDateTime($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&', $issueEventIri, 'createdAt', $issueEvent->getCreatedAt());
     }
 
     public function testIssueStatusChangeCreatesEntries(): void
@@ -150,7 +150,7 @@ class ProtocolEntryTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
         $currentIssue = json_decode($response->getContent(), true);
         $issueId = substr($currentIssue['@id'], strrpos($currentIssue['@id'], '/') + 1);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CREATED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusSet, 'CREATED']]);
 
         sleep(1); // to enforce order
 
@@ -158,7 +158,7 @@ class ProtocolEntryTest extends ApiTestCase
         $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'REGISTERED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusSet, 'REGISTERED']]);
 
         sleep(1); // to enforce order
 
@@ -166,14 +166,14 @@ class ProtocolEntryTest extends ApiTestCase
         $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusSet, 'RESOLVED']]);
 
         sleep(1); // to enforce order
 
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusSet, 'CLOSED']]);
 
         sleep(1); // to enforce order
 
@@ -181,14 +181,14 @@ class ProtocolEntryTest extends ApiTestCase
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusSet, 'CLOSED']]);
 
         sleep(1); // to enforce order
 
         $payload = ['resolvedBy' => null, 'resolvedAt' => null, 'closedBy' => null, 'closedAt' => null];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         json_decode($response->getContent(), true);
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusUnset, 'RESOLVED'], [ProtocolEntryTypes::StatusUnset, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusUnset, 'RESOLVED'], [IssueEventTypes::StatusUnset, 'CLOSED']]);
     }
 
     public function testCraftsmanEmailEntry(): void
@@ -219,16 +219,16 @@ class ProtocolEntryTest extends ApiTestCase
             'body' => $payload['body'],
             'type' => 'CRAFTSMAN_ISSUE_REMINDER',
         ];
-        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $craftsman->getId(), [[ProtocolEntryTypes::Email, json_encode($expectedPayload)]]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $craftsman->getId(), [[IssueEventTypes::Email, json_encode($expectedPayload)]]);
     }
 
     /**
-     * @var array array{0: ProtocolEntryTypes, 1: string}[][]
+     * @var array array{0: IssueEventTypes, 1: string}[][]
      */
     private array $protocolEntries = [];
 
     /**
-     * @param array{0: ProtocolEntryTypes, 1: string}[] $newEntries
+     * @param array{0: IssueEventTypes, 1: string}[] $newEntries
      */
     private function assertNewProtocolEntries(Client $client, string $constructionSiteId, string $root, array $newEntries): void
     {

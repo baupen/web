@@ -11,7 +11,7 @@
 
 namespace App\Enum;
 
-enum ProtocolEntryTypes: string
+enum IssueEventTypes: string
 {
     case Text = 'TEXT';
     case StatusSet = 'STATUS_SET';
