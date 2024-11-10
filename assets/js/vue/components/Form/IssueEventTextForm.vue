@@ -114,7 +114,6 @@ export default {
   mounted() {
     this.setFromTemplate()
 
-    console.log(this.textMode)
     if (this.textMode) {
       this.fields.payload.rules.push(requiredRule())
       validateField(this.fields['payload'], this.issueEvent['payload'])
