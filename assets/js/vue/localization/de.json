@@ -122,6 +122,11 @@
       "removed": "Unternehmer entfernt.",
       "title": "Unternehmer entfernen"
     },
+    "remove_task": {
+      "help": "Die Aufgabe wird entfernt.",
+      "removed": "Aufgabe entfernt.",
+      "title": "Aufgabe entfernen"
+    },
     "remove_issues": {
       "confirm": "Eine Pendenz entfernen | {count} Pendenzen entfernen",
       "help": "Die Pendenzen werden nirgends mehr angezeigt.",

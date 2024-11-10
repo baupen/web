@@ -1,5 +1,5 @@
 <template>
-  <button @click="show = !show" :disabled="buttonDisabled" :class="'btn btn-outline-' + color">
+  <button @click="show = !show" :disabled="buttonDisabled" :class="buttonClasses">
     <slot name="button-content">
       {{ title }}
     </slot>
@@ -41,7 +41,7 @@ export default {
     Modal,
     ButtonWithModal
   },
-  data () {
+  data() {
     return {
       show: false
     }
@@ -54,6 +54,10 @@ export default {
     buttonDisabled: {
       type: Boolean,
       default: false
+    },
+    buttonSize: {
+      type: String,
+      default: null
     },
     confirmTitle: {
       type: String,
@@ -78,6 +82,17 @@ export default {
     color: {
       type: String,
       default: 'primary'
+    }
+  },
+  computed: {
+    buttonClasses: function () {
+      let classes = 'btn'
+      classes += ' btn-outline-' + this.color
+      if (this.buttonSize) {
+        classes += ' btn-' + this.buttonSize
+      }
+
+      return classes
     }
   },
   watch: {

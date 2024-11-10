@@ -1,18 +1,18 @@
 <template>
   <div class="row">
     <div class="col-auto">
-      <toggle-open-closed-task :construction-manager-iri="constructionManagerIri" :task="task" />
+      <toggle-open-closed-task :construction-manager-iri="constructionManagerIri" :task="task"/>
     </div>
     <div class="col">
       <p class="mb-0">{{ task.description }}</p>
       <p class="text-secondary mb-0">
         <template v-if="task.closedAt">
-          {{ $t('task.closed_by')}}
+          {{ $t('task.closed_by') }}
           {{ closedByName }}<span>, </span>
           <date-time-human-readable :value="task.closedAt"/>
         </template>
         <template v-else>
-          {{ $t('task.created_by')}}
+          {{ $t('task.created_by') }}
           {{ createdByName }}
         </template>
       </p>
@@ -20,18 +20,27 @@
     <div class="col-auto col-deadline" v-if="showDeadline">
       <date-human-readable :value="task.deadline"/>
     </div>
+    <div class="col-auto" v-if="enableMutations">
+      <div class="btn-group">
+        <edit-task-button :task="task" />
+        <remove-task-button :task="task" @removed="$emit('removed')"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 
-import {constructionManagerFormatter, entityFormatter} from "../../services/formatters";
+import {constructionManagerFormatter} from "../../services/formatters";
 import DateTimeHumanReadable from "../Library/View/DateTimeHumanReadable.vue";
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import ToggleOpenClosedTask from "../Action/ToggleOpenClosedTask.vue";
+import EditTaskButton from "../Action/EditTaskButton.vue";
+import RemoveTaskButton from "../Action/RemoveTaskButton.vue";
 
 export default {
-  components: {ToggleOpenClosedTask, DateTimeHumanReadable, DateHumanReadable},
+  components: {RemoveTaskButton, EditTaskButton, ToggleOpenClosedTask, DateTimeHumanReadable, DateHumanReadable},
+  emits: ['removed'],
   props: {
     task: {
       type: Object,
@@ -46,6 +55,10 @@ export default {
       required: false
     },
     showDeadline: {
+      type: Boolean,
+      default: true
+    },
+    enableMutations: {
       type: Boolean,
       default: true
     },

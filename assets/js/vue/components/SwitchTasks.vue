@@ -30,7 +30,8 @@
                       <task-row :task="task"
                                 :construction-managers="constructionManagers"
                                 :construction-manager-iri="constructionManagerIri"
-                                :show-deadline="false" />
+                                :show-deadline="false"
+                                :enable-mutations="false"/>
                     </div>
                   </div>
                 </div>

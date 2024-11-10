@@ -82,6 +82,11 @@ export default {
 .limited-height {
   max-height: 30em;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
+.loading-center > * {
+  display: block;
+  margin: 0 auto;
+}
 </style>

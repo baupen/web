@@ -10,11 +10,13 @@
 
         <template v-if="tasks.length">
           <div class="mt-3 row g-2">
-            <div class="col-12" v-for="task in tasks" :key="task['@id']">
+            <div class="col-12" v-for="task in orderedTasks" :key="task['@id']">
               <task-row
                   :task="task"
                   :construction-managers="constructionManagers"
-                  :construction-manager-iri="constructionManagerIri"/>
+                  :construction-manager-iri="constructionManagerIri"
+                  @removed="removedTask(task)"
+              />
             </div>
           </div>
         </template>
@@ -32,7 +34,8 @@
           <div class="col-12" v-for="task in closedTasks" :key="task['@id']">
             <task-row :key="task['@id']" :task="task"
                       :construction-managers="constructionManagers"
-                      :construction-manager-iri="constructionManagerIri"/>
+                      :construction-manager-iri="constructionManagerIri"
+            />
           </div>
         </div>
       </template>
@@ -74,6 +77,13 @@ export default {
       required: true
     },
   },
+  computed: {
+    orderedTasks: function () {
+      const openTasks = [...this.tasks]
+      openTasks.sort((a, b) => (a.deadline).localeCompare(b.deadline))
+      return openTasks
+    },
+  },
   methods: {
     loadClosedTasks: function () {
       this.loadingClosedTasks = true;
@@ -95,6 +105,10 @@ export default {
 
             this.loadingClosedTasks = false
           })
+    },
+    removedTask: function (task) {
+      this.tasks = this.tasks.filter(candidate => candidate !== task)
+      this.closedTasks = this.closedTasks.filter(candidate => candidate !== task)
     }
   },
   mounted() {
