@@ -136,7 +136,7 @@ import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { arraysAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
 import ToggleCanEdit from '../Action/ToggleCanEdit'
-import ViewCraftsmanIssueEventsButton from '../Action/ViewCraftsmanIssueEventsButton.vue'
+import ViewCraftsmanIssuesEventsButton from '../Action/ViewCraftsmanIssuesEventsButton.vue'
 import TooltipBadge from "../Library/View/TooltipBadge.vue";
 
 export default {
@@ -150,7 +150,7 @@ export default {
     TooltipNumber,
     CustomCheckbox,
     LoadingIndicatorTableBody,
-    ViewCraftsmanIssueEventsButton
+    ViewCraftsmanIssuesEventsButton
   },
   data () {
     return {
