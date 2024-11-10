@@ -1,30 +1,53 @@
 <template>
-  <div class="card">
+  <div class="card shadow">
     <div class="card-body limited-height">
       <div v-if="tasks === null" class="loading-center">
         <loading-indicator-secondary/>
       </div>
-      <template v-else-if="sortedDeadlines.length ===0">
-        <p class="mb-0">
-          keine
-        </p>
-      </template>
       <template v-else>
-        <div class="row g-5">
-          <div class="col-12" v-for="deadline in sortedDeadlines" :key="deadline">
-            <h2><date-human-readable :value="deadline" :hide-current-year="true"/></h2>
-            <div class="row g-3">
-              <div class="col-12" v-for="task in deadlineGroupedTasks[deadline]" :key="task['@id']">
-                <h3>
-                  {{constructionSites.find(site => site['@id'] === task.constructionSite).name}}
-                </h3>
-                <task-row :task="task"
-                          :construction-managers="constructionManagers"
-                          :construction-manager-iri="constructionManagerIri"/>
+        <template v-if="sortedDeadlines.length ===0">
+          <p>
+            {{ $t('switch.no_tasks_pending') }}
+          </p>
+        </template>
+        <template v-else>
+          <div class="row g-5 mb-5">
+            <div class="col-12" v-for="deadline in sortedDeadlines" :key="deadline">
+              <h3>
+                <date-human-readable :value="deadline" :hide-current-year="true"/>
+              </h3>
+              <div class="row g-3">
+                <div class="col-12"
+                     v-for="([constructionSiteId, tasks]) in Object.entries(deadlineConstructionSiteGroupedTasks[deadline])"
+                     :key="constructionSiteId">
+                  <p class="mb-1">
+                    <strong>
+                      {{ constructionSites.find(site => site['@id'] === constructionSiteId).name }}
+                    </strong>
+                  </p>
+                  <div class="row g-1">
+                    <div class="col-12" v-for="task in tasks" :key="task['@id']">
+                      <task-row :task="task"
+                                :construction-managers="constructionManagers"
+                                :construction-manager-iri="constructionManagerIri"
+                                :show-deadline="false"
+                                :allow-edit="false"/>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
+
+        <p class="text-secondary text-center mb-2">
+          {{ $t('switch.tasks_loaded_until', {deadlineLoaded: loadedUntilDate}) }}
+        </p>
+        <p class="text-center mb-0">
+          <button class="btn btn-outline-secondary" @click="startLoadMore" :disabled="isLoading">
+            {{ $t('switch.load_more_tasks') }}
+          </button>
+        </p>
       </template>
     </div>
   </div>
@@ -37,9 +60,12 @@ import {addNonDuplicatesById, api, iriToId} from "../services/api";
 import TaskRow from "./View/TaskRow.vue";
 import AddTaskButton from "./Action/AddTaskButton.vue";
 import DateHumanReadable from "./Library/View/DateHumanReadable.vue";
+import EnterConstructionSite from "./Action/EnterConstructionSite.vue";
+import moment from "moment";
 
 export default {
   components: {
+    EnterConstructionSite,
     DateHumanReadable,
     AddTaskButton,
     TaskRow,
@@ -76,30 +102,49 @@ export default {
         deadlineGroupTasks[task.deadline].push(task)
       })
 
-      Object.keys(deadlineGroupTasks).forEach(key => {
-        deadlineGroupTasks[key].sort((a, b) => {
-          const aConstructionSite = this.constructionSites.find(site => site['@id'] === a.constructionSite)
-          const bConstructionSite = this.constructionSites.find(site => site['@id'] === b.constructionSite)
+      return deadlineGroupTasks
+    },
+    deadlineConstructionSiteGroupedTasks: function () {
+      const deadlineConstructionSiteGroupedTasks = {}
+      Object.keys(this.deadlineGroupedTasks).forEach(deadline => {
+        let constructionSiteGroup = {}
 
-          return aConstructionSite.name.localeCompare(bConstructionSite.name)
+        this.deadlineGroupedTasks[deadline].forEach(task => {
+          if (!(task.constructionSite in constructionSiteGroup)) {
+            constructionSiteGroup[task.constructionSite] = []
+          }
+          constructionSiteGroup[task.constructionSite].push(task)
         })
+
+        Object.keys(constructionSiteGroup).forEach(key => {
+          constructionSiteGroup[key].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+        })
+
+        deadlineConstructionSiteGroupedTasks[deadline] = constructionSiteGroup
       })
 
-      return deadlineGroupTasks
+      return deadlineConstructionSiteGroupedTasks
     },
     sortedDeadlines: function () {
       const deadlines = Object.keys(this.deadlineGroupedTasks)
       deadlines.sort((a, b) => a.localeCompare(b))
 
       return deadlines
+    },
+    loadedUntilDate: function () {
+      const today = new Date();
+      const alreadyLoadedDeadline = new Date(today);
+      alreadyLoadedDeadline.setDate(alreadyLoadedDeadline.getDate() + 7 * this.loadedUntilWeek);
+
+      return moment(alreadyLoadedDeadline).format('L')
     }
   },
   methods: {
     startLoadMore: function () {
       if (this.loadedUntilWeek === 1) {
-        this.loadedUntilWeek += 3
+        this.loadTasks(4)
       } else {
-        this.loadedUntilWeek += 4
+        this.loadTasks(this.loadedUntilWeek + 4)
       }
     },
     loadTasks: function (untilWeek) {
@@ -110,16 +155,16 @@ export default {
         'order[deadline]': "desc",
         'exists[closedAt]': 'false',
         'exists[deadline]': 'true',
-        'constructionSite': this.constructionSites.map(site => iriToId(site['@id']))
+        'constructionSite[]': this.constructionSites.map(site => iriToId(site['@id']))
       };
       if (this.loadedUntilWeek > 0) {
         const alreadyLoadedDeadline = new Date(today);
         alreadyLoadedDeadline.setDate(alreadyLoadedDeadline.getDate() + 7 * this.loadedUntilWeek);
-        query['deadline[after]'] = alreadyLoadedDeadline;
+        query['deadline[after]'] = alreadyLoadedDeadline.toISOString();
       }
       const newLoadedDeadline = new Date(today);
       newLoadedDeadline.setDate(newLoadedDeadline.getDate() + 7 * untilWeek);
-      query['deadline[before]'] = newLoadedDeadline;
+      query['deadline[before]'] = newLoadedDeadline.toISOString();
 
       api.getTasksQuery(query)
           .then(entries => {
@@ -141,7 +186,9 @@ export default {
 
 <style scoped>
 .limited-height {
-  max-height: 30em;
+  max-height: 50em;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 </style>

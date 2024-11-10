@@ -374,8 +374,7 @@ const api = {
     return this._getHydraCollection('/api/tasks' + queryString)
   },
   getTasksQuery: function (query) {
-    let queryString = '?' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
+    const queryString = '?' + this._getQueryString(query)
 
     return this._getHydraCollection('/api/tasks' + queryString)
   },
