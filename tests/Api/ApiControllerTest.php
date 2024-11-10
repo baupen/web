@@ -211,9 +211,9 @@ class ApiControllerTest extends ApiTestCase
         $this->loginConstructionManager($client->getKernelBrowser());
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $issueEvent = $testConstructionSite->getProtocolEntries()->get(0);
+        $issueEvent = $testConstructionSite->getIssueEvents()->get(0);
 
-        $baseUrl = '/api/protocol_entries/'.$issueEvent->getId().'/file';
+        $baseUrl = '/api/issue_events/'.$issueEvent->getId().'/file';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $file);
 
         $this->assertStringContainsString($issueEvent->getFile()->getId(), $url);

@@ -79,7 +79,7 @@ class PathService implements PathServiceInterface
 
     public function getFolderForIssueEventFiles(ConstructionSite $constructionSite): string
     {
-        return $this->getFolderForConstructionSite($constructionSite).\DIRECTORY_SEPARATOR.'protocol_entries';
+        return $this->getFolderForConstructionSite($constructionSite).\DIRECTORY_SEPARATOR.'issue_events';
     }
 
     public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string
@@ -104,7 +104,7 @@ class PathService implements PathServiceInterface
 
     public function getTransientFolderForIssueEventFile(IssueEventFile $issueEventFile): string
     {
-        return $this->getTransientFolderForConstructionSite($issueEventFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.'protocol_entries'.\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
+        return $this->getTransientFolderForConstructionSite($issueEventFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.'issue_events'.\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
     }
 
     private function getFolderForConstructionSite(ConstructionSite $constructionSite): string

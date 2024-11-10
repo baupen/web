@@ -63,8 +63,8 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
         }
 
         $authority = $this->tryGetAuthority($this->tokenStorage->getToken());
-        $protocolEntries = IssueEvent::createFromChangedIssue($previousState, $result, $authority);
-        DoctrineHelper::persistAndFlush($this->doctrine, ...$protocolEntries);
+        $issueEvents = IssueEvent::createFromChangedIssue($previousState, $result, $authority);
+        DoctrineHelper::persistAndFlush($this->doctrine, ...$issueEvents);
     }
 
     /**

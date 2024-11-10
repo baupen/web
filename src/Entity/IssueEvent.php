@@ -65,7 +65,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
     #[Assert\NotBlank]
     #[Groups(['protocol-entry-create'])]
-    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'protocolEntries')]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issueEvents')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
