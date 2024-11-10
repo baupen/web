@@ -17,8 +17,8 @@
       "title": "Karte hinzufügen"
     },
     "add_issue_event": {
-      "added": "Protokolleintrag hinzugefügt",
-      "title": "Protokolleintrag hinzufügen",
+      "added": "Ereignis hinzugefügt",
+      "title": "Ereignis hinzufügen",
       "type_text": "Text",
       "type_image": "Bild",
       "type_file": "Datei"
@@ -143,9 +143,9 @@
       "title": "Karte entfernen"
     },
     "remove_issue_event": {
-      "help": "Entfernt diesen Protokolleintrag.",
-      "removed": "Protokolleintrag entfernt",
-      "title": "Protokolleintrag entfernen"
+      "help": "Entfernt dieses Ereignis.",
+      "removed": "Ereignis entfernt",
+      "title": "Ereignis entfernen"
     },
     "resolve_issue": {
       "resolved": "Pendenz als umgesetzt markiert.",
@@ -322,7 +322,8 @@
     "feed": "Feed",
     "activity": "Aktivität",
     "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst.",
-    "load_closed_tasks": "Erledigte Aufgaben laden."
+    "load_closed_tasks": "Erledigte Aufgaben laden.",
+    "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu."
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
@@ -396,9 +397,8 @@
     "was_added_with_client": "Abnahmependenz"
   },
   "issue_event": {
-    "_name": "Protokolleintrag",
-    "_plural": "Protokolleinträge",
-    "_plural_short": "Protokoll",
+    "_name": "Ereignis",
+    "_plural": "Ereignisse",
     "created_at": "Zeitpunkt",
     "text_payload": "Text",
     "file_payload": "Beschreibung"

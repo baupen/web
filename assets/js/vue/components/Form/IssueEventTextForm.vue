@@ -12,7 +12,7 @@
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
 
-  <form-field for-id="createdAt" :label="$t('issue_event.created_at')" :required="false">
+  <form-field for-id="createdAt" :label="$t('issue_event.created_at')" :required="true">
     <span ref="createdAt-anchor"/>
     <flat-pickr
         id="createdAt" class="form-control"
@@ -28,7 +28,7 @@
 <script>
 
 import {
-  createField,
+  createField, fieldValues,
   requiredRule,
   validateField, validateFields,
 } from '../../services/validation'
@@ -47,6 +47,10 @@ export default {
   emits: ['update'],
   data() {
     return {
+      fields: {
+        payload: createField(),
+        createdAt: createField(requiredRule()),
+      },
       issueEvent: {
         payload: null,
         createdAt: (new Date()).toISOString()
@@ -72,6 +76,9 @@ export default {
     template: function () {
       this.setFromTemplate()
     },
+    'issueEvent.createdAt': function () {
+      validateField(this.fields['createdAt'], this.issueEvent['createdAt'])
+    },
     'fields.createdAt.dirty': function () {
       toggleAnchorValidity(this.$refs['createdAt-anchor'], this.fields.createdAt)
     },
@@ -92,19 +99,6 @@ export default {
     }
   },
   computed: {
-    fields: function() {
-      if (this.textMode) {
-        return {
-          payload: createField(requiredRule()),
-          createdAt: createField(requiredRule()),
-        }
-      } else {
-        return {
-          payload: createField(),
-          createdAt: createField(requiredRule()),
-        }
-      }
-    },
     dateTimePickerConfig: function () {
       return dateTimeConfig
     },
@@ -114,17 +108,16 @@ export default {
         return null
       }
 
-      return this.issueEvent
+      return fieldValues(this.fields, this.issueEvent)
     },
   },
   mounted() {
     this.setFromTemplate()
 
-    // fix that validation is only applied in second render, leading to form appearing valid even though it is not
+    console.log(this.textMode)
     if (this.textMode) {
-      this.$emit('update', null)
-    } else {
-      this.$emit('update', this.updatePayload)
+      this.fields.payload.rules.push(requiredRule())
+      validateField(this.fields['payload'], this.issueEvent['payload'])
     }
   }
 }
