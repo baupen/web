@@ -16,7 +16,7 @@
       "added": "Karte hinzugefügt",
       "title": "Karte hinzufügen"
     },
-    "add_protocol_entry": {
+    "add_issue_event": {
       "added": "Protokolleintrag hinzugefügt",
       "title": "Protokolleintrag hinzufügen",
       "type_text": "Text",
@@ -142,7 +142,7 @@
       "removed": "Karte entfernt",
       "title": "Karte entfernen"
     },
-    "remove_protocol_entry": {
+    "remove_issue_event": {
       "help": "Entfernt diesen Protokolleintrag.",
       "removed": "Protokolleintrag entfernt",
       "title": "Protokolleintrag entfernen"
@@ -178,8 +178,8 @@
     "view_issue": {
       "title": "Pendenz anschauen"
     },
-    "view_craftsman_timeline": {
-      "title": "Protokoll anschauen"
+    "view_craftsman_issues_events": {
+      "title": "Pendenzen-Ereignisse anschauen"
     }
   },
   "_api": {
@@ -273,7 +273,7 @@
     "maps_resolve": {
       "issues_by_map": "Pendenzen nach Bauplan"
     },
-    "protocol_entry": {
+    "issue_event": {
       "show_email_body": "Inhalt anzeigen"
     },
     "no_craftsmen": "Keine Unternehmer",
@@ -395,7 +395,7 @@
     "trade": "Gewerk",
     "was_added_with_client": "Abnahmependenz"
   },
-  "protocol_entry": {
+  "issue_event": {
     "_name": "Protokolleintrag",
     "_plural": "Protokolleinträge",
     "_plural_short": "Protokoll",

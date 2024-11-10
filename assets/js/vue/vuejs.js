@@ -19,8 +19,8 @@ import {
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
   faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular, // issue icons
-  faCircle as faCircleRegular, faCircleUser as faCircleUserRegular, faCircleO as faCircleORegular, // text protocol
-  faCircleEnvelope as faCircleEnvelopeRegular, faCircleCamera as faCircleCameraRegular, faCircleDown as faCircleDownRegular, // text protocol,
+  faCircle as faCircleRegular, faCircleUser as faCircleUserRegular, faCircleO as faCircleORegular, // text events
+  faCircleEnvelope as faCircleEnvelopeRegular, faCircleCamera as faCircleCameraRegular, faCircleDown as faCircleDownRegular, // text events,
   faDown as faDownRegular,
   faListUl as faListUlRegular
 } from '@fortawesome/pro-regular-svg-icons'

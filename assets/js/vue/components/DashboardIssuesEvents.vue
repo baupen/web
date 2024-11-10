@@ -1,24 +1,23 @@
 <template>
   <div class="card">
     <div class="card-body limited-height">
-      <div class="loading-center" v-if="protocolEntries === null">
+      <div class="loading-center" v-if="issueEvents === null">
         <loading-indicator-secondary/>
       </div>
       <template v-else>
-        <add-protocol-entry-button
+        <add-issue-event-button
             :authority-iri="constructionManagerIri" :root="constructionSite"
             :construction-site="constructionSite"
-            @added="protocolEntries.push($event)"/>
+            @added="issueEvents.push($event)"/>
 
-        <div class="mt-3" v-if="orderedProtocolEntries.length">
-          <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
-                          :last="index+1 === orderedProtocolEntries.length"
-                          :protocol-entry="entry"
+        <div class="mt-3" v-if="orderedIssueEvents.length">
+          <issue-event v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
+                          :last="index+1 === orderedIssueEvents.length"
+                          :issue-event="entry"
                           :root="constructionSite"
                           :created-by="responsiblesLookup[entry['createdBy']]"
           />
         </div>
-
       </template>
     </div>
   </div>
@@ -28,18 +27,18 @@
 
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
 import {api, iriToId} from "../services/api";
-import ProtocolEntry from "./View/ProtocolEntry.vue";
-import AddProtocolEntryButton from "./Action/AddProtocolEntryButton.vue";
-import {sortProtocolEntries} from "../services/sorters";
+import IssueEvent from "./View/IssueEvent.vue";
+import AddIssueEventButton from "./Action/AddIssueEventButton.vue";
+import {sortIssueEvents} from "../services/sorters";
 
 export default {
   components: {
-    AddProtocolEntryButton, ProtocolEntry,
+    AddIssueEventButton, IssueEvent,
     LoadingIndicatorSecondary,
   },
   data() {
     return {
-      protocolEntries: null,
+      issueEvents: null,
     }
   },
   props: {
@@ -63,16 +62,16 @@ export default {
 
       return responsiblesLookup
     },
-    orderedProtocolEntries: function () {
-      const protocolEntries = [...this.protocolEntries]
-      sortProtocolEntries(protocolEntries)
-      return protocolEntries
+    orderedIssueEvents: function () {
+      const issueEvents = [...this.issueEvents]
+      sortIssueEvents(issueEvents)
+      return issueEvents
     }
   },
   mounted() {
-    api.getProtocolEntries(this.constructionSite, this.constructionSite)
+    api.getIssueEvents(this.constructionSite, this.constructionSite)
         .then(entries => {
-          this.protocolEntries = entries
+          this.issueEvents = entries
         })
   }
 }

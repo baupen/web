@@ -28,19 +28,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * A protocol entry adds context to the linked entity.
+ * A issue event adds context to the linked entity.
  *
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"protocol-entry-create"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"issue-event-create"}}},
  *      },
  *      itemOperations={
  *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
  *       "delete" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
  *      },
- *      denormalizationContext={"groups"={"protocol-entry-create"}},
- *      normalizationContext={"groups"={"protocol-entry-read"}, "skip_null_values"=false}
+ *      denormalizationContext={"groups"={"issue-event-create"}},
+ *      normalizationContext={"groups"={"issue-event-read"}, "skip_null_values"=false}
  *  )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
@@ -64,21 +64,21 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public const EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER = 'CRAFTSMAN_ISSUE_REMINDER';
 
     #[Assert\NotBlank]
-    #[Groups(['protocol-entry-create'])]
+    #[Groups(['issue-event-create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issueEvents')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $root = null;
 
     #[Assert\NotBlank]
-    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
-    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $payload = null;
 
@@ -86,12 +86,12 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
      * @var \DateTime|null
      */
     #[Assert\NotBlank]
-    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
-    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
 
@@ -228,7 +228,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         return null !== $this->constructionSite;
     }
 
-    #[Groups(['protocol-entry-read'])]
+    #[Groups(['issue-event-read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;

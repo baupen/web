@@ -8,35 +8,35 @@
     </div>
     <div class="col">
       <div class="mt-1">
-        <p v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line mb-0">
-          {{ protocolEntry.payload }}&nbsp;
+        <p v-if="issueEvent.type === 'TEXT'" class="white-space-pre-line mb-0">
+          {{ issueEvent.payload }}&nbsp;
         </p>
-        <p v-else-if="protocolEntry.type === 'STATUS_SET'" class="mb-0">
-          <b>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</b>
+        <p v-else-if="issueEvent.type === 'STATUS_SET'" class="mb-0">
+          <b>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</b>
         </p>
-        <p v-else-if="protocolEntry.type === 'STATUS_UNSET'" class="mb-0">
+        <p v-else-if="issueEvent.type === 'STATUS_UNSET'" class="mb-0">
           <b>
-            <del>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</del>
+            <del>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</del>
           </b>
         </p>
-        <div v-else-if="protocolEntry.type === 'IMAGE'">
-          <image-lightbox :subject="protocolEntry.payload" :src="protocolEntry.fileUrl"/>
-          <p v-if="protocolEntry.payload" class="mb-0">
-            {{ protocolEntry.payload }}
+        <div v-else-if="issueEvent.type === 'IMAGE'">
+          <image-lightbox :subject="issueEvent.payload" :src="issueEvent.fileUrl"/>
+          <p v-if="issueEvent.payload" class="mb-0">
+            {{ issueEvent.payload }}
           </p>
         </div>
-        <p v-else-if="protocolEntry.type === 'FILE'" class="mb-0">
-          {{ protocolEntry.payload }}
-          <span v-if="protocolEntry.payload">&nbsp;</span>
-          <a :href="protocolEntry.fileUrl" download>
+        <p v-else-if="issueEvent.type === 'FILE'" class="mb-0">
+          {{ issueEvent.payload }}
+          <span v-if="issueEvent.payload">&nbsp;</span>
+          <a :href="issueEvent.fileUrl" download>
             <font-awesome-icon :icon="['far', 'down']"/>
             {{ $t('_view.download') }}
           </a>
         </p>
-        <p v-else-if="protocolEntry.type === 'EMAIL'" class="mb-0">
+        <p v-else-if="issueEvent.type === 'EMAIL'" class="mb-0">
           {{ emailPayload.subject }}
           <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
-            {{ $t('_view.protocol_entry.show_email_body') }}
+            {{ $t('_view.issue_event.show_email_body') }}
           </a>
           <span v-if="showEmailBody" class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
             {{ emailPayload.body }}
@@ -47,13 +47,13 @@
         <span v-if="isContext">
           {{ rootTypeName + ", " }}
         </span>
-        <date-time-human-readable :value="protocolEntry.createdAt"/>
+        <date-time-human-readable :value="issueEvent.createdAt"/>
         <span>, </span>
         {{ createdByName }}
       </p>
     </div>
     <div class="col-auto" v-if="isRemovable">
-      <remove-protocol-entry-button :protocol-entry="protocolEntry" @removed="$emit('removed')"/>
+      <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
     </div>
   </div>
 </template>
@@ -65,12 +65,12 @@ import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import ImageLightbox from "./ImageLightbox.vue";
 import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
-import RemoveProtocolEntryButton from "../Action/RemoveProtocolEntryButton.vue";
+import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
 
 export default {
   emits: ['removed'],
   components: {
-    RemoveProtocolEntryButton,
+    RemoveIssueEventButton,
     ButtonWithModal,
     ImageLightbox,
     FontAwesomeIcon,
@@ -82,7 +82,7 @@ export default {
     }
   },
   props: {
-    protocolEntry: {
+    issueEvent: {
       type: Object,
       required: true
     },
@@ -121,10 +121,10 @@ export default {
       }
     },
     emailPayload: function () {
-      return JSON.parse(this.protocolEntry.payload)
+      return JSON.parse(this.issueEvent.payload)
     },
     icon: function () {
-      if ('TEXT' === this.protocolEntry.type) {
+      if ('TEXT' === this.issueEvent.type) {
         if (this.root['@id'].includes('issues')) {
           return ['far', 'circle']
         } else if (this.root['@id'].includes('craftsmen')) {
@@ -133,8 +133,8 @@ export default {
           return ['far', 'circle-o']
         }
       }
-      if (['STATUS_SET', 'STATUS_UNSET'].includes(this.protocolEntry.type)) {
-        switch (this.protocolEntry.payload) {
+      if (['STATUS_SET', 'STATUS_UNSET'].includes(this.issueEvent.type)) {
+        switch (this.issueEvent.payload) {
           case 'CREATED':
             return ['far', 'plus-circle']
           case 'REGISTERED':
@@ -145,20 +145,20 @@ export default {
             return ['far', 'check-circle']
         }
       }
-      if ('EMAIL' === this.protocolEntry.type) {
+      if ('EMAIL' === this.issueEvent.type) {
         return ['far', 'circle-envelope']
       }
-      if ('IMAGE' === this.protocolEntry.type) {
+      if ('IMAGE' === this.issueEvent.type) {
         return ['far', 'circle-camera']
       }
-      if ('FILE' === this.protocolEntry.type) {
+      if ('FILE' === this.issueEvent.type) {
         return ['far', 'circle-down']
       }
 
       return []
     },
     iconOpacity: function () {
-      if ('STATUS_UNSET' === this.protocolEntry.type) {
+      if ('STATUS_UNSET' === this.issueEvent.type) {
         return 'opacity-25'
       }
 
@@ -166,8 +166,8 @@ export default {
     },
     iconColor: function () {
       if (this.root['@id'].includes('issues')) {
-        if (['STATUS_SET', 'STATUS_UNSET'].includes(this.protocolEntry.type)) {
-          switch (this.protocolEntry.payload) {
+        if (['STATUS_SET', 'STATUS_UNSET'].includes(this.issueEvent.type)) {
+          switch (this.issueEvent.payload) {
             case 'CREATED':
             case 'REGISTERED':
               return 'primary'

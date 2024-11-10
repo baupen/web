@@ -18,7 +18,7 @@
           <dashboard-tasks class="shadow mt-4"
                            :construction-site="constructionSite" :construction-managers="constructionManagers"
                            :construction-manager-iri="constructionManagerIri" />
-          <dashboard-protocol
+          <dashboard-issues-events
               class="shadow mt-4"
               :construction-managers="constructionManagers" :construction-site="constructionSite"
               :construction-manager-iri="constructionManagerIri"/>
@@ -36,13 +36,13 @@ import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import AtomSpinner from './components/Library/View/Base/AtomSpinner'
-import DashboardProtocol from "./components/DashboardProtocol.vue";
 import DashboardTasks from "./components/DashboardTasks.vue";
+import DashboardIssuesEvents from "./components/DashboardIssuesEvents.vue";
 
 export default {
   components: {
+    DashboardIssuesEvents,
     DashboardTasks,
-    DashboardProtocol,
     AtomSpinner,
     LoadingIndicator,
     DashboardFeed,

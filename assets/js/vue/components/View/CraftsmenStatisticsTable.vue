@@ -87,7 +87,7 @@
         <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
       </td>
       <td @click.stop="" class="cursor-normal">
-        <view-craftsman-timeline-button
+        <view-craftsman-issues-events-button
             :construction-manager-iri="constructionManagerIri"
             :construction-site="constructionSite" :construction-managers="constructionManagers"
             :craftsman="cws.craftsman" />
@@ -136,15 +136,12 @@ import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { arraysAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
 import ToggleCanEdit from '../Action/ToggleCanEdit'
+import ViewCraftsmanIssueEventsButton from '../Action/ViewCraftsmanIssueEventsButton.vue'
 import TooltipBadge from "../Library/View/TooltipBadge.vue";
-import CraftsmanTimeline from "./CraftsmanTimeline.vue";
-import ViewCraftsmanTimelineButton from "../Action/ViewCraftsmanTimelineButton.vue";
 
 export default {
   emits: ['selected'],
   components: {
-    ViewCraftsmanTimelineButton,
-    CraftsmanTimeline,
     TooltipBadge,
     ToggleCanEdit,
     IssueSummaryBadges,
@@ -153,6 +150,7 @@ export default {
     TooltipNumber,
     CustomCheckbox,
     LoadingIndicatorTableBody,
+    ViewCraftsmanIssueEventsButton
   },
   data () {
     return {

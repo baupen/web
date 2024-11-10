@@ -378,12 +378,12 @@ const api = {
 
     return this._getHydraCollection('/api/tasks' + queryString)
   },
-  getProtocolEntries: function (constructionSite, root) {
+  getIssueEvents: function (constructionSite, root) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     queryString += '&root=' + iriToId(root['@id'])
     queryString += '&isDeleted=false'
 
-    return this._getHydraCollection('/api/protocol_entries' + queryString)
+    return this._getHydraCollection('/api/issue_events' + queryString)
   },
   patch: function (instance, patch, successMessage = null) {
     return new Promise(
@@ -442,8 +442,8 @@ const api = {
   postMapFile: function (map, file, successMessage = null) {
     return this._postAttachment(map, file, 'file', successMessage)
   },
-  postProtocolEntryFile: function (protocolEntry, file, successMessage = null) {
-    return this._postAttachment(protocolEntry, file, 'file', successMessage)
+  postIssueEventFile: function (issueEvent, file, successMessage = null) {
+    return this._postAttachment(issueEvent, file, 'file', successMessage)
   },
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)
@@ -454,8 +454,8 @@ const api = {
   postEmail: function (email) {
     return this._postRaw('/api/emails', email)
   },
-  postProtocolEntry: function (protocolEntry) {
-    return this._postRaw('/api/protocol_entries', protocolEntry)
+  postIssueEvent: function (issueEvent) {
+    return this._postRaw('/api/issue_events', issueEvent)
   }
 }
 
