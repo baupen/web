@@ -12,7 +12,9 @@
 namespace App\Security\Voter;
 
 use App\Entity\IssueEvent;
+use App\Enum\IssueEventTypes;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
 {
@@ -32,5 +34,18 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
     protected function getReadOnlyAttributes(): array
     {
         return [self::ISSUE_EVENT_VIEW];
+    }
+
+    /**
+     * @param IssueEvent $subject
+     */
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    {
+        // disable editing of read-only events
+        if (self::ISSUE_EVENT_VIEW !== $attribute && !in_array($subject->getType(), [IssueEventTypes::Text, IssueEventTypes::Image, IssueEventTypes::File], true)) {
+            return false;
+        }
+
+        return parent::voteOnAttribute($attribute, $subject, $token);
     }
 }

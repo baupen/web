@@ -38,13 +38,11 @@ class IssueEventTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/issue_events/'.$constructionSite->getId(), 'GET', 'DELETE');
-        $this->assertApiOperationUnsupported($client, '/api/issue_events/'.$constructionSite->getId(), 'PATCH');
+        $this->assertApiOperationNotAuthorized($client, '/api/issue_events/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/issue_events', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/issue_events/'.$constructionSite->getIssueEvents()[0]->getId(), 'GET', 'DELETE');
-        $this->assertApiOperationUnsupported($client, '/api/issue_events/'.$constructionSite->getId(), 'PATCH');
+        $this->assertApiOperationForbidden($client, '/api/issue_events/'.$constructionSite->getIssueEvents()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet(): void
@@ -57,7 +55,7 @@ class IssueEventTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issue_events?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'createdAt', 'createdBy', 'isDeleted');
+        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'timestamp', 'createdAt', 'createdBy', 'lastChangedAt', 'lastChangedBy', 'isDeleted');
     }
 
     public function testPostAndDelete(): void
@@ -76,7 +74,8 @@ class IssueEventTest extends ApiTestCase
         $sample = [
             'root' => $constructionSiteId,
             'createdBy' => $constructionManagerId,
-            'createdAt' => (new \DateTime())->format('c'),
+            'lastChangedBy' => $constructionManagerId,
+            'timestamp' => (new \DateTime())->format('c'),
         ];
 
         $optionalProperties = [
@@ -89,6 +88,24 @@ class IssueEventTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issue_events', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), $response);
         $issueEventId = json_decode($response->getContent(), true)['@id'];
+
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $otherConstructionManager = $this->getTestAssociatedConstructionManager();
+        $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
+        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
+        $writeProtected = [
+            'constructionSite' => $emptyConstructionSiteId,
+            'createdBy' => $otherConstructionManagerId,
+        ];
+        $this->assertApiPatchPayloadIgnored($client, $issueEventId, $writeProtected);
+
+        $update = [
+            'payload' => 'Peter Woodly',
+            'timestamp' => (new \DateTime('yesterday'))->format('c'),
+            'lastChangedBy' => $otherConstructionManagerId,
+        ];
+        $response = $this->assertApiPatchPayloadPersisted($client, $issueEventId, $update);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $issueEventId);
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), $response);
@@ -189,6 +206,12 @@ class IssueEventTest extends ApiTestCase
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         json_decode($response->getContent(), true);
         $this->assertNewIssueEvents($client, $constructionSite->getId(), $issueId, [[IssueEventTypes::StatusUnset, 'RESOLVED'], [IssueEventTypes::StatusUnset, 'CLOSED']]);
+
+        // check that these entries cannot be edited
+        $url = '/api/issue_events?constructionSite='.$constructionSite->getId().'&root='.$issueId.'&order[createdAt]=asc';
+        $collectionResponse = $this->assertApiGetOk($client, $url);
+        $collection = json_decode($collectionResponse->getContent(), true);
+        $this->assertApiStatusCodeSame('PATCH', Response::HTTP_FORBIDDEN, $client, $collection['hydra:member'][0]['@id']);
     }
 
     public function testCraftsmanEmailEntry(): void
