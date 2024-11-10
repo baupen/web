@@ -4,7 +4,7 @@
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
-    <slot name="before-form" />
+    <slot name="before-form"/>
     <div class="mb-3">
       <custom-radio-field
           for-id="issue-event-type-text"
@@ -35,16 +35,16 @@
     </div>
 
     <template v-if="entryType === 'TEXT'">
-      <issue-event-text-form @update="textPost = $event" :text-mode="true"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"/>
     </template>
 
     <template v-if="entryType === 'IMAGE'">
       <image-form @update="image = $event"/>
-      <issue-event-text-form @update="imagePost = $event" :text-mode="false"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
     </template>
     <template v-if="entryType === 'FILE'">
       <file-form @update="file = $event"/>
-      <issue-event-text-form @update="filePost = $event" :text-mode="false"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
     </template>
 
   </button-with-modal-confirm>
@@ -73,9 +73,8 @@ export default {
     return {
       entryType: 'TEXT',
 
-      textPost: null,
-      imagePost: null,
-      filePost: null,
+      post: null,
+      staleTemplate: null,
 
       image: null,
       file: null,
@@ -97,11 +96,16 @@ export default {
       required: true
     },
   },
+  watch: {
+    entryType: function () {
+      this.staleTemplate = this.post
+    }
+  },
   computed: {
     canConfirm: function () {
-      return (this.entryType === 'TEXT' && !!this.textPost) ||
-          (this.entryType === 'IMAGE' && !!this.imagePost && !!this.image) ||
-          (this.entryType === 'FILE' && !!this.filePost && !!this.file)
+      return !!this.post && (this.entryType === 'TEXT') ||
+          (this.entryType === 'IMAGE' && !!this.image) ||
+          (this.entryType === 'FILE' && !!this.file)
     }
   },
   methods: {
@@ -112,20 +116,8 @@ export default {
         root: iriToId(this.root['@id']),
         type: this.entryType,
         createdBy: iriToId(this.authorityIri),
+        ...this.post
       })
-
-      // add meta
-      switch (this.entryType) {
-        case "TEXT":
-          payload = {...payload, ...this.textPost}
-          break;
-        case "IMAGE":
-          payload = {...payload, ...this.imagePost}
-          break;
-        case "FILE":
-          payload = {...payload, ...this.filePost}
-          break;
-      }
 
       const successMessage = this.$t('_action.add_issue_event.added');
       if (this.entryType === 'TEXT') {
