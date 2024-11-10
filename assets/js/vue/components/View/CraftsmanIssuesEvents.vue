@@ -1,22 +1,21 @@
 <template>
-  <loading-indicator-secondary :spin="craftsmanIssueEvents === null">
-    <div class="row mb-2">
-      <div class="col-3">
-        {{ $t('issue_event._plural') }}
-      </div>
-      <div class="col">
-        <add-issue-event-button :authority-iri="authorityIri" :root="craftsman" :construction-site="constructionSite"
-                                   @added="newIssueEvents.push($event)"/>
-      </div>
-    </div>
+  <loading-indicator-secondary :spin="issueEvents === null && constructionSiteIssueEvents == null">
+    <add-issue-event-button
+        :authority-iri="authorityIri" :root="craftsman" :construction-site="constructionSite"
+        @added="issueEvents.push($event)"/>
 
-    <issue-event-row v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
-                    :last="index+1 === orderedIssueEvents.length"
-                    :issue-event="entry"
-                    :root="getRoot(entry)"
-                    :is-context="!(craftsmanIssueEvents.includes(entry) || newIssueEvents.includes(entry))"
-                    :created-by="responsiblesLookup[entry['createdBy']]"
-    />
+    <div class="mt-3" v-if="orderedIssueEvents.length">
+      <issue-event-row
+          v-for="(entry, index) in orderedIssueEvents" :key="entry['@id']"
+          :last="index+1 === orderedIssueEvents.length"
+          :issue-event="entry"
+          :root="getRoot(entry)"
+          :is-context="!(issueEvents.includes(entry))"
+          :authority-iri="authorityIri"
+          :created-by="responsiblesLookup[entry['createdBy']]"
+          :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
+      />
+    </div>
   </loading-indicator-secondary>
 </template>
 
@@ -36,8 +35,7 @@ export default {
   },
   data() {
     return {
-      newIssueEvents: [],
-      craftsmanIssueEvents: null,
+      issueEvents: null,
       constructionSiteIssueEvents: null,
     }
   },
@@ -67,7 +65,7 @@ export default {
       return responsiblesLookup
     },
     orderedIssueEvents: function () {
-      const issueEvents = [...this.newIssueEvents, ...(this.craftsmanIssueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
+      const issueEvents = [...(this.issueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
           .filter(entry => !entry.isDeleted)
       sortIssueEvents(issueEvents)
       return issueEvents
@@ -85,7 +83,7 @@ export default {
   mounted() {
     api.getIssueEvents(this.constructionSite, this.craftsman)
         .then(entries => {
-          this.craftsmanIssueEvents = entries
+          this.issueEvents = entries
         })
     api.getIssueEvents(this.constructionSite, this.constructionSite)
         .then(entries => {
@@ -94,3 +92,4 @@ export default {
   }
 }
 </script>
+

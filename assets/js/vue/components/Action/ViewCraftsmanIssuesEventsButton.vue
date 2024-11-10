@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       modal-size="mmd"
-      :title="$t('_action.view_craftsman_issue_events.title')">
+      :title="$t('_action.view_craftsman_issues_events.title')">
 
     <template v-slot:footer>
       <span class="d-none"></span>

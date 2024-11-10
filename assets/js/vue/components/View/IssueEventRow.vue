@@ -1,5 +1,5 @@
 <template>
-  <div class="row pt-1 pb-1 g-4" :class="{'bg-secondary-subtle': isContext}">
+  <div class="row py-2" :class="{'bg-secondary-subtle': isContext}">
     <div class="col-auto">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon" :class="iconOpacity"/>
@@ -7,53 +7,52 @@
       </p>
     </div>
     <div class="col">
-      <div class="mt-1">
-        <p v-if="issueEvent.type === 'TEXT'" class="white-space-pre-line mb-0">
-          {{ issueEvent.payload }}&nbsp;
-        </p>
-        <p v-else-if="issueEvent.type === 'STATUS_SET'" class="mb-0">
-          <b>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</b>
-        </p>
-        <p v-else-if="issueEvent.type === 'STATUS_UNSET'" class="mb-0">
-          <b>
-            <del>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</del>
-          </b>
-        </p>
-        <div v-else-if="issueEvent.type === 'IMAGE'">
-          <image-lightbox :subject="issueEvent.payload" :src="issueEvent.fileUrl"/>
-          <p v-if="issueEvent.payload" class="mb-0">
-            {{ issueEvent.payload }}
-          </p>
-        </div>
-        <p v-else-if="issueEvent.type === 'FILE'" class="mb-0">
+      <p v-if="issueEvent.type === 'TEXT'" class="white-space-pre-line mb-0">
+        {{ issueEvent.payload }}&nbsp;
+      </p>
+      <p v-else-if="issueEvent.type === 'STATUS_SET'" class="mb-0">
+        <b>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</b>
+      </p>
+      <p v-else-if="issueEvent.type === 'STATUS_UNSET'" class="mb-0">
+        <b>
+          <del>{{ $t('issue.state.' + issueEvent.payload.toLowerCase()) }}</del>
+        </b>
+      </p>
+      <div v-else-if="issueEvent.type === 'IMAGE'">
+        <image-lightbox :subject="issueEvent.payload" :src="issueEvent.fileUrl"/>
+        <p v-if="issueEvent.payload" class="mb-0">
           {{ issueEvent.payload }}
-          <span v-if="issueEvent.payload">&nbsp;</span>
-          <a :href="issueEvent.fileUrl" download>
-            <font-awesome-icon :icon="['far', 'down']"/>
-            {{ $t('_view.download') }}
-          </a>
-        </p>
-        <p v-else-if="issueEvent.type === 'EMAIL'" class="mb-0">
-          {{ emailPayload.subject }}
-          <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
-            {{ $t('_view.issue_event.show_email_body') }}
-          </a>
-          <span v-if="showEmailBody"
-                class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
-            {{ emailPayload.body }}
-          </span>
         </p>
       </div>
+      <p v-else-if="issueEvent.type === 'FILE'" class="mb-0">
+        {{ issueEvent.payload }}
+        <span v-if="issueEvent.payload">&nbsp;</span>
+        <a :href="issueEvent.fileUrl" download class="text-nowrap">
+          <font-awesome-icon :icon="['far', 'down']"/>
+          {{ $t('_view.download') }}
+        </a>
+      </p>
+      <p v-else-if="issueEvent.type === 'EMAIL'" class="mb-0">
+        {{ emailPayload.subject }}
+        <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
+          {{ $t('_view.issue_event.show_email_body') }}
+        </a>
+        <span v-if="showEmailBody"
+              class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
+            {{ emailPayload.body }}
+          </span>
+      </p>
       <p class="text-secondary mb-0">
-        <span v-if="isContext">
-          {{ rootTypeName + ", " }}
+        <span v-if="isContext" class="d-inline-block me-2">
+          <strong class="text-black">{{ rootTypeName }}</strong>
         </span>
         <date-time-human-readable :value="issueEvent.timestamp"/>
       </p>
     </div>
-    <div class="col-auto">
+    <div class="col-auto" v-if="!isContext">
       <div class="btn-group">
-        <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy" :last-changed-by="createdBy" />
+        <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
+                                 :last-changed-by="createdBy"/>
         <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
       </div>
     </div>
@@ -62,7 +61,6 @@
 
 <script>
 
-import {entityFormatter} from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import ImageLightbox from "./ImageLightbox.vue";
@@ -196,13 +194,14 @@ export default {
 .state-icon {
   font-size: 2em;
   position: relative;
+  top: -0.25em; /* align item with text */
   text-align: right;
 }
 
 .state-joiner {
   position: absolute;
   top: calc(2.4rem);
-  height: calc(100% - 1.4rem);
+  height: calc(100% - 0.85rem);
   right: calc(0.5em - 1px);
 
   background-color: rgba(0, 0, 0, 0.1);

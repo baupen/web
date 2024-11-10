@@ -17,13 +17,14 @@
         </add-issue-event-button>
 
         <div class="mt-3" v-if="orderedIssueEvents.length">
-          <issue-event-row v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
-                           :last="index+1 === orderedIssueEvents.length"
-                           :issue-event="entry"
-                           :root="constructionSite"
-                           :authority-iri="constructionManagerIri"
-                           :created-by="responsiblesLookup[entry['createdBy']]"
-                           :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
+          <issue-event-row
+              v-for="(entry, index) in orderedIssueEvents" :key="entry['@id']"
+              :last="index+1 === orderedIssueEvents.length"
+              :issue-event="entry"
+              :root="constructionSite"
+              :authority-iri="constructionManagerIri"
+              :created-by="responsiblesLookup[entry['createdBy']]"
+              :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
           />
         </div>
       </template>
@@ -38,7 +39,6 @@ import {api, iriToId} from "../services/api";
 import AddIssueEventButton from "./Action/AddIssueEventButton.vue";
 import IssueEventRow from "./View/IssueEventRow.vue";
 import {sortIssueEvents} from "../services/sorters";
-import {constructionManagerFormatter} from "../services/formatters";
 
 export default {
   components: {
