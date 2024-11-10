@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-hover border">
+  <table class="table table-hover border shadow">
     <thead>
     <tr class="bg-light">
       <th>{{ $t('map.name') }}</th>

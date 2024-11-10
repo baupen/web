@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table table-hover table-striped border">
+    <table class="table table-hover table-striped border shadow">
       <thead>
       <tr>
         <th class="w-thumbnail"></th>
