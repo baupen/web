@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col-9">
             <div class="row row-cols-2 g-4">
-              <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
+              <div class="col" v-for="constructionSite in memberOfConstructionSites" :key="constructionSite['@id']">
                 <construction-site-enter-card
                     :construction-site="constructionSite" :construction-managers="constructionManagers"/>
               </div>
