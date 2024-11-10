@@ -1,12 +1,6 @@
 <template>
   <table class="table table-striped table-hover border shadow">
     <thead>
-    <tr class="text-sm">
-      <th class="w-minimal"></th>
-      <th colspan="4">{{ $t('craftsman._name') }}</th>
-      <th class="border-start" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-start" colspan="4">{{ $t('_view.craftsmen.last_activity') }}</th>
-    </tr>
     <tr>
       <th class="w-minimal">
         <div @click="toggleSelectedCraftsmen(craftsmen)">
