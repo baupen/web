@@ -2,7 +2,7 @@
   <loading-indicator-secondary :spin="issueIssueEvents === null">
     <div class="row mb-2">
       <div class="col-3">
-        {{ $t('issue_event._plural_short') }}
+        {{ $t('issue_event._plural') }}
       </div>
       <div class="col">
         <add-issue-event-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"

@@ -4,6 +4,7 @@
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
+    <slot name="before-form" />
     <div class="mb-3">
       <custom-radio-field
           for-id="issue-event-type-text"
