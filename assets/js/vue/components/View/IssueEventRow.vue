@@ -1,5 +1,5 @@
 <template>
-  <div class="row py-2" :class="{'bg-secondary-subtle': isContext}">
+  <div class="row" :class="{'bg-secondary-subtle': isContext, 'py-2': !last, 'pt-2': last}">
     <div class="col-auto">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon" :class="iconOpacity"/>
@@ -49,7 +49,7 @@
         <date-time-human-readable :value="issueEvent.timestamp"/>
       </p>
     </div>
-    <div class="col-auto" v-if="!isContext">
+    <div class="col-auto" v-if="canEdit">
       <div class="btn-group">
         <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
                                  :last-changed-by="createdBy"/>
@@ -122,6 +122,9 @@ export default {
       } else if (this.root['@id'].includes('construction_sites')) {
         return this.$t('construction_site._name')
       }
+    },
+    canEdit: function () {
+      return !this.isContext && ['TEXT', 'IMAGE', 'FILE'].includes(this.issueEvent.type)
     },
     emailPayload: function () {
       return JSON.parse(this.issueEvent.payload)
