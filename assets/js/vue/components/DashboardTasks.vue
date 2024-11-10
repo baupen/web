@@ -8,9 +8,9 @@
         <add-task-button :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite"
                          @added="this.tasks.push($event)"/>
 
-        <template v-if="orderedOpenTasks.length">
+        <template v-if="tasks.length">
           <div class="mt-3 row g-2">
-            <div class="col-12" v-for="task in orderedOpenTasks" :key="task['@id']">
+            <div class="col-12" v-for="task in tasks" :key="task['@id']">
               <task-row
                   :task="task"
                   :construction-managers="constructionManagers"
@@ -19,18 +19,22 @@
           </div>
         </template>
 
-        <template v-if="orderedClosedTasks.length">
-          <a class="mt-3 d-inline-block" v-if="!showClosedTasks" href="" @click.prevent="showClosedTasks = true">
-            {{ $tc('dashboard.show_closed_tasks', orderedClosedTasks.length) }}
-          </a>
-          <div class="row g-2" :class="orderedOpenTasks.length ? 'mt-5' : 'mt-3'" v-else>
-            <div class="col-12" v-for="task in orderedClosedTasks" :key="task['@id']">
-              <task-row :key="task['@id']" :task="task"
-                        :construction-managers="constructionManagers"
-                        :construction-manager-iri="constructionManagerIri"/>
-            </div>
+        <p class="text-center mb-0 mt-5" v-if="!closedTasks && !loadingClosedTasks">
+          <button class="btn btn-outline-secondary" @click="loadClosedTasks">
+            {{ $tc('dashboard.load_closed_tasks') }}
+          </button>
+        </p>
+        <div class="loading-center mt-5" v-if="loadingClosedTasks">
+          <loading-indicator-secondary/>
+        </div>
+
+        <div class="row g-2" v-if="closedTasks?.length" :class="tasks.length ? 'mt-5' : 'mt-3'">
+          <div class="col-12" v-for="task in closedTasks" :key="task['@id']">
+            <task-row :key="task['@id']" :task="task"
+                      :construction-managers="constructionManagers"
+                      :construction-manager-iri="constructionManagerIri"/>
           </div>
-        </template>
+        </div>
       </template>
     </div>
   </div>
@@ -39,7 +43,7 @@
 <script>
 
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
-import {api} from "../services/api";
+import {api, iriToId} from "../services/api";
 import TaskRow from "./View/TaskRow.vue";
 import AddTaskButton from "./Action/AddTaskButton.vue";
 
@@ -52,7 +56,8 @@ export default {
   data() {
     return {
       tasks: null,
-      showClosedTasks: false
+      closedTasks: null,
+      loadingClosedTasks: false
     }
   },
   props: {
@@ -69,18 +74,37 @@ export default {
       required: true
     },
   },
-  computed: {
-    orderedOpenTasks: function () {
-      return this.tasks.filter(task => !task.closedAt)
-    },
-    orderedClosedTasks: function () {
-      const openTasks = this.tasks.filter(task => task.closedAt)
-      openTasks.sort((a, b) => (a.closedAt).localeCompare(b.closedAt))
-      return openTasks
+  methods: {
+    loadClosedTasks: function () {
+      this.loadingClosedTasks = true;
+
+      const query = {
+        'order[closedAt]': 'desc',
+        'exists[closedAt]': 'true',
+        'constructionSite': iriToId(this.constructionSite['@id'])
+      };
+
+      api.getTasksQuery(query)
+          .then(entries => {
+            this.closedTasks = []
+            entries.forEach(add => {
+              if (!this.tasks.find(o => o['@id'] === add['@id'])) {
+                this.closedTasks.push(add)
+              }
+            })
+
+            this.loadingClosedTasks = false
+          })
     }
   },
   mounted() {
-    api.getTasks(this.constructionSite)
+    const query = {
+      'order[deadline]': "desc",
+      'exists[closedAt]': 'false',
+      'constructionSite': iriToId(this.constructionSite['@id'])
+    };
+
+    api.getTasksQuery(query)
         .then(entries => {
           this.tasks = entries
         })
@@ -95,4 +119,8 @@ export default {
   overflow-x: hidden;
 }
 
+.loading-center > * {
+  display: block;
+  margin: 0 auto;
+}
 </style>
