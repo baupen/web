@@ -100,7 +100,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, IssueEvent>
      */
     #[ORM\OneToMany(targetEntity: IssueEvent::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    private Collection $protocolEntries;
+    private Collection $issueEvents;
 
     /**
      * @var Collection<int, Task>
@@ -136,7 +136,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->issues = new ArrayCollection();
         $this->emailTemplates = new ArrayCollection();
         $this->filters = new ArrayCollection();
-        $this->protocolEntries = new ArrayCollection();
+        $this->issueEvents = new ArrayCollection();
         $this->tasks = new ArrayCollection();
     }
 
@@ -202,9 +202,9 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return Collection<int, IssueEvent>
      */
-    public function getProtocolEntries(): Collection
+    public function getIssueEvents(): Collection
     {
-        return $this->protocolEntries;
+        return $this->issueEvents;
     }
 
     /**

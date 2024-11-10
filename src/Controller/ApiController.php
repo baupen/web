@@ -206,7 +206,7 @@ class ApiController extends BaseController
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/protocol_entries/{issueEvent}/file', name: 'post_issue_event_file', methods: ['POST'])]
+    #[Route(path: '/issue_events/{issueEvent}/file', name: 'post_issue_event_file', methods: ['POST'])]
     public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, ImageServiceInterface $imageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(IssueEventVoter::ISSUE_EVENT_MODIFY, $issueEvent);
@@ -239,7 +239,7 @@ class ApiController extends BaseController
         return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename(), true);
     }
 
-    #[Route(path: '/protocol_entries/{issueEvent}/file/{issueEventFile}/{filename}', name: 'issue_event_file', methods: ['GET'])]
+    #[Route(path: '/issue_events/{issueEvent}/file/{issueEventFile}/{filename}', name: 'issue_event_file', methods: ['GET'])]
     public function getIssueEventFile(Request $request, IssueEvent $issueEvent, IssueEventFile $issueEventFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService): BinaryFileResponse
     {
         if ($issueEvent->getFile() !== $issueEventFile || $issueEventFile->getFilename() !== $filename) {
