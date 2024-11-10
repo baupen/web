@@ -55,6 +55,10 @@
       "saved": "Unternehmer gespeichert",
       "title": "Unternehmer bearbeiten"
     },
+    "edit_task": {
+      "saved": "Aufgabe gespeichert",
+      "title": "Aufgabe bearbeiten"
+    },
     "edit_issues": {
       "replaced_issue_images": "Bild ersetzt",
       "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
