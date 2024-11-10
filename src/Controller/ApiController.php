@@ -18,17 +18,17 @@ use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueEvent;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntry;
-use App\Entity\ProtocolEntryFile;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Security\Voter\ConstructionSiteVoter;
+use App\Security\Voter\IssueEventVoter;
 use App\Security\Voter\IssueVoter;
 use App\Security\Voter\MapVoter;
-use App\Security\Voter\ProtocolEntryVoter;
 use App\Service\Interfaces\CacheServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
@@ -206,22 +206,22 @@ class ApiController extends BaseController
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/protocol_entries/{protocolEntry}/file', name: 'post_protocol_entry_file', methods: ['POST'])]
-    public function postProtocolEntryFile(Request $request, ProtocolEntry $protocolEntry, StorageServiceInterface $storageService, ImageServiceInterface $imageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
+    #[Route(path: '/protocol_entries/{issueEvent}/file', name: 'post_issue_event_file', methods: ['POST'])]
+    public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, ImageServiceInterface $imageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
-        $this->denyAccessUnlessGranted(ProtocolEntryVoter::PROTOCOL_ENTRY_MODIFY, $protocolEntry);
+        $this->denyAccessUnlessGranted(IssueEventVoter::ISSUE_EVENT_MODIFY, $issueEvent);
 
         $file = $this->getSafeFile($request->files);
 
-        $protocolEntryFile = $storageService->uploadProtocolEntryFile($file, $protocolEntry);
-        if (!$protocolEntryFile instanceof ProtocolEntryFile) {
+        $issueEventFile = $storageService->uploadIssueEventFile($file, $issueEvent);
+        if (!$issueEventFile instanceof IssueEventFile) {
             throw new BadRequestException('The protocol entry file could not be stored');
         }
 
-        DoctrineHelper::persistAndFlush($registry, $protocolEntry, $protocolEntryFile);
-        $cacheService->warmUpCacheForProtocolEntryFile($protocolEntryFile);
+        DoctrineHelper::persistAndFlush($registry, $issueEvent, $issueEventFile);
+        $cacheService->warmUpCacheForIssueEventFile($issueEventFile);
 
-        $url = $this->generateUrl('protocol_entry_file', ['protocolEntry' => $protocolEntry->getId(), 'protocolEntryFile' => $protocolEntryFile->getId(), 'filename' => $protocolEntryFile->getFilename()]);
+        $url = $this->generateUrl('issue_event_file', ['issueEvent' => $issueEvent->getId(), 'issueEventFile' => $issueEventFile->getId(), 'filename' => $issueEventFile->getFilename()]);
 
         return new Response($url, Response::HTTP_CREATED);
     }
@@ -239,23 +239,23 @@ class ApiController extends BaseController
         return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename(), true);
     }
 
-    #[Route(path: '/protocol_entries/{protocolEntry}/file/{protocolEntryFile}/{filename}', name: 'protocol_entry_file', methods: ['GET'])]
-    public function getProtocolEntryFile(Request $request, ProtocolEntry $protocolEntry, ProtocolEntryFile $protocolEntryFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService): BinaryFileResponse
+    #[Route(path: '/protocol_entries/{issueEvent}/file/{issueEventFile}/{filename}', name: 'issue_event_file', methods: ['GET'])]
+    public function getIssueEventFile(Request $request, IssueEvent $issueEvent, IssueEventFile $issueEventFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService): BinaryFileResponse
     {
-        if ($protocolEntry->getFile() !== $protocolEntryFile || $protocolEntryFile->getFilename() !== $filename) {
+        if ($issueEvent->getFile() !== $issueEventFile || $issueEventFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
 
         if ($imageService->isImageFilename($filename)) {
             $size = $this->getValidImageSizeFromQuery($request->query);
-            $path = $imageService->resizeProtocolEntryImage($protocolEntryFile, $size);
+            $path = $imageService->resizeIssueEventImage($issueEventFile, $size);
 
-            return $this->tryCreateInlineFileResponse($path, $protocolEntryFile->getFilename(), true);
+            return $this->tryCreateInlineFileResponse($path, $issueEventFile->getFilename(), true);
         }
 
-        $path = $pathService->getFolderForProtocolEntryFiles($protocolEntryFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$protocolEntryFile->getFilename();
+        $path = $pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
 
-        return $this->tryCreateAttachmentFileResponse($path, $protocolEntryFile->getFilename());
+        return $this->tryCreateAttachmentFileResponse($path, $issueEventFile->getFilename());
     }
 
     #[Route(path: '/issues/{issue}/map/render.jpg', name: 'issue_map_render', methods: ['GET'])]

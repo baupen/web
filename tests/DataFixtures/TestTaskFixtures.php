@@ -31,12 +31,12 @@ class TestTaskFixtures extends Fixture implements OrderedFixtureInterface
         $constructionManagerRepository = $manager->getRepository(ConstructionManager::class);
         $constructionManager = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
 
-        $protocolEntry = new Task();
-        $protocolEntry->setConstructionSite($constructionSite);
-        $protocolEntry->setDescription(self::TEST_TEXT_ENTRY);
-        $protocolEntry->setCreatedAt(new \DateTime());
-        $protocolEntry->setCreatedBy($constructionManager);
-        $manager->persist($protocolEntry);
+        $issueEvent = new Task();
+        $issueEvent->setConstructionSite($constructionSite);
+        $issueEvent->setDescription(self::TEST_TEXT_ENTRY);
+        $issueEvent->setCreatedAt(new \DateTime());
+        $issueEvent->setCreatedBy($constructionManager);
+        $manager->persist($issueEvent);
 
         $manager->flush();
     }

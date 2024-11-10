@@ -11,26 +11,26 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ProtocolEntry;
+use App\Entity\IssueEvent;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
 
-class ProtocolEntryVoter extends ConstructionSiteOwnedEntityVoter
+class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
 {
-    public const PROTOCOL_ENTRY_VIEW = 'PROTOCOL_ENTRY_VIEW';
-    public const PROTOCOL_ENTRY_MODIFY = 'PROTOCOL_ENTRY_MODIFY';
+    public const ISSUE_EVENT_VIEW = 'ISSUE_EVENT_VIEW';
+    public const ISSUE_EVENT_MODIFY = 'ISSUE_EVENT_MODIFY';
 
     protected function isInstanceOf($entity): bool
     {
-        return $entity instanceof ProtocolEntry;
+        return $entity instanceof IssueEvent;
     }
 
     protected function getAllAttributes(): array
     {
-        return [self::PROTOCOL_ENTRY_VIEW, self::PROTOCOL_ENTRY_MODIFY];
+        return [self::ISSUE_EVENT_VIEW, self::ISSUE_EVENT_MODIFY];
     }
 
     protected function getReadOnlyAttributes(): array
     {
-        return [self::PROTOCOL_ENTRY_VIEW];
+        return [self::ISSUE_EVENT_VIEW];
     }
 }

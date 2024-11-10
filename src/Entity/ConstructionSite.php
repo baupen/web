@@ -97,9 +97,9 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $issues;
 
     /**
-     * @var Collection<int, ProtocolEntry>
+     * @var Collection<int, IssueEvent>
      */
-    #[ORM\OneToMany(targetEntity: ProtocolEntry::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: IssueEvent::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     private Collection $protocolEntries;
 
     /**
@@ -200,7 +200,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Collection<int, ProtocolEntry>
+     * @return Collection<int, IssueEvent>
      */
     public function getProtocolEntries(): Collection
     {

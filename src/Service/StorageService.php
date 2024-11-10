@@ -14,11 +14,11 @@ namespace App\Service;
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueEvent;
+use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use App\Entity\ProtocolEntry;
-use App\Entity\ProtocolEntryFile;
 use App\Entity\Traits\FileTrait;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
@@ -99,25 +99,25 @@ class StorageService implements StorageServiceInterface
         return $issueImage;
     }
 
-    public function uploadProtocolEntryFile(UploadedFile $file, ProtocolEntry $protocolEntry): ?ProtocolEntryFile
+    public function uploadIssueEventFile(UploadedFile $file, IssueEvent $issueEvent): ?IssueEventFile
     {
-        $protocolEntryFile = new ProtocolEntryFile();
-        $protocolEntryFile->setCreatedFor($protocolEntry);
+        $issueEventFile = new IssueEventFile();
+        $issueEventFile->setCreatedFor($issueEvent);
 
-        $targetFolder = $this->pathService->getFolderForProtocolEntryFiles($protocolEntry->getConstructionSite());
-        if (!$this->uploadFile($file, $targetFolder, $protocolEntryFile)) {
+        $targetFolder = $this->pathService->getFolderForIssueEventFiles($issueEvent->getConstructionSite());
+        if (!$this->uploadFile($file, $targetFolder, $issueEventFile)) {
             return null;
         }
 
-        $protocolEntry->setFile($protocolEntryFile);
+        $issueEvent->setFile($issueEventFile);
 
-        return $protocolEntryFile;
+        return $issueEventFile;
     }
 
     /**
      * @param FileTrait $entity
      */
-    private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage|ProtocolEntryFile $entity): bool
+    private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage|IssueEventFile $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());

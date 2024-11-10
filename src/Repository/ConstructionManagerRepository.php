@@ -25,7 +25,7 @@ SELECT construction_manager_id as id, construction_site_id FROM construction_sit
 UNION SELECT created_by_id as id, construction_site_id FROM issue
 UNION SELECT registered_by_id as id, construction_site_id FROM issue
 UNION SELECT closed_by_id as id, construction_site_id FROM issue
-UNION SELECT created_by as id, construction_site_id FROM protocol_entry
+UNION SELECT created_by as id, construction_site_id FROM issue_event
 UNION SELECT created_by_id as id, construction_site_id FROM task
 UNION SELECT closed_by_id as id, construction_site_id FROM task';
 

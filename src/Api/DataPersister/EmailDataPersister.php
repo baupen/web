@@ -15,8 +15,8 @@ use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Api\Entity\Email;
 use App\Entity\Craftsman;
-use App\Entity\ProtocolEntry;
-use App\Enum\ProtocolEntryTypes;
+use App\Entity\IssueEvent;
+use App\Enum\IssueEventTypes;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\EmailService;
@@ -93,12 +93,12 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
 
             // add to protocol
-            $protocolEntry = new ProtocolEntry();
-            $protocolEntry->setConstructionSite($craftsman->getConstructionSite());
-            $protocolEntry->setRoot($craftsman->getId());
-            $protocolEntry->setCreatedBy($constructionManager->getId());
-            $protocolEntry->setCreatedAt(new \DateTime());
-            $protocolEntry->setType(ProtocolEntryTypes::Email);
+            $issueEvent = new IssueEvent();
+            $issueEvent->setConstructionSite($craftsman->getConstructionSite());
+            $issueEvent->setRoot($craftsman->getId());
+            $issueEvent->setCreatedBy($constructionManager->getId());
+            $issueEvent->setCreatedAt(new \DateTime());
+            $issueEvent->setType(IssueEventTypes::Email);
 
             $payload = [
                 'receiver' => $craftsman->getEmail(),
@@ -106,11 +106,11 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
                 'receiverBCC' => $data->getSelfBcc() ? $constructionManager->getEmail() : null,
                 'subject' => $data->getSubject(),
                 'body' => $data->getBody(),
-                'type' => ProtocolEntry::EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER,
+                'type' => IssueEvent::EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER,
             ];
-            $protocolEntry->setPayload(json_encode($payload));
+            $issueEvent->setPayload(json_encode($payload));
 
-            DoctrineHelper::persistAndFlush($this->managerRegistry, $protocolEntry);
+            DoctrineHelper::persistAndFlush($this->managerRegistry, $issueEvent);
         } else {
             throw new BadRequestException('unknown email type');
         }

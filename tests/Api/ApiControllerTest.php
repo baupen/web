@@ -20,7 +20,7 @@ use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
-use App\Tests\DataFixtures\TestProtocolEntryFixtures;
+use App\Tests\DataFixtures\TestIssueEventFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AssertFileTrait;
 use App\Tests\Traits\AuthenticationTrait;
@@ -186,37 +186,37 @@ class ApiControllerTest extends ApiTestCase
         $this->assertNull($map->getFile());
     }
 
-    public function testProtocolEntryFile(): void
+    public function testIssueEventFile(): void
     {
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/nachbessern.jpg');
-        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/nachbessern.jpg');
+        $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertImageDownloads($client, $url);
         });
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/mail.eml');
-        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/mail.eml');
+        $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         });
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/paper.pdf');
-        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/paper.pdf');
+        $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         });
     }
 
-    protected function assertProtocolEntryFileUploaded(AssetFile $file, callable $assertDownloadSuccessful): void
+    protected function assertIssueEventFileUploaded(AssetFile $file, callable $assertDownloadSuccessful): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $this->loginConstructionManager($client->getKernelBrowser());
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $protocolEntry = $testConstructionSite->getProtocolEntries()->get(0);
+        $issueEvent = $testConstructionSite->getProtocolEntries()->get(0);
 
-        $baseUrl = '/api/protocol_entries/'.$protocolEntry->getId().'/file';
+        $baseUrl = '/api/protocol_entries/'.$issueEvent->getId().'/file';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $file);
 
-        $this->assertStringContainsString($protocolEntry->getFile()->getId(), $url);
+        $this->assertStringContainsString($issueEvent->getFile()->getId(), $url);
         $assertDownloadSuccessful($client, $url);
     }
 
