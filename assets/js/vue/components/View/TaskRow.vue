@@ -7,12 +7,10 @@
       <p class="mb-0">{{ task.description }}</p>
       <p class="text-secondary mb-0">
         <template v-if="task.closedAt">
-          {{ $t('task.closed_by') }}
           {{ closedByName }}<span>, </span>
           <date-time-human-readable :value="task.closedAt"/>
         </template>
         <template v-else>
-          {{ $t('task.created_by') }}
           {{ createdByName }}
         </template>
       </p>

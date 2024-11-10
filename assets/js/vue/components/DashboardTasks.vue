@@ -26,7 +26,7 @@
             {{ $tc('dashboard.load_closed_tasks') }}
           </button>
         </p>
-        <div class="loading-center mt-5" v-if="loadingClosedTasks">
+        <div class="loading-center mt-5" v-if="loadingClosedTasks && tasks.length">
           <loading-indicator-secondary/>
         </div>
 
@@ -121,6 +121,10 @@ export default {
     api.getTasksQuery(query)
         .then(entries => {
           this.tasks = entries
+
+          if (entries.length === 0) {
+            this.loadClosedTasks()
+          }
         })
   }
 }
