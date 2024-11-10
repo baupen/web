@@ -1,22 +1,22 @@
 <template>
-  <loading-indicator-secondary :spin="issueIssueEvents === null">
-    <div class="row mb-2">
-      <div class="col-3">
-        {{ $t('issue_event._plural') }}
-      </div>
-      <div class="col">
-        <add-issue-event-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
-                                   @added="newIssueEvents.push($event)"/>
-      </div>
-    </div>
+  <loading-indicator-secondary
+      :spin="issueEvents === null && craftsmanIssueEvents === null && constructionSiteIssueEvents == null">
+    <add-issue-event-button
+        :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
+        @added="issueEvents.push($event)"/>
 
-    <issue-event-row v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
-                    :last="index+1 === orderedIssueEvents.length"
-                    :issue-event="entry"
-                    :root="getRoot(entry)"
-                    :is-context="!(issueIssueEvents.includes(entry) || newIssueEvents.includes(entry))"
-                    :created-by="responsiblesLookup[entry['createdBy']]"
-    />
+    <div class="mt-3" v-if="orderedIssueEvents.length">
+      <issue-event-row
+          v-for="(entry, index) in orderedIssueEvents" :key="entry['@id']"
+          :last="index+1 === orderedIssueEvents.length"
+          :issue-event="entry"
+          :root="getRoot(entry)"
+          :authority-iri="authorityIri"
+          :is-context="!issueEvents.includes(entry)"
+          :created-by="responsiblesLookup[entry['createdBy']]"
+          :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
+      />
+    </div>
   </loading-indicator-secondary>
 </template>
 
@@ -40,11 +40,9 @@ export default {
   },
   data() {
     return {
-      newIssueEvents: [],
-      issueIssueEvents: null,
+      issueEvents: null,
       craftsmanIssueEvents: null,
       constructionSiteIssueEvents: null,
-      showSecondaryEntries: false
     }
   },
   props: {
@@ -78,7 +76,7 @@ export default {
       return responsiblesLookup
     },
     orderedIssueEvents: function () {
-      const issueEvents = [...this.newIssueEvents, ...(this.issueIssueEvents ?? []), ...(this.craftsmanIssueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
+      const issueEvents = [...(this.issueEvents ?? []), ...(this.craftsmanIssueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
           .filter(entry => !entry.isDeleted)
       sortIssueEvents(issueEvents)
       return issueEvents
@@ -102,7 +100,7 @@ export default {
   mounted() {
     api.getIssueEvents(this.constructionSite, this.issue)
         .then(entries => {
-          this.issueIssueEvents = entries
+          this.issueEvents = entries
         })
     if (this.craftsman) {
       api.getIssueEvents(this.constructionSite, this.craftsman)
