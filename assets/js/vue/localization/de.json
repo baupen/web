@@ -270,7 +270,7 @@
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne",
-    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
+    "show_more_issues": "Weitere {count} Pendenzen laden.",
     "download": "herunterladen"
   },
   "construction_manager": {
@@ -313,7 +313,7 @@
     "feed": "Feed",
     "activity": "Aktivität",
     "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst.",
-    "show_closed_tasks": "Eine erledigte Aufgabe anzeigen. | {count} erledigte Aufgaben anzeigen."
+    "load_closed_tasks": "Erledigte Aufgaben laden."
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
@@ -426,6 +426,6 @@
     "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
     "no_tasks_pending": "Keine Aufgaben fällig.",
     "tasks_loaded_until": "Aufgaben mit Frist vor dem {deadlineLoaded} geladen.",
-    "load_more_tasks": "Weitere Aufgaben laden"
+    "load_more_tasks": "Weitere Aufgaben laden."
   }
 }

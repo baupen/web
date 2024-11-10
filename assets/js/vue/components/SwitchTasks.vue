@@ -14,7 +14,7 @@
           <div class="row g-5 mb-5">
             <div class="col-12" v-for="deadline in sortedDeadlines" :key="deadline">
               <h3>
-                <date-human-readable :value="deadline" :hide-current-year="true"/>
+                <date-human-readable :value="deadline"/>
               </h3>
               <div class="row g-3">
                 <div class="col-12"
@@ -30,8 +30,7 @@
                       <task-row :task="task"
                                 :construction-managers="constructionManagers"
                                 :construction-manager-iri="constructionManagerIri"
-                                :show-deadline="false"
-                                :allow-edit="false"/>
+                                :show-deadline="false" />
                     </div>
                   </div>
                 </div>
