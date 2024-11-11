@@ -432,7 +432,7 @@
     "closed_by": "erledigt von"
   },
   "resolve": {
-    "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
+    "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese weiterverarbeiten kann.",
     "total_open": "Eine offene Pendenz | Total {count} offene Pendenzen",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
