@@ -8,6 +8,9 @@
       "added": "Imprenditore aggiunto",
       "title": "Aggiungi un imprenditore"
     },
+    "add_issue": {
+      "added": "Pendenza realizzata"
+    },
     "add_map": {
       "added": "Mappa aggiunta",
       "title": "Aggiungi una mappa"
@@ -58,7 +61,12 @@
     },
     "export_craftsmen": {
       "file_name": "Imprenditore",
-      "title": "Esporta Excel"
+      "title": "Esporta imprenditore"
+    },
+    "export_issues": {
+      "export_source_filter": "{count} pendenze, a cui si applica il filtro",
+      "export_source_selection": "{count} pendenze, che erano segnate",
+      "title": "Esporta le pendenze"
     },
     "export_issues_link": {
       "help": "Sempre attuale: Condividi le pendenze con gli esterni protette dalla scrittura.",
@@ -67,11 +75,6 @@
     "export_issues_report": {
       "help": "Ottimizzato per la stampa: metti le pendenze su carta in modo salvaspazio.",
       "title": "Rapporto .pdf"
-    },
-    "export_issues": {
-      "export_source_filter": "{count} pendenze, a cui si applica il filtro",
-      "export_source_selection": "{count} pendenze, che erano segnate",
-      "title": "Esporta le pendenze"
     },
     "filter_issues": {
       "confirm": "Mettere il filtro",
@@ -96,7 +99,7 @@
       "confirm": "Aggiungi {count} imprenditori",
       "imported": "Imprenditori importati",
       "matching_entries_found": "Nell'importazione è stata trovata un'e-mail già inserita. Sei sicuro di volerla aggiungere nuovamente? | L'importazione ha trovato {count} e-mail già inserite. Sei sicuro di volerle aggiungere nuovamente?",
-      "title": "Importa Excel"
+      "title": "Importa imprenditore"
     },
     "register_issues": {
       "registered": "Pendenze aggiunte al catalogo.",
@@ -125,9 +128,12 @@
     },
     "save_changes": "Salva le modifiche",
     "toggle_association_construction_site": {
-      "associated_short": "aggiunto",
       "associated": "È stato aggiunto al cantiere.",
       "dissociated": "Sei stato rimosso dal cantiere."
+    },
+    "toggle_open_closed_task": {
+      "closed": "Attività completata",
+      "opened": "Attività riaperta"
     },
     "toggle_receive_weekly": {
       "no_weekly_anymore": "Non ti inviamo più la panoramica settimanale.",
@@ -176,14 +182,10 @@
       "access_allowed_before": "Data di scadenza dell'accesso"
     },
     "issue_report": {
-      "content": "Contenuto",
-      "craftsmen": "Imprenditore",
-      "group_issues_by_craftsman": "Gruppo di pendenze per imprenditori",
-      "separate_report_by_craftsman": "Rapporto separato per imprenditore",
-      "table_by_craftsman": "con riassuntiva imprenditore",
-      "table_by_map": "con riassuntiva mappe",
-      "with_images": "con foto",
-      "with_renders": "con mappe"
+      "by_craftsman": "secondo l'imprenditore",
+      "by_map": "secondo il piano di costruzione",
+      "summary_tables": "Tabelle riassuntive",
+      "with_images": "con foto"
     },
     "issues": {
       "resolved_as_impersonated_craftsman": "\"Realizzato\" viene eseguito per conto dell'imprenditore."
@@ -192,19 +194,17 @@
     "reset": "resettare"
   },
   "_validation": {
-    "required": "Si prega di compilare la casella.",
-    "not_an_email": "Questa non è un'email valida",
-    "one_not_an_email": "Una delle voci non è un'e-mail valida"
+    "required": "Si prega di compilare la casella."
   },
   "_view": {
-    "craftsmen_statistics": {
-      "count": "Quantità"
-    },
     "craftsmen": {
       "last_activity": "Ultima attività",
       "with_open_issues": "con pendenze aperte",
       "with_overdue_issues": "con pendenze scadute",
       "with_unread_issues": "con pendenze non lette"
+    },
+    "craftsmen_statistics": {
+      "count": "Quantità"
     },
     "feed": {
       "entries": {
@@ -309,7 +309,6 @@
     "craftsman": "Imprenditore",
     "deadline": "Scadenza",
     "description": "Descrizione",
-    "no_description_yet": "Nessuna descrizione",
     "image": "Immagine",
     "is_marked": "Preferito",
     "last_changed_at": "Ultima modifica",
@@ -351,9 +350,16 @@
   "switch": {
     "all": "Tutti i cantieri registrati",
     "all_help": "Attiva i cantieri per accederli.",
+    "load_more_tasks": "Carica più attività.",
     "mine": "I cantieri miei",
     "mine_help": "Questi cantieri vengono visualizzati anche nell'app.",
     "mine_none_ask_for_association": "Non sei assegnato ad un cantiere. Puoi chiedere ad un altro capocantiere di aggiungerlo a un cantiere.",
-    "mine_none_associate_self": "Attivare un cantiere dalla lista seguente per accederlo."
+    "mine_none_associate_self": "Attivare un cantiere dalla lista seguente per accederlo.",
+    "no_tasks_pending": "Nessun attività in scadenza.",
+    "tasks_loaded_until": "Attività con scadenze caricate prima del {deadlineLoaded}."
+  },
+  "task": {
+    "_name": "Attività",
+    "_plural": "Attività"
   }
 }
