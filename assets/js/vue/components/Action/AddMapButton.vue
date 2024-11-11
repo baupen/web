@@ -2,7 +2,7 @@
   <button-with-modal-confirm
       :button-disabled="posting || !maps" :title="$t('_action.add_map.title')" :can-confirm="canConfirm"
       @confirm="confirm">
-    <map-form :maps="maps" @update="post = $event" />
+    <map-form :maps="maps" :proposed-name="proposedName" @update="post = $event" />
     <file-form @update="file = $event" :pdf-mode="true" />
   </button-with-modal-confirm>
 </template>
@@ -41,6 +41,9 @@ export default {
   computed: {
     canConfirm: function () {
       return !!this.post
+    },
+    proposedName: function () {
+      return this.file ? this.file.name.substr(0, this.file.name.indexOf(".")) : null
     }
   },
   methods: {
