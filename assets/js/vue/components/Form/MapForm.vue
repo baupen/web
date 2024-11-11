@@ -54,12 +54,23 @@ export default {
     template: {
       type: Object
     },
+    proposedName: {
+      type: String,
+      required: false
+    },
     maps: {
       type: Array,
       default: []
     }
   },
   watch: {
+    proposedName: function () {
+      if (!this.map.name) {
+        this.map.name = this.proposedName
+        this.fields.name.dirty = true
+        this.validate('name')
+      }
+    },
     updatePayload: {
       deep: true,
       handler: function () {
