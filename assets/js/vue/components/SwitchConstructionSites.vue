@@ -18,7 +18,7 @@
             <switch-tasks
                 :construction-manager-iri="constructionManagerIri"
                 :construction-managers="constructionManagers"
-                :construction-sites="constructionSites" />
+                :construction-sites="memberOfConstructionSites" />
           </div>
         </div>
       </template>
