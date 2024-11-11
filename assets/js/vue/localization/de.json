@@ -264,6 +264,9 @@
       "with_overdue_issues": "mit überfälligen Pendenzen",
       "with_unread_issues": "mit ungelesenen Pendenzen"
     },
+    "construction_sites_participation_table": {
+      "search": "Baustelle suchen"
+    },
     "feed": {
       "entries": {
         "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
