@@ -1,7 +1,4 @@
 import flatPickr from 'vue-flatpickr-component/src/component'
-import Flatpickr from 'flatpickr'
-import { German } from 'flatpickr/dist/l10n/de'
-Flatpickr.localize(German)
 
 const dateConfig = {
   altInput: true,
