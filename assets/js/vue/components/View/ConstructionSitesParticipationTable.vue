@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="mb-2" v-if="constructionSites.length >= 10">
+      <input id="name" v-model="constructionSiteFilter" class="form-control mw-25" type="text"
+             :placeholder="$t('_view.construction_sites_participation_table.search')">
+    </div>
     <table class="table table-hover table-striped border shadow">
       <thead>
       <tr>
@@ -47,6 +51,11 @@ export default {
     LoadingIndicatorTableBody,
     DateTimeHumanReadable,
   },
+  data() {
+    return {
+      constructionSiteFilter: null
+    }
+  },
   props: {
     isLoading: {
       type: Boolean,
@@ -68,8 +77,20 @@ export default {
   },
   computed: {
     constructionSitesOrdered: function () {
-      return this.constructionSites.sort((a, b) => a.name.localeCompare(b.name))
+      let candidates = [...this.constructionSites]
+      if (this.constructionSiteFilter) {
+        const preparedSearch = this.constructionSiteFilter.toLocaleLowerCase()
+        candidates = candidates.filter(a => a.name.toLocaleLowerCase().includes(preparedSearch))
+      }
+
+      return candidates.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
 }
 </script>
+
+<style scoped>
+.mw-25 {
+  max-width: 25em
+}
+</style>
