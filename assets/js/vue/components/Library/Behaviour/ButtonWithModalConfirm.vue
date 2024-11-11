@@ -82,12 +82,16 @@ export default {
     color: {
       type: String,
       default: 'primary'
+    },
+    active: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     buttonClasses: function () {
       let classes = 'btn'
-      classes += ' btn-outline-' + this.color
+      classes += (this.active ? ' btn-': ' btn-outline-') + this.color
       if (this.buttonSize) {
         classes += ' btn-' + this.buttonSize
       }
