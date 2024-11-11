@@ -1,26 +1,26 @@
 <template>
   <div class="mb-5">
-    <div class="row">
+    <div class="row g-4">
       <div class="col-md-auto">
-        <construction-site-view class="limited-width" :construction-site="constructionSite" />
+        <construction-site-view class="limited-width" :construction-site="constructionSite"/>
       </div>
       <div class="col-md-auto">
         <div class="card limited-width">
           <div class="card-body limited-height">
             <div class="loading-center" v-if="!constructionManagers || !feedEntries">
-              <loading-indicator-secondary />
+              <loading-indicator-secondary/>
             </div>
             <feed v-else :construction-managers="constructionManagers" :craftsmen="[craftsman]"
-                  :feed-entries="feedEntries" />
+                  :feed-entries="feedEntries"/>
           </div>
           <div class="card-footer">
-            <b v-if="!isLoading">{{$tc('resolve.total_open', groupCountSum)}}</b>
+            <b v-if="!isLoading">{{ $tc('resolve.total_open', groupCountSum) }}</b>
           </div>
         </div>
       </div>
     </div>
 
-    <hr />
+    <hr class="my-4"/>
 
     <loading-indicator-secondary :spin="isLoading">
       <p v-if="groupCountSum === 0" class="alert alert-success">
@@ -28,12 +28,12 @@
       </p>
 
       <template v-else>
-        <div class="row">
+        <div class="row g-4">
           <div class="col-md-auto">
             <maps-resolve-table
                 :maps="maps" :issues-group-by-map="issuesGroupByMap"
                 :craftsman="craftsman" :construction-site="constructionSite"
-                @scroll-to-map="scrollToMap($event)" />
+                @scroll-to-map="scrollToMap($event)"/>
           </div>
           <div class="col-md-auto">
             <div class="card limited-width mb-2">
@@ -41,37 +41,42 @@
                 <export-issues-report-view
                     :construction-site="constructionSite" :maps="maps"
                     :query="issuesQuery" :query-result-size="groupCountSum"
-                    :default-report-configuration="reportConfiguration" />
+                    :default-report-configuration="reportConfiguration"/>
               </div>
             </div>
           </div>
         </div>
 
-        <hr />
+        <hr class="my-4"/>
 
         <p class="alert alert-info">
           {{ $t('resolve.help') }}
         </p>
-        <issues-resolve-view
-            class="mt-4 mt-md-5" ref="maps"
-            v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
-            :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
-            :craftsman="craftsman" :construction-site="constructionSite"
-            :construction-managers="constructionManagers" />
+
+        <div class="row g-4 mt-4">
+          <div class="col-12" v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']">
+
+            <issues-resolve-view
+                ref="maps"
+                :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
+                :craftsman="craftsman" :construction-site="constructionSite"
+                :construction-managers="constructionManagers"/>
+          </div>
+        </div>
       </template>
     </loading-indicator-secondary>
   </div>
 </template>
 
 <script>
-import { api, iriToId } from '../services/api'
+import {api, iriToId} from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import IssuesResolveView from './View/MapIssuesResolveView'
-import { mapTransformer } from '../services/transformers'
+import {mapTransformer} from '../services/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 import GenerateIssuesReport from './Action/GenerateIssuesReport'
 import ExportIssuesReportView from './Action/ExportIssuesReportView'
-import { constructionSiteFormatter } from '../services/formatters'
+import {constructionSiteFormatter} from '../services/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
 import Feed from './View/Feed'
 
@@ -85,7 +90,7 @@ export default {
     IssuesResolveView,
     LoadingIndicatorSecondary,
   },
-  data () {
+  data() {
     return {
       constructionManagers: null,
       maps: null,
@@ -155,7 +160,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     api.getConstructionManagers(this.constructionSite)
         .then(constructionManagers => {
           this.constructionManagers = constructionManagers
