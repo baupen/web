@@ -5,7 +5,7 @@
       @confirm="confirm"
       :can-abort="customFilterActive"
       :abort-title="$t('_action.filter_issues.reset')"
-      :active="template"
+      :active="customFilterActive"
       @abort="reset">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'filter']" class="pe-1" />

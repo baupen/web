@@ -226,7 +226,7 @@ export default {
     EditIssuesButton,
     LoadingIndicator
   },
-  data () {
+  data() {
     return {
       constructionManagers: null,
       craftsmen: null,
@@ -329,7 +329,13 @@ export default {
     },
     defaultFilterConfiguration: function () {
       return filterTransformer.defaultConfiguration(this.view)
-    }
+    },
+    persistFilterKey: function () {
+      if (this.view === "foyer" || this.view === "register") {
+        return 'issues-table-' + this.view
+      }
+      return null
+    },
   },
   methods: {
     addIssue: function (issue) {
@@ -348,31 +354,31 @@ export default {
         this.$refs['edit-issues'].selectDescription()
       })
     },
-    removeIssue (issue) {
+    removeIssue(issue) {
       this.issues = this.issues.filter(i => i !== issue)
       this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
       this.totalIssues--
     },
-    toggleSelectedIssues (toggleArray) {
+    toggleSelectedIssues(toggleArray) {
       if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
         this.selectedIssues = []
       } else {
         this.selectedIssues = [...toggleArray]
       }
     },
-    toggleSelectedIssue (toggleIssue) {
+    toggleSelectedIssue(toggleIssue) {
       if (this.selectedIssues.includes(toggleIssue)) {
         this.selectedIssues = this.selectedIssues.filter(c => c !== toggleIssue)
       } else {
         this.selectedIssues = [...this.selectedIssues, toggleIssue]
       }
     },
-    entityListsAreEqual (array1, array2) {
+    entityListsAreEqual(array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
         return a['@id'].localeCompare(b['@id'])
       })
     },
-    loadNextPage () {
+    loadNextPage() {
       if (this.hiddenIssues.length > 0) {
         this.$emit('reset-hidden')
         this.loadIssues(this.filter, 1)
@@ -380,7 +386,7 @@ export default {
         this.loadIssues(this.filter, this.issuePage + 1)
       }
     },
-    loadIssues (filter, page = 1) {
+    loadIssues(filter, page = 1) {
       this.issuesLoading = true
       this.issuePage = page
       if (page === 1) {
@@ -430,11 +436,16 @@ export default {
     filter: {
       handler: debounce(function (newVal) {
         this.loadIssues(newVal)
-      }, 200, { 'leading': true }),
+        if (this.persistFilterKey) {
+          const payload = {filter: newVal, filterConfiguration: this.filterConfiguration}
+          localStorage.setItem(this.persistFilterKey, JSON.stringify(payload))
+        }
+      }, 200, {'leading': true}),
       deep: true
     }
   },
-  mounted () {
+  mounted() {
+
     if (this.initialState) {
       this.filter = Object.assign({}, this.defaultFilter, {
         state: this.initialState
@@ -442,6 +453,15 @@ export default {
       this.filterConfiguration = Object.assign({}, this.defaultFilterConfiguration, {
         state: true
       })
+    } else if (this.persistFilterKey) {
+      try {
+        const persistedPayload = localStorage.getItem(this.persistFilterKey);
+        const payload = JSON.parse(persistedPayload)
+        this.filter = payload.filter
+        this.filterConfiguration = payload.filterConfiguration
+      } catch (e) {
+        // we do not care
+      }
     }
 
     this.loadIssues(this.filter ?? this.defaultFilter)
