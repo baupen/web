@@ -5,6 +5,7 @@
       @confirm="confirm"
       :can-abort="customFilterActive"
       :abort-title="$t('_action.filter_issues.reset')"
+      :active="template"
       @abort="reset">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'filter']" class="pe-1" />
@@ -76,7 +77,7 @@ export default {
     },
     formConfigurationTemplate: function () {
       return this.configurationTemplate ?? this.defaultConfiguration
-    }
+    },
   },
   methods: {
     reset: function () {
