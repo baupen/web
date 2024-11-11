@@ -34,6 +34,9 @@ import {
   faSortDown as faSortDownSolid // table
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import Flatpickr from 'flatpickr'
+import { German } from 'flatpickr/dist/l10n/de'
+import { French } from 'flatpickr/dist/l10n/fr'
 
 // languages
 import de from './localization/de.json'
@@ -55,6 +58,7 @@ import Switch from './Switch'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
+Flatpickr.localize(locale === 'fr' ? French : German)
 
 // configure fontawesome
 FontawesomeConfig.autoAddCss = false
