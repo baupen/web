@@ -52,8 +52,10 @@
     </div>
     <div class="col-auto" v-if="canEdit">
       <div class="btn-group">
-        <edit-issue-event-button :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
-                                 :last-changed-by="lastChangedBy"/>
+        <edit-issue-event-button
+            v-if="isCreatedByConstructionManager"
+            :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
+            :last-changed-by="lastChangedBy"/>
         <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
       </div>
     </div>
@@ -124,6 +126,9 @@ export default {
       } else if (this.root['@id'].includes('construction_sites')) {
         return this.$t('construction_site._name')
       }
+    },
+    isCreatedByConstructionManager: function () {
+      return this.createdBy['@id'].includes('construction_managers');
     },
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
