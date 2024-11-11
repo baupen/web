@@ -36,7 +36,7 @@ import {
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import Flatpickr from 'flatpickr'
 import { German } from 'flatpickr/dist/l10n/de'
-import { French } from 'flatpickr/dist/l10n/fr'
+import { Italian } from 'flatpickr/dist/l10n/it'
 
 // languages
 import de from './localization/de.json'
@@ -58,7 +58,7 @@ import Switch from './Switch'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
-Flatpickr.localize(locale === 'fr' ? French : German)
+Flatpickr.localize(locale === 'it' ? Italian : German)
 
 // configure fontawesome
 FontawesomeConfig.autoAddCss = false
