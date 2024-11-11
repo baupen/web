@@ -21,7 +21,10 @@
       "title": "Ereignis hinzufügen",
       "type_text": "Text",
       "type_image": "Bild",
-      "type_file": "Datei"
+      "type_file": "Datei",
+      "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu.",
+      "adds_event_to_all_craftsman_issues": "Fügt dieses Ereignis zu allen Pendenzen dieser Unternehmung hinzu.",
+      "adds_event_to_issue": "Sie können hier der Bauleitung eine Rückmeldung zur Pendenz zukommen lassen."
     },
     "add_task": {
       "added": "Aufgabe hinzugefügt",
@@ -326,8 +329,7 @@
     "feed": "Feed",
     "activity": "Aktivität",
     "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst.",
-    "load_closed_tasks": "Erledigte Aufgaben laden.",
-    "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu."
+    "load_closed_tasks": "Erledigte Aufgaben laden."
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",

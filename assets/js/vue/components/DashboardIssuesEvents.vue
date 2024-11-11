@@ -8,13 +8,7 @@
         <add-issue-event-button
             :authority-iri="constructionManagerIri" :root="constructionSite"
             :construction-site="constructionSite"
-            @added="issueEvents.push($event)">
-          <template v-slot:before-form>
-            <p class="alert alert-info">
-              {{ $t('dashboard.adds_event_to_all_issues') }}
-            </p>
-          </template>
-        </add-issue-event-button>
+            @added="issueEvents.push($event)" />
 
         <div class="mt-3" v-if="orderedIssueEvents.length">
           <issue-event-row
