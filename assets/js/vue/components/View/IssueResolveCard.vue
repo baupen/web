@@ -25,14 +25,14 @@
             <br/>
             <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
-          <div class="mt-3">
-            <issue-events
-                :craftsmen="[craftsman]" :construction-managers="[]" :issue="issue"
-                :construction-site="constructionSite"
-                :authority-iri="craftsman['@id']" :created-by-craftsman-filter="craftsman"/>
-          </div>
-          <div class="mt-3">
-            <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman"/>
+          <div class="row g-2">
+            <div class="col-auto">
+              <add-issue-event-button :authority-iri="craftsman['@id']" :root="issue"
+                                      :construction-site="constructionSite" color="secondary"/>
+            </div>
+            <div class="col-auto">
+              <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman"/>
+            </div>
           </div>
         </div>
       </div>
@@ -63,11 +63,9 @@ import DateHumanReadable from '../Library/View/DateHumanReadable'
 import {issueTransformer} from '../../services/transformers'
 import IssueRenderLightbox from './IssueRenderLightbox'
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
-import IssueEvents from "./IssueEvents.vue";
 
 export default {
   components: {
-    IssueEvents,
     AddIssueEventButton,
     IssueRenderLightbox,
     DateHumanReadable,

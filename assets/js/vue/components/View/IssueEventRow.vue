@@ -50,15 +50,13 @@
         <date-time-human-readable :value="issueEvent.timestamp"/>
       </p>
     </div>
-    <div class="col-auto" v-if="canModify">
+    <div class="col-auto" v-if="canEdit">
       <div class="btn-group">
         <edit-issue-event-button
-            v-if="canEdit"
+            v-if="isCreatedByConstructionManager"
             :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
             :last-changed-by="lastChangedBy"/>
-        <remove-issue-event-button
-            v-if="canDelete"
-            :issue-event="issueEvent" @removed="$emit('removed')"/>
+        <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
       </div>
     </div>
   </div>
@@ -73,7 +71,6 @@ import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
 import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
 import EditIssueEventButton from "../Action/EditIssueEventButton.vue";
 import {entityFormatter} from "../../services/formatters";
-import {iriToId} from "../../services/api";
 
 export default {
   emits: ['removed'],
@@ -130,27 +127,14 @@ export default {
         return this.$t('construction_site._name')
       }
     },
-    canModify: function () {
-      return !this.isContext && ['TEXT', 'IMAGE', 'FILE'].includes(this.issueEvent.type)
-    },
-    canEdit: function () {
-      if (this.authorityIri.includes("craftsmen")) {
-        return this.createdBy['@id'] === this.authorityIri
-      } else if (this.authorityIri.includes('construction_manager')) {
-        return this.createdBy['@id'].includes('construction_managers')
-      }
-      return false
-    },
-    canDelete: function () {
-      if (this.authorityIri.includes("craftsmen")) {
-        return this.createdBy['@id'] === this.authorityIri
-      } else if (this.authorityIri.includes('construction_manager')) {
-        return true
-      }
-      return false
+    isCreatedByConstructionManager: function () {
+      return this.createdBy['@id'].includes('construction_managers');
     },
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
+    },
+    canEdit: function () {
+      return !this.isContext && ['TEXT', 'IMAGE', 'FILE'].includes(this.issueEvent.type)
     },
     emailPayload: function () {
       return JSON.parse(this.issueEvent.payload)
