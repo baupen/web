@@ -4,8 +4,6 @@ Features which fit the vision of the product, and have been requested by custome
 
 ## Currently being worked on
 
-Technical:
-- [ ] Translations are not yet done
 
 ## Future improvements
 
@@ -29,3 +27,6 @@ Resolve:
 
 Framework:
 - Frontend often cannot recover from failed backend calls (e.g. button remains disabled)
+
+Technical:
+- [ ] IT translations could use a refactoring
