@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <div class="row">
+      <div class="row g-4">
         <div class="col-md-6">
           <div class="w-50 d-inline-block pe-1">
             <issue-render-lightbox
@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <p v-if="issue.description" class="bg-light-gray p-2 mt-2 mt-md-0">
+          <p v-if="issue.description" class="bg-light-gray p-2">
             {{ issue.description }}
           </p>
           <p v-if="issue.deadline">
