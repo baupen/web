@@ -66,6 +66,10 @@ export default {
       type: String,
       required: false
     },
+    createdByCraftsmanFilter: {
+      type: Object,
+      default: null
+    },
   },
   computed: {
     responsiblesLookup: function () {
@@ -98,20 +102,31 @@ export default {
     },
   },
   mounted() {
-    api.getIssueEvents(this.constructionSite, this.issue)
-        .then(entries => {
-          this.issueEvents = entries
-        })
-    if (this.craftsman) {
-      api.getIssueEvents(this.constructionSite, this.craftsman)
+    if (this.createdByCraftsmanFilter) {
+      const query = {
+        'isDeleted': false,
+        'createdBy': iriToId(this.createdByCraftsmanFilter['@id'])
+      }
+      api.getIssueEvents(this.constructionSite, this.issue, query)
           .then(entries => {
-            this.craftsmanIssueEvents = entries
+            this.issueEvents = entries
+          })
+    } else {
+      api.getIssueEvents(this.constructionSite, this.issue)
+          .then(entries => {
+            this.issueEvents = entries
+          })
+      if (this.craftsman) {
+        api.getIssueEvents(this.constructionSite, this.craftsman)
+            .then(entries => {
+              this.craftsmanIssueEvents = entries
+            })
+      }
+      api.getIssueEvents(this.constructionSite, this.constructionSite)
+          .then(entries => {
+            this.constructionSiteIssueEvents = entries
           })
     }
-    api.getIssueEvents(this.constructionSite, this.constructionSite)
-        .then(entries => {
-          this.constructionSiteIssueEvents = entries
-        })
   }
 }
 </script>

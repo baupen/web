@@ -378,10 +378,15 @@ const api = {
 
     return this._getHydraCollection('/api/tasks' + queryString)
   },
-  getIssueEvents: function (constructionSite, root) {
+  getIssueEvents: function (constructionSite, root, query) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     queryString += '&root=' + iriToId(root['@id'])
-    queryString += '&isDeleted=false'
+
+    if (query) {
+      queryString += '&' + this._getQueryString(query)
+    } else {
+      queryString += '&isDeleted=false'
+    }
 
     return this._getHydraCollection('/api/issue_events' + queryString)
   },
