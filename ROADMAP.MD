@@ -10,7 +10,7 @@ Technical:
 ## Future improvements
 
 Dashboard:
-- The feed on the dashboard is probably not useful in the state it is now.
+- The feed on the dashboard is probably not useful in the state it is now. Incomplete (e.g. regarding issue events).
 - Refactor when example construction site is created: Only upon user request.
 
 Register:
