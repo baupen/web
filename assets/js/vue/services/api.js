@@ -451,11 +451,11 @@ const api = {
   postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
     return this._postAttachment(constructionSite, image, 'image', successMessage)
   },
-  postEmail: function (email) {
-    return this._postRaw('/api/emails', email)
+  postEmail: function (email, successMessage = null) {
+    return this._postRaw('/api/emails', email, successMessage)
   },
-  postIssueEvent: function (issueEvent) {
-    return this._postRaw('/api/issue_events', issueEvent)
+  postIssueEvent: function (issueEvent, successMessage = null) {
+    return this._postRaw('/api/issue_events', issueEvent, successMessage)
   }
 }
 
