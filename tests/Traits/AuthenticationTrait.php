@@ -14,6 +14,7 @@ namespace App\Tests\Traits;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
 use App\Helper\DoctrineHelper;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,25 +33,25 @@ trait AuthenticationTrait
 
     private function loginApiConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginApiUser($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
+        return $this->_loginApiConstructionManager($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginApiAssociatedConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginApiUser($client, TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
+        return $this->_loginApiConstructionManager($client, TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginApiDisassociatedConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginApiUser($client, TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
+        return $this->_loginApiConstructionManager($client, TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginConstructionManager(KernelBrowser $client): ConstructionManager
     {
-        return $this->loginUser($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
+        return $this->_loginConstructionManager($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
     }
 
-    private function loginApiUser(Client $client, string $email): ConstructionManager
+    private function _loginApiConstructionManager(Client $client, string $email): ConstructionManager
     {
         $testUser = $this->getConstructionManagerByEmail($email);
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$testUser->getAuthenticationToken()]]]);
@@ -58,13 +59,18 @@ trait AuthenticationTrait
         return $testUser;
     }
 
-    private function loginUser(KernelBrowser $client, string $email): ConstructionManager
+    private function _loginConstructionManager(KernelBrowser $client, string $email): ConstructionManager
     {
         $testUser = $this->getConstructionManagerByEmail($email);
         $client->loginUser($testUser);
         $client->setServerParameter('HTTP_X-AUTHENTICATION', $testUser->getAuthenticationToken());
 
         return $testUser;
+    }
+
+    private function loginApiCraftsman(Client $client, Craftsman $craftsman): void
+    {
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$craftsman->getAuthenticationToken()]]]);
     }
 
     private function saveEntity(...$entities): void

@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :title="title"
+      :title="title" :color="color"
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
@@ -18,17 +18,17 @@
     <issue-event-entry-type-checkbox class="mb-3" v-model="entryType"/>
 
     <template v-if="entryType === 'TEXT'">
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true" :hide-timestamp="authorityIsCraftsman"/>
     </template>
 
     <template v-if="entryType === 'IMAGE'">
       <image-form @update="image = $event"/>
-      <issue-event-text-form v-if="authorityIsCraftsman" @update="post = $event" :template="staleTemplate" :text-mode="false"/>
+      <issue-event-text-form v-if="authorityIsCraftsman" @update="post = $event" :template="staleTemplate" :text-mode="false" :hide-timestamp="authorityIsCraftsman"/>
       <issue-event-text-form v-else @update="post = $event" :template="staleTemplate" :text-mode="false"/>
     </template>
     <template v-if="entryType === 'FILE'">
       <file-form @update="file = $event"/>
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false" :hide-timestamp="authorityIsCraftsman"/>
     </template>
 
   </button-with-modal-confirm>
@@ -81,6 +81,10 @@ export default {
       type: String,
       required: true
     },
+    color: {
+      type: String,
+      default: 'primary'
+    }
   },
   watch: {
     entryType: function () {
@@ -120,7 +124,10 @@ export default {
         ...this.post
       })
 
-      const successMessage = this.$t('_action.add_issue_event.added');
+      const successMessage = this.authorityIsCraftsman ?
+          this.$t('_action.add_issue_event.added_craftsman') :
+          this.$t('_action.add_issue_event.added');
+
       if (this.entryType === 'TEXT') {
         api.postIssueEvent(payload, successMessage)
             .then(issueEvent => {

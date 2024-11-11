@@ -34,18 +34,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"issue-event-create", "issue-event-write"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_CREATE', object)", "denormalization_context"={"groups"={"issue-event-create", "issue-event-write"}}},
  *      },
  *      itemOperations={
  *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
  *       "patch" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
+ *       "delete" = {"security" = "is_granted('ISSUE_EVENT_DELETE', object)"},
  *      },
  *      denormalizationContext={"groups"={"issue-event-write"}},
  *      normalizationContext={"groups"={"issue-event-read"}, "skip_null_values"=false}
  *  )
  *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite","createdBy"})
  * @ApiFilter(DateFilter::class, properties={"createdAt"})
  * @ApiFilter(SearchFilter::class, properties={"root": "exact"})
  * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC"})
@@ -171,22 +171,22 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         $this->constructionSite = $constructionSite;
     }
 
-    public function getRoot(): string
+    public function getRoot(): ?string
     {
         return $this->root;
     }
 
-    public function setRoot(string $root): void
+    public function setRoot(?string $root): void
     {
         $this->root = $root;
     }
 
-    public function getType(): IssueEventTypes
+    public function getType(): ?IssueEventTypes
     {
         return $this->type;
     }
 
-    public function setType(IssueEventTypes $type): void
+    public function setType(?IssueEventTypes $type): void
     {
         $this->type = $type;
     }

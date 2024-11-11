@@ -19,4 +19,9 @@ enum IssueEventTypes: string
     case Email = 'EMAIL';
     case Image = 'IMAGE';
     case File = 'FILE';
+
+    public static function isManualEvent(IssueEventTypes $candidate): bool
+    {
+        return in_array($candidate, [self::Text, self::Image, self::File], true);
+    }
 }

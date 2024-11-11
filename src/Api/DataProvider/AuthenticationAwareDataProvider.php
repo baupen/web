@@ -19,6 +19,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Entity\IssueEvent;
 use App\Entity\Map;
 use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -57,7 +58,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         $token = $this->tokenStorage->getToken();
 
-        $existingFilter = isset($context['filters']) ? $context['filters'] : [];
+        $existingFilter = $context['filters'] ?? [];
         if (($constructionManager = $this->tryGetConstructionManager($token)) instanceof ConstructionManager) {
             $this->ensureConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
         } elseif (($craftsman = $this->tryGetCraftsman($token)) instanceof Craftsman) {
@@ -125,6 +126,13 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         if (Issue::class === $resourceClass) {
             $this->ensureArraySearchFilterValid($query, 'craftsman', [$craftsman->getId()]);
+            $this->ensureDeletedFilterValid($query, 'isDeleted', false);
+
+            return;
+        }
+
+        if (IssueEvent::class === $resourceClass) {
+            $this->ensureArraySearchFilterValid($query, 'createdBy', [$craftsman->getId()]);
             $this->ensureDeletedFilterValid($query, 'isDeleted', false);
 
             return;
