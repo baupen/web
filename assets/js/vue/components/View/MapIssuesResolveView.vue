@@ -4,26 +4,34 @@
       <span class="text-secondary text-sm" v-if="mapParentNames.length">{{ mapParentNames.join(" > ") }}<br/></span>
       {{ map.name }}
     </h2>
-    <div class="row">
-      <div class="col-lg-3">
-        <map-render-lightbox
-            :preview="true"
-            :construction-site="constructionSite" :map="map" :craftsman="craftsman" :state="2" />
-      </div>
-      <div class="col-lg-9">
-        <div class="mt-2 mt-lg-0 mb-lg-2" v-for="issue in issues" :key="issue['@id']">
-          <issue-resolve-card
-              :issue="issue"
-              :construction-site="constructionSite" :craftsman="craftsman" :map="map"
-              :construction-managers="constructionManagers" />
+    <div class="row g-4">
+      <div class="col-12 col-lg-3">
+        <div class="upperbound-map-size">
+          <map-render-lightbox
+              :preview="true"
+              :construction-site="constructionSite" :map="map" :craftsman="craftsman" :state="2"
+              :content-hash="contentHash"
+          />
         </div>
-        <loading-indicator-secondary class="mt-2 mt-lg-0 mb-lg-2" v-if="issuesLoading" />
-        <p v-else class="text-center mt-2 mt-lg-0 mb-lg-2">
-          <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading"
-                  @click="loadNextPage">
-            {{ $tc('_view.show_more_issues', notLoadedIssueCount) }}
-          </button>
-        </p>
+      </div>
+      <div class="col-12 col-lg-9">
+        <div class="row g-4">
+          <div class="col-12" v-for="issue in issues" :key="issue['@id']">
+            <issue-resolve-card
+                :issue="issue"
+                :construction-site="constructionSite" :craftsman="craftsman" :map="map"
+                :construction-managers="constructionManagers"/>
+          </div>
+          <div class="col-12" v-if="issuesLoading || notLoadedIssueCount">
+            <loading-indicator-secondary v-if="issuesLoading"/>
+            <p v-else class="text-center">
+              <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading"
+                      @click="loadNextPage">
+                {{ $tc('_view.show_more_issues', notLoadedIssueCount) }}
+              </button>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -34,7 +42,7 @@
 import ConstructionSitesEnterMasonryCard from './ConstructionSiteEnterCard'
 import IssueResolveCard from './IssueResolveCard'
 import MapRenderLightbox from './MapRenderLightbox'
-import { api, iriToId } from '../../services/api'
+import {api, iriToId} from '../../services/api'
 import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'
 
 export default {
@@ -44,7 +52,7 @@ export default {
     IssueResolveCard,
     ConstructionSitesEnterMasonryCard
   },
-  data () {
+  data() {
     return {
       issues: [],
       issuePage: 1,
@@ -78,6 +86,9 @@ export default {
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
     },
+    contentHash: function () {
+      return this.issues.reduce((previous, i) => previous + "n=" + i.number + 'x=' + i.positionX + ',y=' + i.positionY + ",", "empty")
+    },
     query: function () {
       return {
         map: iriToId(this.map['@id']),
@@ -89,13 +100,13 @@ export default {
     },
   },
   methods: {
-    loadNextPage () {
+    loadNextPage() {
       this.loadIssues(this.issuePage + 1)
     },
-    loadIssues (page = 1) {
+    loadIssues(page = 1) {
       this.issuesLoading = true
 
-      let query = Object.assign({}, this.query, { page })
+      let query = Object.assign({}, this.query, {page})
 
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
@@ -111,8 +122,14 @@ export default {
           })
     }
   },
-  mounted () {
+  mounted() {
     this.loadIssues()
   }
 }
 </script>
+
+<style scoped>
+.upperbound-map-size {
+  max-width: 30em;
+}
+</style>

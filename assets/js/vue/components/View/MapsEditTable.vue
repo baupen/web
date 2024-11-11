@@ -27,7 +27,7 @@
         {{ getOriginalFilename(mapContainer.entity) }}
       </td>
       <td class="text-end">
-        <map-render-lightbox class="h-btn" :construction-site="constructionSite" :map="mapContainer.entity" :empty="true" />
+        <map-render-lightbox class="h-btn" :construction-site="constructionSite" :map="mapContainer.entity" :empty="true" content-hash="empty" />
       </td>
       <td>
         <div class="btn-group">
