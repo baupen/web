@@ -18,6 +18,7 @@ use App\Enum\IssueEventTypes;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestIssueEventFixtures;
+use App\Tests\Traits\Api\MimeTypes;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\FixturesTrait;
@@ -63,18 +64,17 @@ class IssueEventTest extends ApiTestCase
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
-        $constructionManagerId = $this->getIriFromItem($constructionManager);
 
         $constructionSite = $this->getTestConstructionSite();
         $constructionSiteId = $this->getIriFromItem($constructionSite);
         $affiliation = [
             'constructionSite' => $constructionSiteId,
+            'root' => $constructionSite->getId(),
+            'createdBy' => $constructionManager->getId(),
+            'lastChangedBy' => $constructionManager->getId(),
         ];
 
         $sample = [
-            'root' => $constructionSiteId,
-            'createdBy' => $constructionManagerId,
-            'lastChangedBy' => $constructionManagerId,
             'timestamp' => (new \DateTime())->format('c'),
         ];
 
@@ -92,23 +92,76 @@ class IssueEventTest extends ApiTestCase
         $emptyConstructionSite = $this->getEmptyConstructionSite();
         $otherConstructionManager = $this->getTestAssociatedConstructionManager();
         $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
-        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
         $writeProtected = [
             'constructionSite' => $emptyConstructionSiteId,
-            'createdBy' => $otherConstructionManagerId,
+            'createdBy' => $otherConstructionManager->getId(),
         ];
         $this->assertApiPatchPayloadIgnored($client, $issueEventId, $writeProtected);
 
         $update = [
             'payload' => 'Peter Woodly',
             'timestamp' => (new \DateTime('yesterday'))->format('c'),
-            'lastChangedBy' => $otherConstructionManagerId,
+            'lastChangedBy' => $otherConstructionManager->getId(),
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueEventId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $issueEventId);
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issue_events?constructionSite='.$constructionSite->getId(), $response);
+    }
+
+    public function testPostAndDeleteCraftsman(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+
+        $craftsman = $this->addCraftsman($constructionSite);
+        $issue = $this->addRegisteredIssue($constructionSite, $constructionManager, $craftsman);
+
+        $affiliation = [
+            'constructionSite' => $constructionSiteId,
+        ];
+        $sample = [
+            'root' => $issue->getId(),
+            'createdBy' => $constructionManager->getId(),
+            'lastChangedBy' => $constructionManager->getId(),
+            'timestamp' => (new \DateTime())->format('c'),
+            'type' => IssueEventTypes::Text->value,
+            'payload' => 'Hello World',
+        ];
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issue_events', $sample, $affiliation);
+        $issueEventIri = json_decode($response->getContent(), true)['@id'];
+
+        // do not expose foreign entries
+        $this->loginApiCraftsman($client, $craftsman);
+        $getUrl = '/api/issue_events?constructionSite='.$constructionSite->getId().'&createdBy='.$craftsman->getId().'&isDeleted=false';
+        $this->assertApiCollectionNotContainsIri($client, $getUrl, $issueEventIri);
+
+        // do not allow to patch or create new (in false name)
+        $this->assertApiStatusCodeSame('PATCH', Response::HTTP_FORBIDDEN, $client, $issueEventIri);
+        $this->assertApiStatusCodeSame('DELETE', Response::HTTP_FORBIDDEN, $client, $issueEventIri);
+        $this->assertApiStatusCodeSame('POST', Response::HTTP_FORBIDDEN, $client, '/api/issue_events', MimeTypes::JSON_LD_MIME_TYPE, array_merge($sample, $affiliation));
+
+        // allow to CRUD own entries
+        $sample = [
+            'root' => $issue->getId(),
+            'createdBy' => $craftsman->getId(),
+            'lastChangedBy' => $craftsman->getId(),
+            'timestamp' => (new \DateTime())->format('c'),
+            'type' => IssueEventTypes::Text->value,
+            'payload' => 'Hello World',
+        ];
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issue_events', $sample, $affiliation);
+        $issueEventIri = json_decode($response->getContent(), true)['@id'];
+        $this->assertApiCollectionContainsIri($client, $getUrl, $issueEventIri);
+        $this->assertApiPatchPayloadPersisted($client, $issueEventIri, ['payload' => 'New']);
+        $this->assertApiDeleteOk($client, $issueEventIri);
     }
 
     public function testIsDeletedFilter(): void
@@ -220,7 +273,8 @@ class IssueEventTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $craftsman = $constructionSite->getCraftsmen()[0]; /** @var Craftsman $craftsman */
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        /** @var Craftsman $craftsman */
         $craftsmanId = $this->getIriFromItem($craftsman);
 
         $payload = [

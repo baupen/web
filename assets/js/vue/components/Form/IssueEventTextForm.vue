@@ -12,7 +12,7 @@
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
 
-  <form-field for-id="timestamp" :label="$t('issue_event.timestamp')" :required="true">
+  <form-field for-id="timestamp" :label="$t('issue_event.timestamp')" :required="true" v-if="!hideTimestamp">
     <span ref="timestamp-anchor"/>
     <flat-pickr
         id="timestamp" class="form-control"
@@ -64,7 +64,11 @@ export default {
     textMode: {
       type: Boolean,
       default: false
-    }
+    },
+    hideTimestamp: {
+      type: Boolean,
+      default: false
+    },
   },
   watch: {
     updatePayload: {

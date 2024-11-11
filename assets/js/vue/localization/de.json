@@ -19,6 +19,8 @@
     "add_issue_event": {
       "added": "Ereignis hinzugefügt",
       "title": "Ereignis hinzufügen",
+      "title_craftsman": "Kommentar hinzufügen",
+      "added_craftsman": "Kommentar hinzugefügt",
       "type_text": "Text",
       "type_image": "Bild",
       "type_file": "Datei",

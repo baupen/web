@@ -85,6 +85,7 @@ trait TestDataTrait
         $craftsman->setEmail($name.'@ch.ch');
         $craftsman->setCompany($name.' AG');
         $craftsman->setTrade($name);
+        $craftsman->setAuthenticationToken();
 
         $this->saveEntity($craftsman);
 
@@ -125,6 +126,22 @@ trait TestDataTrait
         $issue->setNumber(999);
         $issue->setCreatedAt(new \DateTime());
         $issue->setCreatedBy($manager);
+
+        $this->saveEntity($issue);
+
+        return $issue;
+    }
+
+    private function addRegisteredIssue(ConstructionSite $constructionSite, ConstructionManager $manager, Craftsman $craftsman): Issue
+    {
+        $issue = new Issue();
+        $issue->setConstructionSite($constructionSite);
+        $issue->setCraftsman($craftsman);
+        $issue->setNumber(999);
+        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedBy($manager);
+        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredBy($manager);
 
         $this->saveEntity($issue);
 

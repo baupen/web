@@ -6,13 +6,13 @@
           <div class="w-50 d-inline-block pe-1">
             <issue-render-lightbox
                 :preview="true"
-                :construction-site="constructionSite" :map="map" :issue="issue" />
+                :construction-site="constructionSite" :map="map" :issue="issue"/>
           </div>
           <div class="w-50 d-inline-block ps-1">
             <image-lightbox
                 v-if="issue.imageUrl"
                 :preview="true"
-                :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" />
+                :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description"/>
           </div>
         </div>
         <div class="col-md-6">
@@ -21,23 +21,31 @@
           </p>
           <p v-if="issue.deadline">
             <b>{{ $t('issue.deadline') }}</b>:
-            <date-human-readable :value="issue.deadline" />
-            <br />
+            <date-human-readable :value="issue.deadline"/>
+            <br/>
             <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
-          <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman" />
+          <div class="row g-2">
+            <div class="col-auto">
+              <add-issue-event-button :authority-iri="craftsman['@id']" :root="issue"
+                                      :construction-site="constructionSite" color="secondary"/>
+            </div>
+            <div class="col-auto">
+              <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="card-footer">
       <small class="text-muted">
         #{{ issue.number }} |
-        <date-time-human-readable :value="issue.createdAt" />
+        <date-time-human-readable :value="issue.createdAt"/>
         <span v-if="createdByConstructionManager">
         |
         {{ createdByConstructionManagerName }}
           <a class="ps-1" :href="createdByConstructionManagerEmailHref">
-            <font-awesome-icon :icon="['fal', 'envelope-open']" />
+            <font-awesome-icon :icon="['fal', 'envelope-open']"/>
           </a>
         </span>
       </small>
@@ -47,16 +55,18 @@
 
 <script>
 
-import { constructionManagerFormatter } from '../../services/formatters'
+import {constructionManagerFormatter} from '../../services/formatters'
 import ImageLightbox from './ImageLightbox'
 import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import { issueTransformer } from '../../services/transformers'
+import {issueTransformer} from '../../services/transformers'
 import IssueRenderLightbox from './IssueRenderLightbox'
+import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
 
 export default {
   components: {
+    AddIssueEventButton,
     IssueRenderLightbox,
     DateHumanReadable,
     DateTimeHumanReadable,
