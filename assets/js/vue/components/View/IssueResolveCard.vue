@@ -26,9 +26,24 @@
             <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
           <div class="row g-2">
-            <div class="col-auto">
-              <add-issue-event-button :authority-iri="craftsman['@id']" :root="issue"
-                                      :construction-site="constructionSite" color="secondary"/>
+            <div :class="{'col-auto': addedIssueEvents.length === 0, 'col-12': addedIssueEvents.length > 0}">
+              <add-issue-event-button
+                  v-if="!issue.resolvedAt"
+                  :authority-iri="craftsman['@id']" :root="issue"
+                  :construction-site="constructionSite" color="secondary"
+                  @added="addedIssueEvents.push($event)"/>
+
+              <div class="mt-2 mb-4" v-if="addedIssueEvents.length">
+                <issue-event-row
+                    v-for="(entry, index) in addedIssueEvents" :key="entry['@id']"
+                    :last="index+1 === addedIssueEvents.length"
+                    :issue-event="entry"
+                    :root="issue"
+                    :authority-iri="craftsman['@id']"
+                    :created-by="responsiblesLookup[entry['createdBy']]"
+                    :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
+                />
+              </div>
             </div>
             <div class="col-auto">
               <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman"/>
@@ -63,15 +78,23 @@ import DateHumanReadable from '../Library/View/DateHumanReadable'
 import {issueTransformer} from '../../services/transformers'
 import IssueRenderLightbox from './IssueRenderLightbox'
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
+import IssueEventRow from "./IssueEventRow.vue";
+import {iriToId} from "../../services/api";
 
 export default {
   components: {
+    IssueEventRow,
     AddIssueEventButton,
     IssueRenderLightbox,
     DateHumanReadable,
     DateTimeHumanReadable,
     ResolveIssueButton,
     ImageLightbox
+  },
+  data() {
+    return {
+      addedIssueEvents: []
+    }
   },
   props: {
     constructionManagers: {
@@ -99,8 +122,15 @@ export default {
     isOverdue: function () {
       return issueTransformer.isOverdue(this.issue)
     },
+    responsiblesLookup: function () {
+      let responsiblesLookup = {}
+      responsiblesLookup[iriToId(this.craftsman['@id'])] = this.craftsman
+      this.constructionManagers.forEach(cm => responsiblesLookup[iriToId(cm['@id'])] = cm)
+
+      return responsiblesLookup
+    },
     createdByConstructionManager: function () {
-      return this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)
+      return this.responsiblesLookup[iriToId(this.issue.createdBy)]
     },
     createdByConstructionManagerName: function () {
       return constructionManagerFormatter.name(this.createdByConstructionManager)
