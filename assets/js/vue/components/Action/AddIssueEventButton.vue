@@ -1,11 +1,21 @@
 <template>
   <button-with-modal-confirm
-      :title="$t('_action.add_issue_event.title')"
+      :title="title"
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
-    <slot name="before-form"/>
-    <issue-event-entry-type-checkbox class="mb-3" v-model="entryType" />
+    <p class="alert alert-info" v-if="rootIsConstructionSite">
+      {{ $t('_action.add_issue_event.adds_event_to_all_issues') }}
+    </p>
+    <p class="alert alert-info" v-else-if="rootIsCraftsman">
+      {{ $t('_action.add_issue_event.adds_event_to_all_craftsman_issues') }}
+    </p>
+
+    <p class="alert alert-info" v-if="authorityIsCraftsman">
+      {{ $t('_action.add_issue_event.adds_event_to_issue') }}
+    </p>
+
+    <issue-event-entry-type-checkbox class="mb-3" v-model="entryType"/>
 
     <template v-if="entryType === 'TEXT'">
       <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"/>
@@ -13,7 +23,8 @@
 
     <template v-if="entryType === 'IMAGE'">
       <image-form @update="image = $event"/>
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
+      <issue-event-text-form v-if="authorityIsCraftsman" @update="post = $event" :template="staleTemplate" :text-mode="false"/>
+      <issue-event-text-form v-else @update="post = $event" :template="staleTemplate" :text-mode="false"/>
     </template>
     <template v-if="entryType === 'FILE'">
       <file-form @update="file = $event"/>
@@ -81,6 +92,20 @@ export default {
       return !!this.post && (this.entryType === 'TEXT') ||
           (this.entryType === 'IMAGE' && !!this.image) ||
           (this.entryType === 'FILE' && !!this.file)
+    },
+    rootIsConstructionSite: function () {
+      return this.root['@id'].includes('construction_sites')
+    },
+    rootIsCraftsman: function () {
+      return this.root['@id'].includes('craftsmen')
+    },
+    authorityIsCraftsman: function () {
+      return this.authorityIri.includes('craftsmen')
+    },
+    title: function () {
+      return this.authorityIsCraftsman ?
+          this.$t('_action.add_issue_event.title_craftsman') :
+          this.$t('_action.add_issue_event.title')
     }
   },
   methods: {
