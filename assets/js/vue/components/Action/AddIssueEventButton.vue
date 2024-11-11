@@ -18,17 +18,20 @@
     <issue-event-entry-type-checkbox class="mb-3" v-model="entryType"/>
 
     <template v-if="entryType === 'TEXT'">
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true" :hide-timestamp="authorityIsCraftsman"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"
+                             :hide-timestamp="authorityIsCraftsman"/>
     </template>
 
     <template v-if="entryType === 'IMAGE'">
-      <image-form @update="image = $event"/>
-      <issue-event-text-form v-if="authorityIsCraftsman" @update="post = $event" :template="staleTemplate" :text-mode="false" :hide-timestamp="authorityIsCraftsman"/>
-      <issue-event-text-form v-else @update="post = $event" :template="staleTemplate" :text-mode="false"/>
+      <mobile-image-form v-if="authorityIsCraftsman" @update="image = $event"/>
+      <image-form v-else @update="image = $event"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
+                             :hide-timestamp="authorityIsCraftsman"/>
     </template>
     <template v-if="entryType === 'FILE'">
       <file-form @update="file = $event"/>
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false" :hide-timestamp="authorityIsCraftsman"/>
+      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
+                             :hide-timestamp="authorityIsCraftsman"/>
     </template>
 
   </button-with-modal-confirm>
@@ -42,6 +45,7 @@ import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.
 import MapForm from "../Form/MapForm.vue";
 import FileForm from "../Form/FileForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
+import MobileImageForm from "../Form/MobileImageForm.vue";
 import CustomRadioField from "../Library/FormLayout/CustomRadioField.vue";
 import IssueEventEntryTypeCheckbox from "../Form/Field/IssueEventEntryTypeCheckbox.vue";
 
@@ -50,6 +54,7 @@ export default {
     IssueEventEntryTypeCheckbox,
     CustomRadioField,
     ImageForm,
+    MobileImageForm,
     FileForm, MapForm,
     ButtonWithModalConfirm,
     IssueEventTextForm,
