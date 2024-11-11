@@ -12,21 +12,21 @@
       "added": "Pendenz hinzugefügt",
       "title": "Pendenz hinzufügen"
     },
+    "add_issue_event": {
+      "added": "Ereignis hinzugefügt",
+      "added_craftsman": "Kommentar hinzugefügt",
+      "adds_event_to_all_craftsman_issues": "Fügt dieses Ereignis zu allen Pendenzen dieser Unternehmung hinzu.",
+      "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu.",
+      "adds_event_to_issue": "Sie können hier der Bauleitung eine Rückmeldung zur Pendenz zukommen lassen.",
+      "title": "Ereignis hinzufügen",
+      "title_craftsman": "Kommentar hinzufügen",
+      "type_file": "Datei",
+      "type_image": "Bild",
+      "type_text": "Text"
+    },
     "add_map": {
       "added": "Karte hinzugefügt",
       "title": "Karte hinzufügen"
-    },
-    "add_issue_event": {
-      "added": "Ereignis hinzugefügt",
-      "title": "Ereignis hinzufügen",
-      "title_craftsman": "Kommentar hinzufügen",
-      "added_craftsman": "Kommentar hinzugefügt",
-      "type_text": "Text",
-      "type_image": "Bild",
-      "type_file": "Datei",
-      "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu.",
-      "adds_event_to_all_craftsman_issues": "Fügt dieses Ereignis zu allen Pendenzen dieser Unternehmung hinzu.",
-      "adds_event_to_issue": "Sie können hier der Bauleitung eine Rückmeldung zur Pendenz zukommen lassen."
     },
     "add_task": {
       "added": "Aufgabe hinzugefügt",
@@ -40,7 +40,9 @@
     "compose_craftsman_email": {
       "no_template": "Neue Vorlage",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
+      "save_as_new_template": "Als neue Vorlage speichern",
       "save_as_template": "Vorlage speichern",
+      "save_template_changes": "Änderungen an der Vorlage speichern",
       "saved_email_template": "Vorlage gespeichert",
       "send_emails": "E-Mail versenden | {count} E-Mails versenden",
       "sent_emails": "E-Mails versandt",
@@ -60,9 +62,9 @@
       "saved": "Unternehmer gespeichert",
       "title": "Unternehmer bearbeiten"
     },
-    "edit_task": {
-      "saved": "Aufgabe gespeichert",
-      "title": "Aufgabe bearbeiten"
+    "edit_issue_event": {
+      "saved": "Ereignis gespeichert",
+      "title": "Ereignis bearbeiten"
     },
     "edit_issues": {
       "replaced_issue_images": "Bild ersetzt",
@@ -71,14 +73,14 @@
       "saved": "Pendenzen gespeichert",
       "title": "Pendenzen bearbeiten"
     },
-    "edit_issue_event": {
-      "saved": "Ereignis gespeichert",
-      "title": "Ereignis bearbeiten"
-    },
     "edit_map": {
       "replaced_map_file": "PDF ersetzt",
       "saved": "Karte gespeichert",
       "title": "Karte bearbeiten"
+    },
+    "edit_task": {
+      "saved": "Aufgabe gespeichert",
+      "title": "Aufgabe bearbeiten"
     },
     "enter_construction_site": {
       "title": "Zur Baustelle"
@@ -87,6 +89,11 @@
       "file_name": "Unternehmer",
       "title": "Excel exportieren"
     },
+    "export_issues": {
+      "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
+      "export_source_selection": "{count} Pendenzen, die markiert wurden",
+      "title": "Pendenzen exportieren"
+    },
     "export_issues_link": {
       "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
       "title": "Link"
@@ -94,11 +101,6 @@
     "export_issues_report": {
       "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
       "title": ".pdf Bericht"
-    },
-    "export_issues": {
-      "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
-      "export_source_selection": "{count} Pendenzen, die markiert wurden",
-      "title": "Pendenzen exportieren"
     },
     "filter_issues": {
       "confirm": "Filter setzen",
@@ -135,10 +137,10 @@
       "removed": "Unternehmer entfernt.",
       "title": "Unternehmer entfernen"
     },
-    "remove_task": {
-      "help": "Die Aufgabe wird entfernt.",
-      "removed": "Aufgabe entfernt.",
-      "title": "Aufgabe entfernen"
+    "remove_issue_event": {
+      "help": "Entfernt dieses Ereignis.",
+      "removed": "Ereignis entfernt",
+      "title": "Ereignis entfernen"
     },
     "remove_issues": {
       "confirm": "Eine Pendenz entfernen | {count} Pendenzen entfernen",
@@ -151,10 +153,10 @@
       "removed": "Karte entfernt",
       "title": "Karte entfernen"
     },
-    "remove_issue_event": {
-      "help": "Entfernt dieses Ereignis.",
-      "removed": "Ereignis entfernt",
-      "title": "Ereignis entfernen"
+    "remove_task": {
+      "help": "Die Aufgabe wird entfernt.",
+      "removed": "Aufgabe entfernt.",
+      "title": "Aufgabe entfernen"
     },
     "resolve_issue": {
       "resolved": "Pendenz als umgesetzt markiert.",
@@ -162,13 +164,13 @@
     },
     "save_changes": "Änderungen speichern",
     "select_map_position": {
-      "title": "Position setzen",
       "help": "Auf die Karte klicken, um die Position zu setzen.",
-      "no_position": "Keine Platzierung setzen"
+      "no_position": "Keine Platzierung setzen",
+      "title": "Position setzen"
     },
     "toggle_association_construction_site": {
-      "associated_short": "aktiv",
       "associated": "Sie wurden der Baustelle hinzugefügt.",
+      "associated_short": "aktiv",
       "dissociated": "Sie wurden von der Baustelle entfernt."
     },
     "toggle_can_edit": {
@@ -176,19 +178,19 @@
       "no_edit_anymore": "Der Unternehmer darf keine Pendenzen mehr als erledigt markieren."
     },
     "toggle_open_closed_task": {
-      "opened": "Aufgabe wieder geöffnet",
-      "closed": "Aufgabe erledigt"
+      "closed": "Aufgabe erledigt",
+      "opened": "Aufgabe wieder geöffnet"
     },
     "toggle_receive_weekly": {
       "no_weekly_anymore": "Wir senden Ihnen die wöchentliche Übersicht nicht mehr zu.",
       "weekly": "Wöchentliche Übersicht per E-Mail",
       "weekly_subscribed": "Wir senden Ihnen eine wöchentliche Übersicht mit allen Baustellen, denen Sie zugehörig sind."
     },
-    "view_issue": {
-      "title": "Pendenz anschauen"
-    },
     "view_craftsman_issues_events": {
       "title": "Ereignisse anschauen"
+    },
+    "view_issue": {
+      "title": "Pendenz anschauen"
     }
   },
   "_api": {
@@ -231,42 +233,46 @@
       "access_allowed_before": "Ablaufdatum des Zugriffes"
     },
     "issue_report": {
+      "by_craftsman": "nach Unternehmer",
+      "by_map": "nach Bauplan",
       "content": "Inhalt",
       "craftsmen": "Unternehmer",
       "group_issues_by_craftsman": "Pendenzen nach Unternehmer sortieren",
       "separate_report_by_craftsman": "Separater Bericht pro Unternehmer",
+      "summary_tables": "Zusammenfassungstabellen",
       "table_by_craftsman": "mit Übersicht Unternehmer",
       "table_by_map": "mit Übersicht Baupläne",
       "with_images": "mit Fotos",
       "with_renders": "mit Bauplänen"
     },
     "issues": {
-      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
+      "position_null": "Ohne Platzierung",
       "position_set": "Position gesetzt",
-      "position_null": "Ohne Platzierung"
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."
     },
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "reset": "zurücksetzen"
   },
   "_validation": {
-    "required": "Bitte Feld ausfüllen.",
     "not_an_email": "Dies ist keine valide E-Mail.",
-    "one_not_an_email": "Einer der Einträge ist keine valide E-Mail."
+    "one_not_an_email": "Einer der Einträge ist keine valide E-Mail.",
+    "required": "Bitte Feld ausfüllen."
   },
   "_view": {
-    "craftsmen_statistics": {
-      "count": "Anzahl"
+    "construction_sites_participation_table": {
+      "search": "Baustelle suchen"
     },
     "craftsmen": {
+      "issues_published_since_last_visit": "Eine Pendenz registriert seit dem letzten Besuch der Webseite | {count} Pendenzen registriert seit dem letzten Besuch der Webseite",
       "last_activity": "Letzte Aktivität",
-      "issues_published_since_last_visit": "Eine Pendenz registiert seit dem letzen Besuch der Webseite | {count} Pendenzen registiert seit dem letzen Besuch der Webseite",
       "with_open_issues": "mit offenen Pendenzen",
       "with_overdue_issues": "mit überfälligen Pendenzen",
       "with_unread_issues": "mit ungelesenen Pendenzen"
     },
-    "construction_sites_participation_table": {
-      "search": "Baustelle suchen"
+    "craftsmen_statistics": {
+      "count": "Anzahl"
     },
+    "download": "herunterladen",
     "feed": {
       "entries": {
         "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
@@ -275,6 +281,9 @@
         "has_visited_webpage": "hat die Pendenzen angeschaut."
       },
       "no_entries": "Keine neuen Aktivitäten auf der Baustelle."
+    },
+    "issue_event": {
+      "show_email_body": "Inhalt anzeigen"
     },
     "issues": {
       "sort_by_last_activity": "Nach letzter Aktivität sortieren",
@@ -285,21 +294,17 @@
     "maps_resolve": {
       "issues_by_map": "Pendenzen nach Bauplan"
     },
-    "issue_event": {
-      "show_email_body": "Inhalt anzeigen"
-    },
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne",
-    "show_more_issues": "Weitere {count} Pendenzen laden.",
-    "download": "herunterladen"
+    "show_more_issues": "Weitere {count} Pendenzen laden."
   },
   "construction_manager": {
     "_name": "Bauleiter",
     "_plural": "Bauleiter",
     "email": "E-Mail",
-    "name": "Name",
-    "is_disabled": "Deaktiviert"
+    "is_disabled": "Deaktiviert",
+    "name": "Name"
   },
   "construction_site": {
     "_name": "Baustelle",
@@ -311,15 +316,15 @@
     "street_address": "Strasse \/ Nr."
   },
   "craftsman": {
+    "CCs": "CCs",
+    "_contact": "Kontaktdaten",
     "_excel_format_emailCCs": "mehrere E-Mails durch Komma trennen",
     "_name": "Unternehmer",
-    "_contact": "Kontaktdaten",
     "_plural": "Unternehmer",
     "company": "Firma",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "emailCCs": "E-Mail CCs",
-    "CCs": "CCs",
     "last_email_received": "E-Mail empfangen",
     "last_issue_resolved_at": "Pendenz umgesetzt",
     "last_visit_online": "Webseite besucht",
@@ -331,10 +336,13 @@
     "trade": "Gewerk"
   },
   "dashboard": {
-    "feed": "Feed",
     "activity": "Aktivität",
-    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst.",
-    "load_closed_tasks": "Erledigte Aufgaben laden."
+    "feed": "Feed",
+    "load_closed_tasks": "Erledigte Aufgaben laden.",
+    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst."
+  },
+  "dispatch": {
+    "title": "Unternehmer informieren"
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
@@ -373,20 +381,17 @@
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "title": "Pendenzen einpflegen"
   },
-  "dispatch": {
-    "title": "Unternehmer informieren"
-  },
   "issue": {
     "_name": "Pendenz",
     "_plural": "Pendenzen",
     "craftsman": "Unternehmer",
     "deadline": "Frist",
     "description": "Beschreibung",
-    "no_description_yet": "Noch keine Beschreibung",
     "image": "Bild",
     "is_marked": "Favorit",
     "last_changed_at": "Zuletzt geändert",
     "map": "Bauplan",
+    "no_description_yet": "Noch keine Beschreibung",
     "number": "Nummer",
     "position": "Platzierung",
     "state": {
@@ -410,11 +415,11 @@
   "issue_event": {
     "_name": "Ereignis",
     "_plural": "Ereignisse",
-    "timestamp": "Zeitpunkt",
-    "text_payload": "Text",
-    "file_payload": "Beschreibung",
     "created_at": "Erstellt",
-    "last_changed_at": "Zuletzt geändert"
+    "file_payload": "Beschreibung",
+    "last_changed_at": "Zuletzt geändert",
+    "text_payload": "Text",
+    "timestamp": "Zeitpunkt"
   },
   "map": {
     "_name": "Bauplan",
@@ -426,28 +431,28 @@
     "parent_not_found_name": "(entfernt)",
     "parent_not_set_name": "-"
   },
-  "task": {
-    "_name": "Aufgabe",
-    "_plural": "Aufgaben",
-    "description": "Beschreibung",
-    "deadline": "Frist",
-    "created_by": "erstellt von",
-    "closed_by": "erledigt von"
-  },
   "resolve": {
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese weiterverarbeiten kann.",
-    "total_open": "Eine offene Pendenz | Total {count} offene Pendenzen",
-    "thanks": "Sie haben keine offenen Pendenzen."
+    "thanks": "Sie haben keine offenen Pendenzen.",
+    "total_open": "Eine offene Pendenz | Total {count} offene Pendenzen"
   },
   "switch": {
     "all": "Alle erfassten Baustellen",
     "all_help": "Aktivieren Sie Baustellen um auf diese zuzugreifen.",
+    "load_more_tasks": "Weitere Aufgaben laden.",
     "mine": "Meine Baustellen",
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen.",
     "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
     "no_tasks_pending": "Keine Aufgaben fällig.",
-    "tasks_loaded_until": "Aufgaben mit Frist vor dem {deadlineLoaded} geladen.",
-    "load_more_tasks": "Weitere Aufgaben laden."
+    "tasks_loaded_until": "Aufgaben mit Frist vor dem {deadlineLoaded} geladen."
+  },
+  "task": {
+    "_name": "Aufgabe",
+    "_plural": "Aufgaben",
+    "closed_by": "erledigt von",
+    "created_by": "erstellt von",
+    "deadline": "Frist",
+    "description": "Beschreibung"
   }
 }
