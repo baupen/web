@@ -25,6 +25,16 @@ class ImageHelper
         $imageWidth = $imageSizes[0];
         $imageHeight = $imageSizes[1];
 
+        return self::fitInBoundingBoxRaw($imageWidth, $imageHeight, $boxWidth, $boxHeight, $expand);
+    }
+
+    /**
+     * gives back the width and height to be used.
+     *
+     * @return int[]
+     */
+    public static function fitInBoundingBoxRaw(int $imageWidth, int $imageHeight, mixed $boxWidth, mixed $boxHeight, bool $expand = true): array
+    {
         // get ratios
         $widthRatio = (float) $boxWidth / $imageWidth;
         $heightRatio = (float) $boxHeight / $imageHeight;

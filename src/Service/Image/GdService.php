@@ -104,9 +104,30 @@ class GdService
         }
     }
 
+    private function getQuarterRotation(string $sourcePath): int
+    {
+        if (function_exists('exif_read_data')) {
+            $exif = exif_read_data($sourcePath);
+            if (!empty($exif['Orientation'])) {
+                return match ($exif['Orientation']) {
+                    3 => 2,
+                    6 => 3,
+                    8 => 1,
+                };
+            }
+        }
+
+        return 0;
+    }
+
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool
     {
-        list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
+        $rotation = $this->getQuarterRotation($sourcePath);
+        $imageSizes = getimagesize($sourcePath);
+        $imageWidth = $imageSizes[$rotation % 2];
+        $imageHeight = $imageSizes[($rotation + 1) % 2];
+
+        list($width, $height) = ImageHelper::fitInBoundingBoxRaw($imageWidth, $imageHeight, $maxWidth, $maxHeight, false);
         $ending = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
 
         // resize & save
@@ -121,6 +142,10 @@ class GdService
                 return false;
             }
 
+            if ($rotation > 0) {
+                $originalImage = imagerotate($originalImage, $rotation * 90, 0);
+            }
+
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagejpeg($newImage, $targetPath, 80);
         } elseif ('png' === $ending) {
@@ -129,12 +154,20 @@ class GdService
                 return false;
             }
 
+            if ($rotation > 0) {
+                $originalImage = imagerotate($originalImage, $rotation * 90, 0);
+            }
+
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagepng($newImage, $targetPath, 8);
         } elseif ('gif' === $ending) {
             $originalImage = imagecreatefromgif($sourcePath);
             if (!$originalImage) {
                 return false;
+            }
+
+            if ($rotation > 0) {
+                $originalImage = imagerotate($originalImage, $rotation * 90, 0);
             }
 
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
