@@ -92,6 +92,18 @@ export default {
       required: true
     },
   },
+  watch: {
+    constructionSites: {
+      deep: true,
+      handler: function () {
+        const targetWeek = this.loadedUntilWeek
+        this.loadedUntilWeek = 0
+        this.isLoading = true
+        this.tasks = null
+        this.loadTasks(targetWeek)
+      }
+    }
+  },
   computed: {
     deadlineGroupedTasks: function () {
       const deadlineGroupTasks = {}

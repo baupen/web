@@ -14,7 +14,7 @@
               </div>
             </div>
           </div>
-          <div class="col-3" v-if="memberOfConstructionSites.length > 1">
+          <div class="col-3">
             <switch-tasks
                 :construction-manager-iri="constructionManagerIri"
                 :construction-managers="constructionManagers"
