@@ -296,6 +296,7 @@
     },
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
+    "no_construction_sites": "Keine Baustellen",
     "no_maps": "Keine Baupläne",
     "show_more_issues": "Weitere {count} Pendenzen laden."
   },

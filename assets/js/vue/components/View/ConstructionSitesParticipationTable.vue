@@ -16,6 +16,11 @@
       </thead>
       <tbody>
       <loading-indicator-table-body v-if="!constructionSites" />
+      <tr v-else-if="constructionSitesOrdered.length === 0">
+        <td colspan="99">
+          <p class="text-center">{{ $t('_view.no_construction_sites') }}</p>
+        </td>
+      </tr>
       <tr v-else v-for="constructionSite in constructionSitesOrdered" :key="constructionSite['@id']">
         <td>
           <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name" />
