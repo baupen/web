@@ -332,7 +332,7 @@ export default {
     },
     persistFilterKey: function () {
       if (this.view === "foyer" || this.view === "register") {
-        return 'issues-table-' + this.view
+        return 'issues-table-' + this.view + '-' + this.constructionSite['@id']
       }
       return null
     },
