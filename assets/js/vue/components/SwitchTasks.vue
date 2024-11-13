@@ -23,6 +23,9 @@
                   <p class="mb-1">
                     <strong>
                       {{ constructionSites.find(site => site['@id'] === constructionSiteId).name }}
+                      <a :href="constructionSiteId.replace('/api', '') + '/dashboard'" class="ms-1">
+                        <font-awesome-icon :icon="['fas', 'chevron-right']" />
+                      </a>
                     </strong>
                   </p>
                   <div class="row g-1">

@@ -31,7 +31,8 @@ import {
   faFilter as faFilterSolid,
   faSearch as faSearchSolid,
   faSortUp as faSortUpSolid,
-  faSortDown as faSortDownSolid // table
+  faSortDown as faSortDownSolid, // table
+  faChevronRight as faChevronRightSolid
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import Flatpickr from 'flatpickr'
@@ -72,7 +73,8 @@ FontawesomeLibrary.add(
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faCircleRegular, faCircleUserRegular, faCircleORegular, faCircleEnvelopeRegular, faCircleCameraRegular, faCircleDownRegular, faDownRegular, faListUlRegular,
   faStarSolid, faUserCheckSolid,
-  faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
+  faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid,
+  faChevronRightSolid
 )
 
 // configure moment
