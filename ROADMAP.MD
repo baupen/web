@@ -8,7 +8,7 @@ Features which fit the vision of the product, and have been requested by custome
 ## Future improvements
 
 Dashboard:
-- The feed on the dashboard is probably not useful in the state it is now. Incomplete (e.g. regarding issue events).
+- The feed on the dashboard is probably not useful in the state it is now. Incomplete (e.g. regarding issue events). -> Use directly issue events to construct feed.
 - Refactor when example construction site is created: Only upon user request.
 
 Register:
