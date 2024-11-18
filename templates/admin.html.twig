@@ -32,29 +32,29 @@
                     <td>
                         {# activation status #}
                         {% if not constructionManager.registrationCompleted %}
-                            <span class="badge badge-warning">
+                            <span class="badge text-bg-warning">
                                 {{ "index.badges.await_registration"|trans }}
                             </span>
                         {% elseif constructionManager.isEnabled %}
-                            <span class="badge badge-success">
+                            <span class="badge text-bg-success">
                                 {{ "index.badges.enabled"|trans }}
                             </span>
                         {% else %}
-                            <span class="badge badge-danger">
+                            <span class="badge text-bg-danger">
                                 {{ "index.badges.disabled"|trans }}
                             </span>
                         {% endif %}
 
                         {# special roles #}
                         {% if constructionManager.isAdminAccount %}
-                            <span class="badge badge-danger" data-bs-toggle="tooltip"
+                            <span class="badge text-bg-danger" data-bs-toggle="tooltip"
                                   title="{{ "index.badges.admin_help"|trans }}"
                             >
                                 {{ "index.badges.admin"|trans }}
                             </span>
                         {% endif %}
                         {% if constructionManager.registrationCompleted and not constructionManager.canAssociateSelf %}
-                            <span class="badge badge-info" data-bs-toggle="tooltip"
+                            <span class="badge text-bg-info" data-bs-toggle="tooltip"
                                   title="{{ "index.badges.guest_help"|trans }}"
                             >
                                 {{ "index.badges.guest"|trans }}
