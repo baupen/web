@@ -2,13 +2,11 @@
 
 Features which fit the vision of the product, and have been requested by customers.
 
-## Currently being worked on
-
-
 ## Future improvements
 
 Dashboard:
 - The feed on the dashboard is probably not useful in the state it is now. Incomplete (e.g. regarding issue events). -> Use directly issue events to construct feed.
+- TODOs should be attributable to someone.
 - Refactor when example construction site is created: Only upon user request.
 
 Register:
