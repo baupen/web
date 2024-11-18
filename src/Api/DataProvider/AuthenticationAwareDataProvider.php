@@ -233,7 +233,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             }
 
             if (is_array($query[$property])) {
-                if ([] !== array_diff($restriction, $query[$property])) {
+                if ([] !== array_diff($query[$property], $restriction)) {
                     throw new BadRequestException($property.' filter value '.implode($query[$property]).' not equal '.implode($restriction).'.');
                 }
             } elseif (!in_array($query[$property], $restriction)) {
