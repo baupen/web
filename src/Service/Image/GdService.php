@@ -110,9 +110,11 @@ class GdService
             $exif = exif_read_data($sourcePath);
             if (!empty($exif['Orientation'])) {
                 return match ($exif['Orientation']) {
+                    1 => 0,
                     3 => 2,
                     6 => 3,
                     8 => 1,
+                    default => 0, // cannot handle non-90% rotations
                 };
             }
         }
