@@ -25,7 +25,7 @@
             <br/>
             <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
-          <div class="row g-2">
+          <div class="row g-2" v-if="craftsman.canEdit" >
             <div :class="{'col-auto': addedIssueEvents.length === 0, 'col-12': addedIssueEvents.length > 0}">
               <add-issue-event-button
                   v-if="!issue.resolvedAt"
@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="col-auto">
-              <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman"/>
+              <resolve-issue-button :issue="issue" :craftsman="craftsman"/>
             </div>
           </div>
         </div>
