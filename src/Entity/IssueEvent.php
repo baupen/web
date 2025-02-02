@@ -78,11 +78,6 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
-    private ?bool $contextualForChildren = true;
-
-    #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
@@ -104,6 +99,10 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     #[Groups(['issue-event-read', 'issue-event-write'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
+
+    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
+    private ?bool $contextualForChildren = true;
 
     #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]
     private ?IssueEventFile $file = null;
@@ -234,6 +233,16 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public function setTimestamp(?\DateTimeInterface $timestamp): void
     {
         $this->timestamp = $timestamp;
+    }
+
+    public function getContextualForChildren(): ?bool
+    {
+        return $this->contextualForChildren;
+    }
+
+    public function setContextualForChildren(?bool $contextualForChildren): void
+    {
+        $this->contextualForChildren = $contextualForChildren;
     }
 
     public function getFile(): ?IssueEventFile
