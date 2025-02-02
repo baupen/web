@@ -4,13 +4,6 @@
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
-    <p class="alert alert-info" v-if="rootIsConstructionSite">
-      {{ $t('_action.add_issue_event.adds_event_to_all_issues') }}
-    </p>
-    <p class="alert alert-info" v-else-if="rootIsCraftsman">
-      {{ $t('_action.add_issue_event.adds_event_to_all_craftsman_issues') }}
-    </p>
-
     <p class="alert alert-info" v-if="authorityIsCraftsman">
       {{ $t('_action.add_issue_event.adds_event_to_issue') }}
     </p>
@@ -34,20 +27,21 @@
     </ul>
     <div class="tab-content p-3 border border-top-0">
       <div class="tab-pane fade" :class="{'show active': entryType === 'TEXT'}">
-        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"
-                               :hide-timestamp="authorityIsCraftsman"/>
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"/>
       </div>
       <div class="tab-pane fade" :class="{'show active': entryType === 'IMAGE'}">
         <mobile-image-form v-if="authorityIsCraftsman" @update="image = $event"/>
         <image-form v-else @update="image = $event"/>
-        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
-                               :hide-timestamp="authorityIsCraftsman"/>
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
       </div>
       <div class="tab-pane fade" :class="{'show active': entryType === 'FILE'}">
         <file-form @update="file = $event"/>
-        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
-                               :hide-timestamp="authorityIsCraftsman"/>
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"/>
       </div>
+    </div>
+
+    <div v-if="!authorityIsCraftsman" class="mt-3">
+      <issue-event-meta-form @update="meta = $event" :template="metaTemplate" :root="root"/>
     </div>
   </button-with-modal-confirm>
 </template>
@@ -64,9 +58,11 @@ import MobileImageForm from "../Form/MobileImageForm.vue";
 import CustomRadioField from "../Library/FormLayout/CustomRadioField.vue";
 import ExportIssuesReportView from "./ExportIssuesReportView.vue";
 import ExportIssuesLinkView from "./ExportIssuesLinkView.vue";
+import IssueEventMetaForm from "../Form/IssueEventMetaForm.vue";
 
 export default {
   components: {
+    IssueEventMetaForm,
     ExportIssuesLinkView, ExportIssuesReportView,
     CustomRadioField,
     ImageForm,
@@ -82,6 +78,9 @@ export default {
 
       post: null,
       staleTemplate: null,
+
+      meta: null,
+      metaTemplate: null,
 
       image: null,
       file: null,
@@ -114,15 +113,10 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return !!this.post && (this.entryType === 'TEXT') ||
+      return !!this.meta &&
+          !!this.post && (this.entryType === 'TEXT') ||
           (this.entryType === 'IMAGE' && !!this.image) ||
           (this.entryType === 'FILE' && !!this.file)
-    },
-    rootIsConstructionSite: function () {
-      return this.root['@id'].includes('construction_sites')
-    },
-    rootIsCraftsman: function () {
-      return this.root['@id'].includes('craftsmen')
     },
     authorityIsCraftsman: function () {
       return this.authorityIri.includes('craftsmen')
@@ -142,7 +136,8 @@ export default {
         type: this.entryType,
         createdBy: iriToId(this.authorityIri),
         lastChangedBy: iriToId(this.authorityIri),
-        ...this.post
+        ...this.post,
+        ...this.meta
       })
 
       const successMessage = this.authorityIsCraftsman ?
@@ -169,6 +164,10 @@ export default {
                 })
           })
     }
+  },
+  mounted() {
+    const meta = { timestamp: (new Date()).toISOString(), contextualForChildren: true }
+    this.meta = this.metaTemplate = meta;
   }
 }
 </script>
