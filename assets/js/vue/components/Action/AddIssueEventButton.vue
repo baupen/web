@@ -15,25 +15,40 @@
       {{ $t('_action.add_issue_event.adds_event_to_issue') }}
     </p>
 
-    <issue-event-entry-type-checkbox class="mb-3" v-model="entryType"/>
-
-    <template v-if="entryType === 'TEXT'">
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"
-                             :hide-timestamp="authorityIsCraftsman"/>
-    </template>
-
-    <template v-if="entryType === 'IMAGE'">
-      <mobile-image-form v-if="authorityIsCraftsman" @update="image = $event"/>
-      <image-form v-else @update="image = $event"/>
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
-                             :hide-timestamp="authorityIsCraftsman"/>
-    </template>
-    <template v-if="entryType === 'FILE'">
-      <file-form @update="file = $event"/>
-      <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
-                             :hide-timestamp="authorityIsCraftsman"/>
-    </template>
-
+    <ul class="nav nav-tabs" id="export-type-settings">
+      <li class="nav-item">
+        <a class="nav-link" :class="{'active': entryType === 'TEXT'}" @click="entryType = 'TEXT'">
+          {{ $t('_action.add_issue_event.type_text') }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" :class="{'active': entryType === 'IMAGE'}" @click="entryType = 'IMAGE'">
+          {{ $t('_action.add_issue_event.type_image') }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" :class="{'active': entryType === 'FILE'}" @click="entryType = 'FILE'">
+          {{ $t('_action.add_issue_event.type_file') }}
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content p-3 border border-top-0">
+      <div class="tab-pane fade" :class="{'show active': entryType === 'TEXT'}">
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="true"
+                               :hide-timestamp="authorityIsCraftsman"/>
+      </div>
+      <div class="tab-pane fade" :class="{'show active': entryType === 'IMAGE'}">
+        <mobile-image-form v-if="authorityIsCraftsman" @update="image = $event"/>
+        <image-form v-else @update="image = $event"/>
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
+                               :hide-timestamp="authorityIsCraftsman"/>
+      </div>
+      <div class="tab-pane fade" :class="{'show active': entryType === 'FILE'}">
+        <file-form @update="file = $event"/>
+        <issue-event-text-form @update="post = $event" :template="staleTemplate" :text-mode="false"
+                               :hide-timestamp="authorityIsCraftsman"/>
+      </div>
+    </div>
   </button-with-modal-confirm>
 </template>
 
@@ -47,11 +62,12 @@ import FileForm from "../Form/FileForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
 import MobileImageForm from "../Form/MobileImageForm.vue";
 import CustomRadioField from "../Library/FormLayout/CustomRadioField.vue";
-import IssueEventEntryTypeCheckbox from "../Form/Field/IssueEventEntryTypeCheckbox.vue";
+import ExportIssuesReportView from "./ExportIssuesReportView.vue";
+import ExportIssuesLinkView from "./ExportIssuesLinkView.vue";
 
 export default {
   components: {
-    IssueEventEntryTypeCheckbox,
+    ExportIssuesLinkView, ExportIssuesReportView,
     CustomRadioField,
     ImageForm,
     MobileImageForm,
