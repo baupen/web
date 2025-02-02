@@ -8,7 +8,8 @@
       <font-awesome-icon :icon="['fal', 'pencil']" />
     </template>
 
-    <issue-event-text-form @update="patch = $event" :template="issueEvent" :text-mode="issueEvent.entryType === 'TEXT'"/>
+    <issue-event-text-form @update="patch = $event" :template="issueEvent" :text-mode="issueEvent.type === 'TEXT'"/>
+    <issue-event-meta-form @update="meta = $event" :template="issueEvent" :root="root"/>
 
     <hr/>
 
@@ -30,9 +31,11 @@ import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssueEventTextForm from "../Form/IssueEventTextForm.vue";
 import DateTimeHumanReadable from "../Library/View/DateTimeHumanReadable.vue";
 import {entityFormatter} from "../../services/formatters";
+import IssueEventMetaForm from "../Form/IssueEventMetaForm.vue";
 
 export default {
   components: {
+    IssueEventMetaForm,
     DateTimeHumanReadable,
     IssueEventTextForm,
     ButtonWithModalConfirm
@@ -40,11 +43,16 @@ export default {
   data () {
     return {
       patch: null,
+      meta: null,
       patching: false
     }
   },
   props: {
     issueEvent: {
+      type: Object,
+      required: true
+    },
+    root: {
       type: Object,
       required: true
     },
@@ -63,7 +71,8 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return !!(this.patch && Object.keys(this.patch).length)
+      return !!(this.patch && Object.keys(this.patch).length) ||
+          !!(this.meta && Object.keys(this.meta).length)
     },
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
@@ -79,7 +88,8 @@ export default {
       this.patching = true
       const payload = {
         lastChangedBy: iriToId(this.authorityIri),
-        ...this.patch
+        ...(this.patch ?? {}),
+        ...(this.meta ?? {})
       }
       api.patch(this.issueEvent, payload, this.$t('_action.edit_issue_event.saved'))
           .then(_ => { this.patching = false})

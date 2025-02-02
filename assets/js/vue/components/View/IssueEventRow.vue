@@ -54,8 +54,8 @@
       <div class="btn-group">
         <edit-issue-event-button
             v-if="isCreatedByConstructionManager"
-            :issue-event="issueEvent" :authority-iri="authorityIri" :created-by="createdBy"
-            :last-changed-by="lastChangedBy"/>
+            :issue-event="issueEvent" :root="root" :authority-iri="authorityIri"
+            :created-by="createdBy" :last-changed-by="lastChangedBy"/>
         <remove-issue-event-button :issue-event="issueEvent" @removed="$emit('removed')"/>
       </div>
     </div>
