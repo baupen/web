@@ -15,8 +15,8 @@
     "add_issue_event": {
       "added": "Ereignis hinzugefügt",
       "added_craftsman": "Kommentar hinzugefügt",
-      "adds_event_to_all_craftsman_issues": "Fügt dieses Ereignis zu allen Pendenzen dieser Unternehmung hinzu.",
-      "adds_event_to_all_issues": "Fügt dieses Ereignis zu allen Pendenzen hinzu.",
+      "add_event_to_all_craftsman_issues": "Ereignis auch bei Pendenzen der Unternehmung anzeigen.",
+      "add_event_to_all_issues": "Ereignis auch bei Pendenzen und Unternehmern anzeigen.",
       "adds_event_to_issue": "Sie können hier der Bauleitung eine Rückmeldung zur Pendenz zukommen lassen.",
       "title": "Ereignis hinzufügen",
       "title_craftsman": "Kommentar oder Foto hinzufügen",

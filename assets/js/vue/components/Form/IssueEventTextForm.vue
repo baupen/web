@@ -11,18 +11,6 @@
         </textarea>
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
-
-  <form-field for-id="timestamp" :label="$t('issue_event.timestamp')" :required="true" v-if="!hideTimestamp">
-    <span ref="timestamp-anchor"/>
-    <flat-pickr
-        id="timestamp" class="form-control"
-        v-model="issueEvent.timestamp"
-        :config="dateTimePickerConfig"
-        @blur="fields.timestamp.dirty = true"
-        @change="validate('timestamp')">
-    </flat-pickr>
-    <invalid-feedback :errors="fields.timestamp.errors"/>
-  </form-field>
 </template>
 
 <script>
@@ -34,26 +22,20 @@ import {
 } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import Help from '../Library/FormLayout/Help'
-import {dateTimeConfig, flatPickr, toggleAnchorValidity} from "../../services/flatpickr";
 
 export default {
   components: {
-    Help,
     InvalidFeedback,
     FormField,
-    flatPickr
   },
   emits: ['update'],
   data() {
     return {
       fields: {
         payload: createField(),
-        timestamp: createField(requiredRule()),
       },
       issueEvent: {
         payload: null,
-        timestamp: (new Date()).toISOString()
       },
     }
   },
@@ -62,10 +44,6 @@ export default {
       type: Object
     },
     textMode: {
-      type: Boolean,
-      default: false
-    },
-    hideTimestamp: {
       type: Boolean,
       default: false
     },
@@ -79,15 +57,6 @@ export default {
     },
     template: function () {
       this.setFromTemplate()
-    },
-    'issueEvent.timestamp': function () {
-      validateField(this.fields['timestamp'], this.issueEvent['timestamp'])
-    },
-    'fields.timestamp.dirty': function () {
-      toggleAnchorValidity(this.$refs['timestamp-anchor'], this.fields.timestamp)
-    },
-    'fields.timestamp.errors.length': function () {
-      toggleAnchorValidity(this.$refs['timestamp-anchor'], this.fields.timestamp)
     }
   },
   methods: {
@@ -103,12 +72,8 @@ export default {
     }
   },
   computed: {
-    dateTimePickerConfig: function () {
-      return dateTimeConfig
-    },
     updatePayload: function () {
-      if (this.fields.payload.errors.length ||
-          this.fields.timestamp.errors.length) {
+      if (this.fields.payload.errors.length) {
         return null
       }
 
