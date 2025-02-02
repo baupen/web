@@ -78,6 +78,11 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
+    private ?bool $contextualForChildren = true;
+
+    #[Assert\NotBlank]
+    #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
