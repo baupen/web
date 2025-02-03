@@ -10,7 +10,7 @@
           :last="index+1 === orderedIssueEvents.length"
           :issue-event="entry"
           :root="getRoot(entry)"
-          :is-context="!(issueEvents.includes(entry))"
+          :is-context="!(issueEvents && issueEvents.includes(entry))"
           :authority-iri="authorityIri"
           :created-by="responsiblesLookup[entry['createdBy']]"
           :last-changed-by="responsiblesLookup[entry['lastChangedBy']]"
