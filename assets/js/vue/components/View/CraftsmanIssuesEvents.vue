@@ -24,7 +24,7 @@
 import {api, iriToId} from "../../services/api";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
-import {sortIssueEvents} from "../../services/sorters";
+import {orderIssueEvents} from "../../services/sorters";
 import IssueEventRow from "./IssueEventRow.vue";
 
 export default {
@@ -67,7 +67,7 @@ export default {
     orderedIssueEvents: function () {
       const issueEvents = [...(this.issueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
           .filter(entry => !entry.isDeleted)
-      sortIssueEvents(issueEvents)
+      orderIssueEvents(issueEvents)
       return issueEvents
     }
   },
@@ -85,7 +85,7 @@ export default {
         .then(entries => {
           this.issueEvents = entries
         })
-    api.getIssueEvents(this.constructionSite, this.constructionSite)
+    api.getIssueEvents(this.constructionSite, this.constructionSite, true)
         .then(entries => {
           this.constructionSiteIssueEvents = entries
         })

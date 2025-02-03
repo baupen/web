@@ -27,7 +27,7 @@ import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
 import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
-import {sortIssueEvents} from "../../services/sorters";
+import {filterIssueEventsForIssue, orderIssueEvents} from "../../services/sorters";
 import IssueEventRow from "./IssueEventRow.vue";
 
 export default {
@@ -78,8 +78,8 @@ export default {
     orderedIssueEvents: function () {
       const issueEvents = [...(this.issueEvents ?? []), ...(this.craftsmanIssueEvents ?? []), ...(this.constructionSiteIssueEvents ?? [])]
           .filter(entry => !entry.isDeleted)
-      sortIssueEvents(issueEvents)
-      return issueEvents
+      orderIssueEvents(issueEvents)
+      return filterIssueEventsForIssue(issueEvents, this.issue['@id'])
     },
     craftsman: function () {
       return this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.craftsman);
@@ -103,12 +103,12 @@ export default {
           this.issueEvents = entries
         })
     if (this.craftsman) {
-      api.getIssueEvents(this.constructionSite, this.craftsman)
+      api.getIssueEvents(this.constructionSite, this.craftsman, true)
           .then(entries => {
             this.craftsmanIssueEvents = entries
           })
     }
-    api.getIssueEvents(this.constructionSite, this.constructionSite)
+    api.getIssueEvents(this.constructionSite, this.constructionSite, true)
         .then(entries => {
           this.constructionSiteIssueEvents = entries
         })

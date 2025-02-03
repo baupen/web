@@ -32,7 +32,7 @@ import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.
 import {api, iriToId} from "../services/api";
 import AddIssueEventButton from "./Action/AddIssueEventButton.vue";
 import IssueEventRow from "./View/IssueEventRow.vue";
-import {sortIssueEvents} from "../services/sorters";
+import {orderIssueEvents} from "../services/sorters";
 
 export default {
   components: {
@@ -68,7 +68,7 @@ export default {
     },
     orderedIssueEvents: function () {
       const issueEvents = this.issueEvents.filter(event => !event.isDeleted)
-      sortIssueEvents(issueEvents)
+      orderIssueEvents(issueEvents)
       return issueEvents
     }
   },

@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
@@ -29,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * A issue event adds context to the linked entity.
+ * An issue event adds context to the linked entity.
  *
  * @ApiResource(
  *      collectionOperations={
@@ -48,6 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite","createdBy"})
  * @ApiFilter(DateFilter::class, properties={"createdAt"})
  * @ApiFilter(SearchFilter::class, properties={"root": "exact"})
+ * @ApiFilter(BooleanFilter::class, properties={"contextualForChildren"})
  * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  */

@@ -378,9 +378,12 @@ const api = {
 
     return this._getHydraCollection('/api/tasks' + queryString)
   },
-  getIssueEvents: function (constructionSite, root) {
+  getIssueEvents: function (constructionSite, root, onlyContextualForChildren = false) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     queryString += '&root=' + iriToId(root['@id'])
+    if (onlyContextualForChildren) {
+      queryString += '&contextualForChildren=true'
+    }
     queryString += '&isDeleted=false'
 
     return this._getHydraCollection('/api/issue_events' + queryString)
