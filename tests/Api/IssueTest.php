@@ -461,7 +461,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
+        $newIssue = function () use ($constructionSite, $constructionManager): Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
@@ -567,7 +567,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
+        $newIssue = function () use ($constructionSite, $constructionManager): Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
@@ -666,7 +666,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
+        $newIssue = function () use ($constructionSite, $constructionManager): Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
