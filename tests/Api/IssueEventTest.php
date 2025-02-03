@@ -56,7 +56,7 @@ class IssueEventTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issue_events?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'timestamp', 'createdAt', 'createdBy', 'lastChangedAt', 'lastChangedBy', 'isDeleted');
+        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'timestamp', 'createdAt', 'createdBy', 'lastChangedAt', 'lastChangedBy', 'isDeleted', 'contextualForChildren');
     }
 
     public function testPostAndDelete(): void
