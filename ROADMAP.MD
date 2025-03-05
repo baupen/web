@@ -14,10 +14,15 @@ Improve existing features:
 - Issue Filter: Preview number of results per filter criteria. 
 - Issue: Export single issue as PDF, notably including history. Add multiple images. Add labels (while refactoring current labels).
 - TODOs: Link with specific issues, send E-Mails reminders, attribute to construction managers.
-- History: Preview last entry or number of entries in overviews (e.g. issue table). 
+- History: Dedicated view to see new entries, in particular from craftsmen. Preview last entry or number of entries in overviews (e.g. issue table). 
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Report: Add issue coloring to table / photos.
 - Resolve: Show craftsman their protocol entries.
+- Archive: Export whole construction site.
+
+
+
+
 
 Technical:
 - Dashboard feed: Refactor to build upon issue events.
