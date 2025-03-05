@@ -2,29 +2,24 @@
 
 Features which fit the vision of the product, and have been requested by customers.
 
-## Future improvements
+Documentation & Journal:
+- Photo-Documentation: Add photos for construction site, lookup structured by day.
+- Journal: Document events & conditions of today, link & describe some photos.
+- Photo-search: Facilitate lookup of photos taken as part of the documentation effort.
+- Extensions photo documentation: Locate photos in recurring inspections. Assign keywords and categories.
+- Extensions construction journal: Link with relevant defects. Construction site statistics as metadata. Include weather automatically. Cryptographic proof of immutability.
+- Photo search: Search based on motifs.
 
-Dashboard:
-- The feed on the dashboard is probably not useful in the state it is now. Incomplete (e.g. regarding issue events). -> Use directly issue events to construct feed.
-- TODOs should be attributable to someone.
-- Refactor when example construction site is created: Only upon user request.
-
-Register:
-- Show number of events in issues as badge 
-- Include events in the "Last activity" checkbox 
-- Preview results in filter (preview expected number of results when applying new filter criteria)
-
-Report:
-- Add issue number coloring also to the table / to the photos
-
-Edit:
-- When adding an external construction manager, add context to the registration email about who did it, and for what construction site.
-
-Resolve:
-- show past protocol entries (filter by manual created entries)
-
-Framework:
-- Frontend often cannot recover from failed backend calls (e.g. button remains disabled)
+Improve existing features:
+- Issue Filter: Preview number of results per filter criteria. 
+- Issue: Export single issue as PDF, notably including history. Add multiple images. Add labels (while refactoring current labels).
+- TODOs: Link with specific issues, send E-Mails reminders, attribute to construction managers.
+- History: Preview last entry or number of entries in overviews (e.g. issue table). 
+- First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
+- Report: Add issue coloring to table / photos.
+- Resolve: Show craftsman their protocol entries.
 
 Technical:
-- [ ] IT translations could use a refactoring
+- Dashboard feed: Refactor to build upon issue events.
+- Issue last activity: Derive from issue events
+- Translations: Add missing IT strings
