@@ -115,15 +115,6 @@ if (Encore.isProduction()) {
   webpackConfig.resolve.alias = Object.assign(webpackConfig.resolve.alias, {
     "vue-i18n": "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js"
   })
-
-  // precompile resources as it is not possible in runtime build
-  // see https://github.com/intlify/bundle-tools/tree/main/packages/vue-i18n-loader
-  webpackConfig.module.rules.push({
-    test: /\.(json5?|ya?ml)$/, // target json, json5, yaml and yml files
-    type: 'javascript/auto',
-    loader: '@intlify/vue-i18n-loader',
-    include: [path.resolve(__dirname, 'assets/js/vue/localization')]
-  })
 }
 
 module.exports = webpackConfig
