@@ -11,7 +11,7 @@ Documentation & Journal:
 - Photo search: Search based on motifs.
 
 Improve existing features:
-- Issue Filter: Preview number of results per filter criteria. Order by multiple criteria.
+- Issue Filter: Preview number of results per filter criteria. Order by multiple criteria. Filter by construction manager. When collapsing entries, show summary of active filter.
 - Issue: Export single issue as PDF, notably including history. Add multiple images. Add labels (while refactoring current labels). Add description (or longer title).
 - TODOs: Link with specific issues, send E-Mails reminders, attribute to construction managers.
 - History: Dedicated view to see new entries, in particular from craftsmen. Preview last entry or number of entries in overviews (e.g. issue table). 
