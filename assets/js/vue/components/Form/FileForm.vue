@@ -2,11 +2,11 @@
   <form-field for-id="file" :label="pdfMode ? $t('_form.file.pdf_label') : $t('_form.file.label')" :required="false">
     <dropzone
         v-if="!file"
-        id="file" :help="pdfMode ? $t('_form.file.pdf_drop_or_choose') : $t('_form.file.drop_or_choose')"
+        id="file" :help="dropHelp"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
-           :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
+           :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
       {{ $t('_form.reset') }}
@@ -19,6 +19,7 @@
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
 import {validPdfFileTypes, validSafeFileTypes} from '../../services/api'
+import {isSafari} from "../../services/utils";
 
 export default {
   components: {
@@ -60,6 +61,13 @@ export default {
         return validPdfFileTypes
       } else {
         return validSafeFileTypes
+      }
+    },
+    dropHelp: function () {
+      if (isSafari) {
+        return this.pdfMode ? this.$t('_form.file.pdf_choose') : this.$t('_form.file.choose')
+      } else {
+        return this.pdfMode ? this.$t('_form.file.pdf_drop_or_choose') : this.$t('_form.file.drop_or_choose')
       }
     }
   },
