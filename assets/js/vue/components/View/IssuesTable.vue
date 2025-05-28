@@ -57,14 +57,14 @@
       <th class="w-minimal">
       </th>
       <th class="w-thumbnail"></th>
-      <th class="w-40">
+      <order-table-head class="w-40" :order="order" property="description" @ordered="order = $event">
           <span class="me-1">
             {{ $t('issue.description') }}
           </span>
-      </th>
-      <th>
-        {{ $t('map._name') }}
-      </th>
+      </order-table-head>
+      <order-table-head :order="order" property="map.name" @ordered="order = $event">
+          {{ $t('map.name') }}
+      </order-table-head>
       <order-table-head class="white-space-nowrap" :order="order" property="craftsman.trade" @ordered="order = $event">
         {{ $t('craftsman._name') }}
       </order-table-head>

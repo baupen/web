@@ -30,6 +30,7 @@ use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
+use App\Repository\IssueRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -88,9 +89,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC", "craftsman.trade": "ASC"})
+ * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC", "craftsman.trade": "ASC", "map.name": "ASC", "description": {"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}})
  */
-#[ORM\Entity(repositoryClass: \App\Repository\IssueRepository::class)]
+#[ORM\Entity(repositoryClass: IssueRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
