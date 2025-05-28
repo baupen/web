@@ -6,7 +6,8 @@
     },
     "add_craftsman": {
       "added": "Unternehmer hinzugefügt",
-      "title": "Unternehmer hinzufügen"
+      "title": "Unternehmer hinzufügen",
+      "add_more": "weitere hinzufügen"
     },
     "add_issue": {
       "added": "Pendenz hinzugefügt",
@@ -27,11 +28,13 @@
     },
     "add_map": {
       "added": "Karte hinzugefügt",
-      "title": "Karte hinzufügen"
+      "title": "Karte hinzufügen",
+      "add_more": "weitere hinzufügen"
     },
     "add_task": {
       "added": "Aufgabe hinzugefügt",
-      "title": "Aufgabe hinzufügen"
+      "title": "Aufgabe hinzufügen",
+      "add_more": "weitere hinzufügen"
     },
     "associate_construction_manager": {
       "associated": "Bauleiter der Baustelle hinzugefügt",

@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="posting || !maps" :title="$t('_action.add_map.title')" :can-confirm="canConfirm"
-      @confirm="confirm">
+      @confirm="confirm" :repeat-confirm-label="$t('_action.add_map.add_more')">
     <map-form :maps="maps" :proposed-name="proposedName" @update="post = $event" />
     <file-form @update="file = $event" :pdf-mode="true" />
   </button-with-modal-confirm>
@@ -66,7 +66,6 @@ export default {
           .then(map => {
             api.postMapFile(map, this.file, successMessage)
                 .then(_ => {
-                  this.file = null
                   this.posting = false
                   this.$emit('added', map)
                 })

@@ -1,20 +1,10 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="posting" :title="$t('_action.add_issue.title')" :can-confirm="canConfirm"
-      @confirm="confirm" :hide-after-confirm="!addMore">
+      @confirm="confirm" :repeat-confirm-label="$t('_action.add_issue.add_more')">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'plus']" class="pe-1" />
       {{ $t('_action.add_issue.title') }}
-    </template>
-
-    <template v-slot:secondary-footer>
-      <custom-checkbox for-id="add-more" :label="$t('_action.add_issue.add_more')">
-        <input
-            class="form-check-input" type="checkbox" id="add-more"
-            v-model="addMore"
-            :true-value="true"
-            :false-value="false">
-      </custom-checkbox>
     </template>
 
     <issues-form
@@ -51,8 +41,7 @@ export default {
       },
       image: null,
       post: null,
-      posting: false,
-      addMore: false
+      posting: false
     }
   },
   props: {

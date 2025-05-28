@@ -21,6 +21,13 @@
               {{ abortTitle }}
             </button>
             <slot name="secondary-footer"></slot>
+            <custom-checkbox for-id="repeat-confirm" v-if="repeatConfirmLabel" :label="repeatConfirmLabel">
+              <input
+                  class="form-check-input" type="checkbox" id="repeat-confirm"
+                  v-model="repeatConfirm"
+                  :true-value="true"
+                  :false-value="false">
+            </custom-checkbox>
             <button type="submit" :disabled="!canConfirm || buttonDisabled" @click="confirm" :class="'btn btn-' + color">
               {{ confirmTitle ?? title }}
             </button>
@@ -34,16 +41,19 @@
 <script>
 import ButtonWithModal from './ButtonWithModal'
 import Modal from './Modal'
+import CustomCheckbox from "../FormInput/CustomCheckbox.vue";
 
 export default {
   emits: ['confirm', 'shown', 'hidden', 'abort'],
   components: {
+    CustomCheckbox,
     Modal,
     ButtonWithModal
   },
   data() {
     return {
-      show: false
+      show: false,
+      repeatConfirm: false,
     }
   },
   props: {
@@ -87,9 +97,9 @@ export default {
       type: Boolean,
       default: false
     },
-    hideAfterConfirm: {
-      type: Boolean,
-      default: true
+    repeatConfirmLabel: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -121,7 +131,7 @@ export default {
     },
     confirm: function () {
       this.$emit('confirm')
-      this.show = !this.hideAfterConfirm
+      this.show = this.repeatConfirm
     }
   }
 }
