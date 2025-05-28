@@ -1,10 +1,20 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="posting" :title="$t('_action.add_issue.title')" :can-confirm="canConfirm"
-      @confirm="confirm">
+      @confirm="confirm" :hide-after-confirm="!addMore">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'plus']" class="pe-1" />
       {{ $t('_action.add_issue.title') }}
+    </template>
+
+    <template v-slot:secondary-footer>
+      <custom-checkbox for-id="add-more" :label="$t('_action.add_issue.add_more')">
+        <input
+            class="form-check-input" type="checkbox" id="add-more"
+            v-model="addMore"
+            :true-value="true"
+            :false-value="false">
+      </custom-checkbox>
     </template>
 
     <issues-form
@@ -23,10 +33,12 @@ import {api} from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssuesForm from "../Form/IssuesForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
+import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
   emits: ['added'],
   components: {
+    CustomCheckbox,
     ImageForm,
     IssuesForm,
     ButtonWithModalConfirm,
@@ -39,7 +51,8 @@ export default {
       },
       image: null,
       post: null,
-      posting: false
+      posting: false,
+      addMore: false
     }
   },
   props: {
@@ -90,7 +103,6 @@ export default {
           .then(issue => {
             api.postIssueImage(issue, this.image, successMessage)
                 .then(_ => {
-                  this.image = null
                   this.posting = false
                   this.$emit('added', issue)
                 })

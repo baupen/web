@@ -21,7 +21,7 @@
               {{ abortTitle }}
             </button>
             <slot name="secondary-footer"></slot>
-            <button type="submit" :disabled="!canConfirm" @click="confirm" :class="'btn btn-' + color">
+            <button type="submit" :disabled="!canConfirm || buttonDisabled" @click="confirm" :class="'btn btn-' + color">
               {{ confirmTitle ?? title }}
             </button>
           </div>
@@ -86,6 +86,10 @@ export default {
     active: {
       type: Boolean,
       default: false
+    },
+    hideAfterConfirm: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -117,7 +121,7 @@ export default {
     },
     confirm: function () {
       this.$emit('confirm')
-      this.show = false
+      this.show = !this.hideAfterConfirm
     }
   }
 }
