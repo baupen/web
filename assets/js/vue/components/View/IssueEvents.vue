@@ -6,7 +6,7 @@
           :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
           @added="issueEvents.push($event)"/>
       <mark-issue-resolved-checkbox
-          class="ms-5"
+          class="ms-auto"
           :issue="issue"
           @marked="loadIssueEvents"
       />
