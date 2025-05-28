@@ -207,6 +207,7 @@
     "craftsmen_import": {
       "file": "Excel Datei (.xlsx)",
       "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
+      "file_choose": "Excel Datei (.xlsx) auswählen",
       "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt.",
       "template_download": "Vorlage herunterladen",
       "template_file_name": "Vorlage",
@@ -214,12 +215,15 @@
     },
     "file": {
       "drop_or_choose": "Datei (.pdf, .txt, .zip, office, email) hineinziehen oder auswählen",
+      "choose": "Datei (.pdf, .txt, .zip, office, email) auswählen",
       "label": "Datei (.pdf, .txt, .zip, office, email)",
       "pdf_drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
+      "pdf_choose": "PDF (.pdf) auswählen",
       "pdf_label": "PDF Datei (.pdf)"
     },
     "image": {
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
+      "choose": "Bild (.jpg, .png, .gif) auswählen",
       "label": "Bild Datei (.jpg, .png, .gif)"
     },
     "issue_filter": {

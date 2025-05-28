@@ -8,7 +8,7 @@
   <form-field for-id="file" :label="$t('_form.craftsmen_import.file')">
     <dropzone
         v-if="!file"
-        id="file" :help="$t('_form.craftsmen_import.file_drop_or_choose')"
+        id="file" :help="dropHelp"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
@@ -26,8 +26,8 @@ import { displayError } from '../../services/notifiers'
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-
 import { craftsmanTransformer, excelTransformer } from '../../services/transformers'
+import {isSafari} from "../../services/utils";
 
 export default {
   components: {
@@ -96,6 +96,9 @@ export default {
     downloadExcelTemplateHref: function () {
       const blob = craftsmanTransformer.importExcelTemplate(this.$t)
       return window.URL.createObjectURL(blob)
+    },
+    dropHelp: function () {
+      return isSafari ? this.$t('_form.craftsmen_import.file_drop_or_choose') : this.$t('_form.craftsmen_import.file_choose')
     }
   },
   mounted () {
