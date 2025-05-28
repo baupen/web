@@ -18,11 +18,33 @@
       <option disabled></option>
       <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
               :key="mapContainer.entity['@id']" :disabled="mapContainer.entity === template">
-        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
+        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
       </option>
     </select>
     <invalid-feedback :errors="fields.parent.errors" />
   </form-field>
+
+  <form-field for-id="parent" :label="$t('_form.map.preview_tree')" v-if="map.name && previewMapContainers.length > 0" :required="false">
+    <span class="bg-secondary-subtle p-2 d-block">
+      <span class="d-block" v-if="previewIndexStart > 0">
+        {{ '&nbsp;'.repeat(previewMapContainers[previewIndexStart-1].level*2) }}...
+      </span>
+      <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndexStart, previewIndex)" :key="mapContainer.entity['@id']">
+        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
+      </span>
+      <span class="d-block">
+        {{ '&nbsp;'.repeat(previewMapContainers[previewIndex].level*2) }}<b>{{ previewMapContainers[previewIndex].entity.name }}</b>
+      </span>
+      <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndex+1, previewIndexEnd)" :key="mapContainer.entity['@id']">
+        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
+      </span>
+      <span class="d-block" v-if="previewIndexEnd < previewMapContainers.length - 1">
+        {{ '&nbsp;'.repeat(previewMapContainers[previewIndexEnd+1].level*2) }}...
+      </span>
+    </span>
+  </form-field>
+  {{}}
+  {{}}
 </template>
 
 <script>
@@ -96,6 +118,18 @@ export default {
   computed: {
     mapContainers: function () {
       return mapTransformer.orderedList(this.maps, mapTransformer.PROPERTY_LEVEL)
+    },
+    previewMapContainers: function () {
+      return mapTransformer.orderedList([...this.maps, this.map], mapTransformer.PROPERTY_LEVEL)
+    },
+    previewIndexStart: function () {
+      return Math.max(0, this.previewIndex - 4)
+    },
+    previewIndex: function () {
+      return this.previewMapContainers.findIndex(mapContainer => mapContainer.entity === this.map)
+    },
+    previewIndexEnd: function () {
+      return Math.min(this.previewIndex + 5, this.previewMapContainers.length - 1)
     },
     updatePayload: function () {
       if (this.fields.name.errors.length ||
