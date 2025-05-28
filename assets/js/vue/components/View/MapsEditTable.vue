@@ -18,7 +18,7 @@
     </tr>
     <tr v-else v-for="mapContainer in mapContainers">
       <td>
-        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.level) }}{{ mapContainer.entity.name }}
+        {{ '&nbsp;'.repeat(mapContainer.level*4) }}{{ mapContainer.entity.name }}
       </td>
       <td>
         {{ getParentName(mapContainer) }}<br />

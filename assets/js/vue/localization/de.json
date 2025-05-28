@@ -266,6 +266,9 @@
       "position_set": "Position gesetzt",
       "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."
     },
+    "map": {
+      "preview_tree": "Vorschau"
+    },
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "reset": "zurücksetzen"
   },

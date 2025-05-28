@@ -105,7 +105,7 @@
       >
         <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
                 :key="mapContainer.entity['@id']">
-          {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
+          {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
         </option>
       </select>
       <invalid-feedback :errors="fields.map.errors"/>
