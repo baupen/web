@@ -128,6 +128,14 @@
       "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Möchten Sie diese wirklich ein weiteres Mal hinzufügen? | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Möchten Sie diese wirklich ein weiteres Mal hinzufügen?",
       "title": "Excel importieren"
     },
+    "mark_issue_closed": {
+      "mark": "abgeschlossen",
+      "marked": "Pendenz als abgeschlossen markiert"
+    },
+    "mark_issue_resolved": {
+      "mark": "umgesetzt",
+      "marked": "Pendenz als umgesetzt markiert"
+    },
     "register_issues": {
       "registered": "Pendenzen zum Verzeichnis hinzugefügt.",
       "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",

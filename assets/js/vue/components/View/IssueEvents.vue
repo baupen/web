@@ -1,9 +1,20 @@
 <template>
   <loading-indicator-secondary
       :spin="issueEvents === null && craftsmanIssueEvents === null && constructionSiteIssueEvents == null">
-    <add-issue-event-button
-        :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
-        @added="issueEvents.push($event)"/>
+    <div class="d-flex align-items-center gap-3">
+      <add-issue-event-button
+          :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
+          @added="issueEvents.push($event)"/>
+      <mark-issue-resolved-checkbox
+          class="ms-5"
+          :issue="issue"
+          @marked="loadIssueEvents"
+      />
+      <mark-issue-closed-checkbox
+          :issue="issue" :construction-manager-iri="authorityIri"
+          @marked="loadIssueEvents"
+      />
+    </div>
 
     <div class="mt-3" v-if="orderedIssueEvents.length">
       <issue-event-row
@@ -29,9 +40,13 @@ import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 import {filterIssueEventsForIssue, orderIssueEvents} from "../../services/sorters";
 import IssueEventRow from "./IssueEventRow.vue";
+import MarkIssueResolvedCheckbox from "../Action/MarkIssueResolvedCheckbox.vue";
+import MarkIssueClosedCheckbox from "../Action/MarkIssueClosedCheckbox.vue";
 
 export default {
   components: {
+    MarkIssueClosedCheckbox,
+    MarkIssueResolvedCheckbox,
     IssueEventRow,
     CustomCheckbox,
     CustomCheckboxField,
@@ -43,6 +58,8 @@ export default {
       issueEvents: null,
       craftsmanIssueEvents: null,
       constructionSiteIssueEvents: null,
+
+      refreshIteration: 0
     }
   },
   props: {
@@ -96,12 +113,18 @@ export default {
 
       return this.issue
     },
+    loadIssueEvents: function () {
+      const refreshIteration = ++this.refreshIteration
+      api.getIssueEvents(this.constructionSite, this.issue)
+          .then(entries => {
+            if (refreshIteration === this.refreshIteration) {
+              this.issueEvents = entries
+            }
+          })
+    },
   },
   mounted() {
-    api.getIssueEvents(this.constructionSite, this.issue)
-        .then(entries => {
-          this.issueEvents = entries
-        })
+    this.loadIssueEvents()
     if (this.craftsman) {
       api.getIssueEvents(this.constructionSite, this.craftsman, true)
           .then(entries => {
