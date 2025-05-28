@@ -112,12 +112,7 @@
 
       <template v-if="selectedMap && selectedMap.fileUrl">
         <div class="d-flex justify-content-between">
-          <div>
-            <map-position-canvas
-                :construction-site="constructionSite" :map="selectedMap" :position="position ?? currentPosition"
-                :inline="true"/>
-          </div>
-          <div class="ms-3">
+          <div class="me-3">
             <div>
               <set-map-position-button
                   v-if="position === undefined"
@@ -147,6 +142,11 @@
                 {{ $t('_form.reset') }}
               </a>
             </p>
+          </div>
+          <div>
+            <map-position-canvas
+                :construction-site="constructionSite" :map="selectedMap" :position="position ?? currentPosition"
+                :inline="true"/>
           </div>
         </div>
       </template>

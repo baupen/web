@@ -1,10 +1,7 @@
 <template>
   <form-field for-id="image" :label="$t('_form.image.label')" :required="false">
-    <div class="row g-2 dropzone-height">
-      <div class="col-md-4" v-if="currentUrl">
-        <img class="img-fluid" :src="currentUrl" alt="preview">
-      </div>
-      <div :class="{'col-md-8': currentUrl, 'col-md-12': !currentUrl}">
+    <div class="row g-2">
+      <div :class="{'col-md-8': shownUrl, 'col-md-12': !shownUrl}">
         <dropzone
             class="h-100"
             v-if="!image"
@@ -17,6 +14,9 @@
         <a class="btn-link clickable" v-if="image" @click="image = null">
           {{ $t('_form.reset') }}
         </a>
+      </div>
+      <div class="col-md-4" v-if="shownUrl">
+        <img class="img-fluid" :src="shownUrl" alt="preview">
       </div>
     </div>
   </form-field>
@@ -37,7 +37,7 @@ export default {
   emits: ['update'],
   data () {
     return {
-      image: null
+      image: null,
     }
   },
   props: {
@@ -52,6 +52,13 @@ export default {
     },
   },
   computed: {
+    shownUrl: function() {
+      if (!this.image) {
+        return this.currentUrl
+      }
+
+      return URL.createObjectURL(this.image);
+    },
     imageIsValid: function () {
       if (!this.image) {
         return false
