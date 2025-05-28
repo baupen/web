@@ -124,8 +124,15 @@
         </template>
       </template>
 
-      <p class="mb-0">
-        <a class="btn-link clickable" v-if="(fields.map.dirty || this.position !== undefined) && mode === 'edit_single'"
+      <p class="mb-0" v-if="this.position !== undefined && (mode === 'edit_single' || mode === 'create')">
+        <a class="btn-link clickable"
+           @click="position = undefined">
+          {{ $t('_form.reset') }}
+        </a>
+      </p>
+
+      <p class="mb-0" v-else-if="fields.map.dirty && mode === 'edit_single'">
+        <a class="btn-link clickable"
            @click="reset('map')">
           {{ $t('_form.reset') }}
         </a>

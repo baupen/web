@@ -10,7 +10,8 @@
     },
     "add_issue": {
       "added": "Pendenz hinzugefügt",
-      "title": "Pendenz hinzufügen"
+      "title": "Pendenz hinzufügen",
+      "add_more": "weitere hinzufügen"
     },
     "add_issue_event": {
       "added": "Ereignis hinzugefügt",
