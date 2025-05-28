@@ -111,32 +111,45 @@
       <invalid-feedback :errors="fields.map.errors"/>
 
       <template v-if="selectedMap && selectedMap.fileUrl">
-        <set-map-position-button
-            v-if="position === undefined"
-            :construction-site="constructionSite" :map="selectedMap"
-            :current-position="currentPosition"
-            @selected="position = $event"/>
-        <template v-else-if="position === null">
-          <input id="position" class="form-control is-valid" type="text" readonly :value="$t('_form.issues.position_null')">
-        </template>
-        <template v-else>
-          <input id="position" class="form-control is-valid" type="text" readonly :value="$t('_form.issues.position_set')">
-        </template>
+        <div class="d-flex justify-content-between">
+          <div>
+            <map-position-canvas
+                :construction-site="constructionSite" :map="selectedMap" :position="position ?? currentPosition"
+                :inline="true"/>
+          </div>
+          <div class="ms-3">
+            <div>
+              <set-map-position-button
+                  v-if="position === undefined"
+                  :construction-site="constructionSite" :map="selectedMap"
+                  :current-position="currentPosition"
+                  @selected="position = $event"/>
+              <template v-else-if="position === null">
+                <input id="position" class="form-control is-valid" type="text" readonly
+                       :value="$t('_form.issues.position_null')">
+              </template>
+              <template v-else>
+                <input id="position" class="form-control is-valid" type="text" readonly
+                       :value="$t('_form.issues.position_set')">
+              </template>
+            </div>
+
+            <p class="mb-0" v-if="this.position !== undefined && (mode === 'edit_single' || mode === 'create')">
+              <a class="btn-link clickable"
+                 @click="position = undefined">
+                {{ $t('_form.reset') }}
+              </a>
+            </p>
+
+            <p class="mb-0" v-else-if="fields.map.dirty && mode === 'edit_single'">
+              <a class="btn-link clickable"
+                 @click="reset('map')">
+                {{ $t('_form.reset') }}
+              </a>
+            </p>
+          </div>
+        </div>
       </template>
-
-      <p class="mb-0" v-if="this.position !== undefined && (mode === 'edit_single' || mode === 'create')">
-        <a class="btn-link clickable"
-           @click="position = undefined">
-          {{ $t('_form.reset') }}
-        </a>
-      </p>
-
-      <p class="mb-0" v-else-if="fields.map.dirty && mode === 'edit_single'">
-        <a class="btn-link clickable"
-           @click="reset('map')">
-          {{ $t('_form.reset') }}
-        </a>
-      </p>
     </form-field>
 
     <hr/>
@@ -207,9 +220,11 @@ import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpi
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import {mapTransformer} from "../../services/transformers";
 import SetMapPositionButton from "../Action/SetMapPositionButton.vue";
+import MapPositionCanvas from "../View/MapPositionCanvas.vue";
 
 export default {
   components: {
+    MapPositionCanvas,
     SetMapPositionButton,
     CustomCheckboxField,
     InvalidFeedback,
@@ -430,3 +445,4 @@ export default {
   }
 }
 </script>
+

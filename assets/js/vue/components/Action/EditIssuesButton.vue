@@ -20,7 +20,7 @@
         :template="template" :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
         @update="patch = $event" @confirm="$refs['modal'].confirm()">
       <template v-slot:before-description>
-        <image-form @update="image = $event" />
+        <image-form :current-url="currentImageUrl" @update="image = $event" />
       </template>
     </issues-form>
 
@@ -78,6 +78,20 @@ export default {
     }
   },
   computed: {
+    currentImageUrl: function () {
+      if (this.issues.length !== 1) {
+        return null
+      }
+
+      const imageUrl = this.issues[0].imageUrl
+      if (!imageUrl) {
+        return null
+      }
+
+      let url = new URL(imageUrl, window.location.origin);
+      url.searchParams.set('size', 'preview');
+      return url.toString()
+    },
     canConfirm: function () {
       return this.pendingChanges > 0
     },
