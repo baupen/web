@@ -61,10 +61,6 @@ security:
         - { path: ^/api/docs, role: PUBLIC_ACCESS }
         - { path: ^/api/status, role: PUBLIC_ACCESS }
 
-        # legacy URLs; catched by legacy URL controller
-        - { path: '^/api/external.+', role: PUBLIC_ACCESS }
-        - { path: '^/external/share/c.+', role: PUBLIC_ACCESS }
-
         - { path: '^/download/.+', role: PUBLIC_ACCESS }
         - { path: '^/resolve/.+', role: PUBLIC_ACCESS }
         - { path: '^/filtered/.+', role: PUBLIC_ACCESS }
