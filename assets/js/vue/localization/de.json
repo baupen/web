@@ -243,7 +243,8 @@
       "from": "von",
       "state": "Status",
       "time": "Zeitpunkt",
-      "until": "bis"
+      "until": "bis",
+      "responsible": "Verantwortlich"
     },
     "issue_link": {
       "access_allowed_before": "Ablaufdatum des Zugriffes"
@@ -414,6 +415,9 @@
     "no_description_yet": "Noch keine Beschreibung",
     "number": "Nummer",
     "position": "Platzierung",
+    "created_by": "Erstellt von",
+    "registered_by": "Registriert (ins Verzeichnis aufgenommen) von",
+    "closed_by": "Abgeschlossen von",
     "state": {
       "closed": "abgeschlossen",
       "closed_help": "Pendenz wurde abgeschlossen.",

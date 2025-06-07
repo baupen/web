@@ -70,6 +70,21 @@
 
   <toggle-card
       class="mt-2"
+      :title="$t('_form.issue_filter.responsible')" :initial-activated="configurationTemplate.responsible"
+      @active-toggled="configuration.responsible = $event">
+    <responsible-filter
+        :label="$t('issue.created_by')" :construction-managers="constructionManagers"
+        :initial="filter['createdBy']"  @input="filter['createdBy'] = $event" />
+    <responsible-filter
+        :label="$t('issue.registered_by')" :construction-managers="constructionManagers"
+        :initial="filter['registeredBy']"  @input="filter['registeredBy'] = $event" />
+    <responsible-filter
+        :label="$t('issue.closed_by')" :construction-managers="constructionManagers"
+        :initial="filter['closedBy']"  @input="filter['closedBy'] = $event" />
+  </toggle-card>
+
+  <toggle-card
+      class="mt-2"
       :title="$t('_form.issue_filter.time')" :initial-activated="configurationTemplate.time"
       @active-toggled="configuration.time = $event">
 
@@ -101,6 +116,7 @@
         @input-before="filter['closedAt[before]'] = $event" @input-after="filter['closedAt[after]'] = $event"
     />
   </toggle-card>
+
 </template>
 
 <script>
@@ -112,9 +128,11 @@ import ToggleCard from '../Library/Behaviour/ToggleCard'
 import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
 import MapFilter from './IssueFilter/MapFilter'
 import TimeFilter from './IssueFilter/TimeFilter'
+import ResponsibleFilter from "./IssueFilter/ResponsibleFilter.vue";
 
 export default {
   components: {
+    ResponsibleFilter,
     TimeFilter,
     MapFilter,
     CraftsmenFilter,
@@ -140,6 +158,10 @@ export default {
         'deadline[before]': null,
         'deadline[after]': null,
 
+        createdBy: null,
+        registeredBy: null,
+        closedBy: null,
+
         'createdAt[before]': null,
         'createdAt[after]': null,
         'registeredAt[before]': null,
@@ -154,6 +176,7 @@ export default {
         craftsmen: false,
         maps: false,
         deadline: false,
+        responsible: false,
         time: false
       },
     }
@@ -174,7 +197,11 @@ export default {
     craftsmen: {
       type: Array,
       default: []
-    }
+    },
+    constructionManagers: {
+      type: Array,
+      default: []
+    },
   },
   watch: {
     filter: {

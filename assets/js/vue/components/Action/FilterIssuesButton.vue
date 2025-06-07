@@ -13,7 +13,7 @@
     </template>
 
     <issue-filter-form
-        :maps="maps" :craftsmen="craftsmen"
+        :maps="maps" :craftsmen="craftsmen" :construction-managers="constructionManagers"
         :template="formTemplate" :configuration-template="formConfigurationTemplate"
         @update="filter = $event" @update-configuration="configuration = $event" />
   </button-with-modal-confirm>
@@ -44,6 +44,10 @@ export default {
       default: []
     },
     craftsmen: {
+      type: Array,
+      default: []
+    },
+    constructionManagers: {
       type: Array,
       default: []
     },

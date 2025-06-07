@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"filter-write"}},
  * )
  */
-#[ORM\Entity(repositoryClass: \App\Repository\IssueRepository::class)]
+#[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
@@ -93,6 +93,18 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?\DateTime $deadlineAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
+    private ?string $createdBy = null;
+
+    #[Groups(['filter-read', 'filter-create'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
+    private ?string $registeredBy = null;
+
+    #[Groups(['filter-read', 'filter-create'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
+    private ?string $closedBy = null;
+
+    #[Groups(['filter-read', 'filter-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $createdAtAfter = null;
 
@@ -130,7 +142,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     #[Groups(['filter-read', 'filter-create'])]
     #[Assert\NotBlank]
-    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'filters')]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'filters')]
     private ?ConstructionSite $constructionSite = null;
 
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
@@ -252,6 +264,36 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setDeadlineAfter(?\DateTime $deadlineAfter): void
     {
         $this->deadlineAfter = $deadlineAfter;
+    }
+
+    public function getCreatedBy(): ?string
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?string $createdBy): void
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    public function getRegisteredBy(): ?string
+    {
+        return $this->registeredBy;
+    }
+
+    public function setRegisteredBy(?string $registeredBy): void
+    {
+        $this->registeredBy = $registeredBy;
+    }
+
+    public function getClosedBy(): ?string
+    {
+        return $this->closedBy;
+    }
+
+    public function setClosedBy(?string $closedBy): void
+    {
+        $this->closedBy = $closedBy;
     }
 
     public function getCreatedAtAfter(): ?\DateTime
