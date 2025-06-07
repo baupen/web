@@ -181,9 +181,9 @@ AddDefaultCharset utf-8
     # font-src 'self'; to load fonts from same domain
     # img-src 'self' data:; to load images from same domain and allow from data attributes
     # form-action 'self'; to submit forms only to same domain
-    Header set Content-Security-Policy "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
-    Header set X-Content-Security-Policy "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
-    Header set X--WebKit-CSP "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
+    Header set Content-Security-Policy "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; form-action 'self'"
+    Header set X-Content-Security-Policy "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; form-action 'self'"
+    Header set X--WebKit-CSP "block-all-mixed-content; default-src 'none'; media-src 'self'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; form-action 'self'"
 
     # `mod_headers` cannot match based on the content-type, however,
     # the `Content-Security-Policy` response header should be send
