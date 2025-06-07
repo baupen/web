@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="posting" :title="$t('_action.add_craftsman.title')" :can-confirm="canConfirm"
-      @confirm="confirm" :repeat-confirm-label="$t('_action.add_craftsman.add_more')">
+      @confirm="confirm">
     <craftsman-form @update="post = $event" />
   </button-with-modal-confirm>
 </template>
