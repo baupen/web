@@ -7,7 +7,7 @@
         <span class="reset-table-styles">
           <filter-issues-button
               v-if="canFilter"
-              :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
+              :craftsmen="craftsmen" :maps="maps"
               :template="filter" :configuration-template="filterConfiguration"
               :default="defaultFilter" :default-configuration="defaultFilterConfiguration"
               @update="filter = $event"
