@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="disabled" :title="$t('_action.filter_issues.title')"
+      :title="$t('_action.filter_issues.title')"
       :confirm-title="$t('_action.filter_issues.confirm')"
       @confirm="confirm"
       :can-abort="customFilterActive"
@@ -62,10 +62,6 @@ export default {
     configurationTemplate: {
       type: Object,
       required: false
-    },
-    disabled: {
-      type: Boolean,
-      required: true
     },
   },
   computed: {
