@@ -8,6 +8,7 @@
     </template>
 
     <issues-form
+        ref="issue-form"
         :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :template="template"
         mode="create" @update="post = $event" @confirm="$refs['modal'].confirm()">
       <template v-slot:before-description>
@@ -79,22 +80,23 @@ export default {
 
       let successMessage = this.$t('_action.add_issue.added')
 
+      const finishedPosting = (issue) => {
+        this.posting = false
+        this.$emit('added', issue)
+
+        this.$refs['issue-form'].position = undefined
+      }
+
       if (!this.image) {
         api.postIssue(payload, successMessage)
-            .then(issue => {
-              this.posting = false
-              this.$emit('added', issue)
-            })
+            .then(issue => finishedPosting(issue))
         return
       }
 
       api.postIssue(payload)
           .then(issue => {
             api.postIssueImage(issue, this.image, successMessage)
-                .then(_ => {
-                  this.posting = false
-                  this.$emit('added', issue)
-                })
+                .then(_ => finishedPosting(issue))
           })
     }
   }
