@@ -8,43 +8,43 @@
     <invalid-feedback :errors="fields.name.errors" />
   </form-field>
 
-  <form-field for-id="parent" :label="$t('map.parent')">
-    <select class="form-select"
-            :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
-            v-model="map.parent"
-            @change="validate('parent')"
-    >
-      <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
-      <option disabled></option>
-      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
-              :key="mapContainer.entity['@id']" :disabled="mapContainer.entity === template">
-        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
-      </option>
-    </select>
-    <invalid-feedback :errors="fields.parent.errors" />
-  </form-field>
+  <template  v-if="mapContainers.length > 0">
+    <form-field for-id="parent" :label="$t('map.parent')">
+      <select class="form-select"
+              :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
+              v-model="map.parent"
+              @change="validate('parent')"
+      >
+        <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
+        <option disabled></option>
+        <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
+                :key="mapContainer.entity['@id']" :disabled="mapContainer.entity === template">
+          {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
+        </option>
+      </select>
+      <invalid-feedback :errors="fields.parent.errors" />
+    </form-field>
 
-  <form-field for-id="parent" :label="$t('_form.map.preview_tree')" v-if="map.name && previewMapContainers.length > 0" :required="false">
-    <span class="bg-secondary-subtle p-2 d-block">
-      <span class="d-block" v-if="previewIndexStart > 0">
-        {{ '&nbsp;'.repeat(previewMapContainers[previewIndexStart-1].level*2) }}...
+    <form-field for-id="parent" :label="$t('_form.map.preview_tree')" v-if="map.name && previewMapContainers.length > 0" :required="false">
+      <span class="bg-secondary-subtle p-2 d-block">
+        <span class="d-block" v-if="previewIndexStart > 0">
+          {{ '&nbsp;'.repeat(previewMapContainers[previewIndexStart-1].level*2) }}...
+        </span>
+        <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndexStart, previewIndex)" :key="mapContainer.entity['@id']">
+          {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
+        </span>
+        <span class="d-block">
+          {{ '&nbsp;'.repeat(previewMapContainers[previewIndex].level*2) }}<b>{{ previewMapContainers[previewIndex].entity.name }}</b>
+        </span>
+        <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndex+1, previewIndexEnd)" :key="mapContainer.entity['@id']">
+          {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
+        </span>
+        <span class="d-block" v-if="previewIndexEnd < previewMapContainers.length - 1">
+          {{ '&nbsp;'.repeat(previewMapContainers[previewIndexEnd+1].level*2) }}...
+        </span>
       </span>
-      <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndexStart, previewIndex)" :key="mapContainer.entity['@id']">
-        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
-      </span>
-      <span class="d-block">
-        {{ '&nbsp;'.repeat(previewMapContainers[previewIndex].level*2) }}<b>{{ previewMapContainers[previewIndex].entity.name }}</b>
-      </span>
-      <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndex+1, previewIndexEnd)" :key="mapContainer.entity['@id']">
-        {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
-      </span>
-      <span class="d-block" v-if="previewIndexEnd < previewMapContainers.length - 1">
-        {{ '&nbsp;'.repeat(previewMapContainers[previewIndexEnd+1].level*2) }}...
-      </span>
-    </span>
-  </form-field>
-  {{}}
-  {{}}
+    </form-field>
+  </template>
 </template>
 
 <script>
@@ -120,7 +120,9 @@ export default {
       return mapTransformer.orderedList(this.maps, mapTransformer.PROPERTY_LEVEL)
     },
     previewMapContainers: function () {
-      return mapTransformer.orderedList([...this.maps, this.map], mapTransformer.PROPERTY_LEVEL)
+      const maps = this.template ? this.maps.filter(m => m['@id'] !== this.template['@id']) : [...this.maps];
+      maps.push(this.map)
+      return mapTransformer.orderedList(maps, mapTransformer.PROPERTY_LEVEL)
     },
     previewIndexStart: function () {
       return Math.max(0, this.previewIndex - 4)
