@@ -447,7 +447,7 @@
     "closed_issues_count": "Geschlossene Pendenzen",
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
-    "parent": "Zuordnung",
+    "parent": "Unterbereich von",
     "parent_not_found_name": "(entfernt)",
     "parent_not_set_name": "-"
   },

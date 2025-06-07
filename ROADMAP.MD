@@ -20,11 +20,8 @@ Improve existing features:
 - Resolve: Show craftsman their protocol entries.
 - Archive: Export whole construction site.
 
-
-
-
-
 Technical:
 - Dashboard feed: Refactor to build upon issue events.
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
+- UI framework: Improve form fields abstraction, clearer loading indication
