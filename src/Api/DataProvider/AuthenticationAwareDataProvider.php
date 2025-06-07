@@ -177,6 +177,10 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             $this->ensureDateTimeSearchFilterValid($query, 'deadline', 'before', $filter->getDeadlineBefore());
             $this->ensureDateTimeSearchFilterValid($query, 'deadline', 'after', $filter->getDeadlineAfter());
 
+            $this->ensureSearchFilterValid($query, 'createdBy', $filter->getCreatedBy());
+            $this->ensureSearchFilterValid($query, 'registeredBy', $filter->getRegisteredBy());
+            $this->ensureSearchFilterValid($query, 'closedBy', $filter->getClosedBy());
+
             $this->ensureDateTimeSearchFilterValid($query, 'createdAt', 'before', $filter->getCreatedAtBefore());
             $this->ensureDateTimeSearchFilterValid($query, 'createdAt', 'after', $filter->getCreatedAtAfter());
             $this->ensureDateTimeSearchFilterValid($query, 'registeredAt', 'before', $filter->getRegisteredAtBefore());

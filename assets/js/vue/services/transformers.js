@@ -370,6 +370,7 @@ const filterTransformer = {
       craftsmen: false,
       maps: false,
       deadline: false,
+      responsible: false,
       time: false
     }
   },
@@ -425,6 +426,14 @@ const filterTransformer = {
           query[p + '[before]'] = dateString
         }
       })
+
+    if (configuration.responsible) {
+      ['createdBy', 'registeredBy', 'closedBy'].forEach(property => {
+        if (filter[property]) {
+          query[property] = iriToId(filter[property])
+        }
+      })
+    }
 
     return query
   },
