@@ -1,24 +1,17 @@
 const orderMixin = {
-  emits: ['ordered'],
+  emits: ['order'],
   props: {
     order: {
-      type: Object,
-      required: false
-    },
-    property: {
       type: String,
       required: false
-    }
+    },
   },
   computed: {
-    isActive: function () {
-      return this.order && this.order.property === this.property
-    },
     isAscOrdered: function () {
-      return this.isActive && this.order.value === 'asc'
+      return this.order === 'asc'
     },
     isDescOrdered: function () {
-      return this.isActive && this.order.value === 'desc'
+      return this.order === 'desc'
     }
   }
 }
