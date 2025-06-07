@@ -12,18 +12,19 @@
     <hr />
 
     <div class="mb-3">
-      <custom-checkbox
-          class="mb-1"
-          v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
-          :for-id="'filter-map-' + mapContainer.entity['@id']" :label="mapContainer.entity.name">
-        <span :class="'spacer-' + mapContainer.level" />
-        <input
-            class="form-check-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
-            v-model="selectedEntities"
-            :value="mapContainer.entity"
-            @change="selected(mapContainer)"
-        >
-      </custom-checkbox>
+      <div class="d-flex" :class="{'mt-2': mapContainer.level === 0}" v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']">
+        <span :class="'spacer-' + mapContainer.level"/>
+        <custom-checkbox
+            class="mb-1"
+            :for-id="'filter-map-' + mapContainer.entity['@id']" :label="mapContainer.entity.name">
+          <input
+              class="form-check-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
+              v-model="selectedEntities"
+              :value="mapContainer.entity"
+              @change="selected(mapContainer)"
+          >
+        </custom-checkbox>
+      </div>
     </div>
   </div>
 </template>
