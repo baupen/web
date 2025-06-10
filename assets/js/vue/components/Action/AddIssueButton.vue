@@ -12,7 +12,7 @@
         :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :template="template"
         mode="create" @update="post = $event" @confirm="$refs['modal'].confirm()">
       <template v-slot:before-description>
-        <image-form @update="image = $event"/>
+        <image-form ref="image-form" @update="image = $event"/>
       </template>
     </issues-form>
   </button-with-modal-confirm>
@@ -85,6 +85,7 @@ export default {
         this.$emit('added', issue)
 
         this.$refs['issue-form'].position = undefined
+        this.$refs['image-form'].image = null
       }
 
       if (!this.image) {
