@@ -35,14 +35,16 @@ export default {
   methods: {
     toggleOrder: function () {
       // toggle states: !isActive => isAscOrdered => isDescOrdered => !isActive
-      let payload = 'asc';
-      if (this.isAscOrdered) {
-        payload = 'desc'
-      } else if (this.isDescOrdered) {
-        payload = null
+      let payload = {property: this.property};
+      if (!this.isActive) {
+        payload.value = 'asc'
+      } else if (this.isAscOrdered) {
+        payload.value = 'desc'
+      } else {
+        payload = null;
       }
 
-      this.$emit('order', payload)
+      this.$emit('ordered', payload)
     }
   }
 }

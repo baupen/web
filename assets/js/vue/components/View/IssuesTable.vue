@@ -17,8 +17,8 @@
               :class="{'ms-3': canFilter}"
               class="d-inline-block"
               property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
-              :label="$t('_view.issues.sort_by_last_activity')" :order="orderOfLastChangedAt"
-              @order="setOrder($event, 'lastChangedAt')"/>
+              :label="$t('_view.issues.sort_by_last_activity')" :order="order"
+              @ordered="order = $event"/>
         </span>
         <span class="text-end float-end" v-if="canEdit">
             <span class="reset-table-styles me-2">
@@ -53,23 +53,22 @@
         </div>
       </th>
       <th class="w-minimal">
-        <order-table-head class="w-40" @order="setOrder($event, 'number')" :order="orderOfNumber" />
       </th>
       <th class="w-minimal">
       </th>
       <th class="w-thumbnail"></th>
-      <order-table-head class="w-40" @order="setOrder($event, 'description')" :order="orderOfDescription">
+      <order-table-head class="w-40" :order="order" property="description" @ordered="order = $event">
           <span class="me-1">
             {{ $t('issue.description') }}
           </span>
       </order-table-head>
-      <th>
-        {{ $t('map.name') }}
-      </th>
-      <order-table-head class="white-space-nowrap" @order="setOrder($event, 'craftsman.trade')" :order="orderOfCraftsmanTrade">
+      <order-table-head :order="order" property="map.name" @ordered="order = $event">
+          {{ $t('map.name') }}
+      </order-table-head>
+      <order-table-head class="white-space-nowrap" :order="order" property="craftsman.trade" @ordered="order = $event">
         {{ $t('craftsman._name') }}
       </order-table-head>
-      <order-table-head class="white-space-nowrap" @order="setOrder($event, 'deadline')" :order="orderOfDeadline">
+      <order-table-head class="white-space-nowrap" :order="order" property="deadline" @ordered="order = $event">
         {{ $t('issue.deadline') }}
       </order-table-head>
       <th class="w-minimal">
@@ -236,7 +235,7 @@ export default {
       filter: null,
       filterConfiguration: null,
 
-      orders: [],
+      order: null,
 
       issues: [],
       issuePage: 0,
@@ -337,37 +336,11 @@ export default {
       }
       return null
     },
-    orderOfNumber: function () {
-      return this.getOrder('number')
-    },
-    orderOfDescription: function () {
-      return this.getOrder('description')
-    },
-    orderOfCraftsmanTrade: function () {
-      return this.getOrder('craftsman.trade')
-    },
-    orderOfDeadline: function () {
-      return this.getOrder('deadline')
-    },
-    orderOfLastChangedAt: function () {
-      return this.getOrder('lastChangedAt')
-    }
   },
   methods: {
-    setOrder: function (order, property) {
-      this.orders = this.orders.filter(order => order.property !== property)
-      if (order) {
-        this.orders = [{property, order}].concat(this.orders)
-      }
-    },
-    getOrder: function (property) {
-      const orderEntry = this.orders.find(order => order.property === property)
-      return orderEntry ? orderEntry.order : null;
-    },
     addIssue: function (issue) {
       // prevent reload in easy default cause
-      const isDefaultOrder = this.orders.length === 1 && this.orders[0].property === 'number' && this.orders[0].order === 'desc';
-      if (isDefaultOrder && this.filter === null && this.issuePage === 1) {
+      if (this.filter === null && this.order === null && this.issuePage === 1) {
         this.issues.unshift(issue)
         this.totalIssues += 1
       } else {
@@ -424,9 +397,11 @@ export default {
       let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen, this.maps)
 
       // set order
-      this.orders.forEach(order => {
-        query['order[' + order.property + ']'] = order.order
-      })
+      const currentOrder = this.order ? this.order : {
+        property: 'number',
+        value: 'desc'
+      }
+      query['order[' + currentOrder.property + ']'] = currentOrder.value
 
       this.$emit('query', query)
 
@@ -455,7 +430,7 @@ export default {
         this.selectedIssues = this.selectedIssues.filter(i => !this.hiddenIssues.includes(i))
       }
     },
-    orders: function () {
+    order: function () {
       this.loadIssues(this.filter)
     },
     filter: {
@@ -470,6 +445,7 @@ export default {
     }
   },
   mounted() {
+
     if (this.initialState) {
       this.filter = Object.assign({}, this.defaultFilter, {
         state: this.initialState
@@ -488,7 +464,6 @@ export default {
       }
     }
 
-    this.orders = [{ property: 'number', order: 'desc' }]
     this.loadIssues(this.filter ?? this.defaultFilter)
 
     let craftsmanQuery = {}

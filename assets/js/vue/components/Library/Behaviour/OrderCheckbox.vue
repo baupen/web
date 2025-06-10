@@ -31,15 +31,16 @@ export default {
   },
   computed: {
     isOrdered: function () {
-      return this.orderValue === this.order
+      return this.orderValue === 'desc' ? this.isDescOrdered : this.isAscOrdered
     },
   },
   methods: {
     toggleOrder: function () {
-      if (!this.order) {
-        this.$emit('order', this.orderValue)
+      // toggle states: !isActive => isAscOrdered => !isActive
+      if (!this.isActive) {
+        this.$emit('ordered', {property: this.property, value: this.orderValue})
       } else {
-        this.$emit('order', null)
+        this.$emit('ordered', null)
       }
     }
   }
