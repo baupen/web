@@ -35,6 +35,7 @@ scripts:
       - 'npm run build'
       - 'cp public/build/email.*.css public/build/email.css'
       - 'rm -rf node_modules'
+      - 'rm -rf tests assets/samples/Sun_Park assets/samples/Test assets/samples/Tierhotel'
 
   deploy:
     hook: deploy
