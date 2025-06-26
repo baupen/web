@@ -1,0 +1,4 @@
+http-error: Der Server kann Ihre Anfrage aufgrund eines unerwarteten Fehlers vorübergehend nicht bearbeiten. Bitte versuchen Sie es später noch einmal, oder kontaktieren Sie uns unter support@baupen.ch.
+http-error-403: Sie haben nicht die erforderliche Berechtigung, diese Seite aufzurufen.
+http-error-404: Die von Ihnen angeforderte Seite wurde nicht gefunden.
+http-error-410: Die von Ihnen angeforderte Seite ist nicht mehr verfügbar.
