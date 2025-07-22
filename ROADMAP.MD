@@ -25,3 +25,7 @@ Technical:
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
 - UI framework: Improve form fields abstraction, clearer loading indication
+
+Dependencies:
+- Replace noty (noty longer maintained)
+- Replace vue-i18n (high maintenance cost due to ever-evolving owner, overly complicated implementation)
