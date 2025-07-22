@@ -25,6 +25,7 @@ Technical:
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
 - UI framework: Improve form fields abstraction, clearer loading indication
+- Construction managers: Allow safe removed of construction manager, even if with some changes on construction site.
 
 Dependencies:
 - Replace noty (noty longer maintained)
