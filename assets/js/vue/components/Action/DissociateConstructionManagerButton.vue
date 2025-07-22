@@ -2,7 +2,7 @@
   <button-with-modal-confirm
       color="danger"
       :title="$t('_action.dissociate_construction_manager.title')"
-      @confirm="confirm">
+      @confirm="confirm" :can-confirm="false">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
