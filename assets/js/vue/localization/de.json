@@ -54,7 +54,8 @@
     },
     "dissociate_construction_manager": {
       "dissociated": "Bauleiter von Baustelle entfernt",
-      "help": "Bitte kontaktieren Sie den Support (support@baupen.ch), um den Bauleiter von der Baustelle zu entfernen. Bauleiter, die bereits Pendenzen erfasst haben, können zurzeit nicht entfernt werden.",
+      "cannot_remove_help": "Dieser Bauleiter hat bereits Pendenzen auf der Baustelle erfasst oder bearbeitet, und kann daher nicht mehr entfernt werden.",
+      "remove_help": "Der Bauleiter hat noch keine Pendenzen erfasst oder bearbeitet, und kann daher wieder von der Baustelle entfernt werden.",
       "title": "Bauleiter von Baustelle entfernen"
     },
     "edit_construction_site": {
