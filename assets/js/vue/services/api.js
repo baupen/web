@@ -378,6 +378,11 @@ const api = {
 
     return this._getHydraCollection('/api/tasks' + queryString)
   },
+  getIssueEventsQuery: function (query) {
+    const queryString = '?' + this._getQueryString(query)
+
+    return this._getHydraCollection('/api/issue_events' + queryString)
+  },
   getIssueEvents: function (constructionSite, root, onlyContextualForChildren = false) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     queryString += '&root=' + iriToId(root['@id'])

@@ -2,13 +2,17 @@
   <button-with-modal-confirm
       color="danger"
       :title="$t('_action.dissociate_construction_manager.title')"
-      @confirm="confirm" :can-confirm="false">
+      @confirm="confirm" :can-confirm="canConfirm" @shown="checkCanRemove">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
 
-    <p class="alert alert-info">
-      {{ $t('_action.dissociate_construction_manager.help') }}
+    <loading-indicator v-if="canRemove === null" />
+    <p class="alert alert-info" v-else-if="canRemove === false">
+      {{ $t('_action.dissociate_construction_manager.cannot_remove_help') }}
+    </p>
+    <p class="alert alert-info" v-else>
+      {{ $t('_action.dissociate_construction_manager.remove_help') }}
     </p>
 
   </button-with-modal-confirm>
@@ -16,18 +20,21 @@
 
 <script>
 
-import { api } from '../../services/api'
+import {api, iriToId} from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
+import LoadingIndicator from "../Library/View/LoadingIndicator.vue";
 
 export default {
   emits: ['dissociated'],
   components: {
+    LoadingIndicator,
     DeleteForm,
     ButtonWithModalConfirm
   },
   data () {
     return {
+      canRemove: null,
       patching: false
     }
   },
@@ -41,7 +48,23 @@ export default {
       required: true
     }
   },
+  computed: {
+    canConfirm: function () {
+      return this.canRemove === true
+    },
+    query: function () {
+      return {
+        constructionSite: iriToId(this.constructionSite['@id']),
+        createdBy: iriToId(this.constructionManager['@id']),
+      }
+    }
+  },
   methods: {
+    checkCanRemove: function () {
+      api.getIssueEventsQuery(this.query).then(events => {
+        this.canRemove = events.length === 0
+      })
+    },
     confirm: function () {
       this.patching = true
       const constructionManagers = this.constructionSite.constructionManagers.filter(cm => cm !== this.constructionManager['@id'])
@@ -51,6 +74,6 @@ export default {
           this.patching = false
         })
     }
-  }
+  },
 }
 </script>
