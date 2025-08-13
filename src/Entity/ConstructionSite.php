@@ -156,6 +156,16 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->name = $name;
     }
 
+    public function getIsArchived(): bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): void
+    {
+        $this->isArchived = $isArchived;
+    }
+
     public function getFolderName(): string
     {
         return $this->folderName;

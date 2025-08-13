@@ -36,6 +36,14 @@
       "title": "Aufgabe hinzufügen",
       "add_more": "weitere hinzufügen"
     },
+    "archive_construction_site" :{
+      "title_archive": "Baustelle archivieren",
+      "title_unarchive": "Baustelle un-archivieren",
+      "help_archive": "Wenn Sie die Baustelle archivieren, dann wird diese auf der Startseite (für alle) ausgeblendet. In der Tabelle mit allen Baustellen können die archivierten Baustellen wieder eingeblendet werden.",
+      "help_unarchive": "Die Baustelle ist zurzeit archiviert. Möchten Sie diese wieder un-archivieren, damit diese wieder auf der Startseite (für alle) einblendet wird?",
+      "unarchived": "Baustelle un-archiviert.",
+      "archived": "Baustelle archiviert."
+    },
     "associate_construction_manager": {
       "associated": "Bauleiter der Baustelle hinzugefügt",
       "title": "Bauleiter der Baustelle hinzufügen"

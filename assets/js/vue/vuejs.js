@@ -14,7 +14,8 @@ import {
   faFilter, faSort, // table
   faUser, faLock, faUnlock, // craftsman link, canEdit, !canEdit
   faExternalLink, // external link
-  faChevronRight // open expands
+  faChevronRight, // open expands
+  faArchive, faBoxOpenFull
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
@@ -68,7 +69,7 @@ FontawesomeLibrary.add(
   faUserAlt, faQuestionCircle, faEnvelopeOpen,
   faStar, faUserCheck,
   faFilter, faSort,
-  faUser,
+  faUser, faArchive, faBoxOpenFull,
   faExternalLink, faLock, faUnlock, faChevronRight,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faCircleRegular, faCircleUserRegular, faCircleORegular, faCircleEnvelopeRegular, faCircleCameraRegular, faCircleDownRegular, faDownRegular, faListUlRegular,
