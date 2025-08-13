@@ -289,7 +289,8 @@
   },
   "_view": {
     "construction_sites_participation_table": {
-      "search": "Baustelle suchen"
+      "search": "Baustelle suchen",
+      "show_archived":"Archivierte Baustellen anzeigen"
     },
     "craftsmen": {
       "issues_published_since_last_visit": "Eine Pendenz registriert seit dem letzten Besuch der Webseite | {count} Pendenzen registriert seit dem letzten Besuch der Webseite",

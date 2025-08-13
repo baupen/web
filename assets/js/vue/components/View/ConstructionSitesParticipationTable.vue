@@ -32,7 +32,7 @@
           <span v-else>
              {{ constructionSite.name }}
           </span>
-          <span class="ms-2 badge badge-secondary" v-if="constructionSite.isArchived">
+          <span class="ms-2 badge bg-secondary" v-if="constructionSite.isArchived">
             {{ $t('construction_site.archived') }}
           </span>
         </td>
@@ -46,6 +46,13 @@
         </td>
       </tr>
       </tbody>
+      <caption class="caption-top" v-if="constructionSites.filter(c => c.isArchived).length">
+        <div class="form-check-inline">
+          <custom-checkbox for-id="show-archived" :label="$t('_view.construction_sites_participation_table.show_archived')">
+            <input id="show-archived" class="form-check-input" type="checkbox" v-model="showArchived">
+          </custom-checkbox>
+        </div>
+      </caption>
     </table>
   </div>
 </template>
@@ -58,10 +65,12 @@ import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody
 import ImageLightbox from './ImageLightbox'
 import ToggleAssociationConstructionSite from '../Action/ToggleAssociationConstructionSite'
 import {router} from "../../services/api";
+import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
   emits: ['loaded-construction-sites'],
   components: {
+    CustomCheckbox,
     ToggleAssociationConstructionSite,
     ImageLightbox,
     LoadingIndicatorTableBody,
@@ -69,7 +78,8 @@ export default {
   },
   data() {
     return {
-      constructionSiteFilter: null
+      constructionSiteFilter: null,
+      showArchived: false
     }
   },
   props: {
@@ -97,6 +107,10 @@ export default {
   computed: {
     constructionSitesOrdered: function () {
       let candidates = [...this.constructionSites]
+      if (!this.showArchived) {
+        candidates = candidates.filter(a => !a.isArchived)
+      }
+
       if (this.constructionSiteFilter) {
         const preparedSearch = this.constructionSiteFilter.toLocaleLowerCase()
         candidates = candidates.filter(a => a.name.toLocaleLowerCase().includes(preparedSearch))
