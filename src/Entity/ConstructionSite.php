@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Api\Filters\ExactSearchFilter;
 use App\Api\Filters\IsDeletedFilter;
@@ -47,6 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived", "isHidden"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  */
 #[ORM\Entity]
@@ -65,6 +67,10 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
 
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $folderName = null;
+
+    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
+    private bool $isArchived = false;
 
     #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
     private ?ConstructionSiteImage $image = null;

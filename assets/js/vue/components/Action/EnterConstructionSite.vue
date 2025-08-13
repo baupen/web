@@ -6,6 +6,8 @@
 
 <script>
 
+import {router} from "../../services/api";
+
 export default {
   props: {
     constructionSite: {
@@ -15,7 +17,7 @@ export default {
   },
   computed: {
     dashboardHref: function () {
-      return this.constructionSite['@id'].replace('/api', '') + '/dashboard'
+      return router.constructionSiteDashboard(this.constructionSite)
     }
   }
 }
