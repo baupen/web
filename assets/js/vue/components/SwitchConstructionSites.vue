@@ -72,7 +72,8 @@ export default {
   data() {
     return {
       constructionSites: null,
-      constructionManagers: null
+      constructionManagers: null,
+      showArchived: false
     }
   },
   props: {
@@ -90,14 +91,16 @@ export default {
       return !this.constructionSites || !this.constructionManagers
     },
     memberOfConstructionSites: function () {
-      return this.orderedConstructionSites.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
+      return this.orderedConstructionSites
+          .filter(c => !c.isArchived)
+          .filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
     },
     showConstructionSites: function () {
       if (!this.orderedConstructionSites) {
         return null
       }
 
-      return this.orderedConstructionSites.filter(c => !c.isHidden)
+      return this.orderedConstructionSites.filter(c => !c.isHidden && (this.showArchived || !c.isArchived))
     },
     orderedConstructionSites: function () {
       if (!this.constructionSites) {

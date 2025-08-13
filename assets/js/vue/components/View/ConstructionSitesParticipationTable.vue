@@ -15,7 +15,7 @@
       </tr>
       </thead>
       <tbody>
-      <loading-indicator-table-body v-if="!constructionSites" />
+      <loading-indicator-table-body v-if="!constructionSites"/>
       <tr v-else-if="constructionSitesOrdered.length === 0">
         <td colspan="99">
           <p class="text-center">{{ $t('_view.no_construction_sites') }}</p>
@@ -23,16 +23,26 @@
       </tr>
       <tr v-else v-for="constructionSite in constructionSitesOrdered" :key="constructionSite['@id']">
         <td>
-          <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name" />
+          <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name"/>
         </td>
-        <td>{{ constructionSite.name }}</td>
+        <td>
+          <a v-if="constructionSite.constructionManagers.includes(this.constructionManagerIri)" :href="getDashboardUrl(constructionSite)">
+            {{ constructionSite.name }}
+          </a>
+          <span v-else>
+             {{ constructionSite.name }}
+          </span>
+          <span class="ms-2 badge badge-secondary" v-if="constructionSite.isArchived">
+            {{ $t('construction_site.archived') }}
+          </span>
+        </td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(', ') }}</td>
         <td>
-          <date-time-human-readable :value="constructionSite.createdAt" />
+          <date-time-human-readable :value="constructionSite.createdAt"/>
         </td>
         <td>
           <toggle-association-construction-site
-              :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
+              :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"/>
         </td>
       </tr>
       </tbody>
@@ -43,10 +53,11 @@
 <script>
 
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
-import { constructionSiteFormatter } from '../../services/formatters'
+import {constructionSiteFormatter} from '../../services/formatters'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ImageLightbox from './ImageLightbox'
 import ToggleAssociationConstructionSite from '../Action/ToggleAssociationConstructionSite'
+import {router} from "../../services/api";
 
 export default {
   emits: ['loaded-construction-sites'],
@@ -79,6 +90,9 @@ export default {
     formatConstructionSiteAddress: function (constructionSite) {
       return constructionSiteFormatter.address(constructionSite)
     },
+    getDashboardUrl: function (constructionSite) {
+      return router.constructionSiteDashboard(constructionSite)
+    }
   },
   computed: {
     constructionSitesOrdered: function () {

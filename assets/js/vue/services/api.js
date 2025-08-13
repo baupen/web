@@ -34,6 +34,12 @@ const addNonDuplicatesById = function (originalCollection, addCollection) {
   })
 }
 
+const router = {
+  constructionSiteDashboard: function (constructionSite) {
+    return constructionSite['@id'].replace('/api', '') + '/dashboard'
+  }
+}
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -467,4 +473,4 @@ const api = {
   }
 }
 
-export { api, addNonDuplicatesById, iriToId, validImageTypes, validPdfFileTypes, validSafeFileTypes, maxIssuesPerReport }
+export { router, api, addNonDuplicatesById, iriToId, validImageTypes, validPdfFileTypes, validSafeFileTypes, maxIssuesPerReport }

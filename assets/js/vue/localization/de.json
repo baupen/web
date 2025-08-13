@@ -335,7 +335,8 @@
     "locality": "Ort",
     "name": "Name",
     "postal_code": "PLZ",
-    "street_address": "Strasse \/ Nr."
+    "street_address": "Strasse \/ Nr.",
+    "archived": "archiviert"
   },
   "craftsman": {
     "CCs": "CCs",
