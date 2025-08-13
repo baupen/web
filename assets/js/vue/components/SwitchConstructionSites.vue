@@ -73,7 +73,6 @@ export default {
     return {
       constructionSites: null,
       constructionManagers: null,
-      showArchived: false
     }
   },
   props: {
@@ -100,7 +99,7 @@ export default {
         return null
       }
 
-      return this.orderedConstructionSites.filter(c => !c.isHidden && (this.showArchived || !c.isArchived))
+      return this.orderedConstructionSites.filter(c => !c.isHidden)
     },
     orderedConstructionSites: function () {
       if (!this.constructionSites) {
