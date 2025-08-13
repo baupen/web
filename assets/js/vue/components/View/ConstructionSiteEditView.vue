@@ -13,6 +13,7 @@
         <div class="btn-group">
           <span /> <!-- fixes button css -->
           <edit-construction-site-button :construction-site="constructionSite" />
+          <archive-construction-site-button :construction-site="constructionSite" />
         </div>
       </td>
     </tr>
@@ -26,9 +27,11 @@ import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody
 import { constructionSiteFormatter } from '../../services/formatters'
 import ImageLightbox from './ImageLightbox'
 import EditConstructionSiteButton from '../Action/EditConstructionSiteButton'
+import ArchiveConstructionSiteButton from "../Action/ArchiveConstructionSiteButton.vue";
 
 export default {
   components: {
+    ArchiveConstructionSiteButton,
     EditConstructionSiteButton,
     ImageLightbox,
     TableBodyLoadingIndicator,
