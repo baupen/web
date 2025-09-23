@@ -14,7 +14,7 @@ Improve existing features:
 - Issue Filter: Preview number of results per filter criteria. When collapsing entries, show summary of active filter. Order by map (considering parent structure). Order by multiple columns, declaring ordering in header of table.
 - Issue: Export single issue as PDF, notably including history. Add multiple images. Add labels (while refactoring current labels). Add description (or longer title).
 - TODOs: Link with specific issues, send E-Mails reminders, attribute to construction managers.
-- History: Dedicated view to see new entries, in particular from craftsmen. Preview last entry or number of entries in overviews (e.g. issue table). 
+- History: Dedicated view to see new entries, in particular from craftsmen. Preview last entry or number of entries in overviews (e.g. issue table). Fix confusing labeling in graph (e.g. #open is incorrect).
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Report: Add issue coloring to table / photos.
 - Resolve: Show craftsman their protocol entries.
