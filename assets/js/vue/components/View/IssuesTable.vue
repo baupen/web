@@ -457,14 +457,12 @@ export default {
       try {
         const persistedPayload = localStorage.getItem(this.persistFilterKey);
         const payload = JSON.parse(persistedPayload)
-        this.filter = payload.filter
         this.filterConfiguration = payload.filterConfiguration
+        this.filter = payload.filter
       } catch (e) {
         // we do not care
       }
     }
-
-    this.loadIssues(this.filter ?? this.defaultFilter)
 
     let craftsmanQuery = {}
     if (this.presetFilter && this.presetFilter['craftsman[]']) {

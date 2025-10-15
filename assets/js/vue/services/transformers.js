@@ -375,7 +375,7 @@ const filterTransformer = {
     }
   },
   shouldIncludeCollection: function (value, collection) {
-    return value && value.length > 0 && value.length < collection?.length
+    return value && value.length > 0 && (!collection || value.length < collection?.length)
   },
   filterToQuery: function (defaultFilter, filter, configuration, craftsmen, maps) {
     const query = Object.assign({}, defaultFilter)
