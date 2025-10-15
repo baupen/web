@@ -123,8 +123,13 @@ class PdfService
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
 
+            usort($issues, function (Issue $a, Issue $b): int {
+                return $a->getNumber() <=> $b->getNumber();
+            });
+
+            $sortedIssues = [...$issues];
             if ($reportElements->getGroupIssuesByCraftsman()) {
-                usort($issues, function (Issue $a, Issue $b): int {
+                usort($sortedIssues, function (Issue $a, Issue $b): int {
                     // order by craftsman
                     if ($a->getCraftsman() !== $b->getCraftsman()) {
                         return $a->getCraftsman()->getCompany().$a->getCraftsman()->getTrade() <=>
@@ -141,13 +146,9 @@ class PdfService
                     // order by number if rest is equal
                     return $a->getNumber() <=> $b->getNumber();
                 });
-            } else {
-                usort($issues, function (Issue $a, Issue $b): int {
-                    return $a->getNumber() <=> $b->getNumber();
-                });
             }
 
-            $this->addIssueTable($report, $filter, $issues);
+            $this->addIssueTable($report, $filter, $sortedIssues);
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
             }
