@@ -464,6 +464,8 @@ export default {
       }
     }
 
+    this.loadIssues(this.filter ?? this.defaultFilter)
+
     let craftsmanQuery = {}
     if (this.presetFilter && this.presetFilter['craftsman[]']) {
       craftsmanQuery['id[]'] = this.presetFilter['craftsman[]']
