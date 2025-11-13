@@ -18,7 +18,7 @@ Improve existing features:
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Report: Add issue coloring to table / photos.
 - Resolve: Show craftsman their protocol entries.
-- Archive: Export whole construction site.
+- Archive: Export whole construction site, or parts (e.g. only pictures).
 
 Technical:
 - Dashboard feed: Refactor to build upon issue events.
