@@ -36,7 +36,12 @@ class FilterVoter extends ConstructionSiteOwnedEntityVoter
 
     protected function getRelatedCraftsmanAccessibleAttributes(): array
     {
-        return [];
+        return [self::FILTER_CREATE, self::FILTER_VIEW];
+    }
+
+    protected function getRelatedFilterAccessibleAttributes(): array
+    {
+        return [self::FILTER_CREATE, self::FILTER_VIEW];
     }
 
     /**
