@@ -145,7 +145,7 @@ export default {
         return this.query
       } else {
         return {
-          constructionSite: iriToId(this.constructionSite['@id']),
+          ...this.query,
           'number[]': this.selectedIssueNumbers
         }
       }
