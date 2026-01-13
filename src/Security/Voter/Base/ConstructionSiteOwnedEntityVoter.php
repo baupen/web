@@ -31,7 +31,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
      */
     protected function isCraftsmanRelated(Craftsman $craftsman, $subject): bool
     {
-        return $craftsman->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject->getConstructionSite();
+        return $craftsman->isConstructionSiteSet() && $subject->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject->getConstructionSite();
     }
 
     /**
@@ -39,7 +39,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
      */
     protected function isFilterRelated(Filter $filter, $subject): bool
     {
-        return $filter->isConstructionSiteSet() && $filter->getConstructionSite() === $subject->getConstructionSite();
+        return $filter->isConstructionSiteSet() && $subject->isConstructionSiteSet() && $filter->getConstructionSite() === $subject->getConstructionSite();
     }
 
     /**
