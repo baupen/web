@@ -45,13 +45,11 @@ class FilterSerializer implements NormalizerInterface
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
-        if ($this->tryGetConstructionManager($this->tokenStorage->getToken()) || $object === $this->tryGetFilter($this->tokenStorage->getToken())) {
-            $url = $this->urlGenerator->generate('public_filtered', [
-                'token' => $object->getAuthenticationToken(),
-            ]);
+        $url = $this->urlGenerator->generate('public_filtered', [
+            'token' => $object->getAuthenticationToken(),
+        ]);
 
-            $data['filteredUrl'] = $url;
-        }
+        $data['filteredUrl'] = $url;
 
         return $data;
     }
