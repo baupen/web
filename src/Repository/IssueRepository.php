@@ -62,6 +62,7 @@ class IssueRepository extends EntityRepository
     public function filterNewIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
         $builder->andWhere($rootAlias.'.registeredAt IS NULL');
+        $builder->andWhere($rootAlias.'.closedAt IS NULL');
 
         return $builder;
     }
