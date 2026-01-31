@@ -78,6 +78,14 @@
     "allow-plugins": {
       "symfony/flex": true,
       "symfony/runtime": true
+    },
+    "audit": {
+      "ignore": {
+        "PKSA-gs8r-6kz6-pp56": "Applies only to GraphQL.",
+        "PKSA-gnn4-pxdg-q76m": "Applies only to GraphQL.",
+        "PKSA-dsd6-6541-26zs": "Authorizations over collections is done over URL parameters.",
+        "PKSA-2j74-htpf-prz8": "Outside of the threat model; craftsmen cannot delete anything."
+      }
     }
   },
   "autoload": {
