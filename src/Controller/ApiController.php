@@ -347,8 +347,7 @@ class ApiController extends BaseController
             return $candidate;
         } elseif ('application/octet-stream' === $candidate->getMimeType() && in_array($candidate->getExtension(), $octetWhitelist)) {
             return $candidate;
-        } else {
-            throw new BadRequestException('Unexpected mimeType: '.$candidate->getMimeType());
         }
+        throw new BadRequestException('Unexpected mimeType: '.$candidate->getMimeType());
     }
 }
