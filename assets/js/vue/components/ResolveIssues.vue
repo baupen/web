@@ -14,7 +14,7 @@
                   :feed-entries="feedEntries"/>
           </div>
           <div class="card-footer">
-            <b v-if="!isLoading">{{ $tc('resolve.total_open', groupCountSum) }}</b>
+            <b v-if="!isLoading">{{ $tc('resolve.total_open', issuesCount) }}</b>
           </div>
         </div>
       </div>
@@ -23,7 +23,7 @@
     <hr class="my-4"/>
 
     <loading-indicator-secondary :spin="isLoading">
-      <p v-if="groupCountSum === 0" class="alert alert-success">
+      <p v-if="issuesCount === 0" class="alert alert-success">
         {{ $t('resolve.thanks') }}
       </p>
 
@@ -38,10 +38,9 @@
           <div class="col-md-auto">
             <div class="card limited-width mb-2">
               <div class="card-body">
-                <export-issues-report-view
-                    :construction-site="constructionSite" :maps="maps"
-                    :query="issuesQuery" :query-result-size="groupCountSum"
-                    :default-report-configuration="reportConfiguration"/>
+                <export-craftsman-issues-view
+                    :construction-site="constructionSite" :map-containers="mapContainers" :construction-managers="constructionManagers"
+                    :issues-count="issuesCount" :query="issuesQuery" />
               </div>
             </div>
           </div>
@@ -55,7 +54,6 @@
 
         <div class="row g-4 mt-4">
           <div class="col-12" v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']">
-
             <issues-resolve-view
                 ref="maps"
                 :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
@@ -79,9 +77,11 @@ import ExportIssuesReportView from './Action/ExportIssuesReportView'
 import {constructionSiteFormatter} from '../services/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
 import Feed from './View/Feed'
+import ExportCraftsmanIssuesView from "./Action/ExportCraftsmanIssuesView.vue";
 
 export default {
   components: {
+    ExportCraftsmanIssuesView,
     Feed,
     ConstructionSiteView,
     ExportIssuesReportView,
@@ -127,7 +127,7 @@ export default {
     },
   },
   computed: {
-    groupCountSum: function () {
+    issuesCount: function () {
       return this.issuesGroupByMap.reduce((sum, entry) => sum + entry.count, 0)
     },
     address: function () {
@@ -151,14 +151,6 @@ export default {
         state: 2,
       })
     },
-    reportConfiguration: function () {
-      return {
-        withRenders: true,
-        withImages: true,
-        tableByCraftsman: false,
-        tableByMap: true
-      }
-    }
   },
   mounted() {
     api.getConstructionManagers(this.constructionSite)

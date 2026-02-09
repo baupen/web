@@ -300,6 +300,12 @@ const api = {
     queryString += '&' + this._getQueryString(query)
     return this._getPaginatedHydraCollection('/api/issues?' + queryString)
   },
+  getIssues: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&pagination=0'
+    return this._getHydraCollection('/api/issues?' + queryString)
+  },
   getReportLink: function (constructionSite, reportQuery, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(reportQuery)
