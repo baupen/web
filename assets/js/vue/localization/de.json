@@ -115,6 +115,13 @@
       "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
       "title": ".pdf Bericht"
     },
+    "export_issues_table": {
+      "help": "Für die Nachverarbeitung: Die Pendenzen als Tabelle in einer Excel-Datei.",
+      "title": ".xlsx Datei",
+      "download": "Herunterladen",
+      "filename": "Pendenzen",
+      "view": "öffnen"
+    },
     "filter_issues": {
       "confirm": "Filter setzen",
       "reset": "Filter zurücksetzen",
@@ -427,6 +434,7 @@
     "number": "Nummer",
     "position": "Platzierung",
     "created_by": "Erstellt von",
+    "created_at": "Erstellt",
     "registered_by": "Registriert (ins Verzeichnis aufgenommen) von",
     "closed_by": "Abgeschlossen von",
     "state": {
