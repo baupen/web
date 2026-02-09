@@ -77,6 +77,7 @@ export default {
 
       const issues = await api.getIssues(this.constructionSite, this.query)
       const flatIssues = issues.map(issue => this.flattenIssue(issue))
+          .sort((a, b) => a.number - b.number)
       const header = [
         this.$t('issue.number'),
         this.$t('issue.map'),
