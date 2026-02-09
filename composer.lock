@@ -8705,16 +8705,16 @@
         },
         {
             "name": "famoser/agnes",
-            "version": "v4.3.6",
+            "version": "v4.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/famoser/agnes.git",
-                "reference": "8b48c124d3ddb66df2bd9cc72d048bb1aee65541"
+                "reference": "923a3dd71ac85726d82ab2896a471ded75a0c8aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/famoser/agnes/zipball/8b48c124d3ddb66df2bd9cc72d048bb1aee65541",
-                "reference": "8b48c124d3ddb66df2bd9cc72d048bb1aee65541",
+                "url": "https://api.github.com/repos/famoser/agnes/zipball/923a3dd71ac85726d82ab2896a471ded75a0c8aa",
+                "reference": "923a3dd71ac85726d82ab2896a471ded75a0c8aa",
                 "shasum": ""
             },
             "require": {
@@ -8757,7 +8757,7 @@
                 "issues": "https://github.com/famoser/agnes/issues",
                 "source": "https://github.com/famoser/agnes"
             },
-            "time": "2026-02-01T14:28:57+00:00"
+            "time": "2026-02-09T11:41:31+00:00"
         },
         {
             "name": "fidry/cpu-core-counter",
