@@ -205,7 +205,7 @@ import RegisterIssuesButton from "../Action/RegisterIssuesButton.vue";
 import AddIssueButton from "../Action/AddIssueButton.vue";
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count', 'loaded-craftsmen', 'loaded-maps', 'reset-hidden'],
+  emits: ['selected', 'query', 'queried-issue-count', 'loaded-craftsmen', 'loaded-maps', 'loaded-construction-managers', 'reset-hidden'],
   components: {
     AddIssueButton,
     RegisterIssuesButton,
@@ -487,7 +487,10 @@ export default {
         })
 
     api.getConstructionManagers(this.constructionSite)
-        .then(constructionManagers => this.constructionManagers = constructionManagers)
+        .then(constructionManagers => {
+          this.constructionManagers = constructionManagers
+          this.$emit('loaded-construction-managers', this.constructionManagers)
+        })
   }
 }
 </script>

@@ -33,6 +33,11 @@
           {{ $t('_action.export_issues_link.title') }}
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" :class="{'active': exportType === 'table'}" @click="exportType = 'table'">
+          {{ $t('_action.export_issues_table.title') }}
+        </a>
+      </li>
     </ul>
     <div class="tab-content p-3 border border-top-0">
       <div class="tab-pane fade" :class="{'show active': exportType === 'report'}">
@@ -47,6 +52,12 @@
             :construction-site="constructionSite"
             :query="applyingQuery"
             :show-title="false"
+        />
+      </div>
+      <div class="tab-pane fade" :class="{'show active': exportType === 'table'}">
+        <export-craftsman-issues-table-view
+            :construction-site="constructionSite" :map-containers="mapContainers" :construction-managers="constructionManagers"
+            :query="query"
         />
       </div>
     </div>
@@ -65,9 +76,12 @@ import GenerateIssuesReport from './GenerateIssuesReport'
 import GenerateIssuesFilter from './GenerateIssuesLink'
 import ExportIssuesReportView from './ExportIssuesReportView'
 import ExportIssuesLinkView from './ExportIssuesLinkView'
+import ExportCraftsmanIssuesTableView from "./ExportCraftsmanIssuesTableView.vue";
+import {mapTransformer} from "../../services/transformers";
 
 export default {
   components: {
+    ExportCraftsmanIssuesTableView,
     ExportIssuesLinkView,
     ExportIssuesReportView,
     GenerateIssuesFilter,
@@ -103,6 +117,10 @@ export default {
       default: []
     },
     craftsmen: {
+      type: Array,
+      default: []
+    },
+    constructionManagers: {
       type: Array,
       default: []
     },
@@ -149,7 +167,10 @@ export default {
           'number[]': this.selectedIssueNumbers
         }
       }
-    }
+    },
+    mapContainers: function () {
+      return mapTransformer.orderedList(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
+    },
   },
 }
 </script>

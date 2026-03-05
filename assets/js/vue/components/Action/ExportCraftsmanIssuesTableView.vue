@@ -66,7 +66,7 @@ export default {
         description: issue.description,
         deadline: issue.deadline ? new Date(issue.deadline) : null,
         createdByName: constructionManagerName,
-        createdByEmail: constructionManager.email,
+        createdByEmail: constructionManager?.email,
         createdAt: issue.createdAt ? new Date(issue.createdAt) : null,
         mapRenderUrl: issue.mapRenderUrl ? new URL(issue.mapRenderUrl + "?size=full", window.location.origin).href : null,
         imageUrl: issue.imageUrl ? new URL(issue.imageUrl + "?size=full", window.location.origin).href : null,
@@ -83,8 +83,8 @@ export default {
         this.$t('issue.map'),
         this.$t('issue.description'),
         this.$t('issue.deadline'),
-        this.$t('issue.created_by'),
         this.$t('issue.created_at'),
+        this.$t('issue.created_by'),
         this.$t('issue.position'),
         this.$t('issue.image'),
       ]
