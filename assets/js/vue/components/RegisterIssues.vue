@@ -2,7 +2,9 @@
   <div id="register">
     <div class="btn-group mb-4">
       <export-issues-button
-          :disabled="exportDisabled" :show-multiple-craftsman-options="true" :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
+          :disabled="exportDisabled" :show-multiple-craftsman-options="true"
+          :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
+          :construction-managers="constructionManagers"
           :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 
@@ -13,6 +15,7 @@
         :initial-state="initialStateQuery"
         @loaded-maps="maps = $event"
         @loaded-craftsmen="craftsmen = $event"
+        @loaded-construction-managers="constructionManagers = $event"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -34,6 +37,7 @@ export default {
       queriedIssuesCount: 0,
       query: {},
       selectedIssues: [],
+      constructionManagers: [],
       maps: [],
       craftsmen: [],
     }
