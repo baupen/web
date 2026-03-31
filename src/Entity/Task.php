@@ -20,6 +20,7 @@ use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,11 +60,11 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     #[Assert\NotBlank]
     #[Groups(['task-read', 'task-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[Groups(['task-read', 'task-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
     /**
@@ -71,7 +72,7 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     #[Assert\NotBlank]
     #[Groups(['task-read', 'task-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
@@ -83,7 +84,7 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      */
     #[Groups(['task-read', 'task-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
     #[Groups(['task-read', 'task-write'])]

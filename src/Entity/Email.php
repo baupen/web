@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
@@ -31,28 +32,28 @@ class Email extends BaseEntity
     public const TYPE_CRAFTSMAN_ISSUE_REMINDER = 4;
     public const TYPE_CONSTRUCTION_SITES_OVERVIEW = 5;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::GUID)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $identifier = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $body = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private ?bool $jsonBody = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $type = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $sentAt = null;
 
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $sentBy = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $readAt = null;
 
     public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email

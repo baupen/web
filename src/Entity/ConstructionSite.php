@@ -25,6 +25,8 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,14 +64,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
 
     #[Assert\NotBlank]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $folderName = null;
 
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isArchived = false;
 
     #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
@@ -87,7 +89,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, Map>
      */
     #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['name' => \Doctrine\Common\Collections\Criteria::ASC])]
+    #[ORM\OrderBy(['name' => Criteria::ASC])]
     private Collection $maps;
 
     /**
@@ -118,7 +120,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, EmailTemplate>
      */
     #[ORM\OneToMany(targetEntity: EmailTemplate::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['purpose' => \Doctrine\Common\Collections\Criteria::ASC, 'name' => 'ASC'])]
+    #[ORM\OrderBy(['purpose' => Criteria::ASC, 'name' => 'ASC'])]
     private Collection $emailTemplates;
 
     /**
@@ -128,7 +130,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $filters;
 
     #[Groups(['construction-site-read'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isHidden = false;
 
     /**

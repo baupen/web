@@ -25,6 +25,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Enum\IssueEventTypes;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -75,35 +76,35 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $root = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
+    #[ORM\Column(type: Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $createdBy = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $lastChangedBy = null;
 
     #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $payload = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
     #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private ?bool $contextualForChildren = true;
 
     #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]

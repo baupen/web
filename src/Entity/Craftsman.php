@@ -25,6 +25,7 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -71,57 +72,57 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $contactName;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $company;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $trade;
 
     #[Assert\NotBlank]
     #[Assert\Email]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $email;
 
     /**
      * @var string[]
      */
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::SIMPLE_ARRAY, nullable: true)]
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $emailCCs = null;
 
     #[Groups(['craftsman-read-self', 'craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $canEdit = true;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-create'])]
-    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'craftsmen')]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'craftsmen')]
     private ?ConstructionSite $constructionSite = null;
 
     /**
      * @var Collection<int, Issue>
      */
-    #[ORM\OneToMany(targetEntity: \Issue::class, mappedBy: 'craftsman')]
+    #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'craftsman')]
     private Collection $issues;
 
     /**
      * @var Collection<int, Issue>
      */
-    #[ORM\OneToMany(targetEntity: \Issue::class, mappedBy: 'resolvedBy')]
+    #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'resolvedBy')]
     private Collection $resolvedIssues;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastEmailReceived = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastVisitOnline = null;
 
     /**
