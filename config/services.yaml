@@ -48,17 +48,9 @@ services:
     App\Api\DataProvider\AuthenticationAwareDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 4 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\CraftsmanFeedEntryDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\CraftsmanStatisticsDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\IssueFeedEntryDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\IssueGroupDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
