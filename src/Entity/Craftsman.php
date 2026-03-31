@@ -122,6 +122,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastEmailReceived = null;
 
+    #[Groups(['craftsman-read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastVisitOnline = null;
 

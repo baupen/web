@@ -350,23 +350,37 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getHydraCollection('/api/issues/group?' + queryString)
   },
-  getCraftsmenFeedEntries: function (constructionSite) {
-    const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    return this._getHydraCollection('/api/craftsmen/feed_entries' + queryString)
-  },
-  getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0, query = null) {
+  getRecentlyChangedIssues: function (constructionSite, query = null, weeksInThePast = 0) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     const week = 7 * 24 * 60 * 60 * 1000
     const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
     queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
     const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
+    queryString += '&pagination=0'
+    queryString += '&order[lastChangedAt]=desc'
+    queryString += '&isDeleted=false'
 
     if (query) {
       queryString += '&' + this._getQueryString(query)
     }
 
-    return this._getHydraCollection('/api/issues/feed_entries' + queryString)
+    return this._getHydraCollection('/api/issues' + queryString)
+  },
+  getRecentIssueEvents: function (constructionSite, query = null, weeksInThePast = 0) {
+    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
+    const week = 7 * 24 * 60 * 60 * 1000
+    const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
+    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
+    const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
+    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
+    queryString += '&isDeleted=false'
+
+    if (query) {
+      queryString += '&' + this._getQueryString(query)
+    }
+
+    return this._getHydraCollection('/api/issue_events' + queryString)
   },
   getIssuesRenderLink: function (constructionSite, map, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
