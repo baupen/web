@@ -312,10 +312,14 @@
     "download": "herunterladen",
     "feed": {
       "entries": {
-        "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
-        "has_registered": "hat eine Pendenz registriert. | hat {count} Pendenzen registriert.",
-        "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
-        "has_visited_webpage": "hat die Pendenzen angeschaut."
+        "start": "hat",
+        "glue_end": "und",
+        "has_created": "eine Pendenz erstellt | {count} Pendenzen erstellt",
+        "has_registered": "eine Pendenz registriert | {count} Pendenzen registriert",
+        "has_sent_mails": "eine Mail versandt | {count} Mails versandt",
+        "has_resolved": "eine Pendenz umgesetzt | {count} Pendenzen umgesetzt",
+        "has_closed": "eine Pendenz abgeschlossen | {count} Pendenzen abgeschlossen",
+        "has_visited_webpage": "die Pendenzen angeschaut"
       },
       "no_entries": "Keine neuen Aktivitäten auf der Baustelle."
     },
