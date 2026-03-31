@@ -19,7 +19,6 @@
 </template>
 <script>
 
-import FeedEntry from './View/FeedEntry'
 import { api } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import Feed from './View/Feed'
@@ -28,7 +27,6 @@ export default {
   components: {
     Feed,
     LoadingIndicatorSecondary,
-    FeedEntry
   },
   data () {
     return {

@@ -2,23 +2,25 @@
   <template v-if="relevantGroupedEvents.length > 0" v-for="(entry, index) in relevantGroupedEvents">
     <hr v-if="index !== 0"/>
     <feed-entry-construction-manager
-        v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date" :entries="entry.events" />
-
+        v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date"
+        :entries="entry.events"/>
+    <feed-entry-craftsman
+        v-if="entry.craftsman" :craftsman="entry.craftsman" :date="entry.date" :entries="entry.events"/>
   </template>
   <span v-else><i>{{ $t('_view.feed.no_entries') }}</i></span>
 </template>
 <script>
 
-import FeedEntry from './FeedEntry'
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import {iriToId} from "../../services/api";
 import FeedEntryConstructionManager from "./FeedEntryConstructionManager.vue";
+import FeedEntryCraftsman from "./FeedEntryCraftsman.vue";
 
 export default {
   components: {
+    FeedEntryCraftsman,
     FeedEntryConstructionManager,
     DateHumanReadable,
-    FeedEntry
   },
   props: {
     constructionManagers: {
@@ -63,13 +65,18 @@ export default {
         const craftsman = this.craftsmen.find(c => iriToId(c['@id']) === group.lastChangedBy)
         const constructionManager = this.constructionManagers.find(c => iriToId(c['@id']) === group.lastChangedBy)
         if (craftsman) {
-          // relevant: STATUS_SET (collapsed), IMAGE, TEXT, FILE
-          const events = group.events.filter(e => e.type === 'IMAGE' || e.type === 'TEXT' || e.type === 'FILE')
+          const events = [];
           const statusSetCount = group.events.filter(e => e.type === 'STATUS_SET' && e.payload === 'RESOLVED').length
           if (statusSetCount > 0) {
             events.push({type: 'STATUS_SET_COUNT', payload: 'RESOLVED', count: statusSetCount})
           }
 
+          // relevant as issue comments: IMAGE, TEXT, FILE
+          const issueEvents = group.events.filter(e => e.type === 'IMAGE' || e.type === 'TEXT' || e.type === 'FILE')
+          if (issueEvents.length > 0) {
+            const uniqueIssues = new Set(issueEvents.map(e => e.root))
+            events.push({type: 'UNIQUE_ISSUES_COMMENTED_COUNT', count: uniqueIssues.size, issueIds: uniqueIssues})
+          }
           return {
             date: group.date,
             craftsman,
@@ -110,7 +117,7 @@ export default {
           events.push({
             date: lastVisitOnlineDay,
             craftsman,
-            events: [{type: 'CRAFTSMAN_VISITED_WEBPAGE'}]
+            events: [{type: 'VISITED_WEBPAGE'}]
           })
         }
       })
