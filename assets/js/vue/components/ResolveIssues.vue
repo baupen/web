@@ -10,7 +10,8 @@
             <div class="loading-center" v-if="!constructionManagers || !recentlyChangedIssues">
               <loading-indicator-secondary/>
             </div>
-            <issue-registration-feed :issues="recentlyChangedIssues" :construction-managers="constructionManagers"/>
+            <issue-registration-feed
+                v-else :issues="recentlyChangedIssues" :construction-managers="constructionManagers"/>
           </div>
           <div class="card-footer">
             <b v-if="!isLoading">{{ $tc('resolve.total_open', issuesCount) }}</b>
