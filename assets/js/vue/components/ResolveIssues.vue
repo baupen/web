@@ -76,7 +76,6 @@ import GenerateIssuesReport from './Action/GenerateIssuesReport'
 import ExportIssuesReportView from './Action/ExportIssuesReportView'
 import {constructionSiteFormatter} from '../services/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
-import Feed from './View/Feed'
 import ExportCraftsmanIssuesView from "./Action/ExportCraftsmanIssuesView.vue";
 import IssueRegistrationFeed from "./View/IssueRegistrationFeed.vue";
 
@@ -84,7 +83,6 @@ export default {
   components: {
     IssueRegistrationFeed,
     ExportCraftsmanIssuesView,
-    Feed,
     ConstructionSiteView,
     ExportIssuesReportView,
     GenerateIssuesReport,
