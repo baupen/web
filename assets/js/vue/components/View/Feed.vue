@@ -1,7 +1,9 @@
 <template>
   <template v-if="relevantGroupedEvents.length > 0" v-for="(entry, index) in relevantGroupedEvents">
     <hr v-if="index !== 0"/>
-    {{entry}}
+    <feed-entry-construction-manager
+        v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date" :entries="entry.events" />
+
   </template>
   <span v-else><i>{{ $t('_view.feed.no_entries') }}</i></span>
 </template>
@@ -10,9 +12,11 @@
 import FeedEntry from './FeedEntry'
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import {iriToId} from "../../services/api";
+import FeedEntryConstructionManager from "./FeedEntryConstructionManager.vue";
 
 export default {
   components: {
+    FeedEntryConstructionManager,
     DateHumanReadable,
     FeedEntry
   },
@@ -67,7 +71,7 @@ export default {
           }
 
           return {
-            day: group.day,
+            date: group.date,
             craftsman,
             events
           }
@@ -80,8 +84,13 @@ export default {
               events.push({type: 'STATUS_SET_COUNT', payload: status, count: statusSetCount})
             }
           })
+
+          const emailCount = group.events.filter(e => e.type === 'EMAIL').length
+          if (emailCount > 0) {
+            events.push({type: 'EMAIL_COUNT', count: emailCount})
+          }
           return {
-            day: group.day,
+            date: group.date,
             constructionManager,
             events
           }
