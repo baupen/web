@@ -130,8 +130,9 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
                     }
                 } else {
                     // must not modify time
-                    $diff = $subject->getCreatedAt()->diff($subject->getTimestamp());
-                    if ($diff > new \DateInterval('PT5M')) {
+                    $max = (clone $subject->getCreatedAt())->modify('+5 minutes');
+                    $min = (clone $subject->getCreatedAt())->modify('-5 minutes');
+                    if ($subject->getTimestamp() > $max || $subject->getTimestamp() < $min) {
                         return false;
                     }
                 }
