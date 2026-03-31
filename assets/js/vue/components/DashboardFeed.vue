@@ -4,7 +4,7 @@
       <div class="loading-center" v-if="isLoading">
         <loading-indicator-secondary />
       </div>
-      <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
+      <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :issue-events="issueEvents" />
     </div>
     <div class="card-footer" v-if="!isLoadingStatistics && (overdueCount > 0 || unreadCount > 0)">
       <span v-if="overdueCount" class="badge bg-danger me-1">
@@ -32,10 +32,8 @@ export default {
   },
   data () {
     return {
-      craftsmen: null,
       craftsmenStatistics: null,
-      feedEntries: null,
-      remainingFeedsToLoad: 2
+      issueEvents: null,
     }
   },
   props: {
@@ -46,11 +44,15 @@ export default {
     constructionManagers: {
       type: Array,
       required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
     }
   },
   computed: {
     isLoading: function () {
-      return (this.feedEntries?.length === 0 && this.remainingFeedsToLoad > 0) || !this.craftsmen
+      return !this.issueEvents
     },
     isLoadingStatistics: function () {
       return !this.craftsmen || !this.craftsmenStatistics
@@ -66,20 +68,9 @@ export default {
     }
   },
   mounted () {
-    api.getCraftsmen(this.constructionSite)
-        .then(craftsmen => this.craftsmen = craftsmen)
-
-    this.feedEntries = []
-    api.getIssuesFeedEntries(this.constructionSite)
-        .then(issuesFeedEntries => {
-          this.feedEntries = this.feedEntries.concat(issuesFeedEntries)
-          this.remainingFeedsToLoad--
-        })
-
-    api.getCraftsmenFeedEntries(this.constructionSite)
-        .then(craftsmenFeedEntries => {
-          this.feedEntries = this.feedEntries.concat(craftsmenFeedEntries)
-          this.remainingFeedsToLoad--
+    api.getRecentIssueEvents(this.constructionSite)
+        .then(issueEvents => {
+          this.issueEvents = issueEvents
         })
 
     api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })

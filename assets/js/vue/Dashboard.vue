@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <loading-indicator :spin="!constructionSite || !constructionManagers">
+    <loading-indicator :spin="!constructionSite || !constructionManagers || !craftsmen">
       <div class="row">
         <div class="col-md-12 col-lg-4">
           <h3>{{ $t('construction_site._name') }}</h3>
@@ -10,6 +10,7 @@
           <h3>{{ $t('dashboard.activity') }}</h3>
           <dashboard-issues-graph class="shadow" :construction-site="constructionSite"/>
           <dashboard-feed class="shadow mt-4" :construction-site="constructionSite"
+                          :craftsmen="craftsmen"
                           :construction-managers="constructionManagers"/>
         </div>
         <div class="col-md-6 col-lg-4">
@@ -17,7 +18,7 @@
           <dashboard-issues-summary class="shadow" :construction-site="constructionSite"/>
           <dashboard-tasks class="shadow mt-4"
                            :construction-site="constructionSite" :construction-managers="constructionManagers"
-                           :construction-manager-iri="constructionManagerIri" />
+                           :construction-manager-iri="constructionManagerIri"/>
           <dashboard-issues-events
               class="shadow mt-4"
               :construction-managers="constructionManagers" :construction-site="constructionSite"
@@ -55,6 +56,7 @@ export default {
       constructionManagerIri: null,
       constructionSite: null,
       constructionManagers: null,
+      craftsmen: null
     }
   },
   mounted() {
@@ -63,10 +65,16 @@ export default {
         .then(me => {
               this.constructionManagerIri = me.constructionManagerIri
               api.getConstructionSite()
-                  .then(constructionSite => this.constructionSite = constructionSite)
+                  .then(constructionSite => {
+                    this.constructionSite = constructionSite
 
-              api.getConstructionManagers(this.constructionSite)
-                  .then(constructionManagers => this.constructionManagers = constructionManagers)
+                    api.getConstructionManagers(this.constructionSite)
+                        .then(constructionManagers => this.constructionManagers = constructionManagers)
+
+                    api.getCraftsmen(this.constructionSite)
+                        .then(craftsmen => this.craftsmen = craftsmen)
+                  })
+
             }
         )
   }
