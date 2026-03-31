@@ -60,8 +60,8 @@ export default {
     },
   },
   methods: {
-    getConstructionManagerName: function (issue) {
-      const constructionManager = this.constructionManagers.find(c => c['@id'] === issue.registeredBy);
+    getConstructionManagerName: function (constructionManagerIri) {
+      const constructionManager = this.constructionManagers.find(c => c['@id'] === constructionManagerIri);
       if (!constructionManager) {
         return null;
       }
