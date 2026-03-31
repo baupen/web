@@ -10,7 +10,6 @@
 import { api } from './services/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
-import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import ResolveIssues from './components/ResolveIssues'
 
@@ -18,7 +17,6 @@ export default {
   components: {
     ResolveIssues,
     LoadingIndicator,
-    DashboardFeed,
     DashboardIssuesSummary,
     DashboardConstructionSite
   },
