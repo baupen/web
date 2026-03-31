@@ -25,6 +25,7 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,7 +63,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     #[Assert\NotBlank]
     #[Groups(['map-read', 'map-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]

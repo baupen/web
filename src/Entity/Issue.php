@@ -31,6 +31,7 @@ use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Repository\IssueRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -117,27 +118,27 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CLOSED = 8;
 
     #[Groups(['issue-read'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $number = null;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isMarked = false;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $wasAddedWithClient = false;
 
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $lastChangedAt = null;
 
     #[Assert\Callback]

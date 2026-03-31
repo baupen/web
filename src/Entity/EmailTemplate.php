@@ -18,6 +18,7 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -55,31 +56,31 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $subject;
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     private string $body;
 
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $purpose = null;
 
     #[Assert\NotNull]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $selfBcc;
 
     #[Assert\NotBlank]
     #[Groups(['email-template-create'])]
-    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'emailTemplates')]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'emailTemplates')]
     private ?ConstructionSite $constructionSite = null;
 
     public function getName(): string
