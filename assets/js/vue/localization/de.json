@@ -319,7 +319,8 @@
         "has_sent_mails": "eine Mail versandt | {count} Mails versandt",
         "has_resolved": "eine Pendenz umgesetzt | {count} Pendenzen umgesetzt",
         "has_closed": "eine Pendenz abgeschlossen | {count} Pendenzen abgeschlossen",
-        "has_visited_webpage": "die Pendenzen angeschaut"
+        "has_visited_webpage": "die Pendenzen angeschaut",
+        "has_commented_issues": "eine Pendenz kommentiert | {count} Pendenzen kommentiert"
       },
       "no_entries": "Keine neuen Aktivitäten auf der Baustelle."
     },

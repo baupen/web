@@ -15,14 +15,12 @@
 </template>
 <script>
 
-import FeedEntry from './FeedEntry'
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import {constructionManagerFormatter} from "../../services/formatters";
 
 export default {
   components: {
     DateHumanReadable,
-    FeedEntry
   },
   props: {
     constructionManagers: {
