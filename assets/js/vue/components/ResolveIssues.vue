@@ -7,11 +7,10 @@
       <div class="col-md-auto">
         <div class="card limited-width">
           <div class="card-body limited-height">
-            <div class="loading-center" v-if="!constructionManagers || !feedEntries">
+            <div class="loading-center" v-if="!constructionManagers || !recentlyChangedIssues">
               <loading-indicator-secondary/>
             </div>
-            <feed v-else :construction-managers="constructionManagers" :craftsmen="[craftsman]"
-                  :feed-entries="feedEntries"/>
+            <issue-registration-feed :issues="recentlyChangedIssues" :construction-managers="constructionManagers"/>
           </div>
           <div class="card-footer">
             <b v-if="!isLoading">{{ $tc('resolve.total_open', issuesCount) }}</b>
@@ -78,9 +77,11 @@ import {constructionSiteFormatter} from '../services/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
 import Feed from './View/Feed'
 import ExportCraftsmanIssuesView from "./Action/ExportCraftsmanIssuesView.vue";
+import IssueRegistrationFeed from "./View/IssueRegistrationFeed.vue";
 
 export default {
   components: {
+    IssueRegistrationFeed,
     ExportCraftsmanIssuesView,
     Feed,
     ConstructionSiteView,
@@ -95,7 +96,7 @@ export default {
       constructionManagers: null,
       maps: null,
       issuesGroupByMap: null,
-      feedEntries: null
+      recentlyChangedIssues: null
     }
   },
   props: {
@@ -164,9 +165,9 @@ export default {
     api.getIssuesGroup(this.constructionSite, 'map', this.issuesQuery)
         .then(groups => this.issuesGroupByMap = groups)
 
-    api.getIssuesFeedEntries(this.constructionSite, 0, this.craftsmanQuery)
-        .then(issuesFeedEntries => {
-          this.feedEntries = issuesFeedEntries
+    api.getRecentlyChangedIssues(this.constructionSite, this.issuesQuery)
+        .then(issues => {
+          this.recentlyChangedIssues = issues
         })
   }
 }
