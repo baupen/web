@@ -21,11 +21,11 @@ Improve existing features:
 - Archive: Export whole construction site, or parts (e.g. only pictures).
 
 Technical:
-- Dashboard feed: Refactor to build upon issue events.
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
 - UI framework: Improve form fields abstraction, clearer loading indication
-- Construction managers: Allow safe removed of construction manager, even if with some changes on construction site.
+- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
+- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
 
 Dependencies:
 - Replace noty (noty longer maintained)

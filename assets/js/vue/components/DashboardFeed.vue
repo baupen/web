@@ -2,9 +2,12 @@
   <div class="card">
     <div class="card-body limited-height">
       <div class="loading-center" v-if="isLoading">
-        <loading-indicator-secondary />
+        <loading-indicator-secondary/>
       </div>
-      <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :issue-events="issueEvents" />
+      <feed v-else
+            :construction-site="constructionSite" :maps="maps" :craftsmen="craftsmen"
+            :construction-manager-iri="constructionManagerIri" :construction-managers="constructionManagers"
+            :issue-events="issueEvents"/>
     </div>
     <div class="card-footer" v-if="!isLoadingStatistics && (overdueCount > 0 || unreadCount > 0)">
       <span v-if="overdueCount" class="badge bg-danger me-1">
@@ -19,7 +22,7 @@
 </template>
 <script>
 
-import { api } from '../services/api'
+import {api} from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import Feed from './View/Feed'
 
@@ -28,7 +31,7 @@ export default {
     Feed,
     LoadingIndicatorSecondary,
   },
-  data () {
+  data() {
     return {
       craftsmenStatistics: null,
       issueEvents: null,
@@ -46,7 +49,15 @@ export default {
     craftsmen: {
       type: Array,
       required: true
-    }
+    },
+    maps: {
+      type: Array,
+      required: true
+    },
+    constructionManagerIri: {
+      type: String,
+      required: true
+    },
   },
   computed: {
     isLoading: function () {
@@ -65,13 +76,13 @@ export default {
       return api.currentDispatchUrl()
     }
   },
-  mounted () {
+  mounted() {
     api.getRecentIssueEvents(this.constructionSite)
         .then(issueEvents => {
           this.issueEvents = issueEvents
         })
 
-    api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })
+    api.getCraftsmenStatistics(this.constructionSite, {isDeleted: false})
         .then(craftsmenStatistics => this.craftsmenStatistics = craftsmenStatistics)
   }
 }

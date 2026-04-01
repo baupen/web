@@ -1,5 +1,6 @@
 <template>
   <button-with-modal-confirm
+      :button-size="buttonSize"
       modal-size="mmd"
       :title="$t('_action.view_issue.title')" :color="stateColor">
 
@@ -141,6 +142,10 @@ export default {
     constructionManagerIri: {
       type: String,
       required: true
+    },
+    buttonSize: {
+      type: String,
+      default: null
     },
   },
   computed: {

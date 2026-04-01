@@ -5,7 +5,11 @@
         v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date"
         :entries="entry.events"/>
     <feed-entry-craftsman
-        v-if="entry.craftsman" :craftsman="entry.craftsman" :date="entry.date" :entries="entry.events"/>
+        v-if="entry.craftsman"
+        :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"
+        :construction-managers="constructionManagers" :craftsmen="craftsmen"
+        :map-containers-lookup="mapContainersLookup"
+        :craftsman="entry.craftsman" :date="entry.date" :entries="entry.events"/>
   </template>
   <span v-else><i>{{ $t('_view.feed.no_entries') }}</i></span>
 </template>
@@ -15,6 +19,7 @@ import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import {iriToId} from "../../services/api";
 import FeedEntryConstructionManager from "./FeedEntryConstructionManager.vue";
 import FeedEntryCraftsman from "./FeedEntryCraftsman.vue";
+import {mapTransformer} from "../../services/transformers";
 
 export default {
   components: {
@@ -23,12 +28,24 @@ export default {
     DateHumanReadable,
   },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     constructionManagers: {
       type: Array,
       required: true
     },
     craftsmen: {
       type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
+      required: true
+    },
+    constructionManagerIri: {
+      type: String,
       required: true
     },
     issueEvents: {
@@ -74,7 +91,7 @@ export default {
           // relevant as issue comments: IMAGE, TEXT, FILE
           const issueEvents = group.events.filter(e => e.type === 'IMAGE' || e.type === 'TEXT' || e.type === 'FILE')
           if (issueEvents.length > 0) {
-            const uniqueIssues = new Set(issueEvents.map(e => e.root))
+            const uniqueIssues = Array.from(new Set(issueEvents.map(e => e.root)))
             events.push({type: 'UNIQUE_ISSUES_COMMENTED_COUNT', count: uniqueIssues.size, issueIds: uniqueIssues})
           }
           return {
@@ -123,7 +140,10 @@ export default {
       })
 
       return events.sort((a, b) => new Date(b.date) - new Date(a.date))
-    }
+    },
+    mapContainersLookup: function () {
+      return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
+    },
   },
 }
 </script>

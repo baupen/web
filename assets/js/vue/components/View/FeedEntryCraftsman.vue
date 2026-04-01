@@ -4,9 +4,13 @@
       {{ this.craftsman.company }}
     </b>
     {{ $t('_view.feed.entries.start') }}
-    {{ text }}<template v-if="commentedIssueIds">
-    (laden)
-  </template>.
+    {{ text }}
+    <template v-if="commentedIssueIds?.length > 0">
+        <view-loading-issue-button
+          v-for="issueId in commentedIssueIds" :key="issueId" :issue-id="issueId"
+          :construction-site="constructionSite" :map-containers-lookup="mapContainersLookup" :construction-managers="constructionManagers"
+          :craftsmen="craftsmen" :construction-manager-iri="constructionManagerIri" />
+    </template>.
     <span class="text-secondary">
       -
       <date-human-readable :value="date"/>
@@ -18,9 +22,10 @@
 
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import {constructionManagerFormatter} from '../../services/formatters'
+import ViewLoadingIssueButton from "../Action/ViewLoadingIssueButton.vue";
 
 export default {
-  components: {DateHumanReadable},
+  components: {ViewLoadingIssueButton, DateHumanReadable},
   props: {
     craftsman: {
       type: Object,
@@ -32,6 +37,27 @@ export default {
     },
     entries: {
       type: Array,
+      required: true
+    },
+
+    constructionSite: {
+      type: Object,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    mapContainersLookup: {
+      type: Object,
+      required: true
+    },
+    constructionManagerIri: {
+      type: String,
       required: true
     },
   },
