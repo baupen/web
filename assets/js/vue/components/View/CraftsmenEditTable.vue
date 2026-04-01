@@ -2,11 +2,17 @@
   <table class="table table-hover border shadow">
     <thead>
     <tr class="bg-light">
-      <th>{{ $t('craftsman.trade') }}</th>
-      <th>{{ $t('craftsman.company') }}</th>
-      <th class="border-start">{{ $t('craftsman.contact_name') }}</th>
+      <th>
+        {{ $t('craftsman.trade') }}<br>
+        <span class="text-muted">{{ $t('craftsman.company') }}</span>
+      </th>
+      <th class="border-start">
+        {{ $t('craftsman.contact_name') }}<br>
+        {{ $t('craftsman.contact_job_title') }}
+      </th>
       <th>{{ $t('craftsman.email') }}</th>
-      <th>{{ $t('craftsman.emailCCs') }}</th>
+      <th>{{ $t('craftsman.telephone') }}</th>
+      <th>{{ $t('craftsman.address') }}</th>
       <th class="w-minimal" />
     </tr>
     </thead>
@@ -18,15 +24,25 @@
       </td>
     </tr>
     <tr v-else v-for="craftsman in orderedCraftsmen">
-      <td>{{ craftsman.trade }}</td>
       <td>
-        {{ craftsman.company }}
+        {{ craftsman.trade }}<br/>
+        <span class="text-muted">{{ craftsman.company }}</span>
       </td>
       <td class="border-start">
-        {{ craftsman.contactName }}
+        {{ craftsman.contactName }}<br/>
+        <span class="text-muted">{{ craftsman.contactJobTitle }}</span>
       </td>
-      <td>{{ craftsman.email }}</td>
-      <td>{{ craftsman.emailCCs.length ? craftsman.emailCCs.join(', ') : '-' }}</td>
+      <td>
+        {{ craftsman.email }}<br>
+        <span class="text-muted white-space-pre-line">
+          {{ craftsman.emailCCs?.join('\n') }}</span>
+      </td>
+      <td class="white-space-pre-line">
+        {{ craftsman.telephone }}
+      </td>
+      <td class="white-space-pre-line">
+        {{ craftsman.address }}
+      </td>
       <td>
         <div class="btn-group">
           <span /> <!-- fixes button css -->
