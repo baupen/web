@@ -92,7 +92,7 @@ export default {
           const issueEvents = group.events.filter(e => e.type === 'IMAGE' || e.type === 'TEXT' || e.type === 'FILE')
           if (issueEvents.length > 0) {
             const uniqueIssues = Array.from(new Set(issueEvents.map(e => e.root)))
-            events.push({type: 'UNIQUE_ISSUES_COMMENTED_COUNT', count: uniqueIssues.size, issueIds: uniqueIssues})
+            events.push({type: 'UNIQUE_ISSUES_COMMENTED_COUNT', count: uniqueIssues.length, issueIds: uniqueIssues})
           }
           return {
             date: group.date,
