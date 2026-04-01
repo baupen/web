@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <loading-indicator :spin="!constructionSite || !constructionManagers || !craftsmen">
+    <loading-indicator :spin="!constructionSite || !constructionManagers || !craftsmen || !maps">
       <div class="row">
         <div class="col-md-12 col-lg-4">
           <h3>{{ $t('construction_site._name') }}</h3>
@@ -10,8 +10,8 @@
           <h3>{{ $t('dashboard.activity') }}</h3>
           <dashboard-issues-graph class="shadow" :construction-site="constructionSite"/>
           <dashboard-feed class="shadow mt-4" :construction-site="constructionSite"
-                          :craftsmen="craftsmen"
-                          :construction-managers="constructionManagers"/>
+                          :craftsmen="craftsmen" :maps="maps" :construction-managers="constructionManagers"
+          :construction-manager-iri="constructionManagerIri"/>
         </div>
         <div class="col-md-6 col-lg-4">
           <h3>{{ $t('issue._plural') }}</h3>
@@ -56,7 +56,8 @@ export default {
       constructionManagerIri: null,
       constructionSite: null,
       constructionManagers: null,
-      craftsmen: null
+      craftsmen: null,
+      maps: null
     }
   },
   mounted() {
@@ -73,6 +74,9 @@ export default {
 
                     api.getCraftsmen(this.constructionSite)
                         .then(craftsmen => this.craftsmen = craftsmen)
+
+                    api.getMaps(this.constructionSite)
+                        .then(maps => this.maps = maps)
                   })
 
             }
