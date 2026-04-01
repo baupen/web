@@ -13,7 +13,7 @@
 
 import IssueLinkForm from '../Form/IssueLinkForm'
 import GenerateIssuesFilter from './GenerateIssuesLink'
-import {utils, writeFileXLSX} from "xlsx";
+import {utils, writeFileXLSX} from "xlsx-js-style";
 import moment from 'moment'
 import {api, iriToId} from "../../services/api";
 import {constructionManagerFormatter} from "../../services/formatters";
