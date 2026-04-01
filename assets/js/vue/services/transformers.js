@@ -68,7 +68,7 @@ const craftsmanTransformer = {
   ],
   _xlsxHeader: function (translator) {
     const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))
-    translatedHeader[translatedHeader.length - 1] += ' (' + translator('craftsman._excel_format_emailCCs') + ')'
+    translatedHeader[5] += ' (' + translator('craftsman._excel_format_emailCCs') + ')'
 
     return translatedHeader
   },
@@ -97,15 +97,15 @@ const craftsmanTransformer = {
         trade: entry[0],
         company: entry[1],
         contactName: entry[2],
-        contactJobTitle: entry[2],
-        email: entry[3],
+        contactJobTitle: entry[3],
+        email: entry[4],
         emailCCs: [],
-        telephone: entry[5],
-        address: entry[6],
+        telephone: entry[6],
+        address: entry[7],
       }
 
-      if (entry[4]) {
-        craftsman.emailCCs = entry[4].split(',').map(e => e.trim()).filter(e => e)
+      if (entry[5]) {
+        craftsman.emailCCs = entry[5].split(',').map(e => e.trim()).filter(e => e)
       }
 
       craftsmen.push(craftsman)
