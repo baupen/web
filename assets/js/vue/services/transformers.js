@@ -1,5 +1,5 @@
-import { iriToId } from './api'
-import { utils, write, read } from 'xlsx-js-style'
+import {iriToId} from './api'
+import {utils, write, read} from 'xlsx-js-style'
 
 const issueTransformer = {
   isOverdue: function (issue) {
@@ -24,13 +24,26 @@ const excelTransformer = {
     const worksheet = utils.aoa_to_sheet([header, ...content])
 
     header.forEach((_, index) => {
-      const cellAddress = utils.encode_cell({ r: 0, c: index })
+      const cellAddress = utils.encode_cell({r: 0, c: index})
       if (worksheet[cellAddress]) {
         worksheet[cellAddress].s = {
-          font: { bold: true }
+          font: {bold: true}
         }
       }
     })
+
+    const range = utils.decode_range(worksheet['!ref'])
+    for (let row = range.s.r + 1; row <= range.e.r; row++) {
+      for (let col = range.s.c; col <= range.e.c; col++) {
+        const cellAddress = utils.encode_cell({r: row, c: col})
+        if (worksheet[cellAddress]) {
+          worksheet[cellAddress].s = {
+            ...(worksheet[cellAddress].s || {}),
+            alignment: {wrapText: true, vertical: 'top'}
+          }
+        }
+      }
+    }
 
     worksheet['!cols'] = header.map((_, index) => {
       const maxLength = Math.max(
@@ -38,7 +51,7 @@ const excelTransformer = {
         ...content.map(row => String(row[index] ?? '').length)
       )
 
-      return { wch: Math.min(Math.max(maxLength + 2, 12), 40) }
+      return {wch: Math.min(Math.max(maxLength + 2, 12), 40)}
     })
 
     utils.book_append_sheet(workbook, worksheet, worksheetName)
@@ -49,14 +62,14 @@ const excelTransformer = {
       type: 'array'
     })
 
-    return new Blob([blobPart], { type: this.mimeTypeXlsx })
+    return new Blob([blobPart], {type: this.mimeTypeXlsx})
   },
   import: function (arrayBuffer) {
     const data = new Uint8Array(arrayBuffer)
-    const workbook = read(data, { type: 'array' })
+    const workbook = read(data, {type: 'array'})
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
 
-    return utils.sheet_to_json(worksheet, { header: 1 })
+    return utils.sheet_to_json(worksheet, {header: 1})
   }
 }
 
@@ -66,20 +79,18 @@ const craftsmanTransformer = {
     ['Apps', 'baupen.ch', 'Adrian Hoffman', 'Entwickler', 'adrian.hoffman@baupen.ch', 'info@baupen.ch, support@baupen.ch'],
     ['Web', 'baupen.ch', 'Florian Moser', 'Entwickler', 'florian.moser@baupen.ch'],
   ],
-  _xlsxHeader: function (translator) {
-    const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))
-    translatedHeader[5] += ' (' + translator('craftsman._excel_format_emailCCs') + ')'
-
-    return translatedHeader
-  },
   _createXlsx: function (content, translator) {
-    const translatedHeader = this._xlsxHeader(translator)
+    const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))
     const worksheetName = translator('craftsman._plural')
 
     return excelTransformer.exportToXlsx(content, translatedHeader, worksheetName)
   },
   exportToXlsx: function (craftsmen, translator) {
-    const content = craftsmen.map(c => [c.trade, c.company, c.contactName, c.contactJobTitle, c.email, c.emailCCs?.join(', '), c.telephone, c.address])
+    const content = craftsmen.map(c => [
+        c.trade, c.company, c.contactName, c.contactJobTitle,
+        c.email, c.emailCCs?.join(', '), c.telephone?.replace('\n', ', '), c.address?.replace('\n', ', ')
+      ]
+    )
 
     return this._createXlsx(content, translator)
   },
@@ -99,13 +110,9 @@ const craftsmanTransformer = {
         contactName: entry[2],
         contactJobTitle: entry[3],
         email: entry[4],
-        emailCCs: [],
-        telephone: entry[6],
-        address: entry[7],
-      }
-
-      if (entry[5]) {
-        craftsman.emailCCs = entry[5].split(',').map(e => e.trim()).filter(e => e)
+        emailCCs: entry[5].split(',').map(e => e.trim()).filter(e => e) ?? [],
+        telephone: entry[6]?.replace('\n', ', '),
+        address: entry[7]?.replace('\n', ', '),
       }
 
       craftsmen.push(craftsman)
@@ -203,7 +210,9 @@ const treeTransformer = {
     })
   },
   _addPropertyInPlace: function (tree, property, propertyResolveFunc) {
-    this._traverseDepthFirst(tree, child => { child[property] = propertyResolveFunc(child) })
+    this._traverseDepthFirst(tree, child => {
+      child[property] = propertyResolveFunc(child)
+    })
   },
   _flattenToList: function (tree) {
     let result = []
@@ -290,7 +299,9 @@ const mapTransformer = {
   },
   _addIssueGroupsInPlace: function (tree, mapGroups) {
     const mapGroupLookup = {}
-    mapGroups.forEach(mg => { mapGroupLookup[mg.entity] = mg })
+    mapGroups.forEach(mg => {
+      mapGroupLookup[mg.entity] = mg
+    })
 
     treeTransformer._traverseDepthFirst(tree, node => {
       const mapGroup = mapGroupLookup[node.entity['@id']]
@@ -366,8 +377,12 @@ const mapTransformer = {
       notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
       chosenMaps.forEach(chosenMap => {
         if (chosenMap.parent) {
-          chosenMap.siblings.forEach(s => { s.siblings = s.siblings.filter(e => e !== chosenMap) })
-          chosenMap.parents.forEach(p => { p.issueSumWithChildren -= chosenMap.issueSumWithChildren })
+          chosenMap.siblings.forEach(s => {
+            s.siblings = s.siblings.filter(e => e !== chosenMap)
+          })
+          chosenMap.parents.forEach(p => {
+            p.issueSumWithChildren -= chosenMap.issueSumWithChildren
+          })
           chosenMap.parent.children = chosenMap.parent.children.filter(c => c !== chosenMap)
         }
       })
@@ -407,11 +422,15 @@ const filterTransformer = {
 
     const textProps = ['number', 'description']
     textProps.filter(p => filter[p])
-      .forEach(p => { query[p] = filter[p] })
+      .forEach(p => {
+        query[p] = filter[p]
+      })
 
     const booleanProps = ['isMarked', 'wasAddedWithClient']
     booleanProps.filter(p => filter[p] || filter[p] === false)
-      .forEach(p => { query[p] = filter[p] })
+      .forEach(p => {
+        query[p] = filter[p]
+      })
 
     if (!configuration) {
       return query
@@ -435,7 +454,9 @@ const filterTransformer = {
       whitelistDateTimePropNames.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
     }
     whitelistDateTimePropNames.filter(p => filter[p + '[after]'])
-      .forEach(p => { query[p + '[after]'] = filter[p + '[after]'] })
+      .forEach(p => {
+        query[p + '[after]'] = filter[p + '[after]']
+      })
     whitelistDateTimePropNames.filter(p => filter[p + '[before]'])
       .forEach(p => {
         const dateString = filter[p + '[before]']
@@ -459,7 +480,7 @@ const filterTransformer = {
     return query
   },
   filterToFilterEntity: function (query, constructionSite) {
-    const filter = { constructionSite: constructionSite['@id'] }
+    const filter = {constructionSite: constructionSite['@id']}
 
     if (!query) {
       return filter
@@ -522,4 +543,4 @@ const filterTransformer = {
   }
 }
 
-export { issueTransformer, mapTransformer, filterTransformer, craftsmanTransformer, excelTransformer }
+export {issueTransformer, mapTransformer, filterTransformer, craftsmanTransformer, excelTransformer}
