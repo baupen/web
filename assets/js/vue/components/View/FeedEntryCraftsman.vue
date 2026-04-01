@@ -4,9 +4,9 @@
       {{ this.craftsman.company }}
     </b>
     {{ $t('_view.feed.entries.start') }}
-    {{ text }}
-    <template v-if="commentedIssueIds?.length > 0">
+    {{ text }}<template v-if="commentedIssueIds?.length > 0">
         <view-loading-issue-button
+            class="ms-2"
           v-for="issueId in commentedIssueIds" :key="issueId" :issue-id="issueId"
           :construction-site="constructionSite" :map-containers-lookup="mapContainersLookup" :construction-managers="constructionManagers"
           :craftsmen="craftsmen" :construction-manager-iri="constructionManagerIri" />

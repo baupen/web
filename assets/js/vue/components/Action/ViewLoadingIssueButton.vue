@@ -1,15 +1,17 @@
 <template>
-  <view-issue-button
-      v-if="status === 'view'"
-      ref="viewIssueButton"
-      button-size="sm"
-      :construction-manager-iri="constructionManagerIri" :issue="issue" :craftsmen="craftsmen"
-      :construction-managers="constructionManagers" :map="mapContainer?.entity" :construction-site="constructionSite"
-      :map-parent-names="mapContainer?.mapParentNames"/>
-  <button v-else :disabled="status === 'loading'"
-      class="btn btn-sm btn-outline-secondary" @click="load">
-    <font-awesome-icon :icon="['far', 'dot-circle']"/>
-  </button>
+  <span>
+    <view-issue-button
+        v-if="status === 'view'"
+        ref="viewIssueButton"
+        button-size="sm"
+        :construction-manager-iri="constructionManagerIri" :issue="issue" :craftsmen="craftsmen"
+        :construction-managers="constructionManagers" :map="mapContainer?.entity" :construction-site="constructionSite"
+        :map-parent-names="mapContainer?.mapParentNames"/>
+    <button v-else :disabled="status === 'loading'"
+            class="btn btn-sm btn-outline-secondary" @click="load">
+      <font-awesome-icon :icon="['far', 'dot-circle']"/>
+    </button>
+  </span>
 </template>
 
 <script>
