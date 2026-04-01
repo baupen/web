@@ -29,7 +29,16 @@
       <invalid-feedback :errors="fields.contactName.errors" />
     </form-field>
 
-    <form-field for-id="email" class="col-md-6" :label="$t('craftsman.email')">
+    <form-field for-id="contactJobTitle" class="col-md-6" :label="$t('craftsman.contact_job_title')" :required="false">
+      <input id="contactJobTitle" class="form-control" type="text"
+             :class="{'is-valid': fields.contactJobTitle.dirty && !fields.contactJobTitle.errors.length, 'is-invalid': fields.contactJobTitle.dirty && fields.contactJobTitle.errors.length }"
+             @blur="fields.contactJobTitle.dirty = true"
+             v-model="craftsman.contactJobTitle"
+             @input="validate('contactJobTitle')">
+      <invalid-feedback :errors="fields.contactJobTitle.errors" />
+    </form-field>
+
+    <form-field for-id="email" class="col-md-12" :label="$t('craftsman.email')">
       <input id="email" class="form-control" type="email" required="required"
              :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
              @blur="fields.email.dirty = true"
@@ -49,6 +58,31 @@
         </textarea>
     <help :help="$t('_form.craftsman.emailCCs_help')" />
     <invalid-feedback :errors="fields.emailCCs.errors" />
+  </form-field>
+
+  <hr/>
+
+  <form-field for-id="telephone" :label="$t('craftsman.telephone')" :required="false">
+        <textarea id="telephone" class="form-control"
+                  :class="{'is-valid': fields.telephone.dirty && !fields.telephone.errors.length, 'is-invalid': fields.telephone.dirty && fields.telephone.errors.length }"
+                  @blur="fields.telephone.dirty = true"
+                  v-model="craftsman.telephone"
+                  @input="validate('telephone')"
+                  rows="3">
+        </textarea>
+    <invalid-feedback :errors="fields.telephone.errors" />
+  </form-field>
+
+
+  <form-field for-id="address" :label="$t('craftsman.address')" :required="false">
+        <textarea id="address" class="form-control"
+                  :class="{'is-valid': fields.address.dirty && !fields.address.errors.length, 'is-invalid': fields.address.dirty && fields.address.errors.length }"
+                  @blur="fields.address.dirty = true"
+                  v-model="craftsman.address"
+                  @input="validate('address')"
+                  rows="3">
+        </textarea>
+    <invalid-feedback :errors="fields.address.errors" />
   </form-field>
 </template>
 
@@ -78,16 +112,26 @@ export default {
       fields: {
         company: createField(requiredRule()),
         trade: createField(requiredRule()),
+
         contactName: createField(requiredRule()),
+        contactJobTitle: createField(requiredRule()),
         email: createField(requiredRule(), emailRule()),
         emailCCs: createField(emailsRule()),
+
+        telephone: createField(),
+        address: createField(),
       },
       craftsman: {
         company: null,
         trade: null,
+
         contactName: null,
+        contactJobTitle: null,
         email: null,
         emailCCs: null,
+
+        telefone: null,
+        address: null,
       },
     }
   },
@@ -125,7 +169,9 @@ export default {
           this.fields.trade.errors.length ||
           this.fields.contactName.errors.length ||
           this.fields.email.errors.length ||
-          this.fields.emailCCs.errors.length) {
+          this.fields.emailCCs.errors.length ||
+          this.fields.telephone.errors.length ||
+          this.fields.address.errors.length) {
         return null
       }
 
