@@ -30,11 +30,11 @@ class UTCDateTimeType extends DateTimeType
         if ($value instanceof \DateTimeInterface) {
             $originalTimezone = $value->getTimezone();
 
-            $value->setTimezone(self::getUtc());
+            $value = $value->setTimezone(self::getUtc());
             $result = $value->format($platform->getDateTimeFormatString());
 
             // reset timezone in case datetime is reused
-            $value->setTimezone($originalTimezone);
+            $value = $value->setTimezone($originalTimezone);
 
             return $result;
         }
@@ -59,9 +59,7 @@ class UTCDateTimeType extends DateTimeType
             throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
 
-        $converted->setTimezone(self::getLocal());
-
-        return $converted;
+        return $converted->setTimezone(self::getLocal());
     }
 
     private static function getUtc(): \DateTimeZone
