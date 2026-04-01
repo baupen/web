@@ -229,7 +229,7 @@
       "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen"
     },
     "craftsman": {
-      "emailCCs_help": "Eine Zeile pro E-Mail"
+      "emailCCs_help": "Eine Zeile pro E-Mail Adresse. Die E-Mail Adressen werden im CC aufgenommen bei über baupen versandten E-Mails."
     },
     "craftsmen_import": {
       "file": "Excel Datei (.xlsx)",
@@ -367,8 +367,11 @@
     "_plural": "Unternehmer",
     "company": "Firma",
     "contact_name": "Kontaktperson",
+    "contact_job_title": "Funktion",
     "email": "E-Mail",
     "emailCCs": "E-Mail CCs",
+    "telephone": "Telephone & Mobile",
+    "address": "Adresse",
     "last_email_received": "E-Mail empfangen",
     "last_issue_resolved_at": "Pendenz umgesetzt",
     "last_visit_online": "Webseite besucht",
