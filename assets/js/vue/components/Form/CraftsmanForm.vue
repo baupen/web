@@ -114,7 +114,7 @@ export default {
         trade: createField(requiredRule()),
 
         contactName: createField(requiredRule()),
-        contactJobTitle: createField(requiredRule()),
+        contactJobTitle: createField(),
         email: createField(requiredRule(), emailRule()),
         emailCCs: createField(emailsRule()),
 
@@ -130,7 +130,7 @@ export default {
         email: null,
         emailCCs: null,
 
-        telefone: null,
+        telephone: null,
         address: null,
       },
     }
