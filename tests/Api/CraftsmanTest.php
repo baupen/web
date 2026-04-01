@@ -17,7 +17,6 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
-use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
