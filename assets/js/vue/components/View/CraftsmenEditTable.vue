@@ -3,12 +3,11 @@
     <thead>
     <tr class="bg-light">
       <th>
-        {{ $t('craftsman.trade') }}<br>
+        {{ $t('craftsman.trade') }} /
         <span class="text-muted">{{ $t('craftsman.company') }}</span>
       </th>
       <th class="border-start">
-        {{ $t('craftsman.contact_name') }}<br>
-        {{ $t('craftsman.contact_job_title') }}
+        {{ $t('craftsman.contact_name') }}
       </th>
       <th>{{ $t('craftsman.email') }}</th>
       <th>{{ $t('craftsman.telephone') }}</th>
