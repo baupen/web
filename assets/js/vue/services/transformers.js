@@ -42,11 +42,10 @@ const excelTransformer = {
 }
 
 const craftsmanTransformer = {
-  tableHeader: ['trade', 'company', 'contact_name', 'email', 'emailCCs'],
+  tableHeader: ['trade', 'company', 'contact_name', 'contact_job_title', 'email', 'emailCCs', 'telephone', 'address'],
   defaultContent: [
-    ['Support & Requirements', 'baupen.ch', 'Adrian Hoffman', 'adrian.hoffman@baupen.ch', 'info@baupen.ch, support@baupen.ch'],
-    ['Web', 'baupen.ch', 'Florian Moser', 'florian.moser@baupen.ch'],
-    ['iOS', 'baupen.ch', 'Julian Dunskus', 'julian.dunskus@baupen.ch']
+    ['Apps', 'baupen.ch', 'Adrian Hoffman', 'Entwickler', 'adrian.hoffman@baupen.ch', 'info@baupen.ch, support@baupen.ch'],
+    ['Web', 'baupen.ch', 'Florian Moser', 'Entwickler', 'florian.moser@baupen.ch'],
   ],
   _xlsxHeader: function (translator) {
     const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))
@@ -61,7 +60,7 @@ const craftsmanTransformer = {
     return excelTransformer.exportToXlsx(content, translatedHeader, worksheetName)
   },
   exportToXlsx: function (craftsmen, translator) {
-    const content = craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(', ')])
+    const content = craftsmen.map(c => [c.trade, c.company, c.contactName, c.contactJobTitle, c.email, c.emailCCs?.join(', '), c.telephone, c.address])
 
     return this._createXlsx(content, translator)
   },
@@ -79,8 +78,11 @@ const craftsmanTransformer = {
         trade: entry[0],
         company: entry[1],
         contactName: entry[2],
+        contactJobTitle: entry[2],
         email: entry[3],
-        emailCCs: []
+        emailCCs: [],
+        telephone: entry[5],
+        address: entry[6],
       }
 
       if (entry[4]) {
