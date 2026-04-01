@@ -77,6 +77,11 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: Types::STRING)]
+    private string $contactJobTitle;
+
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-read', 'craftsman-write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $company;
 
@@ -90,6 +95,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[Groups(['craftsman-read', 'craftsman-write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $email;
+
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: Types::TEXT)]
+    private string $telephone;
+
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: Types::TEXT)]
+    private string $address;
 
     /**
      * @var string[]
@@ -145,6 +158,16 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->contactName = $contactName;
     }
 
+    public function getContactJobTitle(): string
+    {
+        return $this->contactJobTitle;
+    }
+
+    public function setContactJobTitle(string $contactJobTitle): void
+    {
+        $this->contactJobTitle = $contactJobTitle;
+    }
+
     public function getCompany(): string
     {
         return $this->company;
@@ -173,6 +196,26 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    public function getTelephone(): string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): void
+    {
+        $this->telephone = $telephone;
+    }
+
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): void
+    {
+        $this->address = $address;
     }
 
     /**
