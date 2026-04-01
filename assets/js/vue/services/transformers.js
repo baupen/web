@@ -32,19 +32,6 @@ const excelTransformer = {
       }
     })
 
-    const range = utils.decode_range(worksheet['!ref'])
-    for (let row = range.s.r + 1; row <= range.e.r; row++) {
-      for (let col = range.s.c; col <= range.e.c; col++) {
-        const cellAddress = utils.encode_cell({r: row, c: col})
-        if (worksheet[cellAddress]) {
-          worksheet[cellAddress].s = {
-            ...(worksheet[cellAddress].s || {}),
-            alignment: {wrapText: true, vertical: 'top'}
-          }
-        }
-      }
-    }
-
     worksheet['!cols'] = header.map((_, index) => {
       const maxLength = Math.max(
         String(header[index] ?? '').length,
