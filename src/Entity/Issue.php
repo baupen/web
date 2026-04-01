@@ -44,10 +44,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     collectionOperations={
  *      "get",
  *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}},
- *      "get_feed_entries"={
- *          "method"="GET",
- *          "path"="/issues/feed_entries"
- *      },
  *      "get_group"={
  *          "method"="GET",
  *          "path"="/issues/group"

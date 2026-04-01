@@ -61,7 +61,7 @@ class CraftsmanTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'company', 'trade', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'canEdit');
+        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'contactJobTitle', 'company', 'trade', 'address', 'telephone', 'lastVisitOnline', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'canEdit');
     }
 
     public function testCanEdit(): void
@@ -197,62 +197,6 @@ class CraftsmanTest extends ApiTestCase
 
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'id', $craftsmanIri);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
-    }
-
-    public function testFeedEntries(): void
-    {
-        $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $constructionSite = $this->getEmptyConstructionSite();
-        $constructionManager = $this->getTestConstructionManager();
-        $this->assignConstructionManager($constructionSite, $constructionManager);
-        $craftsman1 = $this->addCraftsman($constructionSite);
-        $craftsman1->setLastVisitOnline(new \DateTime('today'));
-        $craftsman2 = $this->addCraftsman($constructionSite);
-        $craftsman2->setLastVisitOnline(new \DateTime('yesterday + 2 hours'));
-        $this->saveEntity($craftsman1, $craftsman2);
-
-        $response = $this->assertApiGetOk($client, '/api/craftsmen/feed_entries?constructionSite='.$constructionSite->getId());
-        $feedEntries = json_decode($response->getContent(), true);
-
-        $craftsman1Iri = $this->getIriFromItem($craftsman1);
-        $craftsman2Iri = $this->getIriFromItem($craftsman2);
-
-        $expectedCombinations = [
-            [
-                (new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
-                $craftsman1Iri,
-                10,
-                1,
-            ],
-            [
-                (new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
-                $craftsman2Iri,
-                10,
-                1,
-            ],
-        ];
-
-        foreach ($feedEntries['hydra:member'] as $feedEntry) {
-            $foundCombinationIndex = null;
-            $counter = count($expectedCombinations);
-            for ($i = 0; $i < $counter; ++$i) {
-                $expectedCombination = $expectedCombinations[$i];
-                if ($expectedCombination[0] === $feedEntry['date']
-                    && $expectedCombination[1] === $feedEntry['subject']
-                    && $expectedCombination[2] === $feedEntry['type']
-                    && $expectedCombination[3] === $feedEntry['count']) {
-                    $foundCombinationIndex = $i;
-                    break;
-                }
-            }
-
-            $this->assertNotNull($foundCombinationIndex, 'not any of the expected combinations');
-            unset($expectedCombinations[$foundCombinationIndex]);
-            $expectedCombinations = array_values($expectedCombinations);
-        }
     }
 
     public function testStatistics(): void
