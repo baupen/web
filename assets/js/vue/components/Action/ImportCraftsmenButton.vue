@@ -1,27 +1,27 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="importing" :title="$t('_action.import_craftsmen.title')"
-      :confirm-title="$tc('_action.import_craftsmen.confirm', this.pendingPost.length)" :can-confirm="canConfirm"
+      :confirm-title="$tc('_action.import_craftsmen.confirm', this.pendingPost.length + this.pendingPatch.length)" :can-confirm="canConfirm"
       @shown="reset"
       @confirm="confirm">
 
-    <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event" />
+    <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event"/>
 
-    <template v-if="matchingEntriesFound > 0">
+    <template v-if="pendingPatch > 0">
       <p class="alert alert-warning">
-        {{ $tc('_action.import_craftsmen.matching_entries_found', matchingEntriesFound) }}
+        {{ $tc('_action.import_craftsmen.matching_entries_found', pendingPatch.length) }}
       </p>
     </template>
   </button-with-modal-confirm>
 </template>
 
 <script>
-import { api } from '../../services/api'
+import {api} from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import CraftsmanForm from '../Form/CraftsmanForm'
 import FormField from '../Library/FormLayout/FormField'
 import CraftsmanImportForm from '../Form/CraftsmanImportForm'
-import { displaySuccess } from '../../services/notifiers'
+import {displaySuccess} from '../../services/notifiers'
 
 export default {
   components: {
@@ -31,12 +31,12 @@ export default {
     ButtonWithModalConfirm
   },
   emits: ['imported'],
-  data () {
+  data() {
     return {
       importedCraftsmen: null,
       importing: false,
+      pendingPatch: [],
       pendingPost: [],
-      matchingEntriesFound: 0
     }
   },
   props: {
@@ -51,46 +51,52 @@ export default {
   },
   watch: {
     importedCraftsmen: function () {
-      this.matchingEntriesFound = 0
+      if (this.importedCraftsmen === null) {
+        return
+      }
+
+      this.pendingPatch = []
       this.pendingPost = []
 
       this.importedCraftsmen.forEach(importedCraftsman => {
-        if (this.craftsmen.find(c => c.email === importedCraftsman.email)) {
-          this.matchingEntriesFound++
+        let existingCraftsman = this.craftsmen.find(c => c.email === importedCraftsman.email);
+        if (existingCraftsman) {
+          this.pendingPatch.push({craftsman: existingCraftsman, patch: importedCraftsman})
+        } else {
+          this.pendingPost.push(Object.assign({constructionSite: this.constructionSite['@id']}, importedCraftsman))
         }
-        this.pendingPost.push(Object.assign({ constructionSite: this.constructionSite['@id'] }, importedCraftsman))
       })
     }
   },
   computed: {
     canConfirm: function () {
-      return this.pendingPost.length > 0
+      return this.pendingPost.length > 0 || this.pendingPatch.length > 0
     }
   },
   methods: {
     reset: function () {
+      this.pendingPatch = []
       this.pendingPost = []
-      this.matchingEntriesFound = 0
     },
     confirm: function () {
       this.importing = true
-      this.continueImport()
+      this.doImport()
     },
-    continueImport: function () {
-      const payload = this.pendingPost[0]
-      api.postCraftsman(payload)
-          .then(_ => {
-                this.pendingPost.shift()
+    doImport: async function () {
+      while (this.pendingPatch.length > 0) {
+        const payload = this.pendingPatch[0]
+        await api.patch(payload.craftsman, payload.patch)
+        this.pendingPatch.shift()
+      }
+      while (this.pendingPost.length > 0) {
+        const payload = this.pendingPost[0]
+        await api.postCraftsman(payload)
+        this.pendingPost.shift()
+      }
 
-                if (this.pendingPost.length === 0) {
-                  displaySuccess(this.$t('_action.import_craftsmen.imported'))
-                  this.$emit('imported')
-                  this.importing = false
-                } else {
-                  this.continueImport()
-                }
-              }
-          )
+      displaySuccess(this.$t('_action.import_craftsmen.imported'))
+      this.$emit('imported')
+      this.importing = false
     }
   }
 }

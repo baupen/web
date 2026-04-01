@@ -110,9 +110,9 @@ const craftsmanTransformer = {
         contactName: entry[2],
         contactJobTitle: entry[3],
         email: entry[4],
-        emailCCs: entry[5].split(',').map(e => e.trim()).filter(e => e) ?? [],
-        telephone: entry[6]?.replace('\n', ', '),
-        address: entry[7]?.replace('\n', ', '),
+        emailCCs: entry[5]?.split(',').map(e => e.trim()).filter(e => e) ?? [],
+        telephone: entry[6]?.replaceAll(', ', '\n'),
+        address: entry[7]?.replaceAll(', ', '\n'),
       }
 
       craftsmen.push(craftsman)

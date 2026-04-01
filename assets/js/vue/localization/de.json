@@ -142,9 +142,9 @@
       "title": "Bericht erstellen"
     },
     "import_craftsmen": {
-      "confirm": "{count} Unternehmer hinzufügen",
+      "confirm": "{count} Unternehmer hinzufügen oder aktualisieren",
       "imported": "Unternehmer importiert",
-      "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Möchten Sie diese wirklich ein weiteres Mal hinzufügen? | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Möchten Sie diese wirklich ein weiteres Mal hinzufügen?",
+      "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Die Daten dieses Unternehmers werden mit dem Import überschrieben. | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Die Daten dieser Unternehmer werden mit dem Import überschrieben.",
       "title": "Excel importieren"
     },
     "mark_issue_closed": {
