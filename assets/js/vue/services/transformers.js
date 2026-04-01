@@ -22,6 +22,15 @@ const excelTransformer = {
   exportToXlsx: function (content, header, worksheetName) {
     const workbook = utils.book_new()
     const worksheet = utils.aoa_to_sheet([header, ...content])
+    worksheet['!cols'] = header.map((_, index) => {
+      const maxLength = Math.max(
+        String(header[index] ?? '').length,
+        ...content.map(row => String(row[index] ?? '').length)
+      )
+
+      return { wch: Math.min(Math.max(maxLength + 2, 12), 40) }
+    })
+
     utils.book_append_sheet(workbook, worksheet, worksheetName)
 
     const blobPart = write(workbook, {
