@@ -37,10 +37,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={
  *      "get",
  *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}},
- *      "get_feed_entries"={
- *          "method"="GET",
- *          "path"="/craftsmen/feed_entries"
- *      },
  *      "get_statistics"={
  *          "method"="GET",
  *          "path"="/craftsmen/statistics"

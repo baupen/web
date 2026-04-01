@@ -29,7 +29,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi = $this->decorated->__invoke($context);
 
         $this->setReportResponse($openApi);
-        $this->setFeedEntryResponses($openApi);
         $this->setSummaryResponse($openApi);
         $this->addFilePaths($openApi);
         $this->addFileUrlProperties($openApi);
@@ -52,40 +51,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $response = new Model\Response('Issue pdf report', new \ArrayObject($pdfContent));
         $openApi->getPaths()->getPath('/api/issues/report')->getGet()->addResponse($response, 200);
-    }
-
-    private function setFeedEntryResponses(OpenApi &$openApi): void
-    {
-        $feedEntrySchemaName = 'FeedEntry';
-        $feedEntrySchema = [
-            'type' => 'object',
-            'description' => 'Some action which happened on the construction site.',
-            'required' => ['date', 'subject', 'type', 'count'],
-            'properties' => [
-                'date' => ['type' => 'string', 'format' => 'date'],
-                'subject' => ['type' => 'string', 'format' => 'iri-reference'],
-                'type' => ['type' => 'integer'],
-                'count' => ['type' => 'integer'],
-            ],
-        ];
-        $this->patchSchema($openApi, $feedEntrySchemaName, $feedEntrySchema);
-
-        $feedEntryArrayContent = [
-            'application/json' => [
-                'schema' => [
-                    'type' => 'array',
-                    'items' => [
-                        '$ref' => '#/components/schemas/'.$feedEntrySchemaName,
-                    ],
-                ],
-            ],
-        ];
-
-        $response = new Model\Response('Issue feed', new \ArrayObject($feedEntryArrayContent));
-        $openApi->getPaths()->getPath('/api/issues/feed_entries')->getGet()->addResponse($response, 200);
-
-        $response = new Model\Response('Craftsman feed', new \ArrayObject($feedEntryArrayContent));
-        $openApi->getPaths()->getPath('/api/craftsmen/feed_entries')->getGet()->addResponse($response, 200);
     }
 
     private function setSummaryResponse(OpenApi &$openApi): void
