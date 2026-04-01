@@ -1,5 +1,5 @@
 import { iriToId } from './api'
-import { utils, write, read } from 'xlsx'
+import { utils, write, read } from 'xlsx-js-style'
 
 const issueTransformer = {
   isOverdue: function (issue) {
@@ -22,6 +22,16 @@ const excelTransformer = {
   exportToXlsx: function (content, header, worksheetName) {
     const workbook = utils.book_new()
     const worksheet = utils.aoa_to_sheet([header, ...content])
+
+    header.forEach((_, index) => {
+      const cellAddress = utils.encode_cell({ r: 0, c: index })
+      if (worksheet[cellAddress]) {
+        worksheet[cellAddress].s = {
+          font: { bold: true }
+        }
+      }
+    })
+
     worksheet['!cols'] = header.map((_, index) => {
       const maxLength = Math.max(
         String(header[index] ?? '').length,
