@@ -23,10 +23,11 @@ Improve existing features:
 Technical:
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
-- UI framework: Improve form fields abstraction, clearer loading indication
+- UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
 - Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
 - Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
+- Database: Improve data types (use STRING instead of TEXT, use immutable structures)
 
 Dependencies:
 - Replace noty (noty longer maintained)
-- Replace vue-i18n (high maintenance cost due to ever-evolving owner, overly complicated implementation)
+- Replace vue-i18n (high maintenance cost due to ever-evolving api/compilation/owner, overly complicated implementation)
