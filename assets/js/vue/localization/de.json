@@ -362,7 +362,7 @@
   "craftsman": {
     "CCs": "CCs",
     "_contact": "Kontaktdaten",
-    "_excel_format_emailCCs": "mehrere E-Mails durch Komma trennen",
+    "_excel_format_emailCCs": "Komma-getrennt",
     "_name": "Unternehmer",
     "_plural": "Unternehmer",
     "company": "Firma",
