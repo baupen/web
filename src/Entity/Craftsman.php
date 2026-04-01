@@ -75,10 +75,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\Column(type: Types::TEXT)]
     private string $contactName;
 
-    #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: Types::STRING)]
-    private string $contactJobTitle;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $contactJobTitle;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
@@ -97,12 +96,12 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private string $email;
 
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: Types::TEXT)]
-    private string $telephone;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $telephone;
 
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: Types::TEXT)]
-    private string $address;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $address;
 
     /**
      * @var string[]
@@ -158,12 +157,12 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->contactName = $contactName;
     }
 
-    public function getContactJobTitle(): string
+    public function getContactJobTitle(): ?string
     {
         return $this->contactJobTitle;
     }
 
-    public function setContactJobTitle(string $contactJobTitle): void
+    public function setContactJobTitle(?string $contactJobTitle): void
     {
         $this->contactJobTitle = $contactJobTitle;
     }
@@ -198,22 +197,22 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->email = $email;
     }
 
-    public function getTelephone(): string
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(string $telephone): void
+    public function setTelephone(?string $telephone): void
     {
         $this->telephone = $telephone;
     }
 
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    public function setAddress(string $address): void
+    public function setAddress(?string $address): void
     {
         $this->address = $address;
     }
