@@ -144,7 +144,8 @@
     "import_craftsmen": {
       "confirm": "{count} Unternehmer hinzufügen oder aktualisieren",
       "imported": "Unternehmer importiert",
-      "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Die Daten dieses Unternehmers werden mit dem Import überschrieben. | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Die Daten dieser Unternehmer werden mit dem Import überschrieben.",
+      "all_entries_match": "Beim Import wurden keine Veränderungen zu den bereits erfassten Daten gefunden.",
+      "matching_entries_found": "Anhand der E-Mail wurde ein Unternehmer identifiziert, dessen Daten aktualisiert werden. | Anhand der E-Mail wurden {count} Unternehmer identifiziert, deren Daten aktualisiert werden.",
       "title": "Excel importieren"
     },
     "mark_issue_closed": {

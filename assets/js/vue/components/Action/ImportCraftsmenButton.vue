@@ -7,9 +7,14 @@
 
     <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event"/>
 
-    <template v-if="pendingPatch > 0">
+    <template v-if="pendingPatch.length > 0">
       <p class="alert alert-warning">
         {{ $tc('_action.import_craftsmen.matching_entries_found', pendingPatch.length) }}
+      </p>
+    </template>
+    <template v-else-if="importedCraftsmen">
+      <p class="alert alert-success">
+        {{ $t('_action.import_craftsmen.all_entries_match') }}
       </p>
     </template>
   </button-with-modal-confirm>
