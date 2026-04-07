@@ -90,6 +90,10 @@ const craftsmanTransformer = {
     const craftsmen = []
     for (let i = 1; i < content.length; i++) {
       const entry = content[i]
+      // normalize numbers, undefined, whatever, ... to String or null
+      for (let j = 0; j <= 7; j++) {
+        entry[j] = entry[j] ? String(entry[j]) : null
+      }
 
       const craftsman = {
         trade: entry[0],
@@ -98,8 +102,8 @@ const craftsmanTransformer = {
         contactJobTitle: entry[3],
         email: entry[4],
         emailCCs: entry[5]?.split(',').map(e => e.trim()).filter(e => e) ?? [],
-        telephone: entry[6]?.replaceAll(', ', '\n'),
-        address: entry[7]?.replaceAll(', ', '\n'),
+        telephone: entry[6]?.replaceAll(', ', '\n') ?? null,
+        address: entry[7]?.replaceAll(', ', '\n') ?? null,
       }
 
       craftsmen.push(craftsman)

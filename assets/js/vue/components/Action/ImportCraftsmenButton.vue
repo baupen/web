@@ -61,7 +61,25 @@ export default {
       this.importedCraftsmen.forEach(importedCraftsman => {
         let existingCraftsman = this.craftsmen.find(c => c.email === importedCraftsman.email);
         if (existingCraftsman) {
-          this.pendingPatch.push({craftsman: existingCraftsman, patch: importedCraftsman})
+          let foundDifference = false
+          for (const entry in importedCraftsman) {
+            if (Object.prototype.hasOwnProperty.call(importedCraftsman, entry)) {
+              if (existingCraftsman[entry] !== importedCraftsman[entry]) {
+                if (Array.isArray(existingCraftsman[entry]) && Array.isArray(importedCraftsman[entry])
+                    && existingCraftsman[entry].length === importedCraftsman[entry].length
+                    && existingCraftsman[entry].every(e => importedCraftsman[entry].includes(e))) {
+                  continue; // not different
+                }
+
+                foundDifference = true
+                break
+              }
+            }
+          }
+
+          if (foundDifference) {
+            this.pendingPatch.push({craftsman: existingCraftsman, patch: importedCraftsman})
+          }
         } else {
           this.pendingPost.push(Object.assign({constructionSite: this.constructionSite['@id']}, importedCraftsman))
         }
