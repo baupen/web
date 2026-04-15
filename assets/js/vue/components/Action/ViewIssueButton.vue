@@ -76,13 +76,14 @@
       </div>
     </div>
 
-    <hr/>
-
-    <issue-events
-        :construction-site="constructionSite" :issue="issue"
-        :craftsmen="craftsmen" :construction-managers="constructionManagers"
-        :authority-iri="constructionManagerIri"
-    />
+    <template v-if="constructionManagerIri">
+      <hr/>
+      <issue-events
+          :construction-site="constructionSite" :issue="issue"
+          :craftsmen="craftsmen" :construction-managers="constructionManagers"
+          :authority-iri="constructionManagerIri"
+      />
+    </template>
 
     <hr/>
 
@@ -141,7 +142,7 @@ export default {
     },
     constructionManagerIri: {
       type: String,
-      required: true
+      required: false
     },
     buttonSize: {
       type: String,
