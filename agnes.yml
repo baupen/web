@@ -3,6 +3,7 @@ agnes:
 
 config:
   path: .agnes
+  encryption_key: '%env(ANGES_ENCRYPTION_KEY)%'
   repository:
     url: git@gitlab.com:baupen/agnes-config/web.git
 
@@ -21,6 +22,7 @@ data:
   files:
     - path: .env.local
       required: true
+      encrypted: true
     - path: assets/report/logo.png
       required: true
     - path: var/transient/authorization/whitelists/developers.txt
