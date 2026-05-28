@@ -34,10 +34,10 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install ghostscript
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'npm'
 
       - name: Prepare JS/CSS dependencies
@@ -54,7 +54,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
           extensions: xdebug, imagick
 
       - name: Validate composer.json and composer.lock
@@ -74,13 +74,14 @@ jobs:
 
       - name: Lint
         run: |
-          export PHP_CS_FIXER_IGNORE_ENV=1 && php vendor/bin/php-cs-fixer fix --diff --dry-run -v
           php bin/console lint:yaml config --parse-tags
           php bin/console lint:twig templates
+          ./vendor/bin/phpcs
+          ./vendor/bin/phpstan
 
       - name: Test
         run: |
           mv .env.github .env.local
           php bin/console doctrine:database:create --no-interaction --if-not-exists
           php bin/console doctrine:migrations:migrate --no-interaction
-          export XDEBUG_MODE=coverage && php vendor/bin/phpunit
+          php bin/phpunit
