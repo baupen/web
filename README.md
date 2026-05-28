@@ -21,10 +21,10 @@ The first and the last step are best executed using the [iOS](https://github.com
 
 Backend:
 - Upgrade to symfony 7, api platform 4
-- Replace php-cs-fixer with phpcbf
 - Add phpstan static analysis & fix all issues
 - Database: Improve data types (use STRING instead of TEXT, use immutable structures)
 - Simplify access control
+- Refactor tests?
 
 Frontend:
 - Replace noty (noty longer maintained)

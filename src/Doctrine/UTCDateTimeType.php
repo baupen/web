@@ -25,7 +25,7 @@ class UTCDateTimeType extends DateTimeType
             $result = $value->format($platform->getDateTimeFormatString());
 
             // reset timezone in case datetime is reused
-            $value = $value->setTimezone($originalTimezone);
+            $value->setTimezone($originalTimezone);
 
             return $result;
         }
@@ -60,7 +60,7 @@ class UTCDateTimeType extends DateTimeType
 
     private static function getLocal(): \DateTimeZone
     {
-        return self::$local ?: self::$local = new \DateTimeZone(date_default_timezone_get());
+        return self::$local ?: self::$local = new \DateTimeZone('Europe/Zurich');
     }
 
     /**
