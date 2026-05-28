@@ -3,51 +3,51 @@
 namespace App\Api\Serializer;
 
 use App\Entity\Issue;
+use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class IssueSerializer implements NormalizerInterface
+readonly class IssueSerializer implements NormalizerInterface
 {
-    private NormalizerInterface $decorated;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
-        $this->decorated = $decoratedNormalizer;
-        $this->urlGenerator = $urlGenerator;
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function getSupportedTypes(?string $format): array
     {
-        return $data instanceof Issue
-            && $this->decorated->supportsNormalization($data, $format);
+        return [Issue::class];
+    }
+
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    {
+        return $this->decoratedNormalizer->supportsNormalization($data, $format);
     }
 
     /**
-     * @param Issue $object
+     * @param Issue $data
      */
-    public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
+    public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
-        $data = $this->decorated->normalize($object, $format, $context);
+        $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        if (null !== $object->getImage()) {
+        if (null !== $data->getImage()) {
             $url = $this->urlGenerator->generate('issue_image', [
-                'issue' => $object->getId(),
-                'issueImage' => $object->getImage()->getId(),
-                'filename' => $object->getImage()->getFilename(),
+                'issue' => $data->getId(),
+                'issueImage' => $data->getImage()->getId(),
+                'filename' => $data->getImage()->getFilename(),
             ]);
 
-            $data['imageUrl'] = $url;
+            $normalized['imageUrl'] = $url;
         }
 
-        if ($object->hasPosition()) {
+        if ($data->hasPosition()) {
             $url = $this->urlGenerator->generate('issue_map_render', [
-                'issue' => $object->getId(),
+                'issue' => $data->getId(),
             ]);
 
-            $data['mapRenderUrl'] = $url;
+            $normalized['mapRenderUrl'] = $url;
         }
 
-        return $data;
+        return $normalized;
     }
 }

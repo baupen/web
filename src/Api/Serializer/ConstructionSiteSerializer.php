@@ -6,40 +6,39 @@ use App\Entity\ConstructionSite;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ConstructionSiteSerializer implements NormalizerInterface
+readonly class ConstructionSiteSerializer implements NormalizerInterface
 {
-    private NormalizerInterface $decorated;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
-        $this->decorated = $decoratedNormalizer;
-        $this->urlGenerator = $urlGenerator;
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function getSupportedTypes(?string $format): array
     {
-        return $data instanceof ConstructionSite
-            && $this->decorated->supportsNormalization($data, $format);
+        return [ConstructionSite::class];
+    }
+
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    {
+        return $this->decoratedNormalizer->supportsNormalization($data, $format);
     }
 
     /**
-     * @param ConstructionSite $object
+     * @param ConstructionSite $data
      */
-    public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
+    public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
-        $data = $this->decorated->normalize($object, $format, $context);
+        $payload = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        if (null !== $object->getImage()) {
+        if (null !== $data->getImage()) {
             $url = $this->urlGenerator->generate('construction_site_image', [
-                'constructionSite' => $object->getId(),
-                'constructionSiteImage' => $object->getImage()->getId(),
-                'filename' => $object->getImage()->getFilename(),
+                'constructionSite' => $data->getId(),
+                'constructionSiteImage' => $data->getImage()->getId(),
+                'filename' => $data->getImage()->getFilename(),
             ]);
 
-            $data['imageUrl'] = $url;
+            $payload['imageUrl'] = $url;
         }
 
-        return $data;
+        return $payload;
     }
 }
