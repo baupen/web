@@ -15,7 +15,6 @@ Improve existing features:
 - Issue: Export single issue as PDF, notably including history. Add multiple images. Add labels (while refactoring current labels). Add description (or longer title).
 - TODOs: Link with specific issues, send E-Mails reminders, attribute to construction managers.
 - History: Dedicated view to see new entries, in particular from craftsmen. Preview last entry or number of entries in overviews (e.g. issue table). Fix confusing labeling in graph (e.g. #open is incorrect).
-- First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Report: Add issue coloring to table / photos.
 - Resolve: Show craftsman their protocol entries.
 - Archive: Export whole construction site, or parts (e.g. only pictures).
@@ -23,11 +22,4 @@ Improve existing features:
 Technical:
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
-- UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
-- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
-- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
-- Database: Improve data types (use STRING instead of TEXT, use immutable structures)
 
-Dependencies:
-- Replace noty (noty longer maintained)
-- Replace vue-i18n (high maintenance cost due to ever-evolving api/compilation/owner, overly complicated implementation)
