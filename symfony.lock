@@ -200,7 +200,7 @@
         "version": "1.12.1"
     },
     "phpstan/phpstan": {
-        "version": "1.11",
+        "version": "2.1",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
