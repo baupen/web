@@ -2,10 +2,21 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
+use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -16,30 +27,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * A task helps to remember something to do on the level of construction site.
- *
- * @ApiResource(
- *      collectionOperations={
- *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('TASK_MODIFY', object)", "denormalization_context"={"groups"={"task-create", "task-write"}}},
- *      },
- *      itemOperations={
- *       "get" = {"security" = "is_granted('TASK_VIEW', object)"},
- *       "patch" = {"security" = "is_granted('TASK_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('TASK_MODIFY', object)"},
- *      },
- *      denormalizationContext={"groups"={"task-write"}},
- *      normalizationContext={"groups"={"task-read"}, "skip_null_values"=false}
- *  )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(DateFilter::class, properties={"createdAt", "deadline", "closedAt",})
- * @ApiFilter(ExistsFilter::class, properties={"closedAt"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "DESC"}, "createdAt": "ASC", "closedAt": "ASC"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    normalizationContext: ['groups' => ['task:read']],
+    denormalizationContext: ['groups' => ['task:write']]
+)]
+#[GetCollection(
+    parameters: [
+        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
+    ],
+)]
+#[Get(security: 'is_granted("TASK_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("TASK_MODIFY", object)', denormalizationContext: ['groups' => ['task:create', 'task:write']])]
+#[Patch(security: 'is_granted("TASK_MODIFY", object)')]
+#[Delete(security: 'is_granted("TASK_MODIFY", object)')]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt', 'closedAt'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', "deadline", "closedAt"])]
+#[ApiFilter(ExistsFilter::class, properties: ['closedAt'])]
 class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
