@@ -8,9 +8,9 @@ use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubscriberInterface
+class EncoreEmailTwigExtension extends AbstractExtension
 {
-    public function __construct(private ContainerInterface $container, private string $publicDir)
+    public function __construct(private readonly EntrypointLookupInterface $entrypointLookup, private readonly string $publicDir)
     {
     }
 
@@ -23,9 +23,8 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
 
     public function getEncoreEntryCssSource(string $entryName): string
     {
-        $entrypointLookup = $this->container->get(EntrypointLookupInterface::class);
-        $entrypointLookup->reset();
-        $files = $entrypointLookup->getCssFiles($entryName);
+        $this->entrypointLookup->reset();
+        $files = $this->entrypointLookup->getCssFiles($entryName);
 
         $source = '';
         foreach ($files as $file) {
@@ -37,12 +36,5 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
         }
 
         return $source;
-    }
-
-    public static function getSubscribedServices(): array
-    {
-        return [
-            EntrypointLookupInterface::class,
-        ];
     }
 }
