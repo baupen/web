@@ -2,44 +2,44 @@
 
 namespace App\Api\Serializer;
 
+use App\Entity\Filter;
 use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class IssueEventSerializer implements NormalizerInterface
+readonly class IssueEventSerializer implements NormalizerInterface
 {
-    private NormalizerInterface $decorated;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
-        $this->decorated = $decoratedNormalizer;
-        $this->urlGenerator = $urlGenerator;
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function getSupportedTypes(?string $format): array
     {
-        return $data instanceof IssueEvent
-            && $this->decorated->supportsNormalization($data, $format);
+        return [IssueEvent::class];
+    }
+
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    {
+        return $this->decoratedNormalizer->supportsNormalization($data, $format);
     }
 
     /**
-     * @param IssueEvent $object
+     * @param IssueEvent $data
      */
-    public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
+    public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
-        $data = $this->decorated->normalize($object, $format, $context);
+        $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        if (null !== $object->getFile()) {
+        if (null !== $data->getFile()) {
             $url = $this->urlGenerator->generate('issue_event_file', [
-                'issueEvent' => $object->getId(),
-                'issueEventFile' => $object->getFile()->getId(),
-                'filename' => $object->getFile()->getFilename(),
+                'issueEvent' => $data->getId(),
+                'issueEventFile' => $data->getFile()->getId(),
+                'filename' => $data->getFile()->getFilename(),
             ]);
 
-            $data['fileUrl'] = $url;
+            $normalized['fileUrl'] = $url;
         }
 
-        return $data;
+        return $normalized;
     }
 }

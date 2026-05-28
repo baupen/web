@@ -2,46 +2,44 @@
 
 namespace App\Api\Serializer;
 
+use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Security\TokenTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class FilterSerializer implements NormalizerInterface
+readonly class FilterSerializer implements NormalizerInterface
 {
     use TokenTrait;
 
-    private NormalizerInterface $decorated;
-    private UrlGeneratorInterface $urlGenerator;
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator, TokenStorageInterface $tokenStorage)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator, private TokenStorageInterface $tokenStorage)
     {
-        $this->decorated = $decoratedNormalizer;
-        $this->urlGenerator = $urlGenerator;
-        $this->tokenStorage = $tokenStorage;
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function getSupportedTypes(?string $format): array
     {
-        return $data instanceof Filter
-            && $this->decorated->supportsNormalization($data, $format);
+        return [Filter::class];
+    }
+
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    {
+        return $this->decoratedNormalizer->supportsNormalization($data, $format);
     }
 
     /**
-     * @param Filter $object
+     * @param Filter $data
      */
-    public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
+    public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
-        $data = $this->decorated->normalize($object, $format, $context);
+        $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
         $url = $this->urlGenerator->generate('public_filtered', [
-            'token' => $object->getAuthenticationToken(),
+            'token' => $data->getAuthenticationToken(),
         ]);
 
-        $data['filteredUrl'] = $url;
+        $normalized['filteredUrl'] = $url;
 
-        return $data;
+        return $normalized;
     }
 }
