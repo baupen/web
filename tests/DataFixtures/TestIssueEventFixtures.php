@@ -28,7 +28,7 @@ class TestIssueEventFixtures extends Fixture implements OrderedFixtureInterface
         $issueEvent->setRoot($constructionSite->getId());
         $issueEvent->setType(IssueEventTypes::Text);
         $issueEvent->setPayload(self::TEST_TEXT_ENTRY);
-        $issueEvent->setTimestamp(new \DateTime());
+        $issueEvent->setTimestamp(new \DateTimeImmutable());
         $issueEvent->setCreatedBy($constructionManager->getId());
         $issueEvent->setLastChangedBy($constructionManager->getId());
         $manager->persist($issueEvent);

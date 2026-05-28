@@ -2,7 +2,9 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /*
  * automatically keeps track of creation time & last change time
@@ -10,44 +12,33 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TimeTrait
 {
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['time:read'])]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $lastChangedAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['time:read'])]
+    private ?\DateTimeImmutable $lastChangedAt = null;
 
-    /**
-     * @throws \Exception
-     * @throws \Exception
-     */
     #[ORM\PrePersist]
     public function prePersistTime(): void
     {
-        $this->createdAt = new \DateTime();
-        $this->lastChangedAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->lastChangedAt = new \DateTimeImmutable();
     }
 
-    /**
-     * @throws \Exception
-     */
     #[ORM\PreUpdate]
     public function preUpdateTime(): void
     {
-        $this->lastChangedAt = new \DateTime();
+        $this->lastChangedAt = new \DateTimeImmutable();
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getLastChangedAt()
+    public function getLastChangedAt(): \DateTimeImmutable
     {
         return $this->lastChangedAt;
     }

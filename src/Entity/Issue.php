@@ -2,18 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\CustomController\IssuesSummary;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\PatchedOrderFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
@@ -34,7 +26,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}},
+ *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue:create", "issue:write"}}},
  *      "get_group"={
  *          "method"="GET",
  *          "path"="/issues/group"
@@ -67,7 +59,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
  *     denormalizationContext={"groups"={}}, // set depending on the context
- *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
+ *     normalizationContext={"groups"={"issue:read"}, "skip_null_values"=false}
  * )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
@@ -81,6 +73,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 #[ORM\Entity(repositoryClass: IssueRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['issue:write']],
+    normalizationContext: ['groups' => ['issue:read', 'soft-delete:read']],
+)]
 class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -88,43 +84,28 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use IssuePositionTrait;
     use IssueStatusTrait;
 
-    /**
-     * An Issue goes through the following states from the point of view of the user:
-     * - new (created, but not registered yet)
-     * - open (registered, but not resolved or closed)
-     * - resolved (resolved, but not closed)
-     * - closed (closed).
-     *
-     * The following states are also interesting:
-     * - seen (opened < last visit of craftsman)
-     * - overdue (deadline > resolved or (deadline > now && resolved == null))
-     */
-    public const STATE_CREATED = 1;
-    public const STATE_REGISTERED = 2;
-    public const STATE_RESOLVED = 4;
-    public const STATE_CLOSED = 8;
-
-    #[Groups(['issue-read'])]
+    #[Groups(['issue:read'])]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $number = null;
 
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isMarked = false;
 
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $wasAddedWithClient = false;
 
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
+    #[Groups(['issue:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $lastChangedAt = null;
 
@@ -144,17 +125,17 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?IssueImage $image = null;
 
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'issues')]
     private ?Craftsman $craftsman = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'issues')]
     private ?Map $map = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-create'])]
+    #[Groups(['issue:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issues')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -258,17 +239,5 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
-    }
-
-    #[Groups(['issue-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['issue-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 }

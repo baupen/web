@@ -2,6 +2,7 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,21 +14,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait AddressTrait
 {
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $streetAddress = null;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $postalCode = null;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $locality = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     #[Assert\Country]
     private ?string $country = 'CH';
 

@@ -4,6 +4,7 @@ namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionSite;
 use App\Entity\EmailTemplate;
+use App\Enum\EmailTemplatePurpose;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -19,7 +20,7 @@ class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterfa
 
         $emailTemplate = new EmailTemplate();
         $emailTemplate->setConstructionSite($constructionSite);
-        $emailTemplate->setPurpose(EmailTemplate::PURPOSE_OPEN_ISSUES);
+        $emailTemplate->setPurpose(EmailTemplatePurpose::OPEN_ISSUES);
         $emailTemplate->setName('Template');
         $emailTemplate->setSubject('Subject');
         $emailTemplate->setBody('Body');

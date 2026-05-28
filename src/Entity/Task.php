@@ -3,12 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
-use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -17,8 +15,6 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
-use App\Api\Filters\PatchedOrderFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -50,16 +46,16 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use IdTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['task-create', 'task-read'])]
+    #[Groups(['task:create', 'task:read'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'tasks')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
@@ -67,23 +63,23 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      */
     #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-create'])]
+    #[Groups(['task:read', 'task:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-create'])]
+    #[Groups(['task:read', 'task:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
     /**
      * @var \DateTime|null
      */
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 

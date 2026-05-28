@@ -7,6 +7,7 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Api\Entity\Email;
 use App\Entity\Craftsman;
 use App\Entity\IssueEvent;
+use App\Enum\EmailType;
 use App\Enum\IssueEventTypes;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
@@ -79,7 +80,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             }
         }
 
-        if (\App\Entity\Email::TYPE_CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
+        if (EmailType::CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
             $craftsmanReport = $this->reportService->createCraftsmanReport($craftsman, $craftsman->getLastVisitOnline());
             $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
 
@@ -89,7 +90,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             $issueEvent->setRoot($craftsman->getId());
             $issueEvent->setCreatedBy($constructionManager->getId());
             $issueEvent->setLastChangedBy($constructionManager->getId());
-            $issueEvent->setTimestamp(new \DateTime());
+            $issueEvent->setTimestamp(new \DateTimeImmutable());
             $issueEvent->setType(IssueEventTypes::Email);
 
             $payload = [
@@ -98,7 +99,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
                 'receiverBCC' => $data->getSelfBcc() ? $constructionManager->getEmail() : null,
                 'subject' => $data->getSubject(),
                 'body' => $data->getBody(),
-                'type' => IssueEvent::EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER,
+                'type' => EmailType::CRAFTSMAN_ISSUE_REMINDER->name,
             ];
             $issueEvent->setPayload(json_encode($payload));
 

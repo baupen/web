@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Api\Filters\ExactSearchFilter;
 use App\Api\Filters\IsDeletedFilter;
+use App\Api\Processor\ConstructionSiteProcessor;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AddressTrait;
@@ -34,8 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"},
  *      "patch" = {"security" = "is_granted('CONSTRUCTION_SITE_MODIFY', object)"}
  *     },
- *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-site-write"}},
+ *     normalizationContext={"groups"={"construction-site:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"construction-site:write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  *
@@ -46,6 +47,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['construction-site:write', 'address:write']],
+    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read']],
+    processor: ConstructionSiteProcessor::class,
+)]
 class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -54,14 +60,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $folderName = null;
 
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isArchived = false;
 
@@ -72,7 +78,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, ConstructionManager>
      */
     #[ORM\JoinTable(name: 'construction_site_construction_manager')]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
     #[ORM\ManyToMany(targetEntity: ConstructionManager::class, inversedBy: 'constructionSites')]
     private Collection $constructionManagers;
 
@@ -120,7 +126,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     #[ORM\OneToMany(targetEntity: Filter::class, mappedBy: 'constructionSite')]
     private Collection $filters;
 
-    #[Groups(['construction-site-read'])]
+    #[Groups(['construction-site:read'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isHidden = false;
 
@@ -273,22 +279,10 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->folderName = $uniqueFolderName;
     }
 
-    #[Groups(['construction-site-read'])]
+    #[Groups(['construction-site:read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
-    }
-
-    #[Groups(['construction-site-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
-    }
-
-    #[Groups(['construction-site-read'])]
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
     }
 
     public function isConstructionSiteSet(): bool

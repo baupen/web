@@ -7,6 +7,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Enum\IssueState;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Helper\IssueHelper;
@@ -224,16 +225,16 @@ class PdfService
         // collect all set status
         if (null !== $filter->getState()) {
             $status = [];
-            if (($filter->getState() & Issue::STATE_CREATED) !== 0) {
+            if (($filter->getState() & IssueState::CREATED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.created', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_REGISTERED) !== 0) {
+            if (($filter->getState() & IssueState::REGISTERED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_RESOLVED) !== 0) {
+            if (($filter->getState() & IssueState::RESOLVED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_CLOSED) !== 0) {
+            if (($filter->getState() & IssueState::CLOSED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.closed', [], 'entity_issue');
             }
 
