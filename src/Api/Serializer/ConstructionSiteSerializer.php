@@ -27,7 +27,7 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
      */
     public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
-        $payload = $this->decoratedNormalizer->normalize($data, $format, $context);
+        $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
         if (null !== $data->getImage()) {
             $url = $this->urlGenerator->generate('construction_site_image', [
@@ -36,9 +36,9 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
                 'filename' => $data->getImage()->getFilename(),
             ]);
 
-            $payload['imageUrl'] = $url;
+            $normalized['imageUrl'] = $url;
         }
 
-        return $payload;
+        return $normalized;
     }
 }
