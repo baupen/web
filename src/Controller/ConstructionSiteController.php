@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Controller\Base\BaseController;
 use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/construction_sites/{constructionSite}')]
 class ConstructionSiteController extends BaseController

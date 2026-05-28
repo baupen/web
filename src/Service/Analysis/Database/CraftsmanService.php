@@ -2,7 +2,7 @@
 
 namespace App\Service\Analysis\Database;
 
-use App\Doctrine\UTCDateTimeType;
+use App\Extension\UTCDateTimeType;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Service\Analysis\CraftsmanAnalysis;

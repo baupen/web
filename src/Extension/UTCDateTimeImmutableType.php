@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Uzh\Zi\Extension;
+namespace App\Extension;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Platforms\AbstractPlatform;

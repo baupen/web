@@ -8,7 +8,7 @@ use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Api\Entity\IssueGroup;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
-use App\Doctrine\UTCDateTimeType;
+use App\Extension\UTCDateTimeType;
 use App\Entity\Issue;
 use App\Entity\Map;
 use Doctrine\Persistence\ManagerRegistry;
