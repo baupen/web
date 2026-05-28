@@ -8,5 +8,5 @@
 {{ "app_invitation.android_store"|trans }}: https://play.google.com/store/apps/details?id=com.pleasure2cu.baupench
 
 2. {{ "app_invitation.authenticate"|trans({"%page%": app.request.httpHost})  }}
-{{ "app_invitation.login_link"|trans }}: {{ sentBy|iOSLoginLink }}
+{{ "app_invitation.login_link"|trans }}: {{ sentBy|login_link }}
 {% endblock %}

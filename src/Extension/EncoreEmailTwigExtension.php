@@ -10,13 +10,8 @@ use Twig\TwigFunction;
 
 class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubscriberInterface
 {
-    private ContainerInterface $container;
-    private string $publicDir;
-
-    public function __construct(ContainerInterface $container, string $publicDir)
+    public function __construct(private ContainerInterface $container, private string $publicDir)
     {
-        $this->container = $container;
-        $this->publicDir = $publicDir;
     }
 
     public function getFunctions(): array
@@ -28,10 +23,9 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
 
     public function getEncoreEntryCssSource(string $entryName): string
     {
-        // TODO: try to inject directly
-        $files = $this->container
-            ->get(EntrypointLookupInterface::class)
-            ->getCssFiles($entryName);
+        $entrypointLookup = $this->container->get(EntrypointLookupInterface::class);
+        $entrypointLookup->reset();
+        $files = $entrypointLookup->getCssFiles($entryName);
 
         $source = '';
         foreach ($files as $file) {
