@@ -1,4 +1,0 @@
-framework:
-  mailer:
-    envelope:
-      recipients: ['git@famoser.ch'] # send to git@ instead of the real address

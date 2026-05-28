@@ -21,43 +21,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class EmailService implements EmailServiceInterface
+readonly class EmailService implements EmailServiceInterface
 {
-    private TranslatorInterface $translator;
-
-    private LoggerInterface $logger;
-
-    private RequestStack $requestStack;
-
-    private UrlGeneratorInterface $urlGenerator;
-
-    private ManagerRegistry $registry;
-
-    private MailerInterface $mailer;
-
-    private SerializerInterface $serializer;
-
-    private EmailBodyGenerator $emailBodyGenerator;
-
-    private string $mailerFromEmail;
-
-    private string $baseUri;
-
-    /**
-     * EmailService constructor.
-     */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $baseUri, EmailBodyGenerator $emailBodyGenerator)
+    public function __construct(private TranslatorInterface $translator, private LoggerInterface $logger, private RequestStack $requestStack, private UrlGeneratorInterface $urlGenerator, private ManagerRegistry $registry, private MailerInterface $mailer, private SerializerInterface $serializer, private string $mailerFromEmail, private string $baseUri, private EmailBodyGenerator $emailBodyGenerator)
     {
-        $this->translator = $translator;
-        $this->logger = $logger;
-        $this->requestStack = $request;
-        $this->urlGenerator = $urlGenerator;
-        $this->registry = $registry;
-        $this->mailer = $mailer;
-        $this->serializer = $serializer;
-        $this->mailerFromEmail = $mailerFromEmail;
-        $this->emailBodyGenerator = $emailBodyGenerator;
-        $this->baseUri = $baseUri;
     }
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool

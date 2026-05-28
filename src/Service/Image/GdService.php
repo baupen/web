@@ -10,18 +10,15 @@ use Psr\Log\LoggerInterface;
  *
  * Class GdService
  */
-class GdService
+readonly class GdService
 {
-    private LoggerInterface $logger;
-
     private const FONT = __DIR__ . '/../../../assets/report/fonts/OpenSans-Bold.ttf';
 
     /**
      * GdService constructor.
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function measureTextDimensions(float $fontSize, string $text): array

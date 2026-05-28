@@ -17,16 +17,10 @@ use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class StorageService implements StorageServiceInterface
+readonly class StorageService implements StorageServiceInterface
 {
-    private PathServiceInterface $pathService;
-
-    /**
-     * UploadService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(private PathServiceInterface $pathService)
     {
-        $this->pathService = $pathService;
     }
 
     public function setNewFolderName(ConstructionSite $constructionSite): void
@@ -105,9 +99,6 @@ class StorageService implements StorageServiceInterface
         return $issueEventFile;
     }
 
-    /**
-     * @param FileTrait $entity
-     */
     private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage|IssueEventFile $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);

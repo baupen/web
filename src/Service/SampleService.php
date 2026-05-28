@@ -14,22 +14,10 @@ use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class SampleService implements SampleServiceInterface
+readonly class SampleService implements SampleServiceInterface
 {
-    private PathServiceInterface $pathService;
-
-    private SerializerInterface $serializer;
-
-    private StorageServiceInterface $storageService;
-
-    /**
-     * SampleService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $storageService)
+    public function __construct(private PathServiceInterface $pathService, private SerializerInterface $serializer, private StorageServiceInterface $storageService)
     {
-        $this->pathService = $pathService;
-        $this->serializer = $serializer;
-        $this->storageService = $storageService;
     }
 
     public function createSampleConstructionSite(string $sampleName, ConstructionManager $constructionManager): ConstructionSite

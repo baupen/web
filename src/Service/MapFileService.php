@@ -8,19 +8,10 @@ use App\Service\Image\GsService;
 use App\Service\Interfaces\MapFileServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 
-class MapFileService implements MapFileServiceInterface
+readonly class MapFileService implements MapFileServiceInterface
 {
-    private PathServiceInterface $pathService;
-
-    private GsService $gsService;
-
-    /**
-     * MapFileService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, GsService $gsService)
+    public function __construct(private PathServiceInterface $pathService, private GsService $gsService)
     {
-        $this->pathService = $pathService;
-        $this->gsService = $gsService;
     }
 
     public function renderForMobileDevice(MapFile $mapFile): ?string

@@ -12,10 +12,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class PathService implements PathServiceInterface
 {
-    /**
-     * @var string
-     */
-    private $assetsRoot;
+    private string $assetsRoot;
 
     private string $folderRoot;
 

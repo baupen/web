@@ -4,16 +4,13 @@ namespace App\Service\Image;
 
 use App\Entity\Issue;
 
-class ContentDrawingService
+readonly class ContentDrawingService
 {
-    private GdService $gdService;
-
     /**
      * ImageService constructor.
      */
-    public function __construct(GdService $gdService)
+    public function __construct(private GdService $gdService)
     {
-        $this->gdService = $gdService;
     }
 
     /**
