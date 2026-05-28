@@ -2,24 +2,18 @@
 
 namespace App\Api\Filters;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Core\Exception\InvalidArgumentException;
+use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\Issue;
 use Doctrine\ORM\QueryBuilder;
 
-class StateFilter extends AbstractContextAwareFilter
+readonly class StateFilter implements FilterInterface
 {
-    public const STATE_PROPERTY_NAME = 'state';
-
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
+    public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        // otherwise filter is applied to order and page as well
-        if (!$this->isPropertyEnabled($property, $resourceClass)) {
-            return;
-        }
-
-        $value = $this->normalizeValue($value);
+        $parameter = $context['parameter'] ?? null;
+        $value = $this->normalizeValue($parameter?->getValue());
         if (null === $value) {
             return;
         }
@@ -44,21 +38,6 @@ class StateFilter extends AbstractContextAwareFilter
         }
     }
 
-    private function normalizeValue($value): ?int
-    {
-        $intValue = (int) $value;
-        $maxCombination = Issue::STATE_CREATED | Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;
-        if (Issue::STATE_CREATED <= $intValue && $intValue <= $maxCombination) {
-            return $intValue;
-        }
-
-        $this->getLogger()->notice('Invalid filter ignored', [
-            'exception' => new InvalidArgumentException('Invalid value for ' . self::STATE_PROPERTY_NAME . ', expected in range ' . Issue::STATE_CREATED . ' - ' . Issue::STATE_CLOSED),
-        ]);
-
-        return null;
-    }
-
     public function getDescription(string $resourceClass): array
     {
         return [
@@ -73,5 +52,16 @@ class StateFilter extends AbstractContextAwareFilter
                 ],
             ],
         ];
+    }
+
+    private function normalizeValue($value): ?int
+    {
+        $intValue = (int)$value;
+        $maxCombination = Issue::STATE_CREATED | Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;
+        if (Issue::STATE_CREATED <= $intValue && $intValue <= $maxCombination) {
+            return $intValue;
+        }
+
+        return null;
     }
 }

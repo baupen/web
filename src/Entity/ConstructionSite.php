@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"pagination_enabled"=false}
  * )
  *
- * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
+ * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"}) // use iri filter
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(BooleanFilter::class, properties={"isArchived", "isHidden"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})

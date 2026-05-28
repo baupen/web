@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 
 class ConstructionManagerRepository extends EntityRepository
 {
-    private const INVOLVEMENT_SUBQUERY = '
+    private const string INVOLVEMENT_SUBQUERY = '
 SELECT construction_manager_id as id, construction_site_id FROM construction_site_construction_manager
 UNION SELECT created_by_id as id, construction_site_id FROM issue
 UNION SELECT registered_by_id as id, construction_site_id FROM issue
@@ -27,10 +27,10 @@ UNION SELECT closed_by_id as id, construction_site_id FROM task';
     {
         $rsm = new ResultSetMapping();
 
-        $rsm->addScalarResult('involement_count', 'involement_count');
+        $rsm->addScalarResult('involvement_count', 'involvement_count');
         $query = $this->getEntityManager()->createNativeQuery(
             '
-SELECT COUNT(*) as involement_count FROM (' . self::INVOLVEMENT_SUBQUERY . ') as Involvement
+SELECT COUNT(*) as involvement_count FROM (' . self::INVOLVEMENT_SUBQUERY . ') as Involvement
 WHERE id = :id AND construction_site_id IN (:construction_site_ids);',
             $rsm
         );
