@@ -52,10 +52,10 @@
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^3.3",
     "famoser/agnes": "^4.0",
-    "friendsofphp/php-cs-fixer": "^3",
     "liip/functional-test-bundle": "^4.2",
     "liip/test-fixtures-bundle": "^2",
     "phpstan/phpstan": "^2.1",
+    "squizlabs/php_codesniffer": "^4.0",
     "symfony/browser-kit": "^6",
     "symfony/css-selector": "^6",
     "symfony/debug-bundle": "^6",
