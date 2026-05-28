@@ -15,22 +15,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DatabaseBackupCommand extends DatabaseCommand
 {
-    private PathServiceInterface $pathService;
-
-    /**
-     * MigrateSqliteCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
+    public function __construct(ManagerRegistry $registry, private readonly PathServiceInterface $pathService)
     {
         parent::__construct($registry);
-
-        $this->pathService = $pathService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:database:backup')
@@ -39,10 +29,7 @@ class DatabaseBackupCommand extends DatabaseCommand
             ->addOption('keep', 'k', InputOption::VALUE_OPTIONAL, 'Backups to keep', 3);
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

@@ -3,12 +3,10 @@
 namespace App\Extension;
 
 use App\Entity\ConstructionManager;
-use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -16,7 +14,7 @@ use Twig\TwigFunction;
 
 class MyTwigExtension extends AbstractExtension
 {
-    public function __construct(private RequestStack $requestStack, private HttpKernelInterface $httpKernel)
+    public function __construct(private readonly RequestStack $requestStack, private readonly HttpKernelInterface $httpKernel)
     {
     }
 

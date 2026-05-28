@@ -12,25 +12,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AuthorizationRefreshCommand extends Command
 {
-    private ManagerRegistry $registry;
-
-    private UserServiceInterface $userService;
-
-    /**
-     * ImportLdapUsersCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, UserServiceInterface $authorizationService)
+    public function __construct(private readonly ManagerRegistry $registry, private readonly UserServiceInterface $userService)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->userService = $authorizationService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:authorization:refresh')
@@ -41,7 +28,7 @@ class AuthorizationRefreshCommand extends Command
     /**
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $entityManager = $this->registry->getManager();
 

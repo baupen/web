@@ -15,28 +15,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class WeeklySendCommand extends Command
 {
-    private ManagerRegistry $registry;
-
-    private EmailServiceInterface $emailService;
-
-    private ReportServiceInterface $reportService;
-
-    /**
-     * ImportLdapUsersCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService)
+    public function __construct(private readonly ManagerRegistry $registry, private readonly EmailServiceInterface $emailService, private readonly ReportServiceInterface $reportService)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->emailService = $emailService;
-        $this->reportService = $reportService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:weekly:send')
@@ -44,10 +28,7 @@ class WeeklySendCommand extends Command
             ->addOption('only', 'o', InputOption::VALUE_OPTIONAL, 'Only send to specific E-Mail');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
