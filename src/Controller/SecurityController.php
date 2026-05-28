@@ -209,12 +209,6 @@ class SecurityController extends BaseController
         return $this->render('security/recover_confirm.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route(path: '/logout', name: 'logout')]
-    public function logout(): never
-    {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
-    }
-
     private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, ?ConstructionManager &$constructionManager = null): bool
     {
         /** @var ConstructionManager $constructionManager */
