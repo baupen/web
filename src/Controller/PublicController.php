@@ -43,7 +43,7 @@ class PublicController extends BaseController
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
-            $craftsman->setLastVisitOnline(new \DateTime());
+            $craftsman->setLastVisitOnline(new \DateTimeImmutable());
             DoctrineHelper::persistAndFlush($registry, $craftsman);
         }
 

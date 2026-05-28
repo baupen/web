@@ -14,44 +14,35 @@ trait IssueStatusTrait
 {
     #[Assert\NotBlank]
     #[Groups(['issue:read', 'issue:create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue:read', 'issue:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue:read', 'issue:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $registeredAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registeredAt = null;
 
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $resolvedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $resolvedAt = null;
 
     #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Groups(['issue:read', 'issue:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $closedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAt = null;
 
     #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
@@ -73,12 +64,12 @@ trait IssueStatusTrait
         }
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -93,12 +84,12 @@ trait IssueStatusTrait
         $this->createdBy = $createdBy;
     }
 
-    public function getRegisteredAt(): ?\DateTime
+    public function getRegisteredAt(): ?\DateTimeImmutable
     {
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(?\DateTime $registeredAt): void
+    public function setRegisteredAt(?\DateTimeImmutable $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
@@ -113,12 +104,12 @@ trait IssueStatusTrait
         $this->registeredBy = $registeredBy;
     }
 
-    public function getResolvedAt(): ?\DateTime
+    public function getResolvedAt(): ?\DateTimeImmutable
     {
         return $this->resolvedAt;
     }
 
-    public function setResolvedAt(?\DateTime $resolvedAt): void
+    public function setResolvedAt(?\DateTimeImmutable $resolvedAt): void
     {
         $this->resolvedAt = $resolvedAt;
     }
@@ -133,12 +124,12 @@ trait IssueStatusTrait
         $this->resolvedBy = $resolvedBy;
     }
 
-    public function getClosedAt(): ?\DateTime
+    public function getClosedAt(): ?\DateTimeImmutable
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?\DateTime $closedAt): void
+    public function setClosedAt(?\DateTimeImmutable $closedAt): void
     {
         $this->closedAt = $closedAt;
     }

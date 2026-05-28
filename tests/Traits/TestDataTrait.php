@@ -115,7 +115,7 @@ trait TestDataTrait
         $issue = new Issue();
         $issue->setConstructionSite($constructionSite);
         $issue->setNumber(999);
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($manager);
 
         $this->saveEntity($issue);
@@ -129,9 +129,9 @@ trait TestDataTrait
         $issue->setConstructionSite($constructionSite);
         $issue->setCraftsman($craftsman);
         $issue->setNumber(999);
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($manager);
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($manager);
 
         $this->saveEntity($issue);

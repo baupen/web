@@ -69,7 +69,7 @@ class CraftsmanTest extends ApiTestCase
         $issue = $this->addIssue($constructionSite, $constructionManager);
         $issue->setCraftsman($craftsman);
         $issue->setMap($map);
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($constructionManager);
 
         $this->saveEntity($issue, $craftsman);
@@ -199,9 +199,9 @@ class CraftsmanTest extends ApiTestCase
         $constructionManager = $this->getTestConstructionManager();
         $craftsman = $constructionSite->getCraftsmen()[0];
 
-        $yesterday = new \DateTime('yesterday');
-        $today = new \DateTime('today');
-        $tomorrow = new \DateTime('tomorrow');
+        $yesterday = new \DateTimeImmutable('yesterday');
+        $today = new \DateTimeImmutable('today');
+        $tomorrow = new \DateTimeImmutable('tomorrow');
 
         foreach ([$yesterday, $today, $tomorrow] as $item) {
             $deadlineIssue = $this->createRegisteredIssueForCraftsman($constructionSite, $constructionManager, $craftsman);
@@ -252,10 +252,10 @@ class CraftsmanTest extends ApiTestCase
         $issue->setConstructionSite($constructionSite);
         $issue->setNumber(0);
 
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($constructionManager);
 
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($constructionManager);
 
         $issue->setCraftsman($craftsman);

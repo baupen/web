@@ -54,7 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['craftsman:write']],
     normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read']],
 )]
-class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class Craftsman extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -122,12 +122,12 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'resolvedBy')]
     private Collection $resolvedIssues;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $lastEmailReceived = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastEmailReceived = null;
 
     #[Groups(['craftsman:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $lastVisitOnline = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastVisitOnline = null;
 
     /**
      * Craftsman constructor.
@@ -224,11 +224,6 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->emailCCs = $emailCCs;
     }
 
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
-    }
-
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
@@ -260,30 +255,30 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $this->getTrade() . ' (' . $this->getCompany() . ')';
     }
 
-    public function getLastEmailReceived(): ?\DateTime
+    public function getLastEmailReceived(): ?\DateTimeImmutable
     {
         return $this->lastEmailReceived;
     }
 
-    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
+    public function setLastEmailReceived(?\DateTimeImmutable $lastEmailReceived): void
     {
         $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?\DateTime
+    public function getLastVisitOnline(): ?\DateTimeImmutable
     {
         return $this->lastVisitOnline;
     }
 
-    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
+    public function setLastVisitOnline(?\DateTimeImmutable $lastVisitOnline): void
     {
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
-    public function getLastAction(): ?\DateTime
+    public function getLastAction(): ?\DateTimeImmutable
     {
         $lastAction = $this->getLastVisitOnline();
-        if (!$lastAction instanceof \DateTime || $lastAction < $this->getLastEmailReceived()) {
+        if (!$lastAction instanceof \DateTimeImmutable || $lastAction < $this->getLastEmailReceived()) {
             return $this->getLastEmailReceived();
         }
 

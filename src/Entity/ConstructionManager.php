@@ -165,7 +165,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     }
 
     #[Groups(['construction-manager:read'])]
-    public function getLastChangedAt(): \DateTimeInterface
+    public function getLastChangedAt(): \DateTimeImmutable
     {
         return $this->lastChangedAt;
     }

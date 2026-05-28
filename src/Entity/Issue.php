@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     denormalizationContext: ['groups' => ['issue:write']],
     normalizationContext: ['groups' => ['issue:read', 'soft-delete:read']],
 )]
-class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class Issue extends BaseEntity
 {
     use IdTrait;
     use SoftDeleteTrait;
@@ -102,12 +102,12 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?string $description = null;
 
     #[Groups(['issue:read', 'issue:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deadline = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deadline = null;
 
     #[Groups(['issue:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTime $lastChangedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $lastChangedAt = null;
 
     #[Assert\Callback]
     public function validateRelations(ExecutionContextInterface $context): void
@@ -143,7 +143,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     #[ORM\PreUpdate]
     public function prePersistTime(): void
     {
-        $this->lastChangedAt = new \DateTime();
+        $this->lastChangedAt = new \DateTimeImmutable();
     }
 
     public function getNumber(): ?int
@@ -186,12 +186,12 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->description = $description;
     }
 
-    public function getDeadline(): ?\DateTime
+    public function getDeadline(): ?\DateTimeImmutable
     {
         return $this->deadline;
     }
 
-    public function setDeadline(?\DateTime $deadline): void
+    public function setDeadline(?\DateTimeImmutable $deadline): void
     {
         $this->deadline = $deadline;
     }
@@ -234,10 +234,5 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 }

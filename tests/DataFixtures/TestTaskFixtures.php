@@ -25,7 +25,7 @@ class TestTaskFixtures extends Fixture implements OrderedFixtureInterface
         $issueEvent = new Task();
         $issueEvent->setConstructionSite($constructionSite);
         $issueEvent->setDescription(self::TEST_TEXT_ENTRY);
-        $issueEvent->setCreatedAt(new \DateTime());
+        $issueEvent->setCreatedAt(new \DateTimeImmutable());
         $issueEvent->setCreatedBy($constructionManager);
         $manager->persist($issueEvent);
 

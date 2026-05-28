@@ -45,7 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['issue-event:write']],
     normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read']],
 )]
-class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class IssueEvent extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -238,10 +238,5 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public function setFile(?IssueEventFile $file): void
     {
         $this->file = $file;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 }

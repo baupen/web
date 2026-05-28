@@ -12,11 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 trait TimeTrait
 {
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['time:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['time:read'])]
     private ?\DateTimeImmutable $lastChangedAt = null;
 

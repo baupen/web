@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['createdAt', 'closedAt'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
 #[ApiFilter(DateFilter::class, properties: ['createdAt', "deadline", "closedAt"])]
 #[ApiFilter(ExistsFilter::class, properties: ['closedAt'])]
-class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class Task extends BaseEntity
 {
     use IdTrait;
 
@@ -56,28 +56,22 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?string $description = null;
 
     #[Groups(['task:read', 'task:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deadline = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deadline = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Assert\NotBlank]
     #[Groups(['task:read', 'task:create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[Assert\NotBlank]
     #[Groups(['task:read', 'task:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Groups(['task:read', 'task:write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $closedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAt = null;
 
     #[Groups(['task:read', 'task:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
@@ -103,12 +97,12 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->description = $description;
     }
 
-    public function getDeadline(): ?\DateTime
+    public function getDeadline(): ?\DateTimeImmutable
     {
         return $this->deadline;
     }
 
-    public function setDeadline(?\DateTime $deadline): void
+    public function setDeadline(?\DateTimeImmutable $deadline): void
     {
         $this->deadline = $deadline;
     }
@@ -123,12 +117,12 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->createdBy = $createdBy;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTime $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -143,18 +137,13 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->closedBy = $closedBy;
     }
 
-    public function getClosedAt(): ?\DateTimeInterface
+    public function getClosedAt(): ?\DateTimeImmutable
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?\DateTimeInterface $closedAt): void
+    public function setClosedAt(?\DateTimeImmutable $closedAt): void
     {
         $this->closedAt = $closedAt;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 }
