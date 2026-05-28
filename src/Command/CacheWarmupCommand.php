@@ -68,7 +68,7 @@ class CacheWarmupCommand extends Command
     {
         $constructionSiteImageCount = count($entities);
 
-        $io->text('Warming up cache for '.$constructionSiteImageCount.' '.$entityPlural);
+        $io->text('Warming up cache for ' . $constructionSiteImageCount . ' ' . $entityPlural);
         $io->progressStart($constructionSiteImageCount);
         foreach ($entities as $entity) {
             $actionPerEntity($entity);

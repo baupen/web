@@ -54,7 +54,7 @@ class AuthorizationRefreshCommand extends Command
         $entityManager->flush();
 
         $io = new SymfonyStyle($input, $output);
-        $io->text('Refreshed authorization of '.count($constructionManagers).' construction managers.');
+        $io->text('Refreshed authorization of ' . count($constructionManagers) . ' construction managers.');
 
         return 0;
     }

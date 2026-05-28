@@ -62,7 +62,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $summarySchemeContent = [
             'application/json' => [
                 'schema' => [
-                    '$ref' => '#/components/schemas/'.$summarySchemaName,
+                    '$ref' => '#/components/schemas/' . $summarySchemaName,
                 ],
             ],
         ];

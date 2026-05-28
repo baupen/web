@@ -62,7 +62,7 @@ class UserService implements UserServiceInterface
                 $this->doWhitelistAuthorization($constructionManager);
                 break;
             default:
-                throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
+                throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
         }
     }
 
@@ -76,7 +76,7 @@ class UserService implements UserServiceInterface
                 $this->doWhitelistAuthorization($constructionManager);
                 break;
             default:
-                throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
+                throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
         }
     }
 
@@ -151,9 +151,9 @@ class UserService implements UserServiceInterface
             $this->emailWhitelistCache = [];
             $this->domainWhitelistCache = [];
 
-            $whitelistRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'whitelists';
-            $domainWhitelistPath = $whitelistRoot.\DIRECTORY_SEPARATOR.'domains.txt';
-            foreach (glob($whitelistRoot.\DIRECTORY_SEPARATOR.'*.txt') as $whitelistFile) {
+            $whitelistRoot = $this->pathService->getTransientFolderForAuthorization() . \DIRECTORY_SEPARATOR . 'whitelists';
+            $domainWhitelistPath = $whitelistRoot . \DIRECTORY_SEPARATOR . 'domains.txt';
+            foreach (glob($whitelistRoot . \DIRECTORY_SEPARATOR . '*.txt') as $whitelistFile) {
                 $whitelist = file_get_contents($whitelistFile);
                 $lines = explode("\n", $whitelist);
                 foreach ($lines as $line) {
@@ -192,8 +192,8 @@ class UserService implements UserServiceInterface
         if (null == $this->userDataCache) {
             $this->userDataCache = [];
 
-            $userDataRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'user_data';
-            foreach (glob($userDataRoot.\DIRECTORY_SEPARATOR.'*.json') as $userDataFile) {
+            $userDataRoot = $this->pathService->getTransientFolderForAuthorization() . \DIRECTORY_SEPARATOR . 'user_data';
+            foreach (glob($userDataRoot . \DIRECTORY_SEPARATOR . '*.json') as $userDataFile) {
                 $json = file_get_contents($userDataFile);
 
                 $entries = json_decode($json, true);

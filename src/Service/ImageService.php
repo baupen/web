@@ -52,7 +52,7 @@ class ImageService implements ImageServiceInterface
     {
         // setup paths
         $sourceFolder = $this->pathService->getFolderForIssueImages($issueImage->getCreatedFor()->getConstructionSite());
-        $sourcePath = $sourceFolder.\DIRECTORY_SEPARATOR.$issueImage->getFilename();
+        $sourcePath = $sourceFolder . \DIRECTORY_SEPARATOR . $issueImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForIssueImage($issueImage);
 
         return $this->renderSizeFor($sourcePath, $targetFolder, $size);
@@ -62,7 +62,7 @@ class ImageService implements ImageServiceInterface
     {
         // setup paths
         $sourceFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSiteImage->getCreatedFor());
-        $sourcePath = $sourceFolder.\DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
+        $sourcePath = $sourceFolder . \DIRECTORY_SEPARATOR . $constructionSiteImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImages($constructionSiteImage);
 
         return $this->renderSizeFor($sourcePath, $targetFolder, $size);
@@ -72,7 +72,7 @@ class ImageService implements ImageServiceInterface
     {
         // setup paths
         $sourceFolder = $this->pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite());
-        $sourcePath = $sourceFolder.\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
+        $sourcePath = $sourceFolder . \DIRECTORY_SEPARATOR . $issueEventFile->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForIssueEventFile($issueEventFile);
 
         return $this->renderSizeFor($sourcePath, $targetFolder, $size);
@@ -97,7 +97,7 @@ class ImageService implements ImageServiceInterface
 
         $contentHash = hash('sha256', serialize($content));
         $targetFolder = $this->pathService->getTransientFolderForMapFileRenders($mapFile);
-        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentCount.'_'.$contentHash, $size);
+        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentCount . '_' . $contentHash, $size);
         if (file_exists($targetFilePath)) {
             return $targetFilePath;
         }
@@ -131,7 +131,7 @@ class ImageService implements ImageServiceInterface
 
         $contentHash = hash('sha256', serialize($content));
         $targetFolder = $this->pathService->getTransientFolderForMapFileRenders($mapFile);
-        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, 'single_'.$issue->getNumber().'_'.$contentHash, $size);
+        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, 'single_' . $issue->getNumber() . '_' . $contentHash, $size);
         if (file_exists($targetFilePath)) {
             return $targetFilePath;
         }
@@ -150,7 +150,7 @@ class ImageService implements ImageServiceInterface
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string
     {
         // setup paths
-        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
 
         // render pdf
@@ -199,9 +199,9 @@ class ImageService implements ImageServiceInterface
         /** @var string $ending */
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
-        $targetFileName = $filename.'_'.$size.'.'.$ending;
+        $targetFileName = $filename . '_' . $size . '.' . $ending;
 
-        return $targetFolder.\DIRECTORY_SEPARATOR.$targetFileName;
+        return $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
     }
 
     private function drawCrosshairOnJpg(string $sourcePath, string $targetPath, float $positionX, float $positionY): void
@@ -239,7 +239,7 @@ class ImageService implements ImageServiceInterface
 
     private function renderPdfToJpg(string $sourcePath, string $targetFolder): ?string
     {
-        $pdfRenderPath = $targetFolder.\DIRECTORY_SEPARATOR.self::PDF_RENDER_NAME;
+        $pdfRenderPath = $targetFolder . \DIRECTORY_SEPARATOR . self::PDF_RENDER_NAME;
         if (!file_exists($pdfRenderPath)) {
             FileHelper::ensureFolderExists($targetFolder);
             if (!$this->gsService->renderPdfToImage($sourcePath, $pdfRenderPath, 2480, 3508)) {

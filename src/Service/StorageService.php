@@ -40,7 +40,7 @@ class StorageService implements StorageServiceInterface
             if ($counter++ > 0) {
                 $uniqueFolderName .= $counter;
             }
-        } while (is_dir($rootFolder.\DIRECTORY_SEPARATOR.$uniqueFolderName));
+        } while (is_dir($rootFolder . \DIRECTORY_SEPARATOR . $uniqueFolderName));
 
         $constructionSite->setFolderName($uniqueFolderName);
     }
@@ -117,7 +117,7 @@ class StorageService implements StorageServiceInterface
         }
 
         // write filetrait properties
-        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$targetFileName;
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
         $hash = hash_file('sha256', $targetPath);
         $entity->setHash($hash);
         $entity->setFilename($targetFileName);
@@ -132,8 +132,8 @@ class StorageService implements StorageServiceInterface
         $fileName = $pathInfo['filename'];
         $extension = $pathInfo['extension'];
 
-        $sanitizedFileName = FileHelper::sanitizeFileName($fileName).'.'.$extension;
-        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$sanitizedFileName;
+        $sanitizedFileName = FileHelper::sanitizeFileName($fileName) . '.' . $extension;
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $sanitizedFileName;
         if (!is_file($targetPath)) {
             return $sanitizedFileName;
         }
@@ -141,12 +141,12 @@ class StorageService implements StorageServiceInterface
         $now = new \DateTime();
         $counter = 0;
         do {
-            $prefix = $sanitizedFileName.'_duplicate_'.$now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
+            $prefix = $sanitizedFileName . '_duplicate_' . $now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
             if ($counter++ > 0) {
-                $prefix .= '_'.$counter;
+                $prefix .= '_' . $counter;
             }
-            $uniqueFileName = $prefix.'.'.$extension;
-            $uniqueTargetPath = $targetFolder.\DIRECTORY_SEPARATOR.$uniqueFileName;
+            $uniqueFileName = $prefix . '.' . $extension;
+            $uniqueTargetPath = $targetFolder . \DIRECTORY_SEPARATOR . $uniqueFileName;
         } while (file_exists($uniqueTargetPath));
 
         return $uniqueFileName;

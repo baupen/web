@@ -8,6 +8,7 @@ class CraftsmanDeltaReport
 {
     use IssueCountTrait;
     use IssueCountDeltaTrait;
+
     private Craftsman $craftsman;
 
     /**

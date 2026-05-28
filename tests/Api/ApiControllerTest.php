@@ -79,8 +79,8 @@ class ApiControllerTest extends ApiTestCase
         $image = $testConstructionSite->getImage();
         $oldGuid = $image->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
-        $baseUrl = '/api/construction_sites/'.$testConstructionSite->getId().'/image';
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/preview_2.jpg');
+        $baseUrl = '/api/construction_sites/' . $testConstructionSite->getId() . '/image';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile);
 
         $image = $testConstructionSite->getImage();
@@ -92,7 +92,7 @@ class ApiControllerTest extends ApiTestCase
 
         // try a second time
         $this->loginConstructionManager($client->getKernelBrowser());
-        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/preview.jpg');
+        $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/preview.jpg');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
         $this->assertNotEquals($url, $url2);
@@ -115,8 +115,8 @@ class ApiControllerTest extends ApiTestCase
         $issue = $testConstructionSite->getIssues()[0];
         $oldGuid = $issue->getImage()->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern_2.jpg');
-        $baseUrl = '/api/issues/'.$issue->getId().'/image';
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_images/nachbessern_2.jpg');
+        $baseUrl = '/api/issues/' . $issue->getId() . '/image';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile);
 
         $this->assertStringNotContainsString($oldGuid, $url);
@@ -127,7 +127,7 @@ class ApiControllerTest extends ApiTestCase
 
         // try a second time
         $this->loginConstructionManager($client->getKernelBrowser());
-        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern.jpg');
+        $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_images/nachbessern.jpg');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
         $this->assertNotEquals($url, $url2);
@@ -150,8 +150,8 @@ class ApiControllerTest extends ApiTestCase
         $map = $testConstructionSite->getMaps()[0];
         $oldGuid = $map->getFile()->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG_2.pdf');
-        $baseUrl = '/api/maps/'.$map->getId().'/file';
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/map_files/2OG_2.pdf');
+        $baseUrl = '/api/maps/' . $map->getId() . '/file';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile);
 
         $this->assertStringNotContainsString($oldGuid, $url);
@@ -159,12 +159,12 @@ class ApiControllerTest extends ApiTestCase
 
         $client = $this->createClient();
         $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $this->assertGetFile($client->getKernelBrowser(), $url.'?variant=ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $this->assertFileNotFound($client->getKernelBrowser(), $url.'?variant=undefined');
+        $this->assertGetFile($client->getKernelBrowser(), $url . '?variant=ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertFileNotFound($client->getKernelBrowser(), $url . '?variant=undefined');
 
         // try a second time
         $this->loginConstructionManager($client->getKernelBrowser());
-        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG.pdf');
+        $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/map_files/2OG.pdf');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
         $this->assertNotEquals($url, $url2);
@@ -179,17 +179,17 @@ class ApiControllerTest extends ApiTestCase
 
     public function testIssueEventFile(): void
     {
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/nachbessern.jpg');
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_event_files/nachbessern.jpg');
         $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertImageDownloads($client, $url);
         });
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/mail.eml');
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_event_files/mail.eml');
         $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         });
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_event_files/paper.pdf');
+        $uploadedFile = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_event_files/paper.pdf');
         $this->assertIssueEventFileUploaded($uploadedFile, function (Client $client, string $url) {
             $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         });
@@ -204,7 +204,7 @@ class ApiControllerTest extends ApiTestCase
         $testConstructionSite = $this->getTestConstructionSite();
         $issueEvent = $testConstructionSite->getIssueEvents()->get(0);
 
-        $baseUrl = '/api/issue_events/'.$issueEvent->getId().'/file';
+        $baseUrl = '/api/issue_events/' . $issueEvent->getId() . '/file';
         $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $file);
 
         $this->assertStringContainsString($issueEvent->getFile()->getId(), $url);
@@ -214,10 +214,10 @@ class ApiControllerTest extends ApiTestCase
     private function assertImageDownloads(Client $client, string $imageUrl): void
     {
         $this->assertGetFile($client->getKernelBrowser(), $imageUrl);
-        $this->assertGetFile($client->getKernelBrowser(), $imageUrl.'?size=thumbnail');
-        $this->assertGetFile($client->getKernelBrowser(), $imageUrl.'?size=preview');
-        $this->assertGetFile($client->getKernelBrowser(), $imageUrl.'?size=full');
-        $this->assertFileNotFound($client->getKernelBrowser(), $imageUrl.'?size=null');
+        $this->assertGetFile($client->getKernelBrowser(), $imageUrl . '?size=thumbnail');
+        $this->assertGetFile($client->getKernelBrowser(), $imageUrl . '?size=preview');
+        $this->assertGetFile($client->getKernelBrowser(), $imageUrl . '?size=full');
+        $this->assertFileNotFound($client->getKernelBrowser(), $imageUrl . '?size=null');
     }
 
     private function assertSingleImageDownloads(KernelBrowser $client, string $imageUrl): void

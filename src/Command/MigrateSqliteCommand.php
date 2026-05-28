@@ -53,51 +53,51 @@ class MigrateSqliteCommand extends DatabaseCommand
         $io->newLine();
 
         $count = $this->migrateConstructionSiteImages($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction images');
+        $io->text('Migrated ' . $count . ' construction images');
         $io->newLine();
 
         $count = $this->migrateConstructionSites($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction sites');
+        $io->text('Migrated ' . $count . ' construction sites');
         $io->newLine();
 
         $count = $this->finalizeConstructionSiteImages($io, $sourcePdo, $targetPdo);
-        $io->text('Finalized '.$count.' construction images');
+        $io->text('Finalized ' . $count . ' construction images');
         $io->newLine();
 
         $count = $this->migrateMapFiles($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' map files');
+        $io->text('Migrated ' . $count . ' map files');
         $io->newLine();
 
         $count = $this->migrateMaps($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' maps');
+        $io->text('Migrated ' . $count . ' maps');
         $io->newLine();
 
         $count = $this->finalizeMapFiles($io, $sourcePdo, $targetPdo);
-        $io->text('Finalized '.$count.' map files');
+        $io->text('Finalized ' . $count . ' map files');
         $io->newLine();
 
         $count = $this->migrateConstructionManagers($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction managers');
+        $io->text('Migrated ' . $count . ' construction managers');
         $io->newLine();
 
         $count = $this->migrateConstructionSiteConstructionManagers($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction site <-> construction manager relations');
+        $io->text('Migrated ' . $count . ' construction site <-> construction manager relations');
         $io->newLine();
 
         $count = $this->migrateCraftsmen($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' craftsmen');
+        $io->text('Migrated ' . $count . ' craftsmen');
         $io->newLine();
 
         $count = $this->migrateIssueImages($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' issue images');
+        $io->text('Migrated ' . $count . ' issue images');
         $io->newLine();
 
         $count = $this->migrateIssues($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' issues');
+        $io->text('Migrated ' . $count . ' issues');
         $io->newLine();
 
         $count = $this->finalizeIssueImages($io, $sourcePdo, $targetPdo);
-        $io->text('Finalized '.$count.' issue images');
+        $io->text('Finalized ' . $count . ' issue images');
         $io->newLine();
 
         $this->migrateLocalTimeToUTC($targetPdo);
@@ -141,15 +141,15 @@ class MigrateSqliteCommand extends DatabaseCommand
     private function getConnections(): array
     {
         $persistentPath = dirname($this->pathService->getRootFolderOfConstructionSites());
-        $expectedSqlitePath = $persistentPath.'/data.sqlite';
+        $expectedSqlitePath = $persistentPath . '/data.sqlite';
         if (!file_exists($expectedSqlitePath)) {
-            throw new \Exception('sqlite file not found at '.realpath($expectedSqlitePath));
+            throw new \Exception('sqlite file not found at ' . realpath($expectedSqlitePath));
         }
 
-        $sourcePdo = new \PDO('sqlite:'.$expectedSqlitePath);
+        $sourcePdo = new \PDO('sqlite:' . $expectedSqlitePath);
 
         $config = $this->getDatabaseConfiguration();
-        $targetPdo = new \PDO('mysql:host='.$config['host'].';dbname='.$config['database'], $config['username'], $config['password']);
+        $targetPdo = new \PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['database'], $config['username'], $config['password']);
 
         return [$sourcePdo, $targetPdo];
     }
@@ -303,16 +303,16 @@ class MigrateSqliteCommand extends DatabaseCommand
 
         $prefixedFields = [];
         foreach ($fields as $field) {
-            $prefixedFields[] = 'i.'.$field.' AS '.$field;
+            $prefixedFields[] = 'i.' . $field . ' AS ' . $field;
         }
         foreach ($mapFields as $field) {
-            $prefixedFields[] = 'm.'.$field.' AS '.$field;
+            $prefixedFields[] = 'm.' . $field . ' AS ' . $field;
         }
         foreach (array_keys($renames) as $field) {
-            $prefixedFields[] = 'i.'.$field.' AS '.$field;
+            $prefixedFields[] = 'i.' . $field . ' AS ' . $field;
         }
 
-        $selectSql = 'SELECT '.implode(', ', $prefixedFields).' FROM issue i INNER JOIN map m on m.id = i.map_id';
+        $selectSql = 'SELECT ' . implode(', ', $prefixedFields) . ' FROM issue i INNER JOIN map m on m.id = i.map_id';
 
         $sql = 'SELECT m.construction_site_id, MAX(i.number) as max_number FROM issue i INNER JOIN map m on m.id = i.map_id GROUP BY m.construction_site_id';
         $constructionSiteMaxResult = $this->fetchAll($sourcePdo, $sql);
@@ -321,7 +321,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             $maxNumbers[$result['construction_site_id']] = $result['max_number'];
         }
 
-        $sql = $selectSql.' WHERE number IS NULL';
+        $sql = $selectSql . ' WHERE number IS NULL';
         $entities = $this->fetchAll($sourcePdo, $sql);
         if ([] !== $entities) {
             foreach ($entities as &$entity) {
@@ -334,11 +334,11 @@ class MigrateSqliteCommand extends DatabaseCommand
             }
             unset($entity); // need to unset &$entity reference variable
 
-            $io->text('Inserting '.count($entities).' with patched number');
+            $io->text('Inserting ' . count($entities) . ' with patched number');
             $this->insertAll($targetPdo, 'issue', $entities);
         }
 
-        $sql = $selectSql.' WHERE number IS NOT NULL';
+        $sql = $selectSql . ' WHERE number IS NOT NULL';
         $count = $this->migrate($io, $sourcePdo, $targetPdo, $sql, 'issue', self::MODE_INSERT, $migrateReference);
 
         $sql = 'SELECT issue_id as id, position_x, position_y, position_zoom_scale FROM issue_position';
@@ -388,21 +388,21 @@ class MigrateSqliteCommand extends DatabaseCommand
             'filename', 'hash',
         ];
 
-        $sql = 'SELECT '.implode(', ', $fields).' FROM '.$table.' WHERE '.$ownerName.'_id IN (SELECT id FROM '.$ownerName.')';
+        $sql = 'SELECT ' . implode(', ', $fields) . ' FROM ' . $table . ' WHERE ' . $ownerName . '_id IN (SELECT id FROM ' . $ownerName . ')';
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT);
     }
 
     private function setFileCreatedFor(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, string $ownerName): int
     {
-        $sql = 'SELECT id as id, '.$ownerName.'_id as created_for_id FROM '.$table.' WHERE '.$ownerName.'_id IN (SELECT id FROM '.$ownerName.')';
+        $sql = 'SELECT id as id, ' . $ownerName . '_id as created_for_id FROM ' . $table . ' WHERE ' . $ownerName . '_id IN (SELECT id FROM ' . $ownerName . ')';
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_UPDATE);
     }
 
     private function migrateTable(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, array $sourceFields, ?callable $migrateReference = null): int
     {
-        $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
+        $sql = 'SELECT ' . implode(', ', $sourceFields) . ' FROM ' . $table;
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT, $migrateReference);
     }
@@ -415,11 +415,11 @@ class MigrateSqliteCommand extends DatabaseCommand
         $total = $this->count($sourcePdo, $table);
         $multipleBatchesRequired = $total > $limit;
         if ($multipleBatchesRequired) {
-            $io->text('Large table with '.$total.' entries. Need '.ceil((float) $total / $limit).' batches.');
+            $io->text('Large table with ' . $total . ' entries. Need ' . ceil((float) $total / $limit) . ' batches.');
         }
 
         while (true) {
-            $batchSql = $sql.' LIMIT '.$limit.' OFFSET '.$offset;
+            $batchSql = $sql . ' LIMIT ' . $limit . ' OFFSET ' . $offset;
 
             $entities = $this->fetchAll($sourcePdo, $batchSql);
             if ([] === $entities) {
@@ -433,17 +433,17 @@ class MigrateSqliteCommand extends DatabaseCommand
                 unset($entity); // need to unset &$entity reference variable
             }
 
-            $progressExpression = ($offset + count($entities)).'/'.$total;
+            $progressExpression = ($offset + count($entities)) . '/' . $total;
             $offset += $limit;
 
             if (self::MODE_INSERT === $mode) {
-                $io->text('Inserting '.$progressExpression);
+                $io->text('Inserting ' . $progressExpression);
                 $this->insertAll($targetPdo, $table, $entities);
             } elseif (self::MODE_UPDATE === $mode) {
-                $io->text('Updating '.$progressExpression);
+                $io->text('Updating ' . $progressExpression);
                 $this->updateAllById($targetPdo, $table, $entities);
             } else {
-                throw new \Exception('Unknown mode '.$mode);
+                throw new \Exception('Unknown mode ' . $mode);
             }
         }
 
@@ -452,7 +452,7 @@ class MigrateSqliteCommand extends DatabaseCommand
 
     private function count(\PDO $PDO, string $table): int
     {
-        $query = $PDO->prepare('SELECT COUNT(*) FROM '.$table);
+        $query = $PDO->prepare('SELECT COUNT(*) FROM ' . $table);
         $query->execute();
 
         return $query->fetch(\PDO::FETCH_NUM)[0];
@@ -471,17 +471,17 @@ class MigrateSqliteCommand extends DatabaseCommand
         $updateColumns = [];
         foreach (array_keys($entities[0]) as $column) {
             if ('id' !== $column) {
-                $updateColumns[] = $column.' = :'.$column;
+                $updateColumns[] = $column . ' = :' . $column;
             }
         }
 
-        $sql = 'UPDATE '.$table.' SET '.implode(', ', $updateColumns).' WHERE id = :id';
+        $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $updateColumns) . ' WHERE id = :id';
         $updateQuery = $targetPdo->prepare($sql);
 
         foreach ($entities as $entity) {
             $params = [];
             foreach ($entity as $key => $value) {
-                $params[':'.$key] = $value;
+                $params[':' . $key] = $value;
             }
 
             $updateQuery->execute($params);
@@ -492,7 +492,7 @@ class MigrateSqliteCommand extends DatabaseCommand
     {
         $keys = array_keys($entities[0]);
         $placeHolders = array_fill(0, count($keys), '?');
-        $insertQuery = $targetPdo->prepare('INSERT INTO '.$table.' ('.implode(', ', $keys).') VALUES ('.implode(', ', $placeHolders).')');
+        $insertQuery = $targetPdo->prepare('INSERT INTO ' . $table . ' (' . implode(', ', $keys) . ') VALUES (' . implode(', ', $placeHolders) . ')');
 
         foreach ($entities as $entity) {
             $insertQuery->execute(array_values($entity));
@@ -505,7 +505,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
         ];
 
-        $io->text('executing '.count($queries).' queries for special cases.');
+        $io->text('executing ' . count($queries) . ' queries for special cases.');
         foreach ($queries as $query) {
             $targetPdo->exec($query);
         }
@@ -526,10 +526,10 @@ class MigrateSqliteCommand extends DatabaseCommand
         foreach ($impactedFieldsByTable as $table => $impactedFields) {
             $sets = [];
             foreach ($impactedFields as $impactedField) {
-                $sets[] = $impactedField.' = DATE_SUB('.$impactedField.', INTERVAL 1 HOUR)';
+                $sets[] = $impactedField . ' = DATE_SUB(' . $impactedField . ', INTERVAL 1 HOUR)';
             }
 
-            $query = 'UPDATE '.$table.' SET '.implode(', ', $sets);
+            $query = 'UPDATE ' . $table . ' SET ' . implode(', ', $sets);
             $targetPdo->exec($query);
         }
     }

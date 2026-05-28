@@ -105,6 +105,6 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
                 && $this->isIncludedInFilter($filter, $attribute, $subject);
         }
 
-        throw new \LogicException('Unknown user in token '.get_class($token));
+        throw new \LogicException('Unknown user in token ' . get_class($token));
     }
 }

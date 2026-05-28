@@ -31,12 +31,12 @@ class IssueTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/issues?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/issues/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/issues?constructionSite=' . $constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/issues/' . $constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/issues', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/issues/'.$constructionSite->getIssues()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/issues/' . $constructionSite->getIssues()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet(): void
@@ -48,7 +48,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues');
 
         $constructionSite = $this->getTestConstructionSite();
-        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite='.$constructionSite->getId());
+        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite=' . $constructionSite->getId());
         $fields = ['number', 'description', 'deadline', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
         $relationFields = ['craftsman', 'map', 'imageUrl', 'mapRenderUrl'];
         $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registeredBy', 'resolvedAt', 'resolvedBy', 'closedAt', 'closedBy'];
@@ -107,7 +107,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $sample, $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/issues', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', array_merge($sample, $optionalProperties), $affiliation);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite=' . $constructionSite->getId(), $response);
         $issueId = json_decode($response->getContent(), true)['@id'];
 
         $otherMap = $this->getTestConstructionSite()->getMaps()[1];
@@ -147,10 +147,10 @@ class IssueTest extends ApiTestCase
             'closedBy' => $otherConstructionManagerId,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite=' . $constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $issueId);
-        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issues?constructionSite=' . $constructionSite->getId(), $response);
     }
 
     public function testPostNumberAssignment(): void
@@ -190,9 +190,9 @@ class IssueTest extends ApiTestCase
         $this->assertFalse($issue->getIsDeleted(), 'ensure issue is not deleted, else the following tests will fail');
 
         $issueIri = $this->getIriFromItem($issue);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId(), $issueIri);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&isDeleted=false', $issueIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&isDeleted=true', $issueIri);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId(), $issueIri);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&isDeleted=false', $issueIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&isDeleted=true', $issueIri);
     }
 
     public function testStateFilter(): void
@@ -211,21 +211,21 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
         $issueId = json_decode($response->getContent(), true)['@id'];
 
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=1', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=2', $issueId);
         $this->assertApiPatchOk($client, $issueId, ['registeredBy' => $constructionManagerId, 'registeredAt' => $time]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=2', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=1', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=4', $issueId);
         $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=4', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=8', $issueId);
         $this->assertApiPatchOk($client, $issueId, ['closedBy' => $constructionManagerId, 'closedAt' => $time]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=8', $issueId);
     }
 
     public function testLastChangedOrder(): void
@@ -252,7 +252,7 @@ class IssueTest extends ApiTestCase
         $counter = 1;
         foreach ($constructionSite->getIssues() as $issue) {
             $issue->setNumber($counter);
-            $issue->setDeadline(new \DateTime('today + '.$counter++.' hours'));
+            $issue->setDeadline(new \DateTime('today + ' . $counter++ . ' hours'));
         }
         $this->saveEntity(...$constructionSite->getIssues()->toArray());
 
@@ -270,7 +270,7 @@ class IssueTest extends ApiTestCase
         $issue = $constructionSite->getIssues()[0];
         $issueIri = $this->getIriFromItem($issue);
 
-        $this->assertApiCollectionFilterDateTime($client, '/api/issues?constructionSite='.$constructionSite->getId().'&', $issueIri, 'lastChangedAt', $issue->getLastChangedAt());
+        $this->assertApiCollectionFilterDateTime($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&', $issueIri, 'lastChangedAt', $issue->getLastChangedAt());
     }
 
     public function testPositionMustBeFullySetOrNotAtAll(): void
@@ -387,10 +387,10 @@ class IssueTest extends ApiTestCase
         ];
 
         $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/issues', $sample);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite=' . $constructionSite->getId(), $response);
         $issueIri = json_decode($response->getContent(), true)['@id'];
 
-        $collectionUrlPrefix = '/api/issues?constructionSite='.$constructionSite->getId().'&';
+        $collectionUrlPrefix = '/api/issues?constructionSite=' . $constructionSite->getId() . '&';
 
         $dateTimeProperties = ['createdAt', 'registeredAt', 'resolvedAt', 'closedAt', 'deadline'];
         foreach ($dateTimeProperties as $dateTimeProperty) {
@@ -415,7 +415,7 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $response = $this->assertApiGetStatusCodeSame(StatusCode::HTTP_OK, $client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
+        $response = $this->assertApiGetStatusCodeSame(StatusCode::HTTP_OK, $client, '/api/issues/report?constructionSite=' . $constructionSite->getId(), 'application/pdf');
         $this->assertTrue(str_contains($response->getContent(), '/download'));
     }
 
@@ -428,10 +428,10 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $map = $constructionSite->getMaps()[0];
 
-        $urlWithConstructionSite = '/api/issues/render.jpg?constructionSite='.$constructionSite->getId();
+        $urlWithConstructionSite = '/api/issues/render.jpg?constructionSite=' . $constructionSite->getId();
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite, 'image/jpeg');
 
-        $fullUrl = $urlWithConstructionSite.'&map='.$map->getId();
+        $fullUrl = $urlWithConstructionSite . '&map=' . $map->getId();
         $response = $this->assertApiGetOk($client, $fullUrl, 'image/jpeg');
         $this->assertInstanceOf(BinaryFileResponse::class, $response->getKernelResponse());
 
@@ -505,7 +505,7 @@ class IssueTest extends ApiTestCase
         $newIssues[] = $issue;
         $this->saveEntity(...$newIssues);
 
-        $response = $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues/summary?constructionSite=' . $constructionSite->getId());
         $summary = json_decode($response->getContent(), true);
 
         $this->assertSame(1, $summary['newCount']);
@@ -521,14 +521,14 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/group?constructionSite='.$constructionSite->getId());
-        $response = $this->assertApiGetOk($client, '/api/issues/group?constructionSite='.$constructionSite->getId().'&group=map');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/group?constructionSite=' . $constructionSite->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues/group?constructionSite=' . $constructionSite->getId() . '&group=map');
 
         $groups = json_decode($response->getContent(), true);
 
         $mapLookupByIri = [];
         foreach ($constructionSite->getMaps() as $map) {
-            $mapLookupByIri['/api/maps/'.$map->getId()] = $map;
+            $mapLookupByIri['/api/maps/' . $map->getId()] = $map;
         }
 
         // each group count should match with map issue count
@@ -571,17 +571,17 @@ class IssueTest extends ApiTestCase
         };
 
         $registerIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
-            $issue->setRegisteredAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setRegisteredAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setRegisteredBy($constructionManager);
         };
 
         $resolveIssue = function (Issue $issue, int $daysInThePast) use ($craftsman): void {
-            $issue->setResolvedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setResolvedAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setResolvedBy($craftsman);
         };
 
         $closeIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
-            $issue->setClosedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setClosedAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setClosedBy($constructionManager);
         };
 
@@ -611,7 +611,7 @@ class IssueTest extends ApiTestCase
         $newIssues[] = $issue;
         $this->saveEntity(...$newIssues);
 
-        $response = $this->assertApiGetOk($client, '/api/issues/timeseries?constructionSite='.$constructionSite->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues/timeseries?constructionSite=' . $constructionSite->getId());
         $summaries = json_decode($response->getContent(), true);
 
         $members = $summaries['hydra:member'];
@@ -639,15 +639,15 @@ class IssueTest extends ApiTestCase
 
     private function assertOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void
     {
-        $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';
+        $url = '/api/issues?constructionSite=' . $constructionSite->getId() . '&order[' . $entry . ']=';
 
-        $ascCollectionResponse = $this->assertApiGetOk($client, $url.'asc');
+        $ascCollectionResponse = $this->assertApiGetOk($client, $url . 'asc');
         $ascCollection = json_decode($ascCollectionResponse->getContent(), true);
 
-        $descCollectionResponse = $this->assertApiGetOk($client, $url.'desc');
+        $descCollectionResponse = $this->assertApiGetOk($client, $url . 'desc');
         $descCollection = json_decode($descCollectionResponse->getContent(), true);
 
         $reversedDescEntries = array_reverse($descCollection['hydra:member']);
-        $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter '.$entry.' has not been applied');
+        $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter ' . $entry . ' has not been applied');
     }
 }

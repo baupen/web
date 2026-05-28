@@ -27,9 +27,9 @@ class IssueService
 
     public function getStateChangeIssues(QueryBuilder $queryBuilder, string $rootAlias, \DateTime $backtrackDate): array
     {
-        $queryBuilder->addSelect($rootAlias.'.registeredAt registeredAt, '.$rootAlias.'.resolvedAt resolvedAt, '.$rootAlias.'.closedAt closedAt');
+        $queryBuilder->addSelect($rootAlias . '.registeredAt registeredAt, ' . $rootAlias . '.resolvedAt resolvedAt, ' . $rootAlias . '.closedAt closedAt');
         $queryBuilder
-            ->andWhere($rootAlias.'.registeredAt > :backtrack_1 OR '.$rootAlias.'.resolvedAt > :backtrack_2 OR '.$rootAlias.'.closedAt > :backtrack_3')
+            ->andWhere($rootAlias . '.registeredAt > :backtrack_1 OR ' . $rootAlias . '.resolvedAt > :backtrack_2 OR ' . $rootAlias . '.closedAt > :backtrack_3')
             ->setParameter(':backtrack_1', $backtrackDate)
             ->setParameter(':backtrack_2', $backtrackDate)
             ->setParameter(':backtrack_3', $backtrackDate);
@@ -66,7 +66,7 @@ class IssueService
 
     private function countResult(string $rootAlias, QueryBuilder $builder): int
     {
-        return $builder->select('count('.$rootAlias.')')
+        return $builder->select('count(' . $rootAlias . ')')
             ->getQuery()->getSingleScalarResult();
     }
 }

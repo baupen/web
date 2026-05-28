@@ -56,7 +56,7 @@ trait AssertApiResponseTrait
                 return $url;
             }
 
-            $this->fail('no member has a the property '.$fileUrlProperty.' set, hence can not assert this url is valid.');
+            $this->fail('no member has a the property ' . $fileUrlProperty . ' set, hence can not assert this url is valid.');
         }
 
         $this->fail('only collections support this assertion.');

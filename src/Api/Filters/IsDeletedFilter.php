@@ -21,7 +21,8 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         $value = self::normalizeValue($value);
         if (null === $value) {
             $this->getLogger()->notice('Invalid filter ignored', [
-                'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::IS_DELETED_PROPERTY_NAME.', expected one of ( "%s" )',
+                'exception' => new InvalidArgumentException(sprintf(
+                    'Invalid value for ' . self::IS_DELETED_PROPERTY_NAME . ', expected one of ( "%s" )',
                     self::IS_DELETED_PROPERTY_NAME,
                     implode('" | "', ['true', 'false', '1', '0'])
                 )),
@@ -32,9 +33,9 @@ class IsDeletedFilter extends AbstractContextAwareFilter
 
         $alias = $queryBuilder->getRootAliases()[0];
         if ($value) {
-            $queryBuilder->andWhere($alias.'.deletedAt IS NOT NULL');
+            $queryBuilder->andWhere($alias . '.deletedAt IS NOT NULL');
         } else {
-            $queryBuilder->andWhere($alias.'.deletedAt IS NULL');
+            $queryBuilder->andWhere($alias . '.deletedAt IS NULL');
         }
     }
 

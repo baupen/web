@@ -73,8 +73,8 @@ trait TestDataTrait
         $craftsman = new Craftsman();
         $craftsman->setConstructionSite($constructionSite);
         $craftsman->setContactName($name);
-        $craftsman->setEmail($name.'@ch.ch');
-        $craftsman->setCompany($name.' AG');
+        $craftsman->setEmail($name . '@ch.ch');
+        $craftsman->setCompany($name . ' AG');
         $craftsman->setTrade($name);
         $craftsman->setAuthenticationToken();
 

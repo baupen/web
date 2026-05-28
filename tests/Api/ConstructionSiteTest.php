@@ -25,7 +25,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationUnsupported($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'DELETE', 'PUT');
+        $this->assertApiOperationUnsupported($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'DELETE', 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication(): void
@@ -35,11 +35,11 @@ class ConstructionSiteTest extends ApiTestCase
 
         $testConstructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'GET');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/construction_sites', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
+        $this->assertApiOperationForbidden($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'GET');
     }
 
     public function testGet(): void
@@ -65,15 +65,15 @@ class ConstructionSiteTest extends ApiTestCase
 
         // ensure filter is applied
         $constructionManager = $this->loginApiConstructionManager($client);
-        $this->assertApiCollectionContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $constructionSiteId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $emptyConstructionSiteId);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId(), $constructionSiteId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId(), $emptyConstructionSiteId);
 
         // ensure filter is enforced for associated construction managers
         $associatedConstructionManager = $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites');
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites', $emptyConstructionSiteId);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId());
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id='.$associatedConstructionManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id=' . $associatedConstructionManager->getId());
     }
 
     public function testPostAndPatch(): void

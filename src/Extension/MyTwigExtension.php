@@ -81,7 +81,7 @@ class MyTwigExtension extends AbstractExtension
         $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $currentRequest->getSchemeAndHttpHost()];
         $data = json_encode($payload);
 
-        return 'mangelio://login?payload='.base64_encode($data);
+        return 'mangelio://login?payload=' . base64_encode($data);
     }
 
     public function camelCaseToUnderscoreFilter(string $propertyName): string
@@ -92,7 +92,7 @@ class MyTwigExtension extends AbstractExtension
     public function dateFormatFilter(?\DateTime $date): string
     {
         if ($date instanceof \DateTime) {
-            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
+            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_FORMAT);
         }
 
         return '-';
@@ -110,7 +110,7 @@ class MyTwigExtension extends AbstractExtension
     public function dateTimeFormatFilter(?\DateTime $date): string
     {
         if ($date instanceof \DateTime) {
-            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
         return '-';
@@ -140,7 +140,7 @@ class MyTwigExtension extends AbstractExtension
                 $length = $breakpoint;
             }
 
-            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
         }
 
         return $value;
@@ -148,6 +148,6 @@ class MyTwigExtension extends AbstractExtension
 
     private function prependDayName(\DateTime $date): string
     {
-        return $this->translator->trans('date_time.'.$date->format('D'), [], 'framework');
+        return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
     }
 }

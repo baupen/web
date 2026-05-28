@@ -64,7 +64,7 @@ class BaseController extends AbstractController
     private function displayFlash(string $type, $message, $link = null): void
     {
         if (null !== $link) {
-            $message = '<a href="'.$link.'">'.$message.'</a>';
+            $message = '<a href="' . $link . '">' . $message . '</a>';
         }
         $this->addFlash($type, $message);
     }

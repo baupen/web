@@ -29,7 +29,7 @@ class PatchedExactSearchFilter extends ExactSearchFilter
 
         $alias = $queryBuilder->getRootAliases()[0];
         $queryBuilder
-            ->andWhere($alias.'.id IN (:whitelist)')
+            ->andWhere($alias . '.id IN (:whitelist)')
             ->setParameter(':whitelist', $whitelist);
     }
 }

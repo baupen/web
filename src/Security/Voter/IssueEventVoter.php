@@ -158,7 +158,8 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
                     }
 
                     // must reference valid root belonging to construction site
-                    if ($subject->getRoot() !== $subject->getConstructionSite()->getId()
+                    if (
+                        $subject->getRoot() !== $subject->getConstructionSite()->getId()
                         && !$this->registry->getRepository(Issue::class)
                             ->findOneBy(['id' => $subject->getRoot(), 'constructionSite' => $subject->getConstructionSite()->getId()])
                         && !$this->registry->getRepository(Craftsman::class)

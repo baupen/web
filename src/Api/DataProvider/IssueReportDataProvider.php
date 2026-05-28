@@ -41,7 +41,7 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         $currentRequest->attributes->set('filters', $context['filters']);
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
-        $queryBuilder->leftJoin($queryBuilder->getRootAliases()[0].'.image', 'i');
+        $queryBuilder->leftJoin($queryBuilder->getRootAliases()[0] . '.image', 'i');
         $queryBuilder->addSelect('i');
 
         return $queryBuilder->getQuery()->getResult();

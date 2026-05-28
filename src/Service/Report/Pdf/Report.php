@@ -19,11 +19,11 @@ class Report
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         // prepare fonts
-        $checkFilePath = K_PATH_FONTS.'/.copied';
+        $checkFilePath = K_PATH_FONTS . '/.copied';
         if (!file_exists($checkFilePath)) {
-            $sourceFolder = $reportAssetDir.'/fonts';
+            $sourceFolder = $reportAssetDir . '/fonts';
             // copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r '.$sourceFolder.'/* '.K_PATH_FONTS);
+            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
 
@@ -82,7 +82,7 @@ class Report
             $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
             foreach ($filterEntries as $name => $value) {
                 $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-                $this->printHtmlP('<b>'.$name.'</b>: '.$value);
+                $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
             }
         }
 

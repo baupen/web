@@ -42,7 +42,7 @@ class IssueHelper
         $issuesPerCraftsman = [];
         foreach ($issues as $issue) {
             $craftsman = $issue->getCraftsman();
-            $unorderedElements[$craftsman->getTrade().$craftsman->getCompany()] = $craftsman;
+            $unorderedElements[$craftsman->getTrade() . $craftsman->getCompany()] = $craftsman;
             $issuesPerCraftsman[$craftsman->getId()][] = $issue;
         }
 

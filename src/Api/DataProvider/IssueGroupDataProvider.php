@@ -48,12 +48,12 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         $currentRequest = $this->requestStack->getCurrentRequest();
         $group = $currentRequest->query->get('group');
         if ('map' !== $group) {
-            throw new BadRequestException('The group '.$group.' is unexpected.');
+            throw new BadRequestException('The group ' . $group . ' is unexpected.');
         }
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $validIssueIdResult = $queryBuilder->addSelect($rootAlias.'.id')->getQuery()->getResult();
+        $validIssueIdResult = $queryBuilder->addSelect($rootAlias . '.id')->getQuery()->getResult();
         $validIssueIds = [];
         foreach ($validIssueIdResult as $entry) {
             $validIssueIds[] = $entry['id'];

@@ -25,12 +25,12 @@ class EmailTemplateTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/email_templates/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/email_templates/' . $constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/email_templates', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/email_templates/'.$constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/email_templates/' . $constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testPostPatchAndDelete(): void
@@ -57,7 +57,7 @@ class EmailTemplateTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/email_templates', $sample, $affiliation);
 
         // test GET returns correct fields
-        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $response);
         $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc');
 
         $emailTemplateId = json_decode($response->getContent(), true)['@id'];
@@ -79,10 +79,10 @@ class EmailTemplateTest extends ApiTestCase
             'selfBcc' => true,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $emailTemplateId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $response);
 
         // test DELETE removes item
         $this->assertApiDeleteOk($client, $emailTemplateId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $emailTemplateId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $emailTemplateId);
     }
 }

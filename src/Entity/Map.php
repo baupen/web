@@ -149,7 +149,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
                 $parentContext .= ' > ';
             }
 
-            return $parentContext.$this->getParent()->getName();
+            return $parentContext . $this->getParent()->getName();
         }
 
         return '';
@@ -162,7 +162,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
             $context .= ' > ';
         }
 
-        return $context.$this->getName();
+        return $context . $this->getName();
     }
 
     public function getFile(): ?MapFile

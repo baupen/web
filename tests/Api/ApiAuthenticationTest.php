@@ -62,12 +62,12 @@ class ApiAuthenticationTest extends ApiTestCase
         $noDelete = ['construction_sites', 'construction_managers', 'filters'];
 
         foreach ($payloads as $url => $payload) {
-            $apiUrl = '/api/'.$url;
+            $apiUrl = '/api/' . $url;
             $own = $payload[0];
             $other = $payload[1];
 
-            $sameConstructionSiteId = $apiUrl.'/'.$own->getId();
-            $otherConstructionSiteId = $apiUrl.'/'.$other->getId();
+            $sameConstructionSiteId = $apiUrl . '/' . $own->getId();
+            $otherConstructionSiteId = $apiUrl . '/' . $other->getId();
 
             $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
             if (in_array($url, ['construction_sites', 'construction_managers'])) {
@@ -127,8 +127,8 @@ class ApiAuthenticationTest extends ApiTestCase
         $filterToken = $this->createApiTokenFor($filter);
 
         $apiUrl = '/api/email_templates';
-        $sameConstructionSiteId = $apiUrl.'/'.$emailTemplate->getId();
-        $otherConstructionSiteId = $apiUrl.'/'.$otherEmailTemplate->getId();
+        $sameConstructionSiteId = $apiUrl . '/' . $emailTemplate->getId();
+        $otherConstructionSiteId = $apiUrl . '/' . $otherEmailTemplate->getId();
 
         $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
         $this->assertApiTokenRequestNotFound($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
@@ -167,20 +167,20 @@ class ApiAuthenticationTest extends ApiTestCase
         foreach ([$constructionManagerToken, $craftsmanToken, $filterToken] as $token) {
             $this->setApiTokenDefaultHeader($client, $token);
 
-            $response = $this->assertApiGetOk($client, '/api/maps?constructionSite='.$testConstructionSite->getId());
+            $response = $this->assertApiGetOk($client, '/api/maps?constructionSite=' . $testConstructionSite->getId());
             $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         }
 
         foreach ([$constructionManagerToken, $filterToken] as $token) {
             $this->setApiTokenDefaultHeader($client, $token);
 
-            $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId());
+            $response = $this->assertApiGetOk($client, '/api/issues?constructionSite=' . $testConstructionSite->getId());
             $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
         }
 
         $this->setApiTokenDefaultHeader($client, $craftsmanToken);
 
-        $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId().'&isDeleted=false');
+        $response = $this->assertApiGetOk($client, '/api/issues?constructionSite=' . $testConstructionSite->getId() . '&craftsman=' . $craftsman->getId() . '&isDeleted=false');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
@@ -196,23 +196,23 @@ class ApiAuthenticationTest extends ApiTestCase
         $craftsmanToken = $this->createApiTokenFor($craftsman);
         $this->setApiTokenDefaultHeader($client, $craftsmanToken);
 
-        $constructionSiteCondition = 'constructionSite='.$testConstructionSite->getId();
-        $otherConstructionSiteCondition = 'constructionSite='.$otherConstructionSite->getId();
+        $constructionSiteCondition = 'constructionSite=' . $testConstructionSite->getId();
+        $otherConstructionSiteCondition = 'constructionSite=' . $otherConstructionSite->getId();
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$testConstructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $testConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?' . $constructionSiteCondition);
 
-        $otherRequiredProperties = ['craftsman='.$craftsman->getId(), 'isDeleted=false'];
+        $otherRequiredProperties = ['craftsman=' . $craftsman->getId(), 'isDeleted=false'];
         foreach ($otherRequiredProperties as $requiredProperty) {
-            $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?'.$requiredProperty);
+            $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?' . $requiredProperty);
         }
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?'.$constructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?'.implode('&', $otherRequiredProperties).'&'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.implode('&', $otherRequiredProperties).'&'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?' . $constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?' . implode('&', $otherRequiredProperties) . '&' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?' . implode('&', $otherRequiredProperties) . '&' . $constructionSiteCondition);
     }
 
     public function testFilterGetQueryEnforced(): void
@@ -227,20 +227,20 @@ class ApiAuthenticationTest extends ApiTestCase
         $filterToken = $this->createApiTokenFor($filter);
         $this->setApiTokenDefaultHeader($client, $filterToken);
 
-        $constructionSiteCondition = 'constructionSite='.$testConstructionSite->getId();
-        $otherConstructionSiteCondition = 'constructionSite='.$otherConstructionSite->getId();
+        $constructionSiteCondition = 'constructionSite=' . $testConstructionSite->getId();
+        $otherConstructionSiteCondition = 'constructionSite=' . $otherConstructionSite->getId();
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$testConstructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $testConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?' . $constructionSiteCondition);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?' . $constructionSiteCondition);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?' . $constructionSiteCondition);
     }
 
     public function testConstructionSiteGetQueryEnforced(): void
@@ -255,19 +255,19 @@ class ApiAuthenticationTest extends ApiTestCase
         $filterToken = $this->createApiTokenFor($constructionManager);
         $this->setApiTokenDefaultHeader($client, $filterToken);
 
-        $constructionSiteCondition = 'constructionSite='.$testConstructionSite->getId();
-        $otherConstructionSiteCondition = 'constructionSite='.$otherConstructionSite->getId();
+        $constructionSiteCondition = 'constructionSite=' . $testConstructionSite->getId();
+        $otherConstructionSiteCondition = 'constructionSite=' . $otherConstructionSite->getId();
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers');
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?' . $constructionSiteCondition);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?' . $constructionSiteCondition);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?'.$otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.$constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues?' . $otherConstructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?' . $constructionSiteCondition);
     }
 
     public function testCraftsmanEdit(): void
@@ -301,7 +301,7 @@ class ApiAuthenticationTest extends ApiTestCase
             'resolvedBy' => $craftsmanIri,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueIri, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId().'&isDeleted=false', $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite=' . $testConstructionSite->getId() . '&craftsman=' . $craftsman->getId() . '&isDeleted=false', $response);
 
         $writeProtected = [
             'createdAt' => (new \DateTime('tomorrow'))->format('c'),

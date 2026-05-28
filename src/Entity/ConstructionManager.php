@@ -141,7 +141,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
 
     public function getName(): string
     {
-        return trim($this->getGivenName().' '.$this->getFamilyName());
+        return trim($this->getGivenName() . ' ' . $this->getFamilyName());
     }
 
     /**

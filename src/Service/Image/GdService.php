@@ -14,7 +14,7 @@ class GdService
 {
     private LoggerInterface $logger;
 
-    private const FONT = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
+    private const FONT = __DIR__ . '/../../../assets/report/fonts/OpenSans-Bold.ttf';
 
     /**
      * GdService constructor.
@@ -166,7 +166,7 @@ class GdService
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagegif($newImage, $targetPath);
         } else {
-            $this->logger->warning('cannot resize image with ending '.$ending);
+            $this->logger->warning('cannot resize image with ending ' . $ending);
             // can not resize; but at least create the file
             copy($sourcePath, $targetPath);
         }
