@@ -33,14 +33,14 @@ class Email extends BaseEntity
     #[ORM\Column(type: Types::INTEGER, enumType: EmailType::class)]
     private ?EmailType $type = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTime $sentAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $sentAt = null;
 
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $sentBy = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $readAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $readAt = null;
 
     public static function create(EmailType $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email
     {
@@ -52,14 +52,14 @@ class Email extends BaseEntity
         $email->body = $body;
         $email->jsonBody = $jsonBody;
         $email->sentBy = $sentBy;
-        $email->sentAt = new \DateTime();
+        $email->sentAt = new \DateTimeImmutable();
 
         return $email;
     }
 
     public function markRead(): void
     {
-        $this->readAt = new \DateTime();
+        $this->readAt = new \DateTimeImmutable();
     }
 
     public function getIdentifier(): string
@@ -72,7 +72,7 @@ class Email extends BaseEntity
         return $this->type;
     }
 
-    public function getSentAt(): \DateTime
+    public function getSentAt(): \DateTimeImmutable
     {
         return $this->sentAt;
     }
@@ -82,7 +82,7 @@ class Email extends BaseEntity
         return $this->sentBy;
     }
 
-    public function getReadAt(): ?\DateTime
+    public function getReadAt(): ?\DateTimeImmutable
     {
         return $this->readAt;
     }

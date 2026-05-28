@@ -458,24 +458,24 @@ class IssueTest extends ApiTestCase
             $issue->setConstructionSite($constructionSite);
             $issue->setNumber(0);
 
-            $issue->setCreatedAt(new \DateTime());
+            $issue->setCreatedAt(new \DateTimeImmutable());
             $issue->setCreatedBy($constructionManager);
 
             return $issue;
         };
 
         $registerIssue = function (Issue $issue) use ($constructionManager): void {
-            $issue->setRegisteredAt(new \DateTime());
+            $issue->setRegisteredAt(new \DateTimeImmutable());
             $issue->setRegisteredBy($constructionManager);
         };
 
         $resolveIssue = function (Issue $issue) use ($craftsman): void {
-            $issue->setResolvedAt(new \DateTime());
+            $issue->setResolvedAt(new \DateTimeImmutable());
             $issue->setResolvedBy($craftsman);
         };
 
         $closeIssue = function (Issue $issue) use ($constructionManager): void {
-            $issue->setClosedAt(new \DateTime());
+            $issue->setClosedAt(new \DateTimeImmutable());
             $issue->setClosedBy($constructionManager);
         };
 
@@ -564,24 +564,24 @@ class IssueTest extends ApiTestCase
             $issue->setConstructionSite($constructionSite);
             $issue->setNumber(0);
 
-            $issue->setCreatedAt(new \DateTime('today - 1 month'));
+            $issue->setCreatedAt(new \DateTimeImmutable('today - 1 month'));
             $issue->setCreatedBy($constructionManager);
 
             return $issue;
         };
 
         $registerIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
-            $issue->setRegisteredAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
+            $issue->setRegisteredAt(new \DateTimeImmutable('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setRegisteredBy($constructionManager);
         };
 
         $resolveIssue = function (Issue $issue, int $daysInThePast) use ($craftsman): void {
-            $issue->setResolvedAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
+            $issue->setResolvedAt(new \DateTimeImmutable('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setResolvedBy($craftsman);
         };
 
         $closeIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
-            $issue->setClosedAt(new \DateTime('today - ' . $daysInThePast . ' days + 1 minute'));
+            $issue->setClosedAt(new \DateTimeImmutable('today - ' . $daysInThePast . ' days + 1 minute'));
             $issue->setClosedBy($constructionManager);
         };
 

@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read']],
     processor: ConstructionSiteProcessor::class,
 )]
-class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class ConstructionSite extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -277,21 +277,5 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function setFolderName(string $uniqueFolderName): void
     {
         $this->folderName = $uniqueFolderName;
-    }
-
-    #[Groups(['construction-site:read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return true;
-    }
-
-    public function getConstructionSite(): ConstructionSite
-    {
-        return $this;
     }
 }

@@ -111,7 +111,7 @@ readonly class EmailService implements EmailServiceInterface
             return false;
         }
 
-        $craftsman->setLastEmailReceived(new \DateTime());
+        $craftsman->setLastEmailReceived(new \DateTimeImmutable());
         DoctrineHelper::persistAndFlush($this->registry, $craftsman);
 
         return true;

@@ -121,7 +121,7 @@ readonly class SampleService implements SampleServiceInterface
         for ($i = 0; $i < $issueCount; ++$i) {
             $issue = $issues[$i];
             $issue->setNumber($i + 1);
-            $issue->setCreatedAt(new \DateTime());
+            $issue->setCreatedAt(new \DateTimeImmutable());
             $issue->setCreatedBy($constructionManager);
 
             $issueRelation = $issueRelations[$i];

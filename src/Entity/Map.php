@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['map:write']],
     normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read']],
 )]
-class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class Map extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -106,11 +106,6 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 
     public function getParent(): ?self

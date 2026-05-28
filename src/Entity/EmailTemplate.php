@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['email-template:write']],
     normalizationContext: ['groups' => ['email-template:read', 'time:read']],
 )]
-class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class EmailTemplate extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -134,10 +134,5 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 }

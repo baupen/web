@@ -26,11 +26,8 @@ trait UserTrait
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $isEnabled = true;
 
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $registrationCompletedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registrationCompletedAt = null;
 
     /**
      * @return string
@@ -86,10 +83,10 @@ trait UserTrait
 
     public function setRegistrationCompletedNow(): void
     {
-        $this->registrationCompletedAt = new \DateTime();
+        $this->registrationCompletedAt = new \DateTimeImmutable();
     }
 
-    public function getRegistrationCompletedAt(): ?\DateTime
+    public function getRegistrationCompletedAt(): ?\DateTimeImmutable
     {
         return $this->registrationCompletedAt;
     }
