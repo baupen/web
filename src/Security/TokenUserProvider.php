@@ -7,7 +7,6 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -41,9 +40,6 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
         throw new \Exception('not implemented / not useful for tokens');
     }
 
-    /**
-     * @throws UsernameNotFoundException if the user is not found
-     */
     public function loadUserByUsername(string $username): AuthenticationToken
     {
         $token = new AuthenticationToken();

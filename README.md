@@ -21,8 +21,9 @@ The first and the last step are best executed using the [iOS](https://github.com
 
 Backend:
 - Upgrade to symfony 7, api platform 4
+- Rebuild security voters
+- Database: Improve data types (use STRING instead of TEXT, use immutable datetime structures)
 - Add phpstan static analysis & fix all issues
-- Database: Improve data types (use STRING instead of TEXT, use immutable structures)
 - Simplify access control
 - Refactor tests?
 
