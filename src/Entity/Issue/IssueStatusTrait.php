@@ -37,11 +37,11 @@ trait IssueStatusTrait
     /**
      * @var \DateTime|null
      */
-    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
+    #[Groups(['issue-read', 'issue-write', 'issue:craftsman-write'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $resolvedAt = null;
 
-    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
+    #[Groups(['issue-read', 'issue-write', 'issue:craftsman-write'])]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 

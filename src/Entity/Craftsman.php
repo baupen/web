@@ -93,11 +93,11 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @var string[]
      */
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $emailCCs = null;
 
-    #[Groups(['craftsman-read-self', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $canEdit = true;
 
