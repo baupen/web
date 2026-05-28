@@ -93,7 +93,8 @@ class AuthenticationToken extends BaseEntity implements UserInterface
         return $this->token;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
+        // TODO: Implement eraseCredentials() method.
     }
 }
