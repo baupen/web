@@ -22,7 +22,7 @@ trait FileResponseTrait
     private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $cache): BinaryFileResponse
     {
         if (null === $path) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $response = new BinaryFileResponse($path);

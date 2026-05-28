@@ -39,7 +39,7 @@ class PublicController extends BaseController
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
@@ -55,7 +55,7 @@ class PublicController extends BaseController
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
         if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {

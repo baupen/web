@@ -18,7 +18,7 @@ class EmailController extends BaseController
     {
         $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);
         if (null === $email) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $email->markRead();

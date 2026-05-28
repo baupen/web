@@ -15,30 +15,18 @@ use App\Service\Image\GsService;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 
-class ImageService implements ImageServiceInterface
+readonly class ImageService implements ImageServiceInterface
 {
     /**
      * the name of the image rendered from the map pdf.
      */
     private const PDF_RENDER_NAME = 'render.jpg';
 
-    private PathServiceInterface $pathService;
-
-    private GdService $gdService;
-
-    private GsService $gsService;
-
-    private ContentDrawingService $contentDrawingService;
-
     /**
      * ImageService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, GdService $gdService, GsService $gsService, ContentDrawingService $contentDrawingService)
+    public function __construct(private PathServiceInterface $pathService, private GdService $gdService, private GsService $gsService, private ContentDrawingService $contentDrawingService)
     {
-        $this->pathService = $pathService;
-        $this->gdService = $gdService;
-        $this->gsService = $gsService;
-        $this->contentDrawingService = $contentDrawingService;
     }
 
     public function isImageFilename(string $filename): bool
@@ -230,7 +218,7 @@ class ImageService implements ImageServiceInterface
                 // draw a dot only
                 $dotSize = $maxSize / 6;
                 $halfDotSize = $dotSize / 2;
-                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', (int) $halfDotSize, (int) $dotSize, 0, $image);
+                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', (int)$halfDotSize, (int)$dotSize, 0, $image);
             }
         }
 

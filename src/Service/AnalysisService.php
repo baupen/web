@@ -13,19 +13,10 @@ use App\Service\Analysis\IssueCountAnalysisTrait;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\ORM\QueryBuilder;
 
-class AnalysisService implements AnalysisServiceInterface
+readonly class AnalysisService implements AnalysisServiceInterface
 {
-    private IssueService $issueService;
-
-    private CraftsmanService $craftsmanService;
-
-    /**
-     * CraftsmanService constructor.
-     */
-    public function __construct(IssueService $issueService, CraftsmanService $craftsmanService)
+    public function __construct(private IssueService $issueService, private CraftsmanService $craftsmanService)
     {
-        $this->issueService = $issueService;
-        $this->craftsmanService = $craftsmanService;
     }
 
     /**
@@ -121,9 +112,6 @@ class AnalysisService implements AnalysisServiceInterface
         }
     }
 
-    /**
-     * @param IssueCountAnalysisTrait $issueCountAnalysis
-     */
     private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
     {
         if ($closedAt instanceof \DateTime) {

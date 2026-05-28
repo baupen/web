@@ -7,16 +7,10 @@ use App\Entity\Filter;
 use App\Service\Interfaces\FilterServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-class FilterService implements FilterServiceInterface
+readonly class FilterService implements FilterServiceInterface
 {
-    private ManagerRegistry $manager;
-
-    /**
-     * FilterService constructor.
-     */
-    public function __construct(ManagerRegistry $manager)
+    public function __construct(private ManagerRegistry $manager)
     {
-        $this->manager = $manager;
     }
 
     public function createFromQuery(array $filters): Filter
@@ -60,7 +54,7 @@ class FilterService implements FilterServiceInterface
 
     private function getNullableValue(array $source, string $key)
     {
-        return isset($source[$key]) ? $source[$key] : null;
+        return $source[$key] ?? null;
     }
 
     private function getNullableBoolean(array $source, string $key): ?bool

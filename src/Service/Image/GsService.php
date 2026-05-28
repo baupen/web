@@ -9,16 +9,10 @@ use Psr\Log\LoggerInterface;
  *
  * Class GsService
  */
-class GsService
+readonly class GsService
 {
-    private LoggerInterface $logger;
-
-    /**
-     * GsService constructor.
-     */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath, int $maxWidth, int $maxHeight): bool

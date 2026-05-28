@@ -89,12 +89,12 @@ class ApiController extends BaseController
     public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $sanitizedVariant = strtolower($request->query->get('variant', ''));
         if ('' !== $sanitizedVariant && 'ios' !== $sanitizedVariant) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
@@ -113,7 +113,7 @@ class ApiController extends BaseController
     public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -157,7 +157,7 @@ class ApiController extends BaseController
     public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -221,7 +221,7 @@ class ApiController extends BaseController
     public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -234,7 +234,7 @@ class ApiController extends BaseController
     public function getIssueEventFile(Request $request, IssueEvent $issueEvent, IssueEventFile $issueEventFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService): BinaryFileResponse
     {
         if ($issueEvent->getFile() !== $issueEventFile || $issueEventFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         if ($imageService->isImageFilename($filename)) {
@@ -254,7 +254,7 @@ class ApiController extends BaseController
     {
         $mapFile = $issue->getMap()->getFile();
         if (!$mapFile instanceof MapFile) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);

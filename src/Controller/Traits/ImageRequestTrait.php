@@ -12,7 +12,7 @@ trait ImageRequestTrait
     {
         $size = $query->get('size', 'thumbnail');
         if (!in_array($size, ImageServiceInterface::VALID_SIZES)) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException()();
         }
 
         return $size;

@@ -15,12 +15,6 @@ class UserService implements UserServiceInterface
     public const AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
     public const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
 
-    private PathServiceInterface $pathService;
-
-    private EmailServiceInterface $emailService;
-
-    private ManagerRegistry $registry;
-
     /**
      * @var string[][]|null
      */
@@ -36,17 +30,8 @@ class UserService implements UserServiceInterface
      */
     private ?array $domainWhitelistCache = null;
 
-    private string $authorizationMethod;
-
-    /**
-     * AuthorizationService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, ManagerRegistry $manager, EmailServiceInterface $emailService, string $authorizationMethod)
+    public function __construct(private readonly PathServiceInterface $pathService, private readonly ManagerRegistry $registry, private readonly EmailServiceInterface $emailService, private readonly string $authorizationMethod)
     {
-        $this->pathService = $pathService;
-        $this->registry = $manager;
-        $this->emailService = $emailService;
-        $this->authorizationMethod = $authorizationMethod;
     }
 
     public function authorize(ConstructionManager $constructionManager): void
@@ -145,7 +130,7 @@ class UserService implements UserServiceInterface
         }
     }
 
-    private function isEmailOnWhitelist(string $email)
+    private function isEmailOnWhitelist(string $email): bool
     {
         if (null == $this->emailWhitelistCache) {
             $this->emailWhitelistCache = [];

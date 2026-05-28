@@ -15,22 +15,10 @@ use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Pdf\PdfService;
 use App\Service\Report\Pdf\ReportElements;
 
-class ReportService implements ReportServiceInterface
+readonly class ReportService implements ReportServiceInterface
 {
-    private PdfService $pdfService;
-
-    private IssueService $issueService;
-
-    private CraftsmanService $craftsmanService;
-
-    /**
-     * ReportService constructor.
-     */
-    public function __construct(PdfService $pdfService, IssueService $issueService, CraftsmanService $craftsmanService)
+    public function __construct(private PdfService $pdfService, private IssueService $issueService, private CraftsmanService $craftsmanService)
     {
-        $this->pdfService = $pdfService;
-        $this->issueService = $issueService;
-        $this->craftsmanService = $craftsmanService;
     }
 
     public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string
@@ -97,9 +85,6 @@ class ReportService implements ReportServiceInterface
         return $craftsmanDeltaReport;
     }
 
-    /**
-     * @param IssueCountDeltaTrait $issueCountDelta
-     */
     private function fillIssueCountDelta(CraftsmanDeltaReport|CraftsmanReport $issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
     {
         // (newly) closed -> no longer open

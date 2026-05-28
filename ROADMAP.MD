@@ -22,4 +22,4 @@ Improve existing features:
 Technical:
 - Issue last activity: Derive from issue events
 - Translations: Add missing IT strings
-
+- Queue: Place image warmup in queue
