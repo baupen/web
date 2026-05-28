@@ -2,9 +2,10 @@
 
 namespace App\Api\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\Model;
-use ApiPlatform\Core\OpenApi\OpenApi;
+
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\OpenApi;
+use ApiPlatform\OpenApi\Model;
 
 class OpenApiFactory implements OpenApiFactoryInterface
 {
@@ -71,18 +72,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->getPath('/api/issues/summary')->getGet()->addResponse($response, 200);
     }
 
-    private function createRequiredPathParameter(string $name): array
-    {
-        return [
-            'name' => $name,
-            'in' => 'path',
-            'required' => true,
-            'schema' => [
-                'type' => 'string',
-            ],
-        ];
-    }
-
     private function addFilePaths(OpenApi &$openApi): void
     {
         $imageSchema = [
@@ -125,7 +114,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $postOperation = (new Model\Operation('postIssueImage'))
             ->withTags(['Issue'])
             ->withSummary('Add / replace the image of the issue')
-            ->withParameters([$this->createRequiredPathParameter('id')])
+            ->withParameters([new Model\Parameter('id', "path", required: true, schema: ['type' => 'string'])])
             ->withRequestBody($requestBody)
             ->addResponse($response, 201);
 
@@ -133,7 +122,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $deleteOperation = (new Model\Operation('deleteIssueImage'))
             ->withTags(['Issue'])
             ->withSummary('Remove the image of the issue')
-            ->withParameters([$this->createRequiredPathParameter('id')])
+            ->withParameters([new Model\Parameter('id', "path", required: true, schema: ['type' => 'string'])])
             ->addResponse($response, 204);
 
         $path = (new Model\PathItem())

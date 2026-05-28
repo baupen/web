@@ -10,12 +10,12 @@
 
     <rule ref="PSR12"/>
 
-    <file>bin/</file>
-    <file>config/</file>
-    <file>public/</file>
     <file>src/</file>
     <file>tests/</file>
 
     <exclude-pattern>config/reference\.php$</exclude-pattern>
 
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
 </ruleset>
