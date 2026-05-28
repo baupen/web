@@ -14,21 +14,12 @@ class DatabaseRestoreCommand extends DatabaseCommand
 {
     private const ERROR_NO_BACKUP = 1;
 
-    private PathServiceInterface $pathService;
-
-    /**
-     * MigrateSqliteCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
+    public function __construct(ManagerRegistry $registry, private readonly PathServiceInterface $pathService)
     {
         parent::__construct($registry);
-        $this->pathService = $pathService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:database:restore')
@@ -36,10 +27,7 @@ class DatabaseRestoreCommand extends DatabaseCommand
             ->setHelp('Calls mysql and uses the newest backup from the persistent folder.');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

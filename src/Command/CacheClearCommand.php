@@ -11,24 +11,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheClearCommand extends Command
 {
-    private PathServiceInterface $pathService;
-
     public const RETURN_CODE_NO_FORCE = 1;
 
-    /**
-     * ClearCacheCommand constructor.
-     */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(private readonly PathServiceInterface $pathService)
     {
         parent::__construct();
-
-        $this->pathService = $pathService;
     }
 
     /**
      * @see Command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:cache:clear')
@@ -43,7 +36,7 @@ class CacheClearCommand extends Command
     /**
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
