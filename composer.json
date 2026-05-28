@@ -60,7 +60,6 @@
     "symfony/css-selector": "^6",
     "symfony/debug-bundle": "^6",
     "symfony/http-client": "^6",
-    "symfony/maker-bundle": "^1.21",
     "symfony/phpunit-bridge": "^6",
     "symfony/stopwatch": "^6",
     "symfony/var-dumper": "^6",
@@ -72,7 +71,7 @@
       "*": "dist"
     },
     "platform": {
-      "php": "8.2"
+      "php": "8.4"
     },
     "sort-packages": true,
     "allow-plugins": {
@@ -102,6 +101,7 @@
     "paragonie/random_compat": "2.*",
     "symfony/polyfill-ctype": "*",
     "symfony/polyfill-iconv": "*",
+    "symfony/polyfill-php83": "*",
     "symfony/polyfill-php82": "*",
     "symfony/polyfill-php81": "*",
     "symfony/polyfill-php80": "*",
@@ -130,8 +130,8 @@
   },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
-      "require": "^6"
+      "allow-contrib": true,
+      "require": "6.4.*"
     }
   }
 }
