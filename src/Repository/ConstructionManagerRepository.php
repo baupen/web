@@ -30,7 +30,7 @@ UNION SELECT closed_by_id as id, construction_site_id FROM task';
         $rsm->addScalarResult('involement_count', 'involement_count');
         $query = $this->getEntityManager()->createNativeQuery(
             '
-SELECT COUNT(*) as involement_count FROM ('.self::INVOLVEMENT_SUBQUERY.') as Involvement
+SELECT COUNT(*) as involement_count FROM (' . self::INVOLVEMENT_SUBQUERY . ') as Involvement
 WHERE id = :id AND construction_site_id IN (:construction_site_ids);',
             $rsm
         );
@@ -56,7 +56,7 @@ WHERE id = :id AND construction_site_id IN (:construction_site_ids);',
         $rsm->addScalarResult('id', 'id');
         $query = $this->getEntityManager()->createNativeQuery(
             '
-SELECT id FROM ('.self::INVOLVEMENT_SUBQUERY.') as Involvement
+SELECT id FROM (' . self::INVOLVEMENT_SUBQUERY . ') as Involvement
 WHERE construction_site_id IN (:construction_site_ids) AND id IS NOT NULL;',
             $rsm
         );

@@ -44,7 +44,7 @@ class DatabaseRestoreCommand extends DatabaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $backupFolder = $this->pathService->getDatabaseBackupFolder();
-        $backups = glob($backupFolder.DIRECTORY_SEPARATOR.self::BACKUP_FILE_PREFIX.'*');
+        $backups = glob($backupFolder . DIRECTORY_SEPARATOR . self::BACKUP_FILE_PREFIX . '*');
         if (0 === count($backups)) {
             $io->error('No backup found.');
 
@@ -52,9 +52,9 @@ class DatabaseRestoreCommand extends DatabaseCommand
         }
 
         $latestBackup = $backups[count($backups) - 1];
-        $io->text('Importing '.$latestBackup);
+        $io->text('Importing ' . $latestBackup);
 
-        exec('mysql '.$this->getMysqlCommandLineConnectionParameters().' < '.$latestBackup);
+        exec('mysql ' . $this->getMysqlCommandLineConnectionParameters() . ' < ' . $latestBackup);
         $io->text('Imported.');
 
         return 0;

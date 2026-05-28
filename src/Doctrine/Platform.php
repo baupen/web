@@ -12,7 +12,7 @@ class Platform extends MySqlPlatform
     {
         $truncateSql = parent::getTruncateTableSQL($tableName, $cascade);
 
-        return 'SET foreign_key_checks = 0;'.$truncateSql.';SET foreign_key_checks = 1;';
+        return 'SET foreign_key_checks = 0;' . $truncateSql . ';SET foreign_key_checks = 1;';
     }
 
     // methods copied out of MariaDb1027Platform

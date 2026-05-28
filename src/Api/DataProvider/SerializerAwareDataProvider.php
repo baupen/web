@@ -64,15 +64,15 @@ class SerializerAwareDataProvider
     private function addSerializerRelevantJoins(string $resourceClass, string $alias, QueryBuilder $queryBuilder): void
     {
         if (ConstructionSite::class === $resourceClass) {
-            $queryBuilder->leftJoin($alias.'.image', 'i');
+            $queryBuilder->leftJoin($alias . '.image', 'i');
             $queryBuilder->addSelect('i');
-            $queryBuilder->leftJoin($alias.'.constructionManagers', 'cm');
+            $queryBuilder->leftJoin($alias . '.constructionManagers', 'cm');
             $queryBuilder->addSelect('cm');
         } elseif (Map::class === $resourceClass) {
-            $queryBuilder->leftJoin($alias.'.file', 'f');
+            $queryBuilder->leftJoin($alias . '.file', 'f');
             $queryBuilder->addSelect('f');
         } elseif (Issue::class === $resourceClass) {
-            $queryBuilder->leftJoin($alias.'.image', 'i');
+            $queryBuilder->leftJoin($alias . '.image', 'i');
             $queryBuilder->addSelect('i');
         }
     }

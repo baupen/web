@@ -71,7 +71,9 @@ class EmailBodyGenerator
         }
 
         // sort craftsmen
-        usort($craftsmanReports, function (array $a, array $b): int { return strcmp($a['company'], $b['company']); });
+        usort($craftsmanReports, function (array $a, array $b): int {
+            return strcmp($a['company'], $b['company']);
+        });
 
         $normalizedConstructionSiteReport = [
             'name' => $constructionSite->getName(),

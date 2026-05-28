@@ -191,12 +191,12 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
-                throw new BadRequestException($property.' filter missing.');
+                throw new BadRequestException($property . ' filter missing.');
             }
 
             // must use single equal sign, for int restriction (as query[property] will be string)
             if ($query[$property] != $restriction) {
-                throw new BadRequestException($property.' filter value '.$query[$property].' not equal to '.$restriction.'.');
+                throw new BadRequestException($property . ' filter value ' . $query[$property] . ' not equal to ' . $restriction . '.');
             }
         }
     }
@@ -205,7 +205,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
-                throw new BadRequestException($property.' filter missing.');
+                throw new BadRequestException($property . ' filter missing.');
             }
 
             if ($restriction && \in_array($query[$property], [true, 'true', '1'], true)) {
@@ -216,7 +216,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 return;
             }
 
-            throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
+            throw new BadRequestException($property . ' filter missing or value not equal to ' . $restriction . '.');
         }
     }
 
@@ -224,15 +224,15 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
-                throw new BadRequestException($property.' filter missing.');
+                throw new BadRequestException($property . ' filter missing.');
             }
 
             if (is_array($query[$property])) {
                 if ([] !== array_diff($query[$property], $restriction)) {
-                    throw new BadRequestException($property.' filter value '.implode($query[$property]).' not equal '.implode($restriction).'.');
+                    throw new BadRequestException($property . ' filter value ' . implode($query[$property]) . ' not equal ' . implode($restriction) . '.');
                 }
             } elseif (!in_array($query[$property], $restriction)) {
-                throw new BadRequestException($property.' filter value '.$query[$property].' not in '.implode($restriction).'.');
+                throw new BadRequestException($property . ' filter value ' . $query[$property] . ' not in ' . implode($restriction) . '.');
             }
         }
     }
@@ -241,13 +241,13 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if ($restriction instanceof \DateTime) {
             if (!isset($query[$property]) || !isset($query[$property][$timing])) {
-                throw new BadRequestException($property.' filter missing.');
+                throw new BadRequestException($property . ' filter missing.');
             }
 
             $parsedValue = str_replace(' ', '+', $query[$property][$timing]);
             $value = new \DateTime($parsedValue);
             if ($value != $restriction) {
-                throw new BadRequestException($property.' filter value '.$value->format('c').' not in equal '.$restriction->format('c').'.');
+                throw new BadRequestException($property . ' filter value ' . $value->format('c') . ' not in equal ' . $restriction->format('c') . '.');
             }
         }
     }
@@ -262,7 +262,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             return;
         }
 
-        throw new BadRequestException($property.' filter missing or value not equal to '.$expectedValue.'.');
+        throw new BadRequestException($property . ' filter missing or value not equal to ' . $expectedValue . '.');
     }
 
     private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter): void

@@ -32,7 +32,7 @@ class EncoreEmailTwigExtension extends AbstractExtension
                 $file = substr($file, strlen('http://localhost:8080/'));
             }
 
-            $source .= file_get_contents($this->publicDir.'/'.$file);
+            $source .= file_get_contents($this->publicDir . '/' . $file);
         }
 
         return $source;

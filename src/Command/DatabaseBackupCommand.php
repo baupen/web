@@ -49,18 +49,18 @@ class DatabaseBackupCommand extends DatabaseCommand
         $backupFolder = $this->pathService->getDatabaseBackupFolder();
         FileHelper::ensureFolderExists($backupFolder);
 
-        $filename = self::BACKUP_FILE_PREFIX.(new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'.sql';
-        $path = $backupFolder.DIRECTORY_SEPARATOR.$filename;
-        $io->text('Dumping database to '.$path.'.');
+        $filename = self::BACKUP_FILE_PREFIX . (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT) . '.sql';
+        $path = $backupFolder . DIRECTORY_SEPARATOR . $filename;
+        $io->text('Dumping database to ' . $path . '.');
 
-        exec('mysqldump '.$this->getMysqlCommandLineConnectionParameters().' > '.$path);
+        exec('mysqldump ' . $this->getMysqlCommandLineConnectionParameters() . ' > ' . $path);
         $io->text('Dumped database.');
 
-        $backups = glob($backupFolder.DIRECTORY_SEPARATOR.self::BACKUP_FILE_PREFIX.'*');
+        $backups = glob($backupFolder . DIRECTORY_SEPARATOR . self::BACKUP_FILE_PREFIX . '*');
         $allowedBackups = max(0, $input->getOption('keep'));
         $surplusBackups = count($backups) - $allowedBackups;
         if ($surplusBackups > 0) {
-            $io->text('Removing '.$surplusBackups.' surplus backup(s).');
+            $io->text('Removing ' . $surplusBackups . ' surplus backup(s).');
 
             for ($i = 0; $i < $surplusBackups; ++$i) {
                 unlink($backups[$i]);

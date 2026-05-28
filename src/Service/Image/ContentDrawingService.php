@@ -307,7 +307,7 @@ class ContentDrawingService
 
         $result = '';
         while ($index >= 0) {
-            $result = $values[$index % $len].$result;
+            $result = $values[$index % $len] . $result;
             $index = intval($index / $len) - 1;
         }
 

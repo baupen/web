@@ -39,7 +39,7 @@ trait AssertApiCollectionTrait
             }
         }
 
-        $this->fail('iri '.$iri.' not found in '.$collectionResponse->getContent());
+        $this->fail('iri ' . $iri . ' not found in ' . $collectionResponse->getContent());
     }
 
     private function assertApiCollectionNotContainsIri(Client $client, string $url, string $iri): void
@@ -49,7 +49,7 @@ trait AssertApiCollectionTrait
 
         foreach ($collection['hydra:member'] as $entry) {
             if ($entry['@id'] == $iri) {
-                $this->fail('iri '.$iri.' found in '.$collectionResponse->getContent());
+                $this->fail('iri ' . $iri . ' found in ' . $collectionResponse->getContent());
             }
         }
 
@@ -69,6 +69,6 @@ trait AssertApiCollectionTrait
             }
         }
 
-        $this->fail('item '.json_encode($item).' not found in collection '.$collectionResponse->getContent());
+        $this->fail('item ' . json_encode($item) . ' not found in collection ' . $collectionResponse->getContent());
     }
 }

@@ -28,7 +28,7 @@ class PublicController extends BaseController
     {
         $path = $pathService->getTransientFolderForReports();
 
-        $response = $this->tryCreateAttachmentFileResponse($path.'/'.$filename, $filename);
+        $response = $this->tryCreateAttachmentFileResponse($path . '/' . $filename, $filename);
         $response->deleteFileAfterSend();
 
         return $response;

@@ -52,7 +52,7 @@ class ReportService implements ReportServiceInterface
         $this->craftsmanService->findIssueCountByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
 
         $rootAlias = 'i';
-        $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');
+        $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity(' . $rootAlias . '.craftsman) AS craftsman');
         $stateChangeIssues = $this->issueService->getStateChangeIssues($queryBuilder, $rootAlias, $comparisonTimestamp);
 
         foreach ($stateChangeIssues as $stateChangeIssue) {
@@ -83,7 +83,7 @@ class ReportService implements ReportServiceInterface
 
         $rootAlias = 'i';
         $queryComparisonTimestamp = $comparisonTimestamp instanceof \DateTime ? $comparisonTimestamp : (new \DateTime())->setTimestamp(0);
-        $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');
+        $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity(' . $rootAlias . '.craftsman) AS craftsman');
         $stateChangeIssues = $this->issueService->getStateChangeIssues($queryBuilder, $rootAlias, $queryComparisonTimestamp);
 
         foreach ($stateChangeIssues as $stateChangeIssue) {

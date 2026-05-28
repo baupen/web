@@ -171,7 +171,7 @@ class SecurityController extends BaseController
             /** @var ConstructionManager $existingConstructionManager */
             $existingConstructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
             if (null === $existingConstructionManager) {
-                $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
+                $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
                 $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
             } else {
                 $this->sendAuthenticationLink($existingConstructionManager, $emailService, $logger, $translator, $registry);
@@ -256,10 +256,10 @@ class SecurityController extends BaseController
         DoctrineHelper::persistAndFlush($registry, $existingConstructionManager);
 
         if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
-            $logger->info('sent password reset email to '.$existingConstructionManager->getEmail());
+            $logger->info('sent password reset email to ' . $existingConstructionManager->getEmail());
             $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
         } else {
-            $logger->error('could not send password reset email '.$existingConstructionManager->getEmail());
+            $logger->error('could not send password reset email ' . $existingConstructionManager->getEmail());
             $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
         }
     }

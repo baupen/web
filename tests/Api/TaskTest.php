@@ -25,12 +25,12 @@ class TaskTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestTaskFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/tasks?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/tasks/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/tasks?constructionSite=' . $constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/tasks/' . $constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/tasks', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/tasks/'.$constructionSite->getTasks()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/tasks/' . $constructionSite->getTasks()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testPostPatchAndDelete(): void
@@ -63,7 +63,7 @@ class TaskTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/tasks', array_merge($sample, $optionalProperties), $affiliation);
 
         // test GET returns correct fields
-        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite=' . $constructionSite->getId(), $response);
         $this->assertApiResponseFieldSubset($response, 'constructionSite', 'description', 'createdBy', 'createdAt', 'deadline', 'closedBy', 'closedAt');
 
         $taskId = json_decode($response->getContent(), true)['@id'];
@@ -88,10 +88,10 @@ class TaskTest extends ApiTestCase
             'closedAt' => (new \DateTime('now'))->format('c'),
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $taskId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite=' . $constructionSite->getId(), $response);
 
         // test DELETE removes item
         $this->assertApiDeleteOk($client, $taskId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $taskId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/tasks?constructionSite=' . $constructionSite->getId(), $taskId);
     }
 }

@@ -46,13 +46,13 @@ class FilterService implements FilterServiceInterface
 
         $dateTimeMethods = ['deadline', 'createdAt', 'registeredAt', 'resolvedAt', 'closedAt'];
         foreach ($dateTimeMethods as $dateTimeMethod) {
-            $setter = 'set'.ucfirst($dateTimeMethod);
+            $setter = 'set' . ucfirst($dateTimeMethod);
 
-            $beforeSetter = $setter.'Before';
-            $filter->$beforeSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[before]'));
+            $beforeSetter = $setter . 'Before';
+            $filter->$beforeSetter($this->getNullableDateTime($filters, $dateTimeMethod . '[before]'));
 
-            $afterSetter = $setter.'After';
-            $filter->$afterSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[after]'));
+            $afterSetter = $setter . 'After';
+            $filter->$afterSetter($this->getNullableDateTime($filters, $dateTimeMethod . '[after]'));
         }
 
         return $filter;

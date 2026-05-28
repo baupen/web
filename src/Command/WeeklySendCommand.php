@@ -64,7 +64,7 @@ class WeeklySendCommand extends Command
                 $relevantConstructionSites[$constructionSite->getId()] = $constructionSite;
             }
         }
-        $io->text('Found '.count($relevantConstructionSites).' relevant construction sites.');
+        $io->text('Found ' . count($relevantConstructionSites) . ' relevant construction sites.');
 
         $nowWeekAgo = new \DateTime('now - 1 week');
         $constructionSiteReportLookup = [];
@@ -72,14 +72,14 @@ class WeeklySendCommand extends Command
             $report = $this->reportService->createConstructionSiteReport($constructionSite, $nowWeekAgo);
             $constructionSiteReportLookup[$constructionSite->getId()] = $report;
         }
-        $io->text('Created '.count($constructionSiteReportLookup).' reports.');
+        $io->text('Created ' . count($constructionSiteReportLookup) . ' reports.');
 
         foreach ($constructionManagers as $constructionManager) {
             $relevantConstructionSiteReports = $this->getOrderedConstructionSiteReportsForManager($constructionManager, $constructionSiteReportLookup);
 
             $this->emailService->sendConstructionSitesReport($constructionManager, $relevantConstructionSiteReports);
         }
-        $io->text('Sent '.count($constructionManagers).' emails.');
+        $io->text('Sent ' . count($constructionManagers) . ' emails.');
 
         return 0;
     }

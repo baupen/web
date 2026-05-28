@@ -97,7 +97,7 @@ class ApiController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
 
         if ('ios' === $sanitizedVariant) {
             $optimized = $mapFileService->renderForMobileDevice($mapFile);
@@ -244,7 +244,7 @@ class ApiController extends BaseController
             return $this->tryCreateInlineFileResponse($path, $issueEventFile->getFilename(), true);
         }
 
-        $path = $pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
+        $path = $pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $issueEventFile->getFilename();
 
         return $this->tryCreateAttachmentFileResponse($path, $issueEventFile->getFilename());
     }
@@ -339,6 +339,6 @@ class ApiController extends BaseController
         } elseif ('application/octet-stream' === $candidate->getMimeType() && in_array($candidate->getExtension(), $octetWhitelist)) {
             return $candidate;
         }
-        throw new BadRequestException('Unexpected mimeType: '.$candidate->getMimeType());
+        throw new BadRequestException('Unexpected mimeType: ' . $candidate->getMimeType());
     }
 }

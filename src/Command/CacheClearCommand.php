@@ -49,8 +49,10 @@ class CacheClearCommand extends Command
 
         $clearConstructionSites = $input->getOption('construction-sites');
         $clearAuthentication = $input->getOption('authorization');
-        if (($clearConstructionSites || $clearAuthentication)
-            && !$input->getOption('force')) {
+        if (
+            ($clearConstructionSites || $clearAuthentication)
+            && !$input->getOption('force')
+        ) {
             $io->warning('To clear construction sites or authentication, you must run this command --force.');
 
             return self::RETURN_CODE_NO_FORCE;
@@ -97,7 +99,7 @@ class CacheClearCommand extends Command
 
     private function clearFolder(SymfonyStyle $io, string $folder): void
     {
-        $io->text('Removing the folder at '.$folder);
-        exec('rm -rf '.$folder);
+        $io->text('Removing the folder at ' . $folder);
+        exec('rm -rf ' . $folder);
     }
 }

@@ -60,17 +60,17 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
 
         $dateTimeMethods = ['Deadline', 'CreatedAt', 'RegisteredAt', 'ResolvedAt', 'ClosedAt'];
         foreach ($dateTimeMethods as $dateTimeMethod) {
-            $getter = 'get'.$dateTimeMethod;
+            $getter = 'get' . $dateTimeMethod;
             $realValue = $subject->$getter();
 
-            $beforeGetter = $getter.'Before';
+            $beforeGetter = $getter . 'Before';
             $beforeValue = $filter->$beforeGetter();
             // value must be null or before
             if (null !== $beforeValue && null !== $realValue && $beforeValue < $realValue) {
                 return false;
             }
 
-            $afterGetter = $getter.'After';
+            $afterGetter = $getter . 'After';
             $afterValue = $filter->$afterGetter();
             // value must not be null and after
             if (null !== $afterValue && (null === $realValue || $realValue < $afterValue)) {

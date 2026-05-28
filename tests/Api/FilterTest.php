@@ -27,11 +27,11 @@ class FilterTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/filters', 'POST');
         $someId = $constructionSite->getId();
-        $this->assertApiOperationNotAuthorized($client, '/api/filters/'.$someId, 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/filters/' . $someId, 'GET');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/filters', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/filters/'.$constructionSite->getFilters()[0]->getId(), 'GET');
+        $this->assertApiOperationForbidden($client, '/api/filters/' . $constructionSite->getFilters()[0]->getId(), 'GET');
     }
 
     public function testPost(): void

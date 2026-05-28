@@ -16,7 +16,7 @@ class UserServiceTest extends TestCase
         $mockPathService = $this->getMockForAbstractClass(PathServiceInterface::class);
 
         $mockPathService->method('getTransientFolderForAuthorization')
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'UserServiceTest');
+            ->willReturn(__DIR__ . DIRECTORY_SEPARATOR . 'UserServiceTest');
 
         $mockManagerRegistry = $this->createMock(ManagerRegistry::class);
         $mockEmailService = $this->createMock(EmailServiceInterface::class);
