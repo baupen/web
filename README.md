@@ -19,11 +19,19 @@ It suggests the following workflow:
 The first and the last step are best executed using the [iOS](https://github.com/baupen/iOS) or [Android](https://github.com/baupen/Android) apps.
 
 
-TODO:
-- First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
+Backend:
+- Upgrade to symfony 7, api platform 4
 - Database: Improve data types (use STRING instead of TEXT, use immutable structures)
-- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
-- UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
-- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
+- Simplify access control
+
+Frontend:
 - Replace noty (noty longer maintained)
 - Replace vue-i18n (high maintenance cost due to ever-evolving api/compilation/owner, overly complicated implementation)
+- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
+- UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
+- Refactor table implementation
+
+UX:
+- First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
+- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
+
