@@ -43,3 +43,5 @@ UX:
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
 
+after release:
+- remove BASE_URI from .env of instances

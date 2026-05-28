@@ -23,7 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class EmailService implements EmailServiceInterface
 {
-    public function __construct(private TranslatorInterface $translator, private LoggerInterface $logger, private RequestStack $requestStack, private UrlGeneratorInterface $urlGenerator, private ManagerRegistry $registry, private MailerInterface $mailer, private SerializerInterface $serializer, private string $mailerFromEmail, private string $baseUri, private EmailBodyGenerator $emailBodyGenerator)
+    public function __construct(private TranslatorInterface $translator, private LoggerInterface $logger, private RequestStack $requestStack, private UrlGeneratorInterface $urlGenerator, private ManagerRegistry $registry, private MailerInterface $mailer, private SerializerInterface $serializer, private string $mailerFromEmail, private string $defaultUri, private EmailBodyGenerator $emailBodyGenerator)
     {
     }
 
@@ -154,7 +154,7 @@ readonly class EmailService implements EmailServiceInterface
             return $currentRequest->getHttpHost();
         }
 
-        return preg_replace('(^https?://)', '', $this->baseUri);
+        return preg_replace('(^https?://)', '', $this->defaultUri);
     }
 
     private function sendAndStoreEMail(TemplatedEmail $email, Email $entity): bool
