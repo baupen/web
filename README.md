@@ -24,6 +24,7 @@ Backend:
 - Rebuild security voters
 - Database: Improve data types (use STRING instead of TEXT, use immutable datetime structures)
 - Add phpstan static analysis & fix all issues
+- Remove fixtures if possible (includes liip bundles)
 - Simplify access control
 - Refactor tests?
 
@@ -35,6 +36,7 @@ Frontend:
 - Refactor table implementation
 
 UX:
+- Introduce profile / password change page, where also weekly can be configured
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
 
