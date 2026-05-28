@@ -2,7 +2,9 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /*
  * automatically keeps track of creation time & last change time
@@ -10,13 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait SoftDeleteTrait
 {
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
 
-    public function getDeletedAt(): ?\DateTime
+    public function getDeletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
     }
@@ -26,6 +25,12 @@ trait SoftDeleteTrait
      */
     public function delete(): void
     {
-        $this->deletedAt = new \DateTime();
+        $this->deletedAt = new \DateTimeImmutable();
+    }
+
+    #[Groups(['soft-delete:read'])]
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 }

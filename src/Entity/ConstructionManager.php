@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use App\Api\Processor\ConstructionSiteProcessor;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Entity\Traits\UserTrait;
+use App\Enum\Role;
 use App\Repository\ConstructionManagerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,14 +23,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"denormalization_context"={"groups"={"construction-manager-create", "construction-manager-write"}}},
+ *      "post" = {"denormalization_context"={"groups"={"construction-manager:create", "construction-manager:write"}}},
  *     },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"},
  *      "patch" = {"security" = "is_granted('CONSTRUCTION_MANAGER_SELF', object)"}
  *     },
- *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-manager-write"}},
+ *     normalizationContext={"groups"={"construction-manager:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"construction-manager:write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  *
@@ -36,23 +39,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 #[ORM\Entity(repositoryClass: ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']],
+    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'user:read']],
+)]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;
     use TimeTrait;
     use AuthenticationTrait;
     use UserTrait;
-
-    public const AUTHORIZATION_AUTHORITY_WHITELIST = 'AUTHORIZATION_AUTHORITY_WHITELIST';
-
-    // can use any features & impersonate users
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-
-    // can use any features
-    public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
-
-    // can not see data related to other construction sites (including the other construction sites itself)
-    public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
 
     #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -158,17 +154,17 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     public function getRoles(): array
     {
         if ($this->isAdminAccount || str_ends_with($this->email, '@baupen.ch')) {
-            return [self::ROLE_ADMIN];
+            return [Role::ADMIN];
         }
 
         if (!$this->getCanAssociateSelf()) {
-            return [self::ROLE_ASSOCIATED_CONSTRUCTION_MANAGER];
+            return [Role::ASSOCIATED_CONSTRUCTION_MANAGER];
         }
 
-        return [self::ROLE_CONSTRUCTION_MANAGER];
+        return [Role::CONSTRUCTION_MANAGER];
     }
 
-    #[Groups(['construction-manager-read'])]
+    #[Groups(['construction-manager:read'])]
     public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;

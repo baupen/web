@@ -4,6 +4,7 @@ namespace App\Api\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Enum\EmailType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,7 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     itemOperations={
  *      "none": {"method": "GET", "controller": NonExistingController::class }
  *     }
- * )
+ *)
+ * TODO remove, instead post directly to Email Entity, use a processor to send mail
  */
 class Email
 {
@@ -42,7 +44,7 @@ class Email
 
     #[Assert\NotNull]
     #[Groups(['email-create'])]
-    private int $type;
+    private EmailType $type;
 
     public function getReceiver(): string
     {
@@ -84,12 +86,12 @@ class Email
         $this->selfBcc = $selfBcc;
     }
 
-    public function getType(): int
+    public function getType(): EmailType
     {
         return $this->type;
     }
 
-    public function setType(int $type): void
+    public function setType(EmailType $type): void
     {
         $this->type = $type;
     }

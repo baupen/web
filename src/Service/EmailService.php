@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Email;
+use App\Enum\EmailType;
 use App\Helper\DoctrineHelper;
 use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
@@ -30,7 +31,7 @@ readonly class EmailService implements EmailServiceInterface
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
         $link = $this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
-        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager, $link);
+        $entity = Email::create(EmailType::REGISTER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -46,7 +47,7 @@ readonly class EmailService implements EmailServiceInterface
     {
         $emailBody = $this->emailBodyGenerator->fromConstructionSiteReports($constructionSiteReports);
         $json = $this->serializer->serialize($emailBody, 'json');
-        $entity = Email::create(Email::TYPE_CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
+        $entity = Email::create(EmailType::CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
         $subject = $this->translator->trans('construction_sites_overview.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -61,7 +62,7 @@ readonly class EmailService implements EmailServiceInterface
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
         $link = $this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
-        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager, $link);
+        $entity = Email::create(EmailType::RECOVER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -75,7 +76,7 @@ readonly class EmailService implements EmailServiceInterface
 
     public function sendAppInvitation(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
+        $entity = Email::create(EmailType::APP_INVITATION, $constructionManager);
         $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -93,7 +94,7 @@ readonly class EmailService implements EmailServiceInterface
         $emailBody = ['report' => $report, 'body' => $body];
         $json = $this->serializer->serialize($emailBody, 'json');
         $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
-        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
+        $entity = Email::create(EmailType::CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
         $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
         if (!$message instanceof TemplatedEmail) {

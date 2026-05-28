@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Issue;
+use App\Enum\IssueState;
 use Doctrine\ORM\QueryBuilder;
 
 readonly class StateFilter implements FilterInterface
@@ -20,16 +21,16 @@ readonly class StateFilter implements FilterInterface
 
         $alias = $queryBuilder->getRootAliases()[0];
         $orQueries = [];
-        if (($value & Issue::STATE_CREATED) !== 0) {
+        if (($value & IssueState::CREATED->value) !== 0) {
             $orQueries[] = $alias . '.registeredAt IS NULL AND ' . $alias . '.resolvedAt IS NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_REGISTERED) !== 0) {
+        if (($value & IssueState::REGISTERED->value) !== 0) {
             $orQueries[] = $alias . '.registeredAt IS NOT NULL AND ' . $alias . '.resolvedAt IS NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_RESOLVED) !== 0) {
+        if (($value & IssueState::RESOLVED->value) !== 0) {
             $orQueries[] = $alias . '.resolvedAt IS NOT NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_CLOSED) !== 0) {
+        if (($value & IssueState::CLOSED->value) !== 0) {
             $orQueries[] = $alias . '.closedAt IS NOT NULL';
         }
 
@@ -57,8 +58,8 @@ readonly class StateFilter implements FilterInterface
     private function normalizeValue($value): ?int
     {
         $intValue = (int)$value;
-        $maxCombination = Issue::STATE_CREATED | Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;
-        if (Issue::STATE_CREATED <= $intValue && $intValue <= $maxCombination) {
+        $maxCombination = IssueState::CREATED->value | IssueState::REGISTERED->value | IssueState::RESOLVED->value | IssueState::CLOSED->value;
+        if (IssueState::CREATED->value <= $intValue && $intValue <= $maxCombination) {
             return $intValue;
         }
 

@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}},
+ *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman:create", "craftsman:write"}}},
  *      "get_statistics"={
  *          "method"="GET",
  *          "path"="/craftsmen/statistics"
@@ -38,8 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"craftsman-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"craftsman-write"}},
+ *     normalizationContext={"groups"={"craftsman:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"craftsman:write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  *
@@ -50,6 +50,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['craftsman:write']],
+    normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read']],
+)]
 class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -58,35 +62,35 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $contactName;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $contactJobTitle;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $company;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $trade;
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $email;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $telephone;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $address;
 
@@ -102,7 +106,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private bool $canEdit = true;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-create'])]
+    #[Groups(['craftsman:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'craftsmen')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -121,7 +125,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastEmailReceived = null;
 
-    #[Groups(['craftsman-read'])]
+    #[Groups(['craftsman:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastVisitOnline = null;
 
@@ -284,18 +288,6 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         }
 
         return $lastAction;
-    }
-
-    #[Groups(['craftsman-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['craftsman-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 
     public function sort(Craftsman $other): int

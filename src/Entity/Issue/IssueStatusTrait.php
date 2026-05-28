@@ -4,6 +4,7 @@ namespace App\Entity\Issue;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,12 +13,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 trait IssueStatusTrait
 {
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Groups(['issue:read', 'issue:create'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-create'])]
+    #[Groups(['issue:read', 'issue:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
@@ -25,34 +26,34 @@ trait IssueStatusTrait
      * @var \DateTime|null
      */
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $registeredAt = null;
 
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
     /**
      * @var \DateTime|null
      */
-    #[Groups(['issue-read', 'issue-write', 'issue:craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $resolvedAt = null;
 
-    #[Groups(['issue-read', 'issue-write', 'issue:craftsman-write'])]
+    #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 
     /**
      * @var \DateTime|null
      */
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 

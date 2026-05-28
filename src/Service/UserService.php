@@ -119,10 +119,10 @@ class UserService implements UserServiceInterface
     {
         if ($this->isEmailOnWhitelist($constructionManager->getEmail())) {
             // is on whitelist
-            $constructionManager->setAuthorizationAuthority(ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST);
+            $constructionManager->setAuthorizationAuthority(UserServiceInterface::AUTHORIZATION_AUTHORITY_WHITELIST);
             $constructionManager->setCanAssociateSelf(true);
             $constructionManager->setIsEnabled(true);
-        } elseif (ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST === $constructionManager->getAuthorizationAuthority()) {
+        } elseif (UserServiceInterface::AUTHORIZATION_AUTHORITY_WHITELIST === $constructionManager->getAuthorizationAuthority()) {
             // was on whitelist, but not anymore
             $constructionManager->setIsEnabled(false);
         } else {

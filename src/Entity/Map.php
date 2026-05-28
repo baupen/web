@@ -2,13 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -27,15 +21,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('MAP_MODIFY', object)", "denormalization_context"={"groups"={"map-create", "map-write"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('MAP_MODIFY', object)", "denormalization_context"={"groups"={"map:create", "map:write"}}}
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('MAP_VIEW', object)"},
  *      "patch" = {"security" = "is_granted('MAP_MODIFY', object)"},
  *      "delete" = {"security" = "is_granted('MAP_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"map-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"map-write"}},
+ *     normalizationContext={"groups"={"map:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"map:write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  *
@@ -46,6 +40,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['map:write']],
+    normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read']],
+)]
 class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -53,19 +51,19 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['map-read', 'map-write'])]
+    #[Groups(['map:read', 'map:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]
-    #[Groups(['map-create'])]
+    #[Groups(['map:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'maps')]
     private ?ConstructionSite $constructionSite = null;
 
     /**
      * @ApiProperty(readableLink=false, writableLink=false)
      */
-    #[Groups(['map-read', 'map-write'])]
+    #[Groups(['map:read', 'map:write'])]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'children')]
     private ?self $parent = null;
 
@@ -173,17 +171,5 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setFile(?MapFile $file): void
     {
         $this->file = $file;
-    }
-
-    #[Groups(['map-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['map-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 }

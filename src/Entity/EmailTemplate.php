@@ -9,6 +9,8 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use App\Enum\AdministrativeGender;
+use App\Enum\EmailTemplatePurpose;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -20,15 +22,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)", "denormalization_context"={"groups"={"email-template-create", "email-template-edit"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)", "denormalization_context"={"groups"={"email-template:create", "email-template:write"}}}
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('EMAIL_TEMPLATE_VIEW', object)"},
  *      "patch" = {"security" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)"},
  *      "delete" = {"security" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"email-template-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"email-template-edit"}},
+ *     normalizationContext={"groups"={"email-template:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"email-template:write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  *
@@ -36,41 +38,41 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['email-template:write']],
+    normalizationContext: ['groups' => ['email-template:read', 'time:read']],
+)]
 class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
 
-    public const PURPOSE_OPEN_ISSUES = 1;
-    public const PURPOSE_UNREAD_ISSUES = 2;
-    public const PURPOSE_OVERDUE_ISSUES = 3;
-
     #[Assert\NotBlank]
-    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[Groups(['email-template:read', 'email-template:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]
-    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[Groups(['email-template:read', 'email-template:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $subject;
 
     #[Assert\NotBlank]
-    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[Groups(['email-template:read', 'email-template:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $body;
 
-    #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $purpose = null;
+    #[Groups(['email-template:read', 'email-template:write'])]
+    #[ORM\Column(type: Types::INTEGER, nullable: true, enumType: EmailTemplatePurpose::class)]
+    private ?EmailTemplatePurpose $purpose = null;
 
     #[Assert\NotNull]
-    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[Groups(['email-template:read', 'email-template:write'])]
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $selfBcc;
 
     #[Assert\NotBlank]
-    #[Groups(['email-template-create'])]
+    #[Groups(['email-template:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'emailTemplates')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -104,12 +106,12 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->body = $body;
     }
 
-    public function getPurpose(): ?int
+    public function getPurpose(): ?EmailTemplatePurpose
     {
         return $this->purpose;
     }
 
-    public function setPurpose(?int $purpose): void
+    public function setPurpose(?EmailTemplatePurpose $purpose): void
     {
         $this->purpose = $purpose;
     }

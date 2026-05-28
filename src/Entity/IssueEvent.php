@@ -2,20 +2,14 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Enum\IssueEventTypes;
+use App\Enum\IssueState;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -27,15 +21,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_CREATE', object)", "denormalization_context"={"groups"={"issue-event-create", "issue-event-write"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_CREATE', object)", "denormalization_context"={"groups"={"issue-event:create", "issue-event:write"}}},
  *      },
  *      itemOperations={
  *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
  *       "patch" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
  *       "delete" = {"security" = "is_granted('ISSUE_EVENT_DELETE', object)"},
  *      },
- *      denormalizationContext={"groups"={"issue-event-write"}},
- *      normalizationContext={"groups"={"issue-event-read"}, "skip_null_values"=false}
+ *      denormalizationContext={"groups"={"issue-event:write"}},
+ *      normalizationContext={"groups"={"issue-event:read"}, "skip_null_values"=false}
  *  )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite","createdBy"})
@@ -47,54 +41,51 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => ['issue-event:write']],
+    normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read']],
+)]
 class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
     use SoftDeleteTrait;
 
-    public const ISSUE_STATE_CREATED_TEXT = 'CREATED';
-    public const ISSUE_STATE_REGISTERED_TEXT = 'REGISTERED';
-    public const ISSUE_STATE_RESOLVED_TEXT = 'RESOLVED';
-    public const ISSUE_STATE_CLOSED_TEXT = 'CLOSED';
-
-    public const EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER = 'CRAFTSMAN_ISSUE_REMINDER';
-
     #[Assert\NotBlank]
-    #[Groups(['issue-event-create'])]
+    #[Groups(['issue-event:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issueEvents')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $root = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $createdBy = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $lastChangedBy = null;
 
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $payload = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $timestamp = null;
+    #[Groups(['issue-event:read', 'issue-event:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $timestamp = null;
 
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private ?bool $contextualForChildren = true;
 
@@ -112,7 +103,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
             $entry = new self();
             $entry->setConstructionSite($current->getConstructionSite());
             $entry->setRoot($current->getId());
-            $entry->setTimestamp(new \DateTime());
+            $entry->setTimestamp(new \DateTimeImmutable());
             $entry->setCreatedBy($authority);
             $entry->setLastChangedBy($authority);
 
@@ -121,7 +112,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
         if (!$previousState || null === $previousState['createdAt']) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_CREATED_TEXT);
+            $entry->setPayload(IssueState::CREATED->name);
             $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
@@ -129,7 +120,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
         if ((!$previousState || null === $previousState['registeredAt']) && $current->getRegisteredAt()) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_REGISTERED_TEXT);
+            $entry->setPayload(IssueState::REGISTERED->name);
             $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
@@ -138,7 +129,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         // state may be removed or changed
         if ($previousState && ($previousState['resolvedAt'] != $current->getResolvedAt())) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
+            $entry->setPayload(IssueState::RESOLVED->name);
             $entry->setType($current->getResolvedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
             $createdBy = $current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority;
             $entry->setCreatedBy($createdBy);
@@ -150,7 +141,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         // state may be removed or changed
         if ($previousState && ($previousState['closedAt'] != $current->getClosedAt())) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);
+            $entry->setPayload(IssueState::CLOSED->name);
             $entry->setType($current->getClosedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
 
             $entries[] = $entry;
@@ -219,12 +210,12 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         $this->payload = $payload;
     }
 
-    public function getTimestamp(): ?\DateTimeInterface
+    public function getTimestamp(): ?\DateTimeImmutable
     {
         return $this->timestamp;
     }
 
-    public function setTimestamp(?\DateTimeInterface $timestamp): void
+    public function setTimestamp(?\DateTimeImmutable $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
@@ -252,23 +243,5 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 }

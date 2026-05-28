@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use App\Enum\EmailType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
@@ -17,12 +18,6 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
-    public const TYPE_REGISTER_CONFIRM = 1;
-    public const TYPE_RECOVER_CONFIRM = 2;
-    public const TYPE_APP_INVITATION = 3;
-    public const TYPE_CRAFTSMAN_ISSUE_REMINDER = 4;
-    public const TYPE_CONSTRUCTION_SITES_OVERVIEW = 5;
-
     #[ORM\Column(type: Types::GUID)]
     private ?string $identifier = null;
 
@@ -35,8 +30,8 @@ class Email extends BaseEntity
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private ?bool $jsonBody = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
-    private ?int $type = null;
+    #[ORM\Column(type: Types::INTEGER, enumType: EmailType::class)]
+    private ?EmailType $type = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $sentAt = null;
@@ -47,7 +42,7 @@ class Email extends BaseEntity
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $readAt = null;
 
-    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email
+    public static function create(EmailType $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email
     {
         $email = new Email();
 
@@ -72,7 +67,7 @@ class Email extends BaseEntity
         return $this->identifier;
     }
 
-    public function getType(): int
+    public function getType(): EmailType
     {
         return $this->type;
     }
@@ -96,6 +91,6 @@ class Email extends BaseEntity
     {
         $body = $this->jsonBody ? json_decode($this->body) : $this->body;
 
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $body, 'jsonBody' => $this->jsonBody, 'link' => $this->link];
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type->value, 'body' => $body, 'jsonBody' => $this->jsonBody, 'link' => $this->link];
     }
 }

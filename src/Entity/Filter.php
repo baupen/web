@@ -18,121 +18,125 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     collectionOperations={
- *      "post" = {"security_post_denormalize" = "is_granted('FILTER_CREATE', object)", "denormalization_context"={"groups"={"filter-create"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('FILTER_CREATE', object)", "denormalization_context"={"groups"={"filter:create"}}}
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"}
  *     },
- *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"filter-write"}},
+ *     normalizationContext={"groups"={"filter:read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"filter:write"}},
  * )
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[\ApiPlatform\Metadata\ApiResource(
+    denormalizationContext: ['groups' => []],
+    normalizationContext: ['groups' => ['filter:read', 'time:read']],
+)]
 class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use AuthenticationTrait;
     use TimeTrait;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $isDeleted = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $isMarked = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $wasAddedWithClient = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $numbers = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $state = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $craftsmanIds = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $mapIds = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadlineBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadlineAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $createdBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $registeredBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $closedBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $createdAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $createdAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $registeredAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $registeredAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $resolvedAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $resolvedAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $closedAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $closedAtBefore = null;
 
-    #[Groups(['filter-create'])]
+    #[Groups(['filter:create'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $accessAllowedBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[Assert\NotBlank]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'filters')]
     private ?ConstructionSite $constructionSite = null;
