@@ -66,7 +66,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)", "security_post_denormalize" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
- *     denormalizationContext={"groups"={}},
+ *     denormalizationContext={"groups"={}}, // set depending on the context
  *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
  * )
  *

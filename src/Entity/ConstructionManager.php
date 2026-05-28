@@ -58,15 +58,15 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     // can not see data related to other construction sites (including the other construction sites itself)
     public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
 
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $givenName = null;
 
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $familyName = null;
 
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $phone = null;
 
@@ -85,11 +85,10 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isAdminAccount = false;
 
-    #[Groups(['construction-manager-read-self'])]
+    #[Groups(['construction-manager:read-self'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $canAssociateSelf = false;
 
-    #[Groups(['construction-manager-read-self', 'construction-manager-write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $receiveWeekly = false;
 

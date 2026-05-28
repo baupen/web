@@ -76,10 +76,6 @@ services:
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
 
-    App\Api\Serializer\IssueContextBuilder:
-        decorates: 'api_platform.serializer.context_builder'
-        arguments: [ '@App\Api\Serializer\IssueContextBuilder.inner' ]
-
     App\Api\CustomController\IssuesRender:
         tags: [ 'controller.service_arguments']
     App\Api\CustomController\IssuesReport:
