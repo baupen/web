@@ -23,6 +23,7 @@ Backend:
 - Upgrade to symfony 7, api platform 4
 - Check whether need to refactor authentication token structure
 - Recover API entities
+- check CSRF is enabled on login
 - Rebuild security voters
 - Database: Improve data types (use STRING instead of TEXT, use immutable datetime structures)
 - Add phpstan static analysis & fix all issues
