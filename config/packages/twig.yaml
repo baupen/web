@@ -8,7 +8,8 @@ twig:
 
     globals:
         env_support_email: '%env(SUPPORT_EMAIL)%'
-        env_base_uri: '%env(BASE_URI)%'
+        env_default_uri: '%env(DEFAULT_URI)%'
+    file_name_pattern: '*.twig'
 
 when@test:
     twig:
