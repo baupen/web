@@ -2,12 +2,12 @@
 
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
-use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Tests\DataFixtures\AssetFile;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
