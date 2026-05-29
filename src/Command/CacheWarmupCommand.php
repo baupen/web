@@ -19,7 +19,7 @@ class CacheWarmupCommand extends Command
         parent::__construct();
     }
 
-    protected function configure():void
+    protected function configure(): void
     {
         $this
             ->setName('app:cache:warmup')

@@ -40,7 +40,7 @@ readonly class AuthenticatedCollectionProvider implements ProviderInterface
         $resourceClass = $operation->getClass();
         if ($resourceClass === ConstructionSite::class) {
             $this->ensureConstructionManagersLimited($context);
-        } else if ($resourceClass === ConstructionManager::class) {
+        } elseif ($resourceClass === ConstructionManager::class) {
             $this->ensureConstructionSitesLimited($context);
         } else {
             $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);

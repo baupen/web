@@ -2,7 +2,6 @@
 
 namespace App\Api\OpenApi;
 
-
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\OpenApi;
 use ApiPlatform\OpenApi\Model;

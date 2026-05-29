@@ -3,8 +3,6 @@
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureInterface

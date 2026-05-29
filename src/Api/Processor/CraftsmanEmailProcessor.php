@@ -41,13 +41,12 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
-        private ManagerRegistry       $doctrine,
+        private ManagerRegistry $doctrine,
         private TokenStorageInterface $tokenStorage,
         private ReportServiceInterface $reportService,
         private EmailServiceInterface $emailService,
         private ManagerRegistry $managerRegistry
-    )
-    {
+    ) {
     }
 
     /**

@@ -14,25 +14,13 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
-class IssuesRender
+readonly class IssuesRender
 {
     use FileResponseTrait;
     use ImageRequestTrait;
 
-    private RequestStack $requestStack;
-
-    private ManagerRegistry $manager;
-
-    private ImageServiceInterface $imageService;
-
-    private PathServiceInterface $pathService;
-
-    public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function __construct(private ManagerRegistry $manager, private RequestStack $requestStack, private ImageServiceInterface $imageService, private PathServiceInterface $pathService)
     {
-        $this->requestStack = $requestStack;
-        $this->manager = $managerRegistry;
-        $this->imageService = $imageService;
-        $this->pathService = $pathService;
     }
 
     /**
