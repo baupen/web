@@ -3,26 +3,18 @@
 namespace App\Api\Processor;
 
 use ApiPlatform\Doctrine\Common\State\PersistProcessor;
-use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Api\Entity\CraftsmanEmail;
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
-use App\Entity\Issue;
 use App\Entity\IssueEvent;
 use App\Enum\EmailType;
-use App\Enum\IssueState;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\EmailService;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Interfaces\StorageServiceInterface;
-use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;

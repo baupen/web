@@ -5,7 +5,6 @@ namespace App\Api\Filters;
 use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
-use App\Entity\Issue;
 use App\Enum\IssueState;
 use Doctrine\ORM\QueryBuilder;
 

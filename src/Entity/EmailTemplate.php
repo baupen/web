@@ -10,7 +10,6 @@ use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Enum\AdministrativeGender;

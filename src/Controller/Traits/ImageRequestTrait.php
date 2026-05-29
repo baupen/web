@@ -4,7 +4,6 @@ namespace App\Controller\Traits;
 
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpFoundation\InputBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ImageRequestTrait
 {

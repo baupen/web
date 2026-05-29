@@ -5,7 +5,6 @@ namespace App\Controller\Traits;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait FileResponseTrait
 {

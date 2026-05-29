@@ -2,7 +2,6 @@
 
 namespace App\Api\Serializer;
 
-use App\Entity\Filter;
 use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;

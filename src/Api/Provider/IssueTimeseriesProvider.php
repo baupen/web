@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Dto\IssueSummaryDatedDto;
-use App\Api\Dto\IssueSummaryDto;
 use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;

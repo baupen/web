@@ -2,10 +2,8 @@
 
 namespace App\Api\Filters;
 
-use ApiPlatform\Doctrine\Common\Filter\BooleanFilterTrait;
 use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Metadata\Exception\InvalidArgumentException;
 use ApiPlatform\Metadata\Operation;
 use Doctrine\ORM\QueryBuilder;
 

@@ -9,7 +9,6 @@ use App\Service\Analysis\CraftsmanIssueAnalysis;
 use App\Service\Analysis\Database\CraftsmanService;
 use App\Service\Analysis\Database\IssueService;
 use App\Service\Analysis\IssueAnalysis;
-use App\Service\Analysis\IssueCountAnalysisTrait;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\ORM\QueryBuilder;
 

@@ -11,7 +11,6 @@ use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Email\ConstructionSiteReport;
 use App\Service\Report\Email\CraftsmanDeltaReport;
 use App\Service\Report\Email\CraftsmanReport;
-use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Pdf\PdfService;
 use App\Service\Report\Pdf\ReportElements;
 

@@ -10,7 +10,6 @@ use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use App\Entity\Traits\FileTrait;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;

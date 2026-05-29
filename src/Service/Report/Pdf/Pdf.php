@@ -3,7 +3,6 @@
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
-use TCPDF;
 
 class Pdf extends \TCPDF
 {
