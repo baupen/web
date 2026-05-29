@@ -41,7 +41,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
 #[Post(denormalizationContext: ['groups' => ['construction-manager:create', 'construction-manager:write']])]
-#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_SELF", object)')]
+#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {

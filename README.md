@@ -20,12 +20,10 @@ The first and the last step are best executed using the [iOS](https://github.com
 
 
 Backend:
-- Recover API entities
-- Rebuild security voters
+- Recover tests
 - check CSRF is enabled on login
 - Add phpstan static analysis & fix all issues
 - Remove fixtures if possible (includes liip bundles)
-- Refactor tests?
 - check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
 
 Frontend:

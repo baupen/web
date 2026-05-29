@@ -3,40 +3,43 @@
 namespace App\Security\Voter;
 
 use App\Entity\ConstructionSite;
-use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
+use App\Security\TokenTrait;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ConstructionSiteVoter extends ConstructionSiteOwnedEntityVoter
+class ConstructionSiteVoter extends Voter
 {
-    public const CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
-    public const CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
-    public const CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
+    use TokenTrait;
 
-    protected function isInstanceOf($entity): bool
+    public const string CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
+    public const string CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
+    public const string CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
+
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        return $entity instanceof ConstructionSite;
+        return $subject instanceof ConstructionSite && in_array($attribute, [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_MODIFY, self::CONSTRUCTION_SITE_VIEW]);
     }
 
-    protected function getAllAttributes(): array
+    /**
+     * @param string $attribute
+     * @param ConstructionSite $subject
+     * @param TokenInterface $token
+     * @return bool
+     */
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        return [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_MODIFY];
-    }
+        if (($constructionManager = $this->tryGetConstructionManager($token))) {
+            if ($constructionManager->getCanAssociateSelf()) {
+                return true;
+            }
 
-    protected function getReadOnlyAttributes(): array
-    {
-        return [self::CONSTRUCTION_SITE_VIEW];
-    }
+            if ($attribute == self::CONSTRUCTION_SITE_CREATE) {
+                return false;
+            }
 
-    protected function getAssociatedConstructionManagerAttributes(): array
-    {
-        return [self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_MODIFY];
-    }
-
-    protected function getDissociatedConstructionManagerAttributes(bool $canAssociateSelf): array
-    {
-        if (!$canAssociateSelf) {
-            return [];
+            return $constructionManager->getConstructionSites()->contains($subject);
+        } else {
+            return false;
         }
-
-        return [self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_MODIFY];
     }
 }
