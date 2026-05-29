@@ -12,6 +12,45 @@ trait AuthenticatedProviderTrait
 {
     private TokenStorageInterface $tokenStorage;
 
+    private function ensureConstructionManagersLimited(array &$context): void
+    {
+        $token = $this->tokenStorage->getToken();
+        $filters = $context['filters'] ?? [];
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if (!$constructionManager) {
+            throw new BadRequestException('You are not allowed query this collection.');
+        }
+
+        if (!$constructionManager->getCanAssociateSelf()) {
+            if (isset($filters['constructionManagers.id'])) {
+                $this->ensureSearchFilterValid($filters, 'constructionManagers.id', $constructionManager->getId());
+            } else {
+                $filters['constructionManagers.id'] = [$constructionManager->getId()];
+                $context['filters'] = $filters;
+            }
+        }
+    }
+
+    private function ensureConstructionSitesLimited(array &$context): void
+    {
+        $token = $this->tokenStorage->getToken();
+        $filters = $context['filters'] ?? [];
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if (!$constructionManager) {
+            throw new BadRequestException('You are not allowed query this collection.');
+        }
+
+        if (!$constructionManager->getCanAssociateSelf()) {
+            $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
+            if (isset($filters['constructionSites.id'])) {
+                $this->ensureArraySearchFilterValid($filters, 'constructionSites.id', $ownConstructionSiteIds);
+            } else {
+                $filters['constructionSites.id'] = $ownConstructionSiteIds;
+                $context['filters'] = $filters;
+            }
+        }
+    }
+
     private function ensureConstructionSiteAttributedCollectionFiltered(Operation $operation, array $context): void
     {
         // check properly filtered
@@ -23,8 +62,8 @@ trait AuthenticatedProviderTrait
 
         $existingFilter = $context['filters'] ?? [];
         if (($constructionManager = $this->tryGetConstructionManager($token))) {
-            $ownConstructionSites = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
-            $constructionSiteRestriction = $constructionManager->getCanAssociateSelf() ? null : $ownConstructionSites;
+            $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
+            $constructionSiteRestriction = $constructionManager->getCanAssociateSelf() ? null : $ownConstructionSiteIds;
         } elseif (($craftsman = $this->tryGetCraftsman($token))) {
             $constructionSiteRestriction = [$craftsman->getConstructionSite()->getId()];
         } elseif (($filter = $this->tryGetFilter($token))) {

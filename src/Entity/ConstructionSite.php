@@ -2,16 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use App\Api\Filters\ExactSearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Processor\ConstructionSiteProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -53,6 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read']],
     processor: ConstructionSiteProcessor::class,
 )]
+#[GetCollection(provider: AuthenticatedCollectionProvider::class)]
 class ConstructionSite extends BaseEntity
 {
     use IdTrait;

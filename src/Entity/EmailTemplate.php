@@ -8,7 +8,7 @@ use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\RequiredExactSearchFilter;
-use App\Api\Provider\AuthenticatedConstructionSiteProvider;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['email-template:read', 'time:read']],
 )]
 #[GetCollection(
-    provider: AuthenticatedConstructionSiteProvider::class,
+    provider: AuthenticatedCollectionProvider::class,
     security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),

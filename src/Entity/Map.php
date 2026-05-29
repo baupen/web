@@ -7,7 +7,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Provider\AuthenticatedConstructionSiteProvider;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -49,7 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read']],
 )]
 #[GetCollection(
-    provider: AuthenticatedConstructionSiteProvider::class,
+    provider: AuthenticatedCollectionProvider::class,
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
