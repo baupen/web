@@ -2,19 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
+use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
-use App\Api\CustomController\IssuesSummary;
-use App\Api\DataProvider\IssueGroupDataProvider;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
-use App\Api\Processor\IssueReportProcessor;
 use App\Api\Provider\IssueCollectionProvider;
 use App\Api\Provider\IssueGroupProvider;
 use App\Api\Provider\IssueSummaryProvider;
@@ -31,73 +38,37 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * An issue is something created by the construction manager to inform the craftsman of it.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue:create", "issue:write"}}},
- *      "get_group"={
- *          "method"="GET",
- *          "path"="/issues/group"
- *      },
- *      "get_render"={
- *          "method"="GET",
- *          "path"="/issues/render.jpg",
- *          "controller"=IssuesRender::class,
- *          "formats"={"jpeg"},
- *      },
- *      "get_report"={
- *          "method"="GET",
- *          "path"="/issues/report",
- *          "controller"=IssuesReport::class,
- *          "formats"={"pdf"},
- *      },
- *      "get_summary"={
- *          "method"="GET",
- *          "path"="/issues/summary",
- *          "controller"=IssuesSummary::class
- *      },
- *      "get_timeseries"={
- *          "method"="GET",
- *          "path"="/issues/timeseries"
- *      }
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)", "security_post_denormalize" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
- *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
- *     },
- *     denormalizationContext={"groups"={}}, // set depending on the context
- *     normalizationContext={"groups"={"issue:read"}, "skip_null_values"=false}
- * )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
- * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
- * @ApiFilter(NumericFilter::class, properties={"number"})
- * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "createdBy": "exact", "registeredBy": "exact", "closedBy": "exact", "description": "partial"})
- * @ApiFilter(StateFilter::class, properties={"state"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC", "craftsman.trade": "ASC", "map.name": "ASC", "description": {"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}})
- */
 #[ORM\Entity(repositoryClass: IssueRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['issue:write']],
     normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false],
+    parameters: [
+        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
+        'craftsman' => new QueryParameter(filter: new IriFilter(),),
+        'map' => new QueryParameter(filter: new IriFilter(),),
+        'createdBy' => new QueryParameter(filter: new IriFilter(),),
+        'registeredBy' => new QueryParameter(filter: new IriFilter(),),
+        'closedBy' => new QueryParameter(filter: new IriFilter(),),
+    ],
 )]
 #[GetCollection(provider: IssueCollectionProvider::class)]
 #[GetCollection(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/group', provider: IssueGroupProvider::class, normalizationContext: ['groups' => ['issue-group:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/report', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesReport::class)]
-#[GetCollection(uriTemplate: '/issues/render', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesRender::class)]
+#[GetCollection(uriTemplate: '/issues/render.jpg', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesRender::class, formats: ['jpeg'])]
 #[Get(security: 'is_granted("ISSUE_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_MODIFY", object)', denormalizationContext: ['groups' => ['issue:create', 'issue:write']])]
 #[Patch(security: 'is_granted("ISSUE_MODIFY", object) or is_granted("ISSUE_RESPOND", object)')]
 #[Delete(security: 'is_granted("ISSUE_MODIFY", object)')]
+#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt', "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"])]
+#[ApiFilter(BooleanFilter::class, properties: ['isMarked', 'wasAddedWithClient'])]
+#[ApiFilter(NumericFilter::class, properties: ['number'])]
+#[ApiFilter(SearchFilter::class, properties: ['description'], strategy: SearchFilterInterface::STRATEGY_IPARTIAL)]
+#[ApiFilter(OrderFilter::class, properties: ['lastChangedAt', 'number', 'craftsman.trade', 'map.name', 'description'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
+#[ApiFilter(StateFilter::class, properties: ['state'])]
 class Issue extends BaseEntity
 {
     use IdTrait;

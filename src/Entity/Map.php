@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -23,29 +25,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * An Map is a logical plan of some part of the construction site.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('MAP_MODIFY', object)", "denormalization_context"={"groups"={"map:create", "map:write"}}}
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('MAP_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('MAP_MODIFY', object)"},
- *      "delete" = {"security" = "is_granted('MAP_MODIFY', object)"},
- *     },
- *     normalizationContext={"groups"={"map:read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"map:write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
@@ -56,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     provider: AuthenticatedCollectionProvider::class,
     paginationEnabled: false,
     parameters: [
+        'id' => new QueryParameter(filter: new IriFilter(),),
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
@@ -63,6 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(securityPostDenormalize: 'is_granted("MAP_MODIFY", object)', denormalizationContext: ['groups' => ['map:create', 'map:write']])]
 #[Patch(security: 'is_granted("MAP_MODIFY", object)')]
 #[Delete(security: 'is_granted("MAP_MODIFY", object)')]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
 class Map extends BaseEntity
 {
     use IdTrait;

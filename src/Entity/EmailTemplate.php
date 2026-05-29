@@ -2,50 +2,27 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
-use App\Enum\AdministrativeGender;
 use App\Enum\EmailTemplatePurpose;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * An EmailTemplate is used to prepare the email to be sent to the specified receivers.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)", "denormalization_context"={"groups"={"email-template:create", "email-template:write"}}}
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('EMAIL_TEMPLATE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)"},
- *      "delete" = {"security" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)"},
- *     },
- *     normalizationContext={"groups"={"email-template:read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"email-template:write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[\ApiPlatform\Metadata\ApiResource(
+#[ApiResource(
     denormalizationContext: ['groups' => ['email-template:write']],
     normalizationContext: ['groups' => ['email-template:read', 'time:read'], "skip_null_values" => false],
 )]
