@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Operation;
 use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 trait AuthenticatedProviderTrait
 {
@@ -34,20 +35,17 @@ trait AuthenticatedProviderTrait
     private function ensureConstructionSitesLimited(array &$context): void
     {
         $token = $this->tokenStorage->getToken();
-        $filters = $context['filters'] ?? [];
-        $constructionManager = $this->tryGetConstructionManager($token);
-        if (!$constructionManager) {
-            throw new BadRequestException('You are not allowed query this collection.');
+        $constructionSiteRestriction = $this->getConstructionSiteRestriction($token);
+        if (!$constructionSiteRestriction) {
+            return;
         }
 
-        if (!$constructionManager->getCanAssociateSelf()) {
-            $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
-            if (isset($filters['constructionSites.id'])) {
-                $this->ensureArraySearchFilterValid($filters, 'constructionSites.id', $ownConstructionSiteIds);
-            } else {
-                $filters['constructionSites.id'] = $ownConstructionSiteIds;
-                $context['filters'] = $filters;
-            }
+        $existingFilter = $context['filters'] ?? [];
+        if (isset($existingFilter['constructionSites.id'])) {
+            $this->ensureArraySearchFilterValid($existingFilter, 'constructionSites.id', $constructionSiteRestriction);
+        } else {
+            $existingFilter['constructionSites.id'] = $constructionSiteRestriction;
+            $context['filters'] = $existingFilter;
         }
     }
 
@@ -59,8 +57,14 @@ trait AuthenticatedProviderTrait
         }
 
         $token = $this->tokenStorage->getToken();
+        $constructionSiteRestriction = $this->getConstructionSiteRestriction($token);
 
         $existingFilter = $context['filters'] ?? [];
+        $this->ensureArraySearchFilterValid($existingFilter, 'constructionSite', $constructionSiteRestriction);
+    }
+
+    private function getConstructionSiteRestriction(TokenInterface $token): ?array
+    {
         if (($constructionManager = $this->tryGetConstructionManager($token))) {
             $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
             $constructionSiteRestriction = $constructionManager->getCanAssociateSelf() ? null : $ownConstructionSiteIds;
@@ -72,7 +76,7 @@ trait AuthenticatedProviderTrait
             throw new BadRequestException('Invalid authentication');
         }
 
-        $this->ensureArraySearchFilterValid($existingFilter, 'constructionSite', $constructionSiteRestriction);
+        return $constructionSiteRestriction;
     }
 
     private function ensureIssueCollectionAuthenticated(Operation $operation, array $context): void
