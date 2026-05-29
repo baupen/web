@@ -2,6 +2,8 @@
 
 namespace App\Api\Processor;
 
+use ApiPlatform\Doctrine\Common\State\PersistProcessor;
+use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
@@ -38,8 +40,7 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
      * @param ProcessorInterface<CraftsmanEmail, CraftsmanEmail> $persistProcessor
      */
     public function __construct(
-        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
-        private ProcessorInterface    $persistProcessor,
+        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
         private ManagerRegistry       $doctrine,
         private TokenStorageInterface $tokenStorage,
         private ReportServiceInterface $reportService,

@@ -83,15 +83,17 @@ readonly class AnalysisService implements AnalysisServiceInterface
     public function createCraftsmanAnalysisByCraftsman(array $craftsmen): array
     {
         $craftsmanIssueAnalysisByCraftsman = [];
+        $craftsmenDictionary = [];
         foreach ($craftsmen as $craftsman) {
             $craftsmanIssueAnalysisByCraftsman[$craftsman->getId()] = new CraftsmanIssueAnalysis();
+            $craftsmenDictionary[$craftsman->getId()] = $craftsman;
         }
 
         $this->craftsmanService->findIssueAnalysisByCraftsman($craftsmen, $craftsmanIssueAnalysisByCraftsman);
 
         $craftsmanAnalysisDictionary = [];
         foreach ($craftsmanIssueAnalysisByCraftsman as $craftsmanId => $craftsmanIssueAnalysis) {
-            $craftsmanAnalysisDictionary[$craftsmanId] = CraftsmanAnalysis::createWithIssueAnalysis($craftsmanIssueAnalysis);
+            $craftsmanAnalysisDictionary[$craftsmanId] = CraftsmanAnalysis::create($craftsmenDictionary[$craftsmanId], $craftsmanIssueAnalysis);
         }
 
         $this->craftsmanService->findNextDeadline($craftsmen, $craftsmanAnalysisDictionary);
@@ -103,6 +105,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
 
     /**
      * @param Craftsman[] $craftsmen
+     * @param CraftsmanAnalysis[] $craftsmanAnalysisDictionary
      */
     private function findLastActivity(array $craftsmen, array $craftsmanAnalysisDictionary): void
     {
