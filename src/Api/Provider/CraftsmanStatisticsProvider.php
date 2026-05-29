@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 readonly class CraftsmanStatisticsProvider implements ProviderInterface
 {
     /**
-     * @param ProviderInterface<CraftsmanStatisticsDto> $collectionProvider
+     * @param ProviderInterface<Craftsman> $collectionProvider
      */
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
@@ -24,7 +24,6 @@ readonly class CraftsmanStatisticsProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        /** @var Craftsman[] $craftsmen */
         $craftsmen = $this->collectionProvider->provide($operation, $uriVariables, $context);
 
         $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysisByCraftsman($craftsmen);
