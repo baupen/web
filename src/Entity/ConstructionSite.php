@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use App\Api\Filters\ExactSearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Processor\ConstructionSiteProcessor;
@@ -71,6 +72,7 @@ class ConstructionSite extends BaseEntity
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isArchived = false;
 
+    #[Groups(['construction-site:read'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
     private ?ConstructionSiteImage $image = null;
 

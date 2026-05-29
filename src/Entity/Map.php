@@ -73,6 +73,7 @@ class Map extends BaseEntity
     #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'parent')]
     private Collection $children;
 
+    #[Groups(['map:read'])]
     #[ORM\ManyToOne(targetEntity: MapFile::class, cascade: ['persist'])]
     private ?MapFile $file = null;
 
