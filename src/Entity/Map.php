@@ -2,9 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
+use App\Api\Provider\AuthenticatedConstructionSiteProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -40,9 +44,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[\ApiPlatform\Metadata\ApiResource(
+#[ApiResource(
     denormalizationContext: ['groups' => ['map:write']],
     normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read']],
+)]
+#[GetCollection(
+    provider: AuthenticatedConstructionSiteProvider::class,
+    parameters: [
+        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
+    ],
 )]
 class Map extends BaseEntity
 {
