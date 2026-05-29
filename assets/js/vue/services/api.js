@@ -343,10 +343,10 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getHydraCollection('/api/issues/timeseries?' + queryString)
   },
-  getIssuesGroup: function (constructionSite, group, query = {}) {
+  getIssuesMapGroup: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&group=' + group
     queryString += '&' + this._getQueryString(query)
+    queryString += '&group=map'
     queryString += '&isDeleted=false'
     return this._getHydraCollection('/api/issues/group?' + queryString)
   },

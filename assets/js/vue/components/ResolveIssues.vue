@@ -161,7 +161,7 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => this.maps = maps)
 
-    api.getIssuesGroup(this.constructionSite, 'map', this.issuesQuery)
+    api.getIssuesMapGroup(this.constructionSite, this.issuesQuery)
         .then(groups => this.issuesGroupByMap = groups)
 
     api.getRecentlyChangedIssues(this.constructionSite, this.issuesQuery)
