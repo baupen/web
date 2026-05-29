@@ -20,19 +20,13 @@ The first and the last step are best executed using the [iOS](https://github.com
 
 
 Backend:
-- Upgrade to symfony 7, api platform 4
-- Check whether need to refactor authentication token structure
 - Recover API entities
-- check CSRF is enabled on login
 - Rebuild security voters
-- Database: Improve data types (use STRING instead of TEXT, use immutable datetime structures)
+- check CSRF is enabled on login
 - Add phpstan static analysis & fix all issues
 - Remove fixtures if possible (includes liip bundles)
-- Simplify access control
-- Refactor user registration (set password, refactor UserTrait)
 - Refactor tests?
 - check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
-- Re-add authentication (all operations, including query filters)
 
 Frontend:
 - Replace noty (noty longer maintained)
@@ -52,3 +46,4 @@ fix behaviour:
 after release:
 - remove BASE_URI from .env of instances
 - cleanup craftsman statistics / craftsman analysis
+- add profile update page, with mobile connection, profile update, password set (+ checkbox whether to update mobile token)

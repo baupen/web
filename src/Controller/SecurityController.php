@@ -19,8 +19,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
@@ -79,7 +81,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/register', name: 'register')]
-    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService, string $needCaptcha): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService, string $needCaptcha): RedirectResponse|Response
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -119,7 +121,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
-    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, Security $security, UserPasswordHasherInterface $passwordHasher): RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -139,7 +141,7 @@ class SecurityController extends BaseController
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'register_confirm.submit']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator, $passwordHasher)) {
             $constructionManager->setAuthenticationToken();
             $constructionManager->setRegistrationCompletedNow();
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
@@ -182,7 +184,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
-    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, Security $security, UserPasswordHasherInterface $passwordHasher): RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -193,7 +195,7 @@ class SecurityController extends BaseController
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'recover_confirm.submit']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator, $passwordHasher)) {
             $constructionManager->setAuthenticationHash();
             $constructionManager->setAuthenticationToken();
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
@@ -222,7 +224,7 @@ class SecurityController extends BaseController
         return true;
     }
 
-    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator): bool
+    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator, UserPasswordHasherInterface $passwordHasher): bool
     {
         $plainPassword = $form->get('plainPassword')->getData();
         $repeatPlainPassword = $form->get('repeatPlainPassword')->getData();
@@ -239,7 +241,8 @@ class SecurityController extends BaseController
             return false;
         }
 
-        $constructionManager->setPasswordFromPlain($plainPassword);
+        $passwordHash = $passwordHasher->hashPassword($constructionManager, $plainPassword);
+        $constructionManager->setPassword($passwordHash);
 
         return true;
     }
