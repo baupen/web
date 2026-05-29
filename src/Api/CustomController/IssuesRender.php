@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 class IssuesRender
 {
     use FileResponseTrait;
-    use ImageRequestTrait;
 
     private RequestStack $requestStack;
 

@@ -2,10 +2,10 @@
 
 namespace App\Api\Dto;
 
-use _PHPStan_525d47db7\Nette\Utils\DateTime;
-use App\Api\Entity\IssueSummary;
+use App\Api\Dto\CraftsmanStatistics\IssueSummaryDto;
 use App\Entity\Craftsman;
 use App\Service\Analysis\CraftsmanAnalysis;
+use DateTime;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class CraftsmanStatisticsDto
@@ -14,7 +14,7 @@ class CraftsmanStatisticsDto
     private Craftsman $craftsman;
 
     #[Groups(['craftsman-statistics:read'])]
-    private ?IssueSummary $issueSummary = null;
+    private ?IssueSummaryDto $issueSummary = null;
 
     #[Groups(['craftsman-statistics:read'])]
     public int $issueUnreadCount;
@@ -39,7 +39,7 @@ class CraftsmanStatisticsDto
         $self = new self();
 
         $self->craftsman = $craftsmanAnalysis->getCraftsman();
-        $self->issueSummary = IssueSummary::createFromCraftsmanIssueAnalysis($craftsmanAnalysis->getIssueAnalysis());
+        $self->issueSummary = IssueSummaryDto::create($craftsmanAnalysis->getIssueAnalysis());
         $self->issueUnreadCount = $craftsmanAnalysis->getIssueAnalysis()->getUnreadCount();
         $self->issueOverdueCount = $craftsmanAnalysis->getIssueAnalysis()->getOverdueCount();
         $self->nextDeadline = $craftsmanAnalysis->getNextDeadline();
@@ -55,7 +55,7 @@ class CraftsmanStatisticsDto
         return $this->craftsman;
     }
 
-    public function getIssueSummary(): ?IssueSummary
+    public function getIssueSummary(): ?IssueSummaryDto
     {
         return $this->issueSummary;
     }
