@@ -88,7 +88,7 @@ readonly class EmailService implements EmailServiceInterface
         return $this->sendAndStoreEMail($message, $entity);
     }
 
-    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC): bool
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC, ?Email &$email = null): bool
     {
         $report = $this->emailBodyGenerator->fromCraftsmanReport($craftsmanReport);
         $emailBody = ['report' => $report, 'body' => $body];

@@ -485,8 +485,8 @@ const api = {
   postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
     return this._postAttachment(constructionSite, image, 'image', successMessage)
   },
-  postEmail: function (email, successMessage = null) {
-    return this._postRaw('/api/emails', email, successMessage)
+  postCraftsmanEmail: function (email, successMessage = null) {
+    return this._postRaw('/api/craftsman_emails', email, successMessage)
   },
   postIssueEvent: function (issueEvent, successMessage = null) {
     return this._postRaw('/api/issue_events', issueEvent, successMessage)

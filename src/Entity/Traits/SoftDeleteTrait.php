@@ -23,7 +23,7 @@ trait SoftDeleteTrait
     /**
      * never undelete an entity!
      */
-    public function delete(): void
+    public function markAsDeleted(): void
     {
         $this->deletedAt = new \DateTimeImmutable();
     }

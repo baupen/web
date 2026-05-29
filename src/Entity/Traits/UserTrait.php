@@ -172,18 +172,4 @@ trait UserTrait
     {
         return null !== $this->password;
     }
-
-    /**
-     * check if two users are equal.
-     *
-     * @param UserTrait $user
-     */
-    protected function isEqualToUser($user): bool
-    {
-        if ($this->getUsername() !== $user->getUsername()) {
-            return false;
-        }
-
-        return $this->getPassword() === $user->getPassword();
-    }
 }
