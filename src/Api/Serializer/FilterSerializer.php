@@ -2,7 +2,6 @@
 
 namespace App\Api\Serializer;
 
-use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Security\TokenTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

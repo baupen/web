@@ -3,9 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\CustomController\IssuesSummary;
@@ -13,13 +11,11 @@ use App\Api\DataProvider\IssueGroupDataProvider;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
 use App\Api\Processor\IssueReportProcessor;
-use App\Api\Provider\CraftsmanStatisticsProvider;
-use App\Api\Provider\IssueGroupProvider;
 use App\Api\Provider\IssueCollectionProvider;
+use App\Api\Provider\IssueGroupProvider;
 use App\Api\Provider\IssueSummaryProvider;
 use App\Api\Provider\IssueTimeseriesProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;

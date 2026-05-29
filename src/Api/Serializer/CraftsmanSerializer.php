@@ -3,7 +3,6 @@
 namespace App\Api\Serializer;
 
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Security\TokenTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

@@ -10,7 +10,6 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\Metadata\UrlGeneratorInterface;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Dto\IssueGroupDto;
-use App\Api\Dto\IssueSummaryDto;
 use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;
