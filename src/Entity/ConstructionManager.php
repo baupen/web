@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -26,23 +27,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 
-/**
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"denormalization_context"={"groups"={"construction-manager:create", "construction-manager:write"}}},
- *     },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('CONSTRUCTION_MANAGER_SELF', object)"}
- *     },
- *     normalizationContext={"groups"={"construction-manager:read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-manager:write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity(repositoryClass: ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
@@ -56,9 +40,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
     ],
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
-#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)', denormalizationContext: ['groups' => ['construction-manager:create', 'construction-manager:write']])]
-#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
-#[Delete(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
+#[Post(denormalizationContext: ['groups' => ['construction-manager:create', 'construction-manager:write']])]
+#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_SELF", object)')]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;

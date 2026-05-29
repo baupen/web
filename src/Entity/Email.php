@@ -9,9 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
-/**
- * An Email is a sent email to the specified receivers.
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Email extends BaseEntity

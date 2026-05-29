@@ -2,7 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -23,30 +29,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * An issue event adds context to the linked entity.
- *
- * @ApiResource(
- *      collectionOperations={
- *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_CREATE', object)", "denormalization_context"={"groups"={"issue-event:create", "issue-event:write"}}},
- *      },
- *      itemOperations={
- *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
- *       "patch" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('ISSUE_EVENT_DELETE', object)"},
- *      },
- *      denormalizationContext={"groups"={"issue-event:write"}},
- *      normalizationContext={"groups"={"issue-event:read"}, "skip_null_values"=false}
- *  )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite","createdBy"})
- * @ApiFilter(DateFilter::class, properties={"createdAt"})
- * @ApiFilter(SearchFilter::class, properties={"root": "exact"})
- * @ApiFilter(BooleanFilter::class, properties={"contextualForChildren"})
- * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
@@ -64,6 +46,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_MODIFY", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
 #[Patch(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
 #[Delete(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+#[ApiFilter(SearchFilter::class, properties: ['root', 'createdBy'], strategy: SearchFilterInterface::STRATEGY_EXACT)]
+#[ApiFilter(BooleanFilter::class, properties: ['contextualForChildren'])]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt'])]
+#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
 class IssueEvent extends BaseEntity
 {
     use IdTrait;

@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -14,7 +14,6 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Api\Provider\CraftsmanStatisticsProvider;
 use App\Entity\Base\BaseEntity;
@@ -29,42 +28,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * a craftsman receives information about open issues, and answers them.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman:create", "craftsman:write"}}},
- *      "get_statistics"={
- *          "method"="GET",
- *          "path"="/craftsmen/statistics"
- *      }
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
- *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
- *     },
- *     normalizationContext={"groups"={"craftsman:read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"craftsman:write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[\ApiPlatform\Metadata\ApiResource(
+#[ApiResource(
     denormalizationContext: ['groups' => ['craftsman:write']],
     normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false,
     parameters: [
+        'id' => new QueryParameter(filter: new IriFilter(),),
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
@@ -73,6 +47,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(securityPostDenormalize: 'is_granted("CRAFTSMAN_MODIFY", object)', denormalizationContext: ['groups' => ['craftsman:create', 'craftsman:write']])]
 #[Patch(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
 #[Delete(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(SearchFilter::class, properties: ['trade'])]
+#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
 class Craftsman extends BaseEntity
 {
     use IdTrait;
