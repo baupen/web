@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\CustomController\IssuesSummary;
@@ -82,14 +86,18 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['issue:write']],
-    normalizationContext: ['groups' => ['issue:read', 'soft-delete:read']],
+    normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(provider: IssueCollectionProvider::class)]
-#[GetCollection(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read']], paginationEnabled: false)]
-#[GetCollection(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read']], paginationEnabled: false)]
-#[GetCollection(uriTemplate: '/issues/group', provider: IssueGroupProvider::class, normalizationContext: ['groups' => ['issue-group:read']], paginationEnabled: false)]
+#[GetCollection(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
+#[GetCollection(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
+#[GetCollection(uriTemplate: '/issues/group', provider: IssueGroupProvider::class, normalizationContext: ['groups' => ['issue-group:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/report', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesReport::class)]
 #[GetCollection(uriTemplate: '/issues/render', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesRender::class)]
+#[Get(security: 'is_granted("ISSUE_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("ISSUE_MODIFY", object)', denormalizationContext: ['groups' => ['issue:create', 'issue:write']])]
+#[Patch(security: 'is_granted("ISSUE_MODIFY", object) or is_granted("ISSUE_RESPOND", object)')]
+#[Delete(security: 'is_granted("ISSUE_MODIFY", object)')]
 class Issue extends BaseEntity
 {
     use IdTrait;

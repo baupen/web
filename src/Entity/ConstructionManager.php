@@ -2,8 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
@@ -35,16 +41,24 @@ use Symfony\Component\Serializer\Attribute\Groups;
  *     attributes={"pagination_enabled"=false}
  * )
  *
- * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  */
 #[ORM\Entity(repositoryClass: ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']],
-    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'user:read']],
+    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'user:read'], "skip_null_values" => false],
 )]
-#[GetCollection(provider: AuthenticatedCollectionProvider::class)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    parameters: [
+        'constructionSites.id' => new QueryParameter(filter: new IriFilter(),),
+    ],
+)]
+#[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)', denormalizationContext: ['groups' => ['construction-manager:create', 'construction-manager:write']])]
+#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
+#[Delete(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;

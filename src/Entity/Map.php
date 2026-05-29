@@ -4,7 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
@@ -46,14 +50,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['map:write']],
-    normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read']],
+    normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false,
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
+#[Get(security: 'is_granted("MAP_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("MAP_MODIFY", object)', denormalizationContext: ['groups' => ['map:create', 'map:write']])]
+#[Patch(security: 'is_granted("MAP_MODIFY", object)')]
+#[Delete(security: 'is_granted("MAP_MODIFY", object)')]
 class Map extends BaseEntity
 {
     use IdTrait;

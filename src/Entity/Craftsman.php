@@ -7,7 +7,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
@@ -56,7 +60,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[\ApiPlatform\Metadata\ApiResource(
     denormalizationContext: ['groups' => ['craftsman:write']],
-    normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read']],
+    normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
@@ -64,7 +68,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
-#[GetCollection(uriTemplate: '/craftsmen/statistics', provider: CraftsmanStatisticsProvider::class, normalizationContext: ['groups' => ['craftsman-statistics:read']], paginationEnabled: false)]
+#[GetCollection(uriTemplate: '/craftsmen/statistics', provider: CraftsmanStatisticsProvider::class, normalizationContext: ['groups' => ['craftsman-statistics:read'], "skip_null_values" => false], paginationEnabled: false)]
+#[Get(security: 'is_granted("CRAFTSMAN_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("CRAFTSMAN_MODIFY", object)', denormalizationContext: ['groups' => ['craftsman:create', 'craftsman:write']])]
+#[Patch(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
+#[Delete(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
 class Craftsman extends BaseEntity
 {
     use IdTrait;
