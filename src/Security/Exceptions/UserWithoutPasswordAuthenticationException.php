@@ -7,14 +7,8 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class UserWithoutPasswordAuthenticationException extends AuthenticationException
 {
-    /**
-     * @var ConstructionManager
-     */
-    public $user;
-    /**
-     * @var string
-     */
-    private $userId;
+    public ConstructionManager $user;
+    private string $userId;
 
     public function __construct(ConstructionManager $user, string $message = '', int $code = 0, ?\Throwable $previous = null)
     {

@@ -29,36 +29,24 @@ trait UserTrait
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $registrationCompletedAt = null;
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return static
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    /**
-     * @param bool $isEnabled
-     *
-     * @return static
-     */
-    public function setIsEnabled($isEnabled)
+    public function getIsEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(?bool $isEnabled): void
     {
         $this->isEnabled = $isEnabled;
-
-        return $this;
     }
 
     public function setAuthenticationHash(): string
@@ -66,14 +54,6 @@ trait UserTrait
         $this->authenticationHash = HashHelper::getHash();
 
         return $this->authenticationHash;
-    }
-
-    /**
-     * checks if the user is allowed to login.
-     */
-    public function canLogin(): bool
-    {
-        return $this->isEnabled;
     }
 
     public function getAuthenticationHash(): ?string
@@ -92,6 +72,14 @@ trait UserTrait
     }
 
     /**
+     * checks if the user has completed the registration.
+     */
+    public function getRegistrationCompleted(): bool
+    {
+        return null !== $this->password;
+    }
+
+    /**
      * Returns the password used to authenticate the user.
      *
      * This should be the encoded password. On authentication, a plain-text
@@ -104,31 +92,9 @@ trait UserTrait
         return $this->password;
     }
 
-    /**
-     * Returns the salt that was originally used to encode the password.
-     *
-     * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
-     */
-    public function getSalt(): null
+    public function setPassword(?string $password): void
     {
-        return null;
-    }
-
-    /**
-     * Checks whether the user is enabled.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a DisabledException and prevent login.
-     *
-     * @return bool true if the user is enabled, false otherwise
-     *
-     * @see DisabledException
-     */
-    public function getIsEnabled(): bool
-    {
-        return $this->isEnabled;
+        $this->password = $password;
     }
 
     /**
@@ -142,34 +108,8 @@ trait UserTrait
         // nothing to do
     }
 
-    /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string The username
-     */
-    public function getUsername(): string
-    {
-        return $this->email;
-    }
-
     public function getUserIdentifier(): string
     {
-        return $this->getUsername();
-    }
-
-    /**
-     * hashes the plainPassword and erases credentials.
-     */
-    public function setPasswordFromPlain(string $plainPassword): void
-    {
-        $this->password = password_hash($plainPassword, PASSWORD_BCRYPT);
-    }
-
-    /**
-     * checks if the user has completed the registration.
-     */
-    public function getRegistrationCompleted(): bool
-    {
-        return null !== $this->password;
+        return $this->email;
     }
 }

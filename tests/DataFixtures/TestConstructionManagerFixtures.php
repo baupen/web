@@ -25,7 +25,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
         foreach ($entries as $entry) {
             $constructionManager = new ConstructionManager();
             $constructionManager->setEmail($entry[0]);
-            $constructionManager->setPasswordFromPlain($entry[1]);
+            $constructionManager->setPassword(password_hash($entry[1], PASSWORD_BCRYPT));
             $constructionManager->setGivenName($entry[2]);
             $constructionManager->setFamilyName($entry[3]);
             $constructionManager->setCanAssociateSelf($entry[4]);
