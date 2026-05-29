@@ -9,15 +9,18 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Dto\IssueSummaryDatedDto;
 use App\Api\Dto\IssueSummaryDto;
+use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;
 use App\Service\AnalysisService;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 readonly class IssueTimeseriesProvider implements ProviderInterface
 {
+    use AuthenticatedProviderTrait;
     use CollectionProviderQueryBuilderTrait;
 
     /**
@@ -27,11 +30,13 @@ readonly class IssueTimeseriesProvider implements ProviderInterface
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
         private AnalysisService $analysisService,
+        TokenStorageInterface $tokenStorage,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,
         iterable $collectionExtensions = [],
         ?ContainerInterface $handleLinksLocator = null
     ) {
+        $this->tokenStorage = $tokenStorage;
         $this->resourceMetadataCollectionFactory = $resourceMetadataCollectionFactory;
         $this->handleLinksLocator = $handleLinksLocator;
         $this->managerRegistry = $managerRegistry;
@@ -40,6 +45,8 @@ readonly class IssueTimeseriesProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
+        $this->ensureIssueCollectionAuthenticated($operation, $context);
+
         $queryBuilder = $this->provideQueryBuilder($operation, $uriVariables, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 

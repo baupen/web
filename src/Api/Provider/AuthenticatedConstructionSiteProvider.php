@@ -36,11 +36,7 @@ readonly class AuthenticatedConstructionSiteProvider implements ProviderInterfac
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        // check properly filtered
-        if (!$operation instanceof GetCollection) {
-            throw new BadRequestException('Only collection operations are supported by this provider.');
-        }
-        $this->ensureConstructionSiteFiltered($context);
+        $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);
 
         return $this->collectionProvider->provide($operation, $uriVariables, $context);
     }

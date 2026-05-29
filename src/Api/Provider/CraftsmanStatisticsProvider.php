@@ -3,29 +3,38 @@
 namespace App\Api\Provider;
 
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Dto\CraftsmanStatisticsDto;
+use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Entity\Craftsman;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\AnalysisService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 readonly class CraftsmanStatisticsProvider implements ProviderInterface
 {
+    use AuthenticatedProviderTrait;
+
     /**
      * @param ProviderInterface<Craftsman> $collectionProvider
      */
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
-        private AnalysisService $analysisService
+        private AnalysisService $analysisService,
+        TokenStorageInterface $tokenStorage
     ) {
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $craftsmen = $this->collectionProvider->provide($operation, $uriVariables, $context);
+        $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);
 
+        $craftsmen = $this->collectionProvider->provide($operation, $uriVariables, $context);
         $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysisByCraftsman($craftsmen);
 
         return array_map(

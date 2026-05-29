@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\UrlGeneratorInterface;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Dto\IssueGroupDto;
 use App\Api\Dto\IssueSummaryDto;
+use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;
 use App\Entity\Map;
@@ -21,9 +22,11 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 readonly class IssueGroupProvider implements ProviderInterface
 {
+    use AuthenticatedProviderTrait;
     use CollectionProviderQueryBuilderTrait;
 
     /**
@@ -35,11 +38,13 @@ readonly class IssueGroupProvider implements ProviderInterface
         private AnalysisService $analysisService,
         private RequestStack $requestStack,
         private IriConverterInterface $iriConverter,
+        TokenStorageInterface $tokenStorage,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,
         iterable $collectionExtensions = [],
         ?ContainerInterface $handleLinksLocator = null,
     ) {
+        $this->tokenStorage = $tokenStorage;
         $this->resourceMetadataCollectionFactory = $resourceMetadataCollectionFactory;
         $this->handleLinksLocator = $handleLinksLocator;
         $this->managerRegistry = $managerRegistry;
@@ -52,6 +57,8 @@ readonly class IssueGroupProvider implements ProviderInterface
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
+        $this->ensureIssueCollectionAuthenticated($operation, $context);
+
         $currentRequest = $this->requestStack->getCurrentRequest();
         $group = $currentRequest->query->get('group');
         if ('map' !== $group) {
