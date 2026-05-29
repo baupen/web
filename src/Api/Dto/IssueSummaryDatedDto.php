@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Api\Entity;
+namespace App\Api\Dto;
 
 use App\Service\Analysis\IssueAnalysis;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class IssueSummaryWithDate extends IssueSummary
+class IssueSummaryDatedDto extends IssueSummaryDto
 {
-    #[Groups(['issue-read'])]
+    #[Groups(['issue-summary:read'])]
     private string $date;
 
     public static function createFromIssueAnalysisWithDate(IssueAnalysis $issueAnalysis, string $date): self
@@ -23,10 +23,5 @@ class IssueSummaryWithDate extends IssueSummary
     public function getDate(): string
     {
         return $this->date;
-    }
-
-    public function setDate(string $date): void
-    {
-        $this->date = $date;
     }
 }

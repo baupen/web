@@ -1,38 +1,25 @@
 <?php
 
-namespace App\Api\Entity;
+namespace App\Api\Dto;
 
-use App\Service\Analysis\CraftsmanIssueAnalysis;
 use App\Service\Analysis\IssueAnalysis;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class IssueSummary
+class IssueSummaryDto
 {
-    #[Groups(['issue:read', 'craftsman:read'])]
+    #[Groups(['issue-summary:read'])]
     private int $newCount;
 
-    #[Groups(['issue:read', 'craftsman:read'])]
+    #[Groups(['issue-summary:read'])]
     private int $openCount;
 
-    #[Groups(['issue:read', 'craftsman:read'])]
+    #[Groups(['issue-summary:read'])]
     private int $inspectableCount;
 
-    #[Groups(['issue:read', 'craftsman:read'])]
+    #[Groups(['issue-summary:read'])]
     private int $closedCount;
 
-    public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis): self
-    {
-        $self = new self();
-
-        $self->newCount = 0;
-        $self->openCount = $craftsmanIssueAnalysis->getOpenCount();
-        $self->inspectableCount = $craftsmanIssueAnalysis->getInspectableCount();
-        $self->closedCount = $craftsmanIssueAnalysis->getClosedCount();
-
-        return $self;
-    }
-
-    public static function createFromIssueAnalysis(IssueAnalysis $issueAnalysis): self
+    public static function create(IssueAnalysis $issueAnalysis): self
     {
         $self = new self();
         $self->writeFromIssueAnalysis($issueAnalysis);
