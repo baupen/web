@@ -122,6 +122,7 @@ class Issue extends BaseEntity
         }
     }
 
+    #[Groups(['issue:read'])]
     #[ORM\ManyToOne(targetEntity: IssueImage::class, cascade: ['persist'])]
     private ?IssueImage $image = null;
 
