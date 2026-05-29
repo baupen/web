@@ -2,6 +2,9 @@
 
 namespace App\Api\Processor;
 
+use ApiPlatform\Doctrine\Common\State\PersistProcessor;
+use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
+use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
@@ -28,10 +31,8 @@ readonly class SoftDeleteProcessor implements ProcessorInterface
      * @param ProcessorInterface<Issue, Issue> $removeProcessor
      */
     public function __construct(
-        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
-        private ProcessorInterface $persistProcessor,
-        #[Autowire(service: 'api_platform.doctrine.orm.state.remove_processor')]
-        private ProcessorInterface $removeProcessor,
+        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
+        #[Autowire(service: RemoveProcessor::class)] private ProcessorInterface $removeProcessor,
         private ManagerRegistry $doctrine,
         private TokenStorageInterface $tokenStorage
     ) {

@@ -8,6 +8,7 @@ use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,7 +36,7 @@ class IssuesRender
     /**
      * @param Issue[] $data
      */
-    public function __invoke(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
+    public function __invoke(array $data): BinaryFileResponse|Response
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         $size = $currentRequest->attributes->get('size');

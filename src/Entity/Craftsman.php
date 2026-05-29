@@ -6,8 +6,10 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Get;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
+use App\Api\Provider\CraftsmanStatisticsProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AuthenticationTrait;
@@ -54,6 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['craftsman:write']],
     normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read']],
 )]
+#[Get(uriTemplate: '/craftsmen/statistics', provider: CraftsmanStatisticsProvider::class, normalizationContext: ['groups' => ['craftsman-statistics:read']], paginationEnabled: false)]
 class Craftsman extends BaseEntity
 {
     use IdTrait;

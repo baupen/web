@@ -2,8 +2,12 @@
 
 namespace App\Service\Analysis;
 
+use App\Entity\Craftsman;
+
 class CraftsmanAnalysis
 {
+    private Craftsman $craftsman;
+
     private CraftsmanIssueAnalysis $issueAnalysis;
 
     private ?\DateTime $nextDeadline = null;
@@ -14,23 +18,24 @@ class CraftsmanAnalysis
 
     private ?\DateTime $lastIssueResolved = null;
 
-    public static function createWithIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis): self
+    public static function create(Craftsman $craftsman, CraftsmanIssueAnalysis $issueAnalysis): self
     {
         $self = new self();
 
+        $self->craftsman = $craftsman;
         $self->issueAnalysis = $issueAnalysis;
 
         return $self;
     }
 
+    public function getCraftsman(): Craftsman
+    {
+        return $this->craftsman;
+    }
+
     public function getIssueAnalysis(): CraftsmanIssueAnalysis
     {
         return $this->issueAnalysis;
-    }
-
-    public function setIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis): void
-    {
-        $this->issueAnalysis = $issueAnalysis;
     }
 
     public function getNextDeadline(): ?\DateTime

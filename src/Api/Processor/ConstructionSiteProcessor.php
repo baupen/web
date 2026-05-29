@@ -2,6 +2,8 @@
 
 namespace App\Api\Processor;
 
+use ApiPlatform\Doctrine\Common\State\PersistProcessor;
+use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
@@ -17,10 +19,8 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
      * @param ProcessorInterface<ConstructionSite, ConstructionSite> $removeProcessor
      */
     public function __construct(
-        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
-        private ProcessorInterface $persistProcessor,
-        #[Autowire(service: 'api_platform.doctrine.orm.state.remove_processor')]
-        private ProcessorInterface $removeProcessor,
+        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
+        #[Autowire(service: RemoveProcessor::class)] private ProcessorInterface $removeProcessor,
         private StorageServiceInterface $storageService,
     ) {
     }

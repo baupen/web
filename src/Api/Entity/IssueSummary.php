@@ -8,16 +8,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class IssueSummary
 {
-    #[Groups(['issue-read', 'craftsman-read'])]
+    #[Groups(['issue:read', 'craftsman:read'])]
     private int $newCount;
 
-    #[Groups(['issue-read', 'craftsman-read'])]
+    #[Groups(['issue:read', 'craftsman:read'])]
     private int $openCount;
 
-    #[Groups(['issue-read', 'craftsman-read'])]
+    #[Groups(['issue:read', 'craftsman:read'])]
     private int $inspectableCount;
 
-    #[Groups(['issue-read', 'craftsman-read'])]
+    #[Groups(['issue:read', 'craftsman:read'])]
     private int $closedCount;
 
     public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis): self
@@ -40,7 +40,7 @@ class IssueSummary
         return $self;
     }
 
-    protected function writeFromIssueAnalysis(IssueAnalysis $issueAnalysis)
+    protected function writeFromIssueAnalysis(IssueAnalysis $issueAnalysis): void
     {
         $this->newCount = $issueAnalysis->getNewCount();
         $this->openCount = $issueAnalysis->getOpenCount();
@@ -53,19 +53,9 @@ class IssueSummary
         return $this->newCount;
     }
 
-    public function setNewCount(int $newCount): void
-    {
-        $this->newCount = $newCount;
-    }
-
     public function getOpenCount(): int
     {
         return $this->openCount;
-    }
-
-    public function setOpenCount(int $openCount): void
-    {
-        $this->openCount = $openCount;
     }
 
     public function getInspectableCount(): int
@@ -73,18 +63,8 @@ class IssueSummary
         return $this->inspectableCount;
     }
 
-    public function setInspectableCount(int $inspectableCount): void
-    {
-        $this->inspectableCount = $inspectableCount;
-    }
-
     public function getClosedCount(): int
     {
         return $this->closedCount;
-    }
-
-    public function setClosedCount(int $closedCount): void
-    {
-        $this->closedCount = $closedCount;
     }
 }

@@ -31,6 +31,8 @@ Backend:
 - Simplify access control
 - Refactor user registration (set password, refactor UserTrait)
 - Refactor tests?
+- check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
+- Re-add authentication (all operations, including query filters)
 
 Frontend:
 - Replace noty (noty longer maintained)
@@ -49,3 +51,4 @@ fix behaviour:
 
 after release:
 - remove BASE_URI from .env of instances
+- cleanup craftsman statistics / craftsman analysis
