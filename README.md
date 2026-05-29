@@ -29,6 +29,7 @@ Backend:
 - Add phpstan static analysis & fix all issues
 - Remove fixtures if possible (includes liip bundles)
 - Simplify access control
+- Refactor user registration (set password, refactor UserTrait)
 - Refactor tests?
 
 Frontend:
@@ -42,6 +43,9 @@ UX:
 - Introduce profile / password change page, where also weekly can be configured
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
 - Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
+
+fix behaviour:
+- When construction manager is POSTed, if email already exists, generic error is thrown.
 
 after release:
 - remove BASE_URI from .env of instances

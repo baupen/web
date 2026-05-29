@@ -4,7 +4,7 @@
   "description": "improve issue management on construction sites ",
   "license": "MIT",
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.4",
     "ext-ctype": "*",
     "ext-exif": "*",
     "ext-gd": "*",

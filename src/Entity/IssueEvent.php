@@ -8,6 +8,7 @@ use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
+use App\Enum\EmailType;
 use App\Enum\IssueEventTypes;
 use App\Enum\IssueState;
 use Doctrine\DBAL\Types\Types;
@@ -148,6 +149,20 @@ class IssueEvent extends BaseEntity
         }
 
         return $entries;
+    }
+
+    public static function createFromEmail(ConstructionSite $constructionSite, string $receiver, string $authority, array $payload): self
+    {
+        // add event
+        $issueEvent = new IssueEvent();
+        $issueEvent->setConstructionSite($constructionSite);
+        $issueEvent->setRoot($receiver);
+        $issueEvent->setCreatedBy($authority);
+        $issueEvent->setLastChangedBy($authority);
+        $issueEvent->setTimestamp(new \DateTimeImmutable());
+        $issueEvent->setType(IssueEventTypes::Email);
+        $issueEvent->setPayload(json_encode($payload));
+        return  $issueEvent;
     }
 
     public function getConstructionSite(): ConstructionSite

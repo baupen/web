@@ -2,33 +2,33 @@
 
 namespace App\Api\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Api\Processor\CraftsmanEmailProcessor;
+use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
 use App\Enum\EmailType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ApiResource(
- *     collectionOperations={
- *      "post" = {"denormalization_context"={"groups"={"email-create"}}}
- *      },
- *     itemOperations={
- *      "none": {"method": "GET", "controller": NonExistingController::class }
- *     }
- *)
- * TODO remove, instead post directly to Email Entity, use a processor to send mail
- */
-class Email
+#[ApiResource(
+    processor: CraftsmanEmailProcessor::class,
+    denormalizationContext: ['groups' => ['email:create']],
+)]
+#[Post]
+class CraftsmanEmail
 {
-    /**
-     * @ApiProperty(identifier=true)
-     */
+    #[ApiProperty(identifier: true)]
     private $noneIdentifier;
 
     #[Assert\NotBlank]
     #[Groups(['email-create'])]
-    private string $receiver;
+    private ConstructionSite $constructionSite;
+
+    #[Assert\NotBlank]
+    #[Groups(['email-create'])]
+    private Craftsman $receiver;
 
     #[Assert\NotBlank]
     #[Groups(['email-create'])]
@@ -42,16 +42,22 @@ class Email
     #[Groups(['email-create'])]
     private bool $selfBcc;
 
-    #[Assert\NotNull]
-    #[Groups(['email-create'])]
-    private EmailType $type;
+    public function getConstructionSite(): ConstructionSite
+    {
+        return $this->constructionSite;
+    }
 
-    public function getReceiver(): string
+    public function setConstructionSite(ConstructionSite $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
+
+    public function getReceiver(): Craftsman
     {
         return $this->receiver;
     }
 
-    public function setReceiver(string $receiver): void
+    public function setReceiver(Craftsman $receiver): void
     {
         $this->receiver = $receiver;
     }
@@ -84,15 +90,5 @@ class Email
     public function setSelfBcc(bool $selfBcc): void
     {
         $this->selfBcc = $selfBcc;
-    }
-
-    public function getType(): EmailType
-    {
-        return $this->type;
-    }
-
-    public function setType(EmailType $type): void
-    {
-        $this->type = $type;
     }
 }
