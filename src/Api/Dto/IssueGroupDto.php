@@ -6,13 +6,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 class IssueGroupDto
 {
-    #[Groups(['issue-read'])]
+    #[Groups(['issue-group:read'])]
     private ?string $entity = null;
 
-    #[Groups(['issue-read'])]
+    #[Groups(['issue-group:read'])]
     private ?int $count = null;
 
-    #[Groups(['issue-read'])]
+    #[Groups(['issue-group:read'])]
     private ?\DateTime $earliestDeadline = null;
 
     public static function create(string $entity, int $count, ?\DateTime $earliestDeadline): self
