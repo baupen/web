@@ -14,31 +14,13 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class IssuesReport
+readonly class IssuesReport
 {
     use TokenTrait;
     use FileResponseTrait;
 
-    private ReportServiceInterface $reportService;
-
-    private TokenStorageInterface $tokenStorage;
-
-    private RequestStack $requestStack;
-
-    private RouterInterface $router;
-
-    private FilterServiceInterface $filterService;
-
-    /**
-     * IssueReportDataProvider constructor.
-     */
-    public function __construct(ReportServiceInterface $reportService, RequestStack $requestStack, TokenStorageInterface $tokenStorage, RouterInterface $router, FilterServiceInterface $filterService)
+    public function __construct(private ReportServiceInterface $reportService, private RequestStack $requestStack, private TokenStorageInterface $tokenStorage, private RouterInterface $router, private FilterServiceInterface $filterService)
     {
-        $this->reportService = $reportService;
-        $this->tokenStorage = $tokenStorage;
-        $this->requestStack = $requestStack;
-        $this->router = $router;
-        $this->filterService = $filterService;
     }
 
     /**
