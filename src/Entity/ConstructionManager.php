@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Api\Processor\ConstructionSiteProcessor;
+use ApiPlatform\Metadata\GetCollection;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
@@ -43,6 +44,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']],
     normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'user:read']],
 )]
+#[GetCollection(provider: AuthenticatedCollectionProvider::class)]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;

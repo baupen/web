@@ -34,33 +34,15 @@ services:
        autoconfigure: false
 
     # higher priority are called first
-    App\Api\DataProvider\AuthenticationAwareDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 4 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\CraftsmanStatisticsDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\IssueGroupDataProvider:
+    App\Api\Provider\IssueGroupProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\IssueRenderDataProvider:
+    App\Api\Provider\IssueSummaryProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\IssueReportDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\IssueSummaryDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\IssueTimeseriesDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\SerializerAwareDataProvider:
+    App\Api\Provider\IssueTimeseriesProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
@@ -68,8 +50,6 @@ services:
     App\Api\CustomController\IssuesRender:
         tags: [ 'controller.service_arguments']
     App\Api\CustomController\IssuesReport:
-        tags: [ 'controller.service_arguments']
-    App\Api\CustomController\IssuesSummary:
         tags: [ 'controller.service_arguments']
 
     'App\Api\Serializer\ConstructionSiteSerializer':

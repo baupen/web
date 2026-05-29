@@ -12,7 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
-use App\Api\Provider\AuthenticatedConstructionSiteProvider;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Api\Provider\CraftsmanStatisticsProvider;
 use App\Api\Provider\IssueCollectionProvider;
 use App\Entity\Base\BaseEntity;
@@ -62,7 +62,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read']],
 )]
 #[GetCollection(
-    provider: AuthenticatedConstructionSiteProvider::class,
+    provider: AuthenticatedCollectionProvider::class,
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
