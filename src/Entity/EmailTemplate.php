@@ -4,7 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\RequiredExactSearchFilter;
+use App\Api\Provider\AuthenticatedConstructionSiteProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -41,6 +45,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[\ApiPlatform\Metadata\ApiResource(
     denormalizationContext: ['groups' => ['email-template:write']],
     normalizationContext: ['groups' => ['email-template:read', 'time:read']],
+)]
+#[GetCollection(
+    provider: AuthenticatedConstructionSiteProvider::class,
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
+    parameters: [
+        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
+    ],
 )]
 class EmailTemplate extends BaseEntity
 {

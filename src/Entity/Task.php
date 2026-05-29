@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
+use App\Api\Provider\AuthenticatedConstructionSiteProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -30,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['task:write']]
 )]
 #[GetCollection(
+    provider: AuthenticatedConstructionSiteProvider::class,
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
