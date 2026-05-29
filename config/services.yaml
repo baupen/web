@@ -17,7 +17,7 @@ services:
             $mailerFromEmail: '%env(MAILER_FROM_EMAIL)%'
             $supportEmail: '%env(SUPPORT_EMAIL)%'
             $authorizationMethod: '%env(AUTHORIZATION_METHOD)%'
-            $baseUri: '%env(DEFAULT_URI)%'
+            $defaultUri: '%env(DEFAULT_URI)%'
             $environment: '%kernel.environment%'
             $publicDir: '%kernel.project_dir%/public'
             $reportAssetDir: '%kernel.project_dir%/assets/report'
