@@ -8,10 +8,12 @@ use ApiPlatform\Metadata\Post;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\CustomController\IssuesSummary;
+use App\Api\DataProvider\IssueGroupDataProvider;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
 use App\Api\Processor\IssueReportProcessor;
 use App\Api\Provider\CraftsmanStatisticsProvider;
+use App\Api\Provider\IssueGroupProvider;
 use App\Api\Provider\IssueProvider;
 use App\Api\Provider\IssueSummaryProvider;
 use App\Api\Provider\IssueTimeseriesProvider;
@@ -91,6 +93,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[Get(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read']], paginationEnabled: false)]
 #[Get(uriTemplate: '/issues/report', paginationEnabled: false, controller: IssuesReport::class)]
 #[Get(uriTemplate: '/issues/render', paginationEnabled: false, controller: IssuesRender::class)]
+#[Get(uriTemplate: '/issues/group', paginationEnabled: false, provider: IssueGroupProvider::class)]
 class Issue extends BaseEntity
 {
     use IdTrait;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Api\Entity;
+namespace App\Api\Dto;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class IssueGroup
+class IssueGroupDto
 {
     #[Groups(['issue-read'])]
     private ?string $entity = null;
@@ -15,11 +15,11 @@ class IssueGroup
     #[Groups(['issue-read'])]
     private ?\DateTime $earliestDeadline = null;
 
-    public static function create(string $iri, int $count, ?\DateTime $earliestDeadline): self
+    public static function create(string $entity, int $count, ?\DateTime $earliestDeadline): self
     {
         $self = new self();
 
-        $self->entity = $iri;
+        $self->entity = $entity;
         $self->count = $count;
         $self->earliestDeadline = $earliestDeadline;
 
