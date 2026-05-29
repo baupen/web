@@ -3,7 +3,7 @@
 namespace App\Api\Dto;
 
 use App\Service\Analysis\IssueAnalysis;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class IssueSummaryDatedDto extends IssueSummaryDto
 {

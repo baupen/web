@@ -9,7 +9,7 @@ use App\Api\Processor\CraftsmanEmailProcessor;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Enum\EmailType;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
