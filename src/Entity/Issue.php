@@ -4,12 +4,15 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\CustomController\IssuesSummary;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
+use App\Api\Processor\IssueReportProcessor;
 use App\Api\Provider\CraftsmanStatisticsProvider;
+use App\Api\Provider\IssueProvider;
 use App\Api\Provider\IssueSummaryProvider;
 use App\Api\Provider\IssueTimeseriesProvider;
 use App\Entity\Base\BaseEntity;
@@ -79,12 +82,15 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Entity(repositoryClass: IssueRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
+    provider: IssueProvider::class,
     denormalizationContext: ['groups' => ['issue:write']],
     normalizationContext: ['groups' => ['issue:read', 'soft-delete:read']],
 )]
 
 #[Get(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read']], paginationEnabled: false)]
 #[Get(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read']], paginationEnabled: false)]
+#[Get(uriTemplate: '/issues/report', paginationEnabled: false, controller: IssuesReport::class)]
+#[Get(uriTemplate: '/issues/render', paginationEnabled: false, controller: IssuesRender::class)]
 class Issue extends BaseEntity
 {
     use IdTrait;
