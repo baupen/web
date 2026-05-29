@@ -43,9 +43,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[Get(security: 'is_granted("ISSUE_EVENT_VIEW", object)')]
-#[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_MODIFY", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
+#[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_CREATE", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
 #[Patch(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
-#[Delete(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
+#[Delete(security: 'is_granted("ISSUE_EVENT_DELETE", object)')]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 #[ApiFilter(SearchFilter::class, properties: ['root', 'createdBy'], strategy: SearchFilterInterface::STRATEGY_EXACT)]
 #[ApiFilter(BooleanFilter::class, properties: ['contextualForChildren'])]

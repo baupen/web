@@ -31,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
     parameters: [
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
