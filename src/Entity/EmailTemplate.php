@@ -5,7 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
@@ -43,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[\ApiPlatform\Metadata\ApiResource(
     denormalizationContext: ['groups' => ['email-template:write']],
-    normalizationContext: ['groups' => ['email-template:read', 'time:read']],
+    normalizationContext: ['groups' => ['email-template:read', 'time:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
@@ -52,6 +56,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
+#[Get(security: 'is_granted("EMAIL_TEMPLATE_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("EMAIL_TEMPLATE_MODIFY", object)', denormalizationContext: ['groups' => ['email-template:create', 'email-template:write']])]
+#[Patch(security: 'is_granted("EMAIL_TEMPLATE_MODIFY", object)')]
+#[Delete(security: 'is_granted("EMAIL_TEMPLATE_MODIFY", object)')]
 class EmailTemplate extends BaseEntity
 {
     use IdTrait;
@@ -82,7 +90,7 @@ class EmailTemplate extends BaseEntity
     private bool $selfBcc;
 
     #[Assert\NotBlank]
-    #[Groups(['email-template:create'])]
+    #[Groups(['email-template:read', 'email-template:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'emailTemplates')]
     private ?ConstructionSite $constructionSite = null;
 

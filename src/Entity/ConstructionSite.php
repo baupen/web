@@ -2,7 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Processor\ConstructionSiteProcessor;
 use App\Api\Provider\AuthenticatedCollectionProvider;
@@ -36,7 +42,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"pagination_enabled"=false}
  * )
  *
- * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"}) // use iri filter
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(BooleanFilter::class, properties={"isArchived", "isHidden"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
@@ -45,10 +50,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[\ApiPlatform\Metadata\ApiResource(
     denormalizationContext: ['groups' => ['construction-site:write', 'address:write']],
-    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read']],
+    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read'], "skip_null_values" => false],
     processor: ConstructionSiteProcessor::class,
 )]
-#[GetCollection(provider: AuthenticatedCollectionProvider::class)]
+#[GetCollection(provider: AuthenticatedCollectionProvider::class,
+    parameters: [
+        'constructionManagers.id' => new QueryParameter(filter: new IriFilter(),),
+    ],
+)]
+#[Get(security: 'is_granted("CONSTRUCTION_SITE_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)', denormalizationContext: ['groups' => ['construction-site:create', 'construction-site:write']])]
+#[Patch(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
+#[Delete(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 class ConstructionSite extends BaseEntity
 {
     use IdTrait;

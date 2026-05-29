@@ -4,7 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
@@ -47,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['issue-event:write']],
-    normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read']],
+    normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
@@ -56,6 +60,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
+#[Get(security: 'is_granted("ISSUE_EVENT_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_MODIFY", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
+#[Patch(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
+#[Delete(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
 class IssueEvent extends BaseEntity
 {
     use IdTrait;

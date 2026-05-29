@@ -4,7 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
@@ -34,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[\ApiPlatform\Metadata\ApiResource(
     denormalizationContext: ['groups' => []],
-    normalizationContext: ['groups' => ['filter:read', 'time:read']],
+    normalizationContext: ['groups' => ['filter:read', 'time:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
@@ -43,6 +47,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         'constructionSite' => new QueryParameter(filter: new IriFilter(),),
     ],
 )]
+#[Get(security: 'is_granted("FILTER_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("FILTER_MODIFY", object)', denormalizationContext: ['groups' => ['filter:create', 'filter:write']])]
 class Filter extends BaseEntity
 {
     use IdTrait;
