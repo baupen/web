@@ -58,7 +58,7 @@ class IssueEvent extends BaseEntity
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event:create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issueEvents')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -96,6 +96,7 @@ class IssueEvent extends BaseEntity
     private ?bool $contextualForChildren = true;
 
     #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]
+    #[Groups(['issue-event:read'])]
     private ?IssueEventFile $file = null;
 
     /**

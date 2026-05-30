@@ -2,6 +2,7 @@
 
 namespace App\Api\Serializer;
 
+use App\Entity\ConstructionSite;
 use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -14,7 +15,8 @@ readonly class IssueEventSerializer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [IssueEvent::class];
+        assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
+        return [IssueEvent::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
@@ -29,6 +31,7 @@ readonly class IssueEventSerializer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
+        unset($normalized['file']);
         if (null !== $data->getFile()) {
             $url = $this->urlGenerator->generate('issue_event_file', [
                 'issueEvent' => $data->getId(),
