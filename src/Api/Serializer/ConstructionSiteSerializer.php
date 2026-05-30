@@ -14,7 +14,8 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [ConstructionSite::class];
+        assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
+        return [ConstructionSite::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
@@ -29,6 +30,7 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
+        unset($normalized['image']);
         if (null !== $data->getImage()) {
             $url = $this->urlGenerator->generate('construction_site_image', [
                 'constructionSite' => $data->getId(),

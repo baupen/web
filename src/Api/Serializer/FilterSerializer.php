@@ -18,7 +18,8 @@ readonly class FilterSerializer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Filter::class];
+        assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
+        return [Filter::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

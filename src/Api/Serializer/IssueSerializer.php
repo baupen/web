@@ -14,7 +14,8 @@ readonly class IssueSerializer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Issue::class];
+        assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
+        return [Issue::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
@@ -29,6 +30,7 @@ readonly class IssueSerializer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
+        unset($normalized['image']);
         if (null !== $data->getImage()) {
             $url = $this->urlGenerator->generate('issue_image', [
                 'issue' => $data->getId(),

@@ -19,7 +19,8 @@ readonly class CraftsmanSerializer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Craftsman::class];
+        assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
+        return [Craftsman::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
