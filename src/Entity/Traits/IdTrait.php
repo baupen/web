@@ -16,8 +16,9 @@ trait IdTrait
      * will be null when not inserted into the db yet
      */
     #[ORM\Id]
-    #[ORM\Column(name: 'id', type: Types::GUID)]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: Types::GUID, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private $id;
 
     /**

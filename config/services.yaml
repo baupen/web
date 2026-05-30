@@ -27,6 +27,9 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Api/Entity'
 
     App\Api\OpenApi\OpenApiFactory:
        decorates: 'api_platform.openapi.factory'
