@@ -40,15 +40,15 @@ services:
     App\Api\Provider\IssueGroupProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+            $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
     App\Api\Provider\IssueSummaryProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+            $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
     App\Api\Provider\IssueTimeseriesProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
-            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+            $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
 
     App\Api\CustomController\IssuesRender:
         tags: [ 'controller.service_arguments']
