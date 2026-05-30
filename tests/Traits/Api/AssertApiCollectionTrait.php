@@ -2,8 +2,8 @@
 
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Response;
 
 trait AssertApiCollectionTrait
 {
