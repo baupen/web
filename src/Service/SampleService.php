@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -12,6 +11,7 @@ use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
+use App\Service\Sample\AssetFile;
 use Symfony\Component\Serializer\SerializerInterface;
 
 readonly class SampleService implements SampleServiceInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\DataFixtures;
+namespace App\Service\Sample;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

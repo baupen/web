@@ -7,7 +7,7 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
-use App\Tests\DataFixtures\AssetFile;
+use App\Service\Sample\AssetFile;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
