@@ -13,12 +13,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * The authentication token authenticates API calls.
  */
-class AuthenticationToken extends BaseEntity implements UserInterface
+class AuthenticationToken implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
 
-    public const ROLE_API_USER = 'ROLE_API_USER';
+    public const string ROLE_API_USER = 'ROLE_API_USER';
 
     private string $token;
 
