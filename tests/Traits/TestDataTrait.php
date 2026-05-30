@@ -2,6 +2,7 @@
 
 namespace App\Tests\Traits;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -14,9 +15,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 trait TestDataTrait
 {
-    private function getIriFromItem($item)
+    private function getIriFromItem($item): ?string
     {
-        return static::getClient()->getContainer()->get('api_platform.iri_converter')->getIriFromItem($item);
+        return static::getClient()->getContainer()->get(IriConverterInterface::class)->getIriFromResource($item);
     }
 
     private function getTestConstructionManager(): ConstructionManager

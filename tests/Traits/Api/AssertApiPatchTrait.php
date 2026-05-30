@@ -4,10 +4,11 @@ namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiPatchTrait
 {
-    private function assertApiPatchPayloadPersisted(Client $client, string $url, array $payload)
+    private function assertApiPatchPayloadPersisted(Client $client, string $url, array $payload): ResponseInterface
     {
         $response = $this->assertApiPatchOk($client, $url, $payload);
         $this->assertJsonContains($payload);
@@ -31,12 +32,12 @@ trait AssertApiPatchTrait
         }
     }
 
-    private function assertApiPatchOk(Client $client, string $url, array $payload)
+    private function assertApiPatchOk(Client $client, string $url, array $payload): ResponseInterface
     {
         return $this->assertApiPatchStatusCodeSame(StatusCode::HTTP_OK, $client, $url, $payload);
     }
 
-    private function assertApiPatchStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
+    private function assertApiPatchStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload): ResponseInterface
     {
         return $this->assertApiStatusCodeSame('PATCH', $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, $payload);
     }
