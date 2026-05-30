@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Patch(security: 'is_granted("MAP_MODIFY", object)')]
 #[Delete(security: 'is_granted("MAP_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
-#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
+#[ApiFilter(IsDeletedFilter::class)]
 class Map extends BaseEntity
 {
     use IdTrait;

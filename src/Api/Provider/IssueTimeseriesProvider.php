@@ -17,7 +17,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-readonly class IssueTimeseriesProvider implements ProviderInterface
+class IssueTimeseriesProvider implements ProviderInterface
 {
     use AuthenticatedProviderTrait;
     use CollectionProviderQueryBuilderTrait;
@@ -27,8 +27,8 @@ readonly class IssueTimeseriesProvider implements ProviderInterface
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
     public function __construct(
-        #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
-        private AnalysisService $analysisService,
+        #[Autowire(service: CollectionProvider::class)] private readonly ProviderInterface $collectionProvider,
+        private readonly AnalysisService $analysisService,
         TokenStorageInterface $tokenStorage,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,

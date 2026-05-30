@@ -48,7 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Delete(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
 #[ApiFilter(BooleanFilter::class, properties: ['isArchived', 'isHidden'])]
-#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
+#[ApiFilter(IsDeletedFilter::class)]
 class ConstructionSite extends BaseEntity
 {
     use IdTrait;
