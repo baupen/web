@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[\ApiPlatform\Metadata\ApiResource(
+#[ApiResource(
     denormalizationContext: ['groups' => []],
     normalizationContext: ['groups' => ['filter:read', 'time:read'], "skip_null_values" => false],
 )]

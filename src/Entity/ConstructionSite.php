@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -30,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[\ApiPlatform\Metadata\ApiResource(
+#[ApiResource(
     denormalizationContext: ['groups' => ['construction-site:write', 'address:write']],
     normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read'], "skip_null_values" => false],
     processor: ConstructionSiteProcessor::class,
@@ -43,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_SITE_VIEW", object)')]
-#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_CREATE", object)', denormalizationContext: ['groups' => ['construction-site:create', 'construction-site:write']])]
+#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_CREATE", object)', denormalizationContext: ['groups' => ['construction-site:create', 'construction-site:write', 'address:write']])]
 #[Patch(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 #[Delete(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
