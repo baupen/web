@@ -4,10 +4,11 @@ namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use ApiPlatform\Symfony\Bundle\Test\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiCollectionTrait
 {
-    private function assertApiCollectionContainsResponseItem(Client $client, string $url, Response $itemResponse): void
+    private function assertApiCollectionContainsResponseItem(Client $client, string $url, ResponseInterface $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
@@ -16,7 +17,7 @@ trait AssertApiCollectionTrait
         $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
-    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, Response $itemResponse): void
+    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, ResponseInterface $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);

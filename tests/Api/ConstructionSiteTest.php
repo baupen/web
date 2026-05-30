@@ -25,7 +25,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationUnsupported($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'DELETE', 'PUT');
+        $this->assertApiOperationUnsupported($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication(): void
@@ -76,7 +76,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id=' . $associatedConstructionManager->getId());
     }
 
-    public function testPostAndPatch(): void
+    public function testPostAndPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -114,7 +114,10 @@ class ConstructionSiteTest extends ApiTestCase
 
         $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id']);
-        $this->assertApiPatchStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id'], $sample);
+        $response = $this->assertApiPatchStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id'], $sample);
+
+        $this->assertApiDeleteOk($client, $newConstructionSite['@id']);
+        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/construction_sites', $response);
     }
 
     public function testLastChangedAtFilter(): void

@@ -154,14 +154,14 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     public function getRoles(): array
     {
         if ($this->isAdminAccount || str_ends_with($this->email, '@baupen.ch')) {
-            return [Role::ADMIN];
+            return [Role::ADMIN->value];
         }
 
         if (!$this->getCanAssociateSelf()) {
-            return [Role::ASSOCIATED_CONSTRUCTION_MANAGER];
+            return [Role::ASSOCIATED_CONSTRUCTION_MANAGER->value];
         }
 
-        return [Role::CONSTRUCTION_MANAGER];
+        return [Role::CONSTRUCTION_MANAGER->value];
     }
 
     #[Groups(['construction-manager:read'])]

@@ -23,7 +23,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $this->setSummaryResponse($openApi);
         $this->addFilePaths($openApi);
         $this->addFileUrlProperties($openApi);
-        $this->configureEmailEndpoint($openApi);
         $this->configureRegistrationEndpoint($openApi);
 
         return $openApi;
@@ -129,15 +128,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ->withDelete($deleteOperation);
 
         $openApi->getPaths()->addPath('/api/issues/{id}/image', $path);
-    }
-
-    private function configureEmailEndpoint(OpenApi &$openApi): void
-    {
-        $openApi = $this->removePath($openApi, '/api/emails/{noneIdentifier}');
-
-        $postOperation = $openApi->getPaths()->getPath('/api/emails')->getPost();
-        $postOperation->addResponse(new Model\Response('E-Mail sent'), 200);
-        $postOperation->addResponse(new Model\Response('E-Mail server unreachable'), 503);
     }
 
     private function configureRegistrationEndpoint(OpenApi $openApi): void
