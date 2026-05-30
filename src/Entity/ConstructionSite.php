@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     provider: AuthenticatedCollectionProvider::class,
     paginationEnabled: false,
     parameters: [
-        'constructionManagers.id' => new QueryParameter(filter: new IriFilter(),),
+        'constructionManagers.id' => new QueryParameter(filter: new IriFilter(), property: 'constructionManagers'),
     ],
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_SITE_VIEW", object)')]

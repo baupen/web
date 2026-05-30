@@ -14,6 +14,7 @@ use App\Entity\Issue;
 use App\Service\AnalysisService;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -30,12 +31,14 @@ class IssueTimeseriesProvider implements ProviderInterface
         #[Autowire(service: CollectionProvider::class)] private readonly ProviderInterface $collectionProvider,
         private readonly AnalysisService $analysisService,
         TokenStorageInterface $tokenStorage,
+        LoggerInterface $logger,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,
         iterable $collectionExtensions = [],
         ?ContainerInterface $handleLinksLocator = null
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
         $this->resourceMetadataCollectionFactory = $resourceMetadataCollectionFactory;
         $this->handleLinksLocator = $handleLinksLocator;
         $this->managerRegistry = $managerRegistry;

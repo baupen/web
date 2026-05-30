@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseController;
+use App\Enum\Role;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 

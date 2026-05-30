@@ -70,6 +70,10 @@ class AuthenticationToken implements UserInterface
 
     public function getRoles(): array
     {
+        if ($this->constructionManager) {
+            return array_merge([self::ROLE_API_USER], $this->constructionManager->getRoles());
+        }
+
         return [self::ROLE_API_USER];
     }
 
