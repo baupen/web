@@ -50,7 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['root', 'createdBy'], strategy: SearchFilterInterface::STRATEGY_EXACT)]
 #[ApiFilter(BooleanFilter::class, properties: ['contextualForChildren'])]
 #[ApiFilter(OrderFilter::class, properties: ['createdAt'])]
-#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
+#[ApiFilter(IsDeletedFilter::class)]
 class IssueEvent extends BaseEntity
 {
     use IdTrait;

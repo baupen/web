@@ -49,7 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Delete(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
 #[ApiFilter(SearchFilter::class, properties: ['trade'])]
-#[ApiFilter(IsDeletedFilter::class, properties: ['isDeleted'])]
+#[ApiFilter(IsDeletedFilter::class)]
 class Craftsman extends BaseEntity
 {
     use IdTrait;

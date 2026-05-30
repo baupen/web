@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-readonly class IssueGroupProvider implements ProviderInterface
+class IssueGroupProvider implements ProviderInterface
 {
     use AuthenticatedProviderTrait;
     use CollectionProviderQueryBuilderTrait;
@@ -33,10 +33,10 @@ readonly class IssueGroupProvider implements ProviderInterface
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
     public function __construct(
-        #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
-        private AnalysisService $analysisService,
-        private RequestStack $requestStack,
-        private IriConverterInterface $iriConverter,
+        #[Autowire(service: CollectionProvider::class)] private readonly ProviderInterface $collectionProvider,
+        private readonly AnalysisService $analysisService,
+        private readonly RequestStack $requestStack,
+        private readonly IriConverterInterface $iriConverter,
         TokenStorageInterface $tokenStorage,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,
