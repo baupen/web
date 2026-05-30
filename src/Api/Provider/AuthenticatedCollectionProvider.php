@@ -10,6 +10,7 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Map;
 use App\Security\TokenTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -23,18 +24,20 @@ readonly class AuthenticatedCollectionProvider implements ProviderInterface
      */
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        LoggerInterface $logger
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $resourceClass = $operation->getClass();
         if ($resourceClass === ConstructionSite::class) {
-            $this->ensureConstructionManagersLimited($context);
+            $this->ensureConstructionSiteFilteredByManagers($context);
         } elseif ($resourceClass === ConstructionManager::class) {
-            $this->ensureConstructionSitesLimited($context);
+            $this->ensureConstructionManagersFilteredBySites($context);
         } else {
             $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);
         }

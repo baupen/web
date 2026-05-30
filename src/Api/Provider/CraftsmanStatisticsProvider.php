@@ -10,6 +10,7 @@ use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Entity\Craftsman;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\AnalysisService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -23,9 +24,11 @@ readonly class CraftsmanStatisticsProvider implements ProviderInterface
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
         private AnalysisService $analysisService,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        LoggerInterface $logger
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null

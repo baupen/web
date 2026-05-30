@@ -5,6 +5,7 @@ namespace App\Api\Provider\Traits;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\ConstructionSite;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -12,8 +13,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 trait AuthenticatedProviderTrait
 {
     private readonly TokenStorageInterface $tokenStorage;
+    private readonly LoggerInterface $logger;
 
-    private function ensureConstructionManagersLimited(array &$context): void
+    private function ensureConstructionSiteFilteredByManagers(array $context): void
     {
         $token = $this->tokenStorage->getToken();
         $filters = $context['filters'] ?? [];
@@ -26,13 +28,14 @@ trait AuthenticatedProviderTrait
             if (isset($filters['constructionManagers.id'])) {
                 $this->ensureSearchFilterValid($filters, 'constructionManagers.id', $constructionManager->getId());
             } else {
-                $filters['constructionManagers.id'] = [$constructionManager->getId()];
-                $context['filters'] = $filters;
+                // this is fine; we filter afterwards in the corresponding extension
+                // but should not rely on this, incorrect way to use REST API
+                $this->logger->warning('Construction manager restriction not applied to construction site collection.');
             }
         }
     }
 
-    private function ensureConstructionSitesLimited(array &$context): void
+    private function ensureConstructionManagersFilteredBySites(array $context): void
     {
         $token = $this->tokenStorage->getToken();
         $constructionSiteRestriction = $this->getConstructionSiteRestriction($token);
@@ -44,8 +47,9 @@ trait AuthenticatedProviderTrait
         if (isset($existingFilter['constructionSites.id'])) {
             $this->ensureArraySearchFilterValid($existingFilter, 'constructionSites.id', $constructionSiteRestriction);
         } else {
-            $existingFilter['constructionSites.id'] = $constructionSiteRestriction;
-            $context['filters'] = $existingFilter;
+            // this is fine; we filter afterwards in the corresponding extension
+            // but should not rely on this, incorrect way to use REST API
+            $this->logger->warning('Construction site restriction not applied to construction manager collection.');
         }
     }
 
@@ -61,22 +65,6 @@ trait AuthenticatedProviderTrait
 
         $existingFilter = $context['filters'] ?? [];
         $this->ensureArraySearchFilterValid($existingFilter, 'constructionSite', $constructionSiteRestriction);
-    }
-
-    private function getConstructionSiteRestriction(TokenInterface $token): ?array
-    {
-        if (($constructionManager = $this->tryGetConstructionManager($token))) {
-            $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
-            $constructionSiteRestriction = $constructionManager->getCanAssociateSelf() ? null : $ownConstructionSiteIds;
-        } elseif (($craftsman = $this->tryGetCraftsman($token))) {
-            $constructionSiteRestriction = [$craftsman->getConstructionSite()->getId()];
-        } elseif (($filter = $this->tryGetFilter($token))) {
-            $constructionSiteRestriction = [$filter->getConstructionSite()->getId()];
-        } else {
-            throw new BadRequestException('Invalid authentication');
-        }
-
-        return $constructionSiteRestriction;
     }
 
     private function ensureIssueCollectionAuthenticated(Operation $operation, array $context): void

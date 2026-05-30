@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Entity\Issue;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -21,9 +22,11 @@ readonly class IssueCollectionProvider implements ProviderInterface
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
         private RequestStack $requestStack,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        LoggerInterface $logger
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null

@@ -18,6 +18,7 @@ use App\Extension\UTCDateTimeType;
 use App\Service\AnalysisService;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -38,12 +39,14 @@ class IssueGroupProvider implements ProviderInterface
         private readonly RequestStack $requestStack,
         private readonly IriConverterInterface $iriConverter,
         TokenStorageInterface $tokenStorage,
+        LoggerInterface $logger,
         ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         ManagerRegistry $managerRegistry,
         iterable $collectionExtensions = [],
         ?ContainerInterface $handleLinksLocator = null,
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
         $this->resourceMetadataCollectionFactory = $resourceMetadataCollectionFactory;
         $this->handleLinksLocator = $handleLinksLocator;
         $this->managerRegistry = $managerRegistry;
