@@ -6,13 +6,13 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 
 trait AssertApiCollectionFilterTrait
 {
-    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue): void
+    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTimeImmutable $currentValue): void
     {
-        $format = function (\DateTime $dateTime): string {
+        $format = function (\DateTimeImmutable $dateTime): string {
             return urlencode($dateTime->format('c'));
         };
 
-        $formatAlternative = function (\DateTime $dateTime): string {
+        $formatAlternative = function (\DateTimeImmutable $dateTime): string {
             $utcDateTime = clone $dateTime;
             $utcDateTime->setTimezone(new \DateTimeZone('UTC'));
 

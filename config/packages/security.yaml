@@ -36,7 +36,6 @@ security:
                 csrf_parameter: 'login[_token]'
                 csrf_token_id: 'login'
             logout:
-                path: logout
                 # where to redirect after logout
                 target: login
             remember_me:
