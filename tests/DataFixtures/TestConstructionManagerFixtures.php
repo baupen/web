@@ -9,10 +9,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = 1;
-    public const CONSTRUCTION_MANAGER_EMAIL = 'test@test.ch';
-    public const ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@test.ch';
-    public const DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@test.ch';
+    public const int ORDER = 1;
+    public const string CONSTRUCTION_MANAGER_EMAIL = 'test@test.ch';
+    public const string ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@test.ch';
+    public const string DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@test.ch';
 
     public function load(ObjectManager $manager): void
     {

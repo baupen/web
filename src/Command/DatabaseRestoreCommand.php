@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DatabaseRestoreCommand extends DatabaseCommand
 {
-    private const ERROR_NO_BACKUP = 1;
+    private const int ERROR_NO_BACKUP = 1;
 
     public function __construct(ManagerRegistry $registry, private readonly PathServiceInterface $pathService)
     {

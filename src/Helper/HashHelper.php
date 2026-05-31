@@ -4,7 +4,7 @@ namespace App\Helper;
 
 class HashHelper
 {
-    public const HASH_LENGTH = 20;
+    public const int HASH_LENGTH = 20;
 
     /**
      * generates a hash from alpha numeric characters of length 20.

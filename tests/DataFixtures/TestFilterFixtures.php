@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestFilterFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = TestConstructionSiteFixtures::ORDER + 1;
+    public const int ORDER = TestConstructionSiteFixtures::ORDER + 1;
 
     public function load(ObjectManager $manager): void
     {

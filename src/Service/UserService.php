@@ -11,9 +11,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class UserService implements UserServiceInterface
 {
-    public const AUTHORIZATION_METHOD_DEFAULT_ALLOW_SELF_ASSOCIATION = 'default_allow_self_association';
-    public const AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
-    public const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
+    public const string AUTHORIZATION_METHOD_DEFAULT_ALLOW_SELF_ASSOCIATION = 'default_allow_self_association';
+    public const string AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
+    public const string AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
 
     /**
      * @var string[][]|null
