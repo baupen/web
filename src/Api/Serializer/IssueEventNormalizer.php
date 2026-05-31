@@ -3,10 +3,11 @@
 namespace App\Api\Serializer;
 
 use App\Entity\ConstructionSite;
+use App\Entity\IssueEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-readonly class ConstructionSiteSerializer implements NormalizerInterface
+readonly class IssueEventNormalizer implements NormalizerInterface
 {
     public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
@@ -15,7 +16,7 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
     public function getSupportedTypes(?string $format): array
     {
         assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
-        return [ConstructionSite::class => true];
+        return [IssueEvent::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
@@ -24,21 +25,21 @@ readonly class ConstructionSiteSerializer implements NormalizerInterface
     }
 
     /**
-     * @param ConstructionSite $data
+     * @param IssueEvent $data
      */
     public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        unset($normalized['image']);
-        if (null !== $data->getImage()) {
-            $url = $this->urlGenerator->generate('construction_site_image', [
-                'constructionSite' => $data->getId(),
-                'constructionSiteImage' => $data->getImage()->getId(),
-                'filename' => $data->getImage()->getFilename(),
+        unset($normalized['file']);
+        if (null !== $data->getFile()) {
+            $url = $this->urlGenerator->generate('issue_event_file', [
+                'issueEvent' => $data->getId(),
+                'issueEventFile' => $data->getFile()->getId(),
+                'filename' => $data->getFile()->getFilename(),
             ]);
 
-            $normalized['imageUrl'] = $url;
+            $normalized['fileUrl'] = $url;
         }
 
         return $normalized;

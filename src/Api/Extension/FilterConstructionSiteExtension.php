@@ -23,9 +23,6 @@ final readonly class FilterConstructionSiteExtension implements QueryCollectionE
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        $token = $this->tokenStorage->getToken();
-        $constructionManager = $this->tryGetConstructionManager($token);
-
         if (ConstructionSite::class !== $resourceClass || $this->security->isGranted(Role::CONSTRUCTION_MANAGER->value)) {
             return;
         }

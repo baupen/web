@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
+use App\Api\Filters\RelatedConstructionManagerFilter;
+use App\Api\Processor\ConstructionManagerProcessor;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
@@ -30,19 +32,18 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
+    processor: ConstructionManagerProcessor::class,
     denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']],
-    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'user:read'], "skip_null_values" => false],
+    normalizationContext: ['groups' => ['construction-manager:read', 'time:read', 'user:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
-    parameters: [
-        'constructionSites.id' => new QueryParameter(filter: new IriFilter(),),
-    ],
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
-#[Post(denormalizationContext: ['groups' => ['construction-manager:create', 'construction-manager:write', 'user:write']])]
+#[Post(denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']])]
 #[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(RelatedConstructionManagerFilter::class)] // exposes constructionSites.id
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;
@@ -81,6 +82,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $canAssociateSelf = false;
 
+    #[Groups(['construction-manager:write', 'construction-manager:read-self'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $receiveWeekly = false;
 

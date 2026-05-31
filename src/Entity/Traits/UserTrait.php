@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
 {
-    #[Groups(['user:read', 'user:create'])]
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]

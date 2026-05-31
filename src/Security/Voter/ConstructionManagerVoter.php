@@ -17,7 +17,7 @@ class ConstructionManagerVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $subject instanceof ConstructionSite && in_array($attribute, [self::CONSTRUCTION_MANAGER_MODIFY, self::CONSTRUCTION_MANAGER_VIEW]);
+        return $subject instanceof ConstructionManager && in_array($attribute, [self::CONSTRUCTION_MANAGER_MODIFY, self::CONSTRUCTION_MANAGER_VIEW]);
     }
 
     /**
