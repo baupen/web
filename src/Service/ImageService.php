@@ -19,7 +19,7 @@ readonly class ImageService implements ImageServiceInterface
     /**
      * the name of the image rendered from the map pdf.
      */
-    private const PDF_RENDER_NAME = 'render.jpg';
+    private const string PDF_RENDER_NAME = 'render.jpg';
 
     /**
      * ImageService constructor.

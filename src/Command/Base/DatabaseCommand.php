@@ -10,7 +10,7 @@ abstract class DatabaseCommand extends Command
 {
     private ManagerRegistry $registry;
 
-    protected const BACKUP_FILE_PREFIX = 'mysql_';
+    protected const string BACKUP_FILE_PREFIX = 'mysql_';
 
     /**
      * DatabaseCommand constructor.

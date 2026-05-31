@@ -16,12 +16,12 @@ readonly class ContentDrawingService
     /**
      * constants for drawing the issues on the maps.
      */
-    private const PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
-    private const SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
-    private const MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
-    private const MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
-    private const MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
-    private const MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
+    private const float PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
+    private const float SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
+    private const float MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
+    private const float MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
+    private const float MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
+    private const float MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
 
     /**
      * @param Issue[] $issues

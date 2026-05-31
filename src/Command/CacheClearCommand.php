@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheClearCommand extends Command
 {
-    public const RETURN_CODE_NO_FORCE = 1;
+    public const int RETURN_CODE_NO_FORCE = 1;
 
     public function __construct(private readonly PathServiceInterface $pathService)
     {

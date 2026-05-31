@@ -12,8 +12,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestIssueEventFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = TestConstructionSiteFixtures::ORDER + TestConstructionManagerFixtures::ORDER + 1;
-    public const TEST_TEXT_ENTRY = 'hello world';
+    public const int ORDER = TestConstructionSiteFixtures::ORDER + TestConstructionManagerFixtures::ORDER + 1;
+    public const string TEST_TEXT_ENTRY = 'hello world';
 
     public function load(ObjectManager $manager): void
     {

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  */
 readonly class GdService
 {
-    private const FONT = __DIR__ . '/../../../assets/report/fonts/OpenSans-Bold.ttf';
+    private const string FONT = __DIR__ . '/../../../assets/report/fonts/OpenSans-Bold.ttf';
 
     /**
      * GdService constructor.

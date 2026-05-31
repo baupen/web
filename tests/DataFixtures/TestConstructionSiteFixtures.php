@@ -13,9 +13,9 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 {
     private SampleServiceInterface $sampleService;
 
-    public const ORDER = TestConstructionManagerFixtures::ORDER + 1;
-    public const TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
-    public const EMPTY_CONSTRUCTION_SITE_NAME = 'empty';
+    public const int ORDER = TestConstructionManagerFixtures::ORDER + 1;
+    public const string TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
+    public const string EMPTY_CONSTRUCTION_SITE_NAME = 'empty';
 
     /**
      * TestConstructionSiteFixtures constructor.

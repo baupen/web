@@ -16,7 +16,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CaptchaType extends AbstractType
 {
-    public const CAPTCHA_CHALLENGE_SESSION_KEY = '_captcha_challenge';
+    public const string CAPTCHA_CHALLENGE_SESSION_KEY = '_captcha_challenge';
 
     public function __construct(private readonly RequestStack $requestStack, private readonly TranslatorInterface $translator)
     {

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
@@ -17,9 +17,9 @@ use App\Entity\MapFile;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Security\Voter\ConstructionSiteVoter;
-use App\Security\Voter\MapVoter;
 use App\Security\Voter\IssueEventVoter;
 use App\Security\Voter\IssueVoter;
+use App\Security\Voter\Owned\MapVoter;
 use App\Service\Interfaces\CacheServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
