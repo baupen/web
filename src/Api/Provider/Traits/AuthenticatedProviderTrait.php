@@ -48,7 +48,6 @@ trait AuthenticatedProviderTrait
         if (isset($existingFilter['constructionSites.id'])) {
             $this->ensureArraySearchFilterValid($existingFilter, 'constructionSites.id', $constructionSiteRestriction);
         } else {
-            throw new BadRequestException('You must query this collection with a constructionSites.id parameter.');
             // this is fine; we filter afterwards in the corresponding extension
             // but should not rely on this, incorrect way to use REST API
             $this->logger->warning('Construction site restriction not applied to construction manager collection.');
