@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
 )]
 #[Get(security: 'is_granted("FILTER_VIEW", object)')]
-#[Post(securityPostDenormalize: 'is_granted("FILTER_MODIFY", object)', denormalizationContext: ['groups' => ['filter:create', 'filter:write']])]
+#[Post(securityPostDenormalize: 'is_granted("FILTER_CREATE", object)', denormalizationContext: ['groups' => ['filter:create', 'filter:write']])]
 #[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
 class Filter extends BaseEntity
 {

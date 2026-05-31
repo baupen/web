@@ -46,7 +46,7 @@ class FilterTest extends ApiTestCase
             'constructionSite' => $constructionSiteId,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/filters', $affiliation);
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/filters', $affiliation);
     }
 }
