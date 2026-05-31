@@ -19,8 +19,13 @@ readonly class RelatedConstructionManagerFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        $parameter = $context['parameter'] ?? null;
-        $value = $this->normalizeValue($parameter?->getValue());
+        $filters = $context['filters'] ?? [];
+        $constructionSiteId = $filters['constructionSites.id'] ?? null;
+        if (null === $constructionSiteId) {
+            return;
+        }
+
+        $value = $this->normalizeValue($constructionSiteId);
 
         // get whitelist of connected construction managers
         $repository = $this->managerRegistry->getRepository(ConstructionManager::class);

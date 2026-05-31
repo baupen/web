@@ -37,13 +37,6 @@ readonly class ApiContextBuilder implements SerializerContextBuilderInterface
             }
         }
 
-        if (ConstructionManager::class === $resourceClass && isset($context['groups']) && true === $normalization) {
-            $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-            if ($constructionManager instanceof ConstructionManager) {
-                $context['groups'][] = 'construction-manager:read-self';
-            }
-        }
-
         return $context;
     }
 }

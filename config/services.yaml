@@ -55,15 +55,17 @@ services:
     App\Api\CustomController\IssuesReport:
         tags: [ 'controller.service_arguments']
 
-    'App\Api\Serializer\ConstructionSiteSerializer':
+    'App\Api\Serializer\ConstructionManagerNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\CraftsmanSerializer':
+    'App\Api\Serializer\ConstructionSiteNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\FilterSerializer':
+    'App\Api\Serializer\CraftsmanNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\IssueSerializer':
+    'App\Api\Serializer\FilterNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\MapSerializer':
+    'App\Api\Serializer\IssueNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
-    'App\Api\Serializer\IssueEventSerializer':
+    'App\Api\Serializer\MapNormalizer':
+        bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
+    'App\Api\Serializer\IssueEventNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }

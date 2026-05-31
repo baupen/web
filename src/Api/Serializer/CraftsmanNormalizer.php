@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-readonly class CraftsmanSerializer implements NormalizerInterface
+readonly class CraftsmanNormalizer implements NormalizerInterface
 {
     use TokenTrait;
 

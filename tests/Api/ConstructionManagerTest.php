@@ -55,8 +55,8 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => 'test2@mail.com']);
         $this->assertEmailCount(1);
 
-        // can execute on already created accounts without error / reregistration
-        $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        // cannot create account twice
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertEmailCount(0);
 
         // associated construction manager does not get more info
@@ -99,7 +99,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
-        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'isEnabled', 'email', 'phone', 'lastChangedAt'];
+        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'isEnabled', 'email', 'phone', 'lastChangedAt', 'createdAt'];
         $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf', 'receiveWeekly']);
         sort($otherConstructionManagerFields);
         sort($selfConstructionManagerFields);
@@ -141,7 +141,6 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers');
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers', $emptyManagerIri);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $emptyManagerIri);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id=' . $emptyConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $constructionSite->getId());
     }

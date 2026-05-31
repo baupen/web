@@ -2,24 +2,20 @@
 
 namespace App\Api\Serializer;
 
-use App\Entity\Filter;
-use App\Security\TokenTrait;
+use App\Entity\ConstructionSite;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-readonly class FilterSerializer implements NormalizerInterface
+readonly class ConstructionSiteNormalizer implements NormalizerInterface
 {
-    use TokenTrait;
-
-    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator, private TokenStorageInterface $tokenStorage)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
     }
 
     public function getSupportedTypes(?string $format): array
     {
         assert(count($this->decoratedNormalizer->getSupportedTypes($format)) === 0);
-        return [Filter::class => true];
+        return [ConstructionSite::class => true];
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
@@ -28,17 +24,22 @@ readonly class FilterSerializer implements NormalizerInterface
     }
 
     /**
-     * @param Filter $data
+     * @param ConstructionSite $data
      */
     public function normalize($data, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        $url = $this->urlGenerator->generate('public_filtered', [
-            'token' => $data->getAuthenticationToken(),
-        ]);
+        unset($normalized['image']);
+        if (null !== $data->getImage()) {
+            $url = $this->urlGenerator->generate('construction_site_image', [
+                'constructionSite' => $data->getId(),
+                'constructionSiteImage' => $data->getImage()->getId(),
+                'filename' => $data->getImage()->getFilename(),
+            ]);
 
-        $normalized['filteredUrl'] = $url;
+            $normalized['imageUrl'] = $url;
+        }
 
         return $normalized;
     }
