@@ -35,7 +35,7 @@ class PublicController extends AbstractController
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
@@ -51,7 +51,7 @@ class PublicController extends AbstractController
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
         if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {

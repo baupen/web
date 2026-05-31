@@ -3,19 +3,15 @@
 namespace App\Api\Extension;
 
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
-use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Api\Filters\RelatedConstructionManagerFilter;
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Enum\Role;
 use App\Security\TokenTrait;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final readonly class FilterConstructionManagersExtension implements QueryCollectionExtensionInterface
 {

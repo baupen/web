@@ -88,12 +88,12 @@ class ApiController extends AbstractController
     public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $sanitizedVariant = strtolower($request->query->get('variant', ''));
         if ('' !== $sanitizedVariant && 'ios' !== $sanitizedVariant) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
@@ -112,7 +112,7 @@ class ApiController extends AbstractController
     public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -156,7 +156,7 @@ class ApiController extends AbstractController
     public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -220,7 +220,7 @@ class ApiController extends AbstractController
     public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);

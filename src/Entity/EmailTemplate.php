@@ -121,7 +121,7 @@ class EmailTemplate extends BaseEntity
         $this->selfBcc = $selfBcc;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
