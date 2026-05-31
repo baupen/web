@@ -17,7 +17,7 @@ abstract class AbstractConstructionSiteInternalVoter extends Voter
     /**
      * @param T $subject
      */
-    abstract protected function getConstructionSite(mixed $subject): ConstructionSite;
+    abstract protected function getConstructionSite(mixed $subject): ?ConstructionSite;
 
     /**
      * @param T $subject

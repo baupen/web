@@ -18,7 +18,7 @@ class TaskVoter extends AbstractConstructionSiteInternalVoter
         return $subject instanceof Task;
     }
 
-    protected function getConstructionSite(mixed $subject): ConstructionSite
+    protected function getConstructionSite(mixed $subject): ?ConstructionSite
     {
         return $subject->getConstructionSite();
     }

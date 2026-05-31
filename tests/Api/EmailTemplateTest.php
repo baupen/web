@@ -53,12 +53,12 @@ class EmailTemplateTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/email_templates', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/email_templates', $affiliation, $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/email_templates', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/email_templates', $sample, $affiliation);
 
         // test GET returns correct fields
         $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $response);
-        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc');
+        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc', 'createdAt', 'lastChangedAt', 'constructionSite');
 
         $emailTemplateId = json_decode($response->getContent(), true)['@id'];
 

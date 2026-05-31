@@ -19,7 +19,7 @@ class EmailTemplateVoter extends AbstractConstructionSiteInternalVoter
         return $subject instanceof EmailTemplate;
     }
 
-    protected function getConstructionSite(mixed $subject): ConstructionSite
+    protected function getConstructionSite(mixed $subject): ?ConstructionSite
     {
         return $subject->getConstructionSite();
     }

@@ -52,7 +52,7 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
                 throw new AuthenticationException();
             }
 
-            $craftsman = $data->getCraftsman();
+            $craftsman = $data->getReceiver();
             if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName()) instanceof Address) {
                 throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid E-Mail set: ' . $craftsman->getEmail());
             }

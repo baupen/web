@@ -18,7 +18,7 @@ class MapVoter extends AbstractConstructionSiteOwnedVoter
         return $subject instanceof Map;
     }
 
-    protected function getConstructionSite(mixed $subject): ConstructionSite
+    protected function getConstructionSite(mixed $subject): ?ConstructionSite
     {
         return $subject->getConstructionSite();
     }
