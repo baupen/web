@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -61,10 +62,8 @@ class Map extends BaseEntity
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'maps')]
     private ?ConstructionSite $constructionSite = null;
 
-    /**
-     * @ApiProperty(readableLink=false, writableLink=false)
-     */
     #[Groups(['map:read', 'map:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'children')]
     private ?self $parent = null;
 
