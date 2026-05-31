@@ -37,15 +37,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
-    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
-    parameters: [
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-    ],
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')"
 )]
 #[Get(security: 'is_granted("ISSUE_EVENT_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_CREATE", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
 #[Patch(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
 #[Delete(security: 'is_granted("ISSUE_EVENT_DELETE", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 #[ApiFilter(SearchFilter::class, properties: ['root', 'createdBy'], strategy: SearchFilterInterface::STRATEGY_EXACT)]
 #[ApiFilter(BooleanFilter::class, properties: ['contextualForChildren'])]

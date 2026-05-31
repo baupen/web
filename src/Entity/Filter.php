@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -27,12 +29,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
     security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
-    parameters: [
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-    ],
 )]
 #[Get(security: 'is_granted("FILTER_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("FILTER_MODIFY", object)', denormalizationContext: ['groups' => ['filter:create', 'filter:write']])]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
 class Filter extends BaseEntity
 {
     use IdTrait;

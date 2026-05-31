@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -33,16 +34,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
-    paginationEnabled: false,
-    parameters: [
-        'id' => new QueryParameter(filter: new IriFilter(),),
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-    ],
+    paginationEnabled: false
 )]
 #[Get(security: 'is_granted("MAP_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("MAP_MODIFY", object)', denormalizationContext: ['groups' => ['map:create', 'map:write']])]
 #[Patch(security: 'is_granted("MAP_MODIFY", object)')]
 #[Delete(security: 'is_granted("MAP_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'id'], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
 #[ApiFilter(IsDeletedFilter::class)]
 class Map extends BaseEntity

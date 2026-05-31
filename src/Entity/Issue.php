@@ -42,15 +42,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     denormalizationContext: ['groups' => ['issue:write']],
-    normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false],
-    parameters: [
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-        'craftsman' => new QueryParameter(filter: new IriFilter(),),
-        'map' => new QueryParameter(filter: new IriFilter(),),
-        'createdBy' => new QueryParameter(filter: new IriFilter(),),
-        'registeredBy' => new QueryParameter(filter: new IriFilter(),),
-        'closedBy' => new QueryParameter(filter: new IriFilter(),),
-    ],
+    normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false]
 )]
 #[GetCollection(provider: IssueCollectionProvider::class)]
 #[GetCollection(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
@@ -62,6 +54,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_MODIFY", object)', denormalizationContext: ['groups' => ['issue:create', 'issue:write']])]
 #[Patch(security: 'is_granted("ISSUE_MODIFY", object) or is_granted("ISSUE_RESPOND", object)')]
 #[Delete(security: 'is_granted("ISSUE_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'craftsman', 'map', 'createdBy', 'registeredBy', 'closedBy'], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(IsDeletedFilter::class)]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt', "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"])]
 #[ApiFilter(BooleanFilter::class, properties: ['isMarked', 'wasAddedWithClient'])]
