@@ -98,7 +98,7 @@ class Craftsman extends BaseEntity
     private bool $canEdit = true;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman:create'])]
+    #[Groups(['craftsman:read', 'craftsman:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'craftsmen')]
     private ?ConstructionSite $constructionSite = null;
 
