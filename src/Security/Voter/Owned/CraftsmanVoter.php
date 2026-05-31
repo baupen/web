@@ -19,7 +19,7 @@ class CraftsmanVoter extends AbstractConstructionSiteOwnedVoter
         return $subject instanceof Craftsman;
     }
 
-    protected function getConstructionSite(mixed $subject): ConstructionSite
+    protected function getConstructionSite(mixed $subject): ?ConstructionSite
     {
         return $subject->getConstructionSite();
     }
