@@ -26,17 +26,17 @@ abstract class DatabaseCommand extends Command
     {
         /** @var Connection $connection */
         $connection = $this->registry->getConnection();
+        $params = $connection->getParams();
 
-        /* @noinspection PhpDeprecationInspection */
         return [
-            'host' => $connection->getHost(),
-            'database' => $connection->getDatabase(),
-            'username' => $connection->getUsername(),
-            'password' => $connection->getPassword(),
+            'host' => $params['host'],
+            'database' => $params['dbname'] ?? $params['path'],
+            'username' => $params['user'],
+            'password' => $params['password'],
         ];
     }
 
-    protected function getMysqlCommandLineConnectionParameters()
+    protected function getMysqlCommandLineConnectionParameters(): string
     {
         $config = $this->getDatabaseConfiguration();
 

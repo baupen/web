@@ -11,10 +11,7 @@ class IssueService
 {
     private ManagerRegistry $manager;
 
-    /**
-     * @var IssueRepository
-     */
-    private $issueRepository;
+    private IssueRepository $issueRepository;
 
     /**
      * IssueDatabaseService constructor.

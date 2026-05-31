@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use ApiPlatform\Metadata\IriConverterInterface;
-use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\ConstructionSite;
@@ -26,6 +25,7 @@ use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\MapFileService;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -37,7 +37,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route(path: '/api')]
-class ApiController extends BaseController
+class ApiController extends AbstractController
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -197,7 +197,7 @@ class ApiController extends BaseController
     }
 
     #[Route(path: '/issue_events/{issueEvent}/file', name: 'post_issue_event_file', methods: ['POST'])]
-    public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, ImageServiceInterface $imageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
+    public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(IssueEventVoter::ISSUE_EVENT_MODIFY, $issueEvent);
 

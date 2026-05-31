@@ -51,7 +51,7 @@ trait TokenTrait
         }
 
         $craftsman = $this->tryGetCraftsman($token);
-        if ($craftsman) {
+        if ($craftsman instanceof Craftsman) {
             return $craftsman->getId();
         }
 

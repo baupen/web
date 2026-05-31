@@ -2,20 +2,17 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Helper\DoctrineHelper;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class I18nController extends BaseController
+class I18nController extends AbstractController
 {
-    /**
-     * @return Response
-     */
     #[Route(path: '/set_locale/{locale}', name: 'set_locale')]
-    public function setLocale(Request $request, string $locale, ManagerRegistry $registry): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function setLocale(Request $request, string $locale, ManagerRegistry $registry): RedirectResponse
     {
         // only change locale to valid values
         if (\in_array($locale, ['de', 'it'], true)) {

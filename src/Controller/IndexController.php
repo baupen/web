@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
-use App\Enum\Role;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/')]
-class IndexController extends BaseController
+class IndexController extends AbstractController
 {
     #[Route(path: '', name: 'index')]
     public function index(): Response

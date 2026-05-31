@@ -159,19 +159,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi = $openApi->withComponents($components);
     }
 
-    private function removePath(OpenApi $openApi, string $path): OpenApi
-    {
-        $paths = $openApi->getPaths()->getPaths();
-        unset($paths[$path]);
-
-        $newPaths = new Model\Paths();
-        foreach ($paths as $url => $path) {
-            $newPaths->addPath($url, $path);
-        }
-
-        return $openApi->withPaths($newPaths);
-    }
-
     private function addFileUrlProperties(OpenApi &$openApi): void
     {
         $schemaPatch = ['properties' => ['imageUrl' => ['type' => 'string', 'nullable' => true]]];

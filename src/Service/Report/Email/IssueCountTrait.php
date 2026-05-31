@@ -13,7 +13,7 @@ trait IssueCountTrait
     /**
      * @param IssueCountTrait $other
      */
-    protected function addIssueCount($other)
+    protected function addIssueCount($other): void
     {
         $this->openCount += $other->getOpenCount();
         $this->resolvedCount += $other->getResolvedCount();

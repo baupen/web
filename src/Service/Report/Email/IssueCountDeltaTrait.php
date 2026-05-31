@@ -13,7 +13,7 @@ trait IssueCountDeltaTrait
     /**
      * @param IssueCountDeltaTrait $other
      */
-    protected function addIssueCountDelta($other)
+    protected function addIssueCountDelta($other): void
     {
         $this->openCountDelta += $other->getOpenCountDelta();
         $this->resolvedCountDelta += $other->getResolvedCountDelta();

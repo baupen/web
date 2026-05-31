@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Entity\Email;
 use App\Helper\DoctrineHelper;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/email')]
-class EmailController extends BaseController
+class EmailController extends AbstractController
 {
     #[Route(path: '/{identifier}', name: 'email')]
     public function email(string $identifier, ManagerRegistry $registry): Response

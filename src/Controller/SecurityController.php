@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
 use App\Form\CaptchaType;
 use App\Form\ConstructionManager\RegisterConfirmType;
@@ -16,6 +15,7 @@ use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -30,7 +30,7 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SecurityController extends BaseController
+class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger, TranslatorInterface $translator): Response
@@ -42,18 +42,18 @@ class SecurityController extends BaseController
         // show last auth error
         $error = $authenticationUtils->getLastAuthenticationError();
         if ($error instanceof DisabledException) {
-            $this->displayError($translator->trans('login.errors.account_disabled', [], 'security'));
+            $this->addFlash('danger', $translator->trans('login.errors.account_disabled', [], 'security'));
         } elseif ($error instanceof BadCredentialsException) {
-            $this->displayError($translator->trans('login.errors.password_wrong', [], 'security'));
+            $this->addFlash('danger', $translator->trans('login.errors.password_wrong', [], 'security'));
         } elseif ($error instanceof UserNotFoundException) {
-            $this->displayError($translator->trans('login.errors.email_not_found', [], 'security'));
+            $this->addFlash('danger', $translator->trans('login.errors.email_not_found', [], 'security'));
         } elseif ($error instanceof UserWithoutPasswordAuthenticationException) {
-            $this->displayError($translator->trans('login.errors.registration_not_completed', [], 'security'));
+            $this->addFlash('danger', $translator->trans('login.errors.registration_not_completed', [], 'security'));
             $userRepo = $managerRegistry->getRepository(ConstructionManager::class);
             $user = $userRepo->find($error->getUserId());
             $emailService->sendRegisterConfirmLink($user);
         } elseif (null !== $error) {
-            $this->displayError($translator->trans('login.errors.login_failed', [], 'security'));
+            $this->addFlash('danger', $translator->trans('login.errors.login_failed', [], 'security'));
             $logger->error('login failed', ['exception' => $error]);
         }
 
@@ -96,7 +96,7 @@ class SecurityController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($userService->tryRegister($constructionManager, $error)) {
                 $message = $translator->trans('register.success.welcome', [], 'security');
-                $this->displaySuccess($message);
+                $this->addFlash('success', $message);
 
                 return $this->redirectToRoute('login');
             }
@@ -114,7 +114,7 @@ class SecurityController extends BaseController
                     break;
             }
 
-            $this->displayError($message);
+            $this->addFlash('danger', $message);
         }
 
         return $this->render('security/register.html.twig', ['form' => $form->createView()]);
@@ -129,7 +129,7 @@ class SecurityController extends BaseController
         }
 
         if ($constructionManager->getRegistrationCompleted()) {
-            $this->displayError($translator->trans('register.error.already_registered', [], 'security'));
+            $this->addFlash('danger', $translator->trans('register.error.already_registered', [], 'security'));
 
             return $this->redirectToRoute('login');
         }
@@ -152,7 +152,7 @@ class SecurityController extends BaseController
             }
 
             $security->login($constructionManager, 'form_login');
-            $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
+            $this->addFlash('success', $translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);
 
             return $this->redirectToRoute('help_welcome');
@@ -174,7 +174,7 @@ class SecurityController extends BaseController
             $existingConstructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
             if (null === $existingConstructionManager) {
                 $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
-                $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
+                $this->addFlash('danger', $translator->trans('recover.fail.email_not_found', [], 'security'));
             } else {
                 $this->sendAuthenticationLink($existingConstructionManager, $emailService, $logger, $translator, $registry);
             }
@@ -201,7 +201,7 @@ class SecurityController extends BaseController
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
 
             $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
-            $this->displaySuccess($message);
+            $this->addFlash('success', $message);
 
             $security->login($constructionManager, 'form_login');
 
@@ -216,7 +216,7 @@ class SecurityController extends BaseController
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
         if (null === $constructionManager) {
-            $this->displayError($translator->trans('recover_confirm.error.invalid_hash', [], 'security'));
+            $this->addFlash('danger', $translator->trans('recover_confirm.error.invalid_hash', [], 'security'));
 
             return false;
         }
@@ -230,13 +230,13 @@ class SecurityController extends BaseController
         $repeatPlainPassword = $form->get('repeatPlainPassword')->getData();
 
         if (strlen($plainPassword) < 8) {
-            $this->displayError($translator->trans('recover_confirm.error.password_too_short', [], 'security'));
+            $this->addFlash('danger', $translator->trans('recover_confirm.error.password_too_short', [], 'security'));
 
             return false;
         }
 
         if ($plainPassword !== $repeatPlainPassword) {
-            $this->displayError($translator->trans('recover_confirm.error.passwords_do_not_match', [], 'security'));
+            $this->addFlash('danger', $translator->trans('recover_confirm.error.passwords_do_not_match', [], 'security'));
 
             return false;
         }
@@ -254,10 +254,10 @@ class SecurityController extends BaseController
 
         if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
             $logger->info('sent password reset email to ' . $existingConstructionManager->getEmail());
-            $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
+            $this->addFlash('success', $translator->trans('recover.success.email_sent', [], 'security'));
         } else {
             $logger->error('could not send password reset email ' . $existingConstructionManager->getEmail());
-            $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
+            $this->addFlash('danger', $translator->trans('recover.fail.email_not_sent', [], 'security'));
         }
     }
 }

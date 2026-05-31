@@ -24,6 +24,7 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -85,7 +86,7 @@ class ConstructionSite extends BaseEntity
      * @var Collection<int, Map>
      */
     #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['name' => Criteria::ASC])]
+    #[ORM\OrderBy(['name' => Order::Ascending])]
     private Collection $maps;
 
     /**
@@ -116,7 +117,7 @@ class ConstructionSite extends BaseEntity
      * @var Collection<int, EmailTemplate>
      */
     #[ORM\OneToMany(targetEntity: EmailTemplate::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['purpose' => Criteria::ASC, 'name' => 'ASC'])]
+    #[ORM\OrderBy(['purpose' => Order::Ascending, 'name' => 'ASC'])]
     private Collection $emailTemplates;
 
     /**

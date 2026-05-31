@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/admin')]
-class AdminController extends BaseController
+class AdminController extends AbstractController
 {
     #[Route(path: '', name: 'admin_index')]
     public function index(ManagerRegistry $registry): Response
