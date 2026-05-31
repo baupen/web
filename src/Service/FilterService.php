@@ -52,7 +52,7 @@ readonly class FilterService implements FilterServiceInterface
         return $filter;
     }
 
-    private function getNullableValue(array $source, string $key)
+    private function getNullableValue(array $source, string $key): mixed
     {
         return $source[$key] ?? null;
     }

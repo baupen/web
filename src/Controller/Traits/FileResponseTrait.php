@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 
 trait FileResponseTrait
 {
-    private function tryCreateInlineFileResponse(?string $path, string $filename, bool $cache = false): BinaryFileResponse
+    private function tryCreateInlineFileResponse(?string $path, string $filename, bool $cache): BinaryFileResponse
     {
         return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, $cache);
     }

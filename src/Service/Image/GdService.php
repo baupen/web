@@ -172,27 +172,19 @@ readonly class GdService
     }
 
     /**
-     * @param \GdImage|resource $image
-     *
      * @throws \Exception
      */
-    private function createColorForLabel(string $label, &$image, float $opacity = 1): int|false
+    private function createColorForLabel(string $label, $image, float $opacity = 1): int|false
     {
         $alpha = (int) ((1 - $opacity) * 127);
-        switch ($label) {
-            case 'gray':
-                return $this->createColor($image, 18, 18, 18, $alpha);
-            case 'green':
-                return $this->createColor($image, 18, 140, 45, $alpha);
-            case 'orange':
-                return $this->createColor($image, 201, 151, 0, $alpha);
-            case 'blue':
-                return $this->createColor($image, 52, 52, 119, $alpha);
-            case 'white':
-                return $this->createColor($image, 255, 255, 255, $alpha);
-            default:
-                throw new \Exception('Unknown color');
-        }
+        return match ($label) {
+            'gray' => $this->createColor($image, 18, 18, 18, $alpha),
+            'green' => $this->createColor($image, 18, 140, 45, $alpha),
+            'orange' => $this->createColor($image, 201, 151, 0, $alpha),
+            'blue' => $this->createColor($image, 52, 52, 119, $alpha),
+            'white' => $this->createColor($image, 255, 255, 255, $alpha),
+            default => throw new \Exception('Unknown color'),
+        };
     }
 
     /**

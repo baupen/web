@@ -5,7 +5,6 @@ namespace App\Extension;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType;
-use phpDocumentor\Reflection\DocBlock\Tags\Deprecated;
 
 /**
 * @deprecated Use UTCDateTimeImmutableType instead.

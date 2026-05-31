@@ -22,9 +22,15 @@ interface ImageServiceInterface
     public const string SIZE_FULL = 'full';
 
     // all valid sizes
-    public const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_FULL];
+    /**
+     * @var string[]
+     */
+    public const array VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_FULL];
 
-    public const IMAGE_FILENAME_ENDINGS = ['jpg', 'jpeg', 'png', 'gif'];
+    /**
+     * @var string[]
+     */
+    public const array IMAGE_FILENAME_ENDINGS = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function isImageFilename(string $filename): bool;
 

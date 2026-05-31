@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Entity\ConstructionSite;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/construction_sites/{constructionSite}')]
-class ConstructionSiteController extends BaseController
+class ConstructionSiteController extends AbstractController
 {
     #[Route(path: '/common.js', name: 'construction_site_common_js')]
     public function commonJson(ConstructionSite $constructionSite): Response

@@ -12,7 +12,7 @@ interface SampleServiceInterface
     public const string SAMPLE_TIERHOTEL = 'Tierhotel';
     public const string TEST = 'Test';
 
-    public const ALL_SAMPLES = [self::SAMPLE_SIMPLE, self::SAMPLE_SUN_PARK, self::SAMPLE_TIERHOTEL];
+    public const array ALL_SAMPLES = [self::SAMPLE_SIMPLE, self::SAMPLE_SUN_PARK, self::SAMPLE_TIERHOTEL];
 
     public function createSampleConstructionSite(string $sampleName, ConstructionManager $constructionManager): ConstructionSite;
 }

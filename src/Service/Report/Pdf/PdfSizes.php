@@ -4,9 +4,6 @@ namespace App\Service\Report\Pdf;
 
 class PdfSizes
 {
-    /**
-     * @var float the used page size
-     */
     private array $pageSize = [210, 297];
 
     private int $marginSide = 10;
@@ -29,10 +26,8 @@ class PdfSizes
 
     /**
      * the total width of the document.
-     *
-     * @return float
      */
-    public function getPageSizeY()
+    public function getPageSizeY(): float
     {
         return $this->pageSize[1];
     }
@@ -72,8 +67,6 @@ class PdfSizes
 
     /**
      * the width of the document till the right margin.
-     *
-     * @return float
      */
     public function getContentYEnd(): int|float
     {
@@ -98,12 +91,7 @@ class PdfSizes
         return $this->getPageSizeY() - $this->getFooterYStart() + $this->differentContentMargin;
     }
 
-    /**
-     * @param bool $compact
-     *
-     * @return float
-     */
-    public function getColumnGutter($compact = false): int|float
+    public function getColumnGutter(bool $compact = false): int|float
     {
         if ($compact) {
             return $this->gutterSize / 2;
@@ -128,10 +116,8 @@ class PdfSizes
 
     /**
      * @param mixed|null $firstColumnSize
-     *
-     * @return float|float
      */
-    public function getColumnWidth($currentColumn, $numberOfColumns, $firstColumnSize = null)
+    public function getColumnWidth($currentColumn, $numberOfColumns, $firstColumnSize = null): float
     {
         if (null !== $firstColumnSize && 0 === $currentColumn) {
             return $firstColumnSize;
@@ -160,8 +146,6 @@ class PdfSizes
 
     /**
      * for footers/headers.
-     *
-     * @return float
      */
     public function getSmallFontSize(): int|float
     {
@@ -178,8 +162,6 @@ class PdfSizes
 
     /**
      * for titles.
-     *
-     * @return float
      */
     public function getBigFontSize(): int|float
     {
@@ -188,8 +170,6 @@ class PdfSizes
 
     /**
      * for big headers.
-     *
-     * @return float
      */
     public function getLargeFontSize(): float|int
     {
@@ -239,10 +219,8 @@ class PdfSizes
 
     /**
      * the total width of the document.
-     *
-     * @return float
      */
-    private function getPageSizeX()
+    private function getPageSizeX(): float
     {
         return $this->pageSize[0];
     }

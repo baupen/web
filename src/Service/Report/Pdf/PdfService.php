@@ -112,6 +112,7 @@ class PdfService
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
+            /** @var Issue[] $issues */
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
 
@@ -119,6 +120,7 @@ class PdfService
                 return $a->getNumber() <=> $b->getNumber();
             });
 
+            /** @var Issue[] $sortedIssues */
             $sortedIssues = [...$issues];
             if ($reportElements->getGroupIssuesByCraftsman()) {
                 usort($sortedIssues, function (Issue $a, Issue $b): int {

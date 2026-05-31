@@ -147,7 +147,7 @@ class CraftsmanService
         );
     }
 
-    public function getCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    public function getCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen): QueryBuilder
     {
         $craftsmanIds = $this->getCraftsmanIds($craftsmen);
 
@@ -159,7 +159,7 @@ class CraftsmanService
             ->setParameter(':craftsmanIds', $craftsmanIds);
     }
 
-    private function getOpenIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    private function getOpenIssuesQueryBuilder(string $rootAlias, array $craftsmen): QueryBuilder
     {
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen);
 

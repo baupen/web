@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
@@ -10,20 +9,18 @@ use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class PublicController extends BaseController
+class PublicController extends AbstractController
 {
     use TokenTrait;
     use FileResponseTrait;
 
-    /**
-     * @return Response
-     */
     #[Route(path: '/download/{filename}', name: 'public_download')]
-    public function download(string $filename, PathServiceInterface $pathService)
+    public function download(string $filename, PathServiceInterface $pathService): Response
     {
         $path = $pathService->getTransientFolderForReports();
 
@@ -41,7 +38,7 @@ class PublicController extends BaseController
             throw $this->createNotFoundException()();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
             $craftsman->setLastVisitOnline(new \DateTimeImmutable());
             DoctrineHelper::persistAndFlush($registry, $craftsman);
         }
@@ -57,7 +54,7 @@ class PublicController extends BaseController
             throw $this->createNotFoundException()();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
             $filter->setLastUsedAt();
             DoctrineHelper::persistAndFlush($registry, $filter);
         }

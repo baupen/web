@@ -54,7 +54,6 @@ class IssueGroupProvider implements ProviderInterface
     }
 
     /**
-     * @param Operation $operation
      * @return IssueGroupDto[]
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array

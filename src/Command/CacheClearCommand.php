@@ -33,9 +33,6 @@ class CacheClearCommand extends Command
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'If you add the --construction-sites or --authorization you must set the this parameter.');
     }
 
-    /**
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

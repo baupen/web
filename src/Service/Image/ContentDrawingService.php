@@ -208,9 +208,6 @@ readonly class ContentDrawingService
         }
     }
 
-    /**
-     * @return mixed[]
-     */
     private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups): array
     {
         // sort by row and xCoordinate

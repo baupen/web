@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CraftsmanEmail
 {
     #[ApiProperty(identifier: true)]
-    private $noneIdentifier;
+    private ?string $noneIdentifier;
 
     #[Assert\NotBlank]
     #[Groups(['email-create'])]
