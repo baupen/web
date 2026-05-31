@@ -6,6 +6,7 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Craftsman;
 use App\Enum\IssueEventTypes;
+use App\Extension\DateTimeZoneExtension;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestIssueEventFixtures;
@@ -47,7 +48,7 @@ class IssueEventTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issue_events?constructionSite=' . $constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'timestamp', 'createdAt', 'createdBy', 'lastChangedAt', 'lastChangedBy', 'isDeleted', 'contextualForChildren');
+        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'timestamp', 'createdAt', 'createdBy', 'lastChangedAt', 'lastChangedBy', 'isDeleted', 'contextualForChildren', 'constructionSite');
     }
 
     public function testPostAndDelete(): void
@@ -264,20 +265,21 @@ class IssueEventTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
         $craftsman = $constructionSite->getCraftsmen()[0];
         /** @var Craftsman $craftsman */
         $craftsmanId = $this->getIriFromItem($craftsman);
 
         $payload = [
+            'constructionSite' => $constructionSiteId,
             'receiver' => $craftsmanId,
             'subject' => 'Willkommen',
             'body' => 'Hallo auf der Baustelle 2',
             'selfBcc' => false,
-            'type' => 4,
         ];
 
         $this->loginApiConstructionManager($client);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_OK, $client, '/api/emails', $payload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/craftsman_emails', $payload);
 
         $expectedPayload = [
             'receiver' => $craftsman->getEmail(),

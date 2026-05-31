@@ -136,6 +136,10 @@ class IssueEventVoter extends Voter
                         return false;
                     }
 
+                    if (!$subject->getConstructionSite()) {
+                        return false;
+                    }
+
                     // must reference valid root belonging to construction site
                     if (
                         $subject->getRoot() !== $subject->getConstructionSite()->getId()

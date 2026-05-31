@@ -12,3 +12,5 @@ if (method_exists(Dotenv::class, 'bootEnv')) {
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 }
+
+date_default_timezone_set('Europe/Zurich');
