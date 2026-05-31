@@ -171,7 +171,7 @@ class IssueEvent extends BaseEntity
         return  $issueEvent;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }

@@ -220,7 +220,7 @@ class Craftsman extends BaseEntity
         $this->emailCCs = $emailCCs;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }

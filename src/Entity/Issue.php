@@ -219,7 +219,7 @@ class Issue extends BaseEntity
         $this->image = $image;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }

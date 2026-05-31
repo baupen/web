@@ -3,7 +3,6 @@
 namespace App\Api\Serializer;
 
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Security\TokenTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

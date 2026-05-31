@@ -100,7 +100,7 @@ class Map extends BaseEntity
         $this->name = $name;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }

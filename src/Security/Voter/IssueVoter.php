@@ -2,7 +2,6 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

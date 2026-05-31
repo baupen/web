@@ -382,7 +382,7 @@ class Filter extends BaseEntity
         $this->accessAllowedBefore = $accessAllowedBefore;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }

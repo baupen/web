@@ -3,7 +3,6 @@
 namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Security\TokenTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;

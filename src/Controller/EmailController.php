@@ -17,7 +17,7 @@ class EmailController extends AbstractController
     {
         $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);
         if (null === $email) {
-            throw $this->createNotFoundException()();
+            throw $this->createNotFoundException();
         }
 
         $email->markRead();
