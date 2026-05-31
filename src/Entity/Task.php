@@ -7,6 +7,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -31,15 +32,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
-    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
-    parameters: [
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-    ],
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')"
 )]
 #[Get(security: 'is_granted("TASK_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("TASK_MODIFY", object)', denormalizationContext: ['groups' => ['task:create', 'task:write']])]
 #[Patch(security: 'is_granted("TASK_MODIFY", object)')]
 #[Delete(security: 'is_granted("TASK_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(OrderFilter::class, properties: ['createdAt', 'closedAt'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
 #[ApiFilter(DateFilter::class, properties: ['createdAt', "deadline", "closedAt"])]
 #[ApiFilter(ExistsFilter::class, properties: ['closedAt'])]

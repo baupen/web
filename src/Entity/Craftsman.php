@@ -36,19 +36,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
-    paginationEnabled: false,
-    parameters: [
-        'id' => new QueryParameter(filter: new IriFilter(),),
-        'constructionSite' => new QueryParameter(filter: new IriFilter(),),
-    ],
+    paginationEnabled: false
 )]
 #[GetCollection(uriTemplate: '/craftsmen/statistics', provider: CraftsmanStatisticsProvider::class, normalizationContext: ['groups' => ['craftsman-statistics:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[Get(security: 'is_granted("CRAFTSMAN_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("CRAFTSMAN_MODIFY", object)', denormalizationContext: ['groups' => ['craftsman:create', 'craftsman:write']])]
 #[Patch(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
 #[Delete(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'id', 'trade'], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
-#[ApiFilter(SearchFilter::class, properties: ['trade'])]
 #[ApiFilter(IsDeletedFilter::class)]
 class Craftsman extends BaseEntity
 {
