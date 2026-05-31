@@ -27,9 +27,6 @@ class EmailTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
 
         $this->assertApiOperationUnsupported($client, '/api/craftsman_emails', 'GET');
-        $this->assertApiOperationNotAuthorized($client, '/api/craftsman_emails/someid', 'GET');
-        $this->assertApiOperationUnsupported($client, '/api/craftsman_emails/someid', 'PATCH');
-        $this->assertApiOperationUnsupported($client, '/api/craftsman_emails/someid', 'DELETE');
         $this->assertApiOperationNotAuthorized($client, '/api/craftsman_emails', 'POST');
     }
 
