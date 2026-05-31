@@ -14,6 +14,7 @@ use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Extension\UTCDateTimeImmutableType;
 use App\Extension\UTCDateTimeType;
 use App\Service\AnalysisService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -88,7 +89,7 @@ class IssueGroupProvider implements ProviderInterface
             // indexes are 1-based
             $iri = $this->iriConverter->getIriFromResource(Map::class, UrlGeneratorInterface::ABS_PATH, null, ['uri_variables' => ['id' => $issueGroupResult[1]]]);
             $count = $issueGroupResult[2];
-            $earliestDeadline = UTCDateTimeType::tryParseDateTime($issueGroupResult[3]);
+            $earliestDeadline = UTCDateTimeImmutableType::tryParseDateTime($issueGroupResult[3]);
             $issueGroups[] = IssueGroupDto::create($iri, $count, $earliestDeadline);
         }
 

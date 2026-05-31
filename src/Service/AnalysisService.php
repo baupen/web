@@ -79,7 +79,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
      *
      * @return CraftsmanAnalysis[]
      */
-    public function createCraftsmanAnalysisByCraftsman(array $craftsmen): array
+    public function createCraftsmanAnalysis(array $craftsmen): array
     {
         $craftsmanIssueAnalysisByCraftsman = [];
         $craftsmenDictionary = [];
@@ -99,7 +99,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
         $this->craftsmanService->findLastIssueResolved($craftsmen, $craftsmanAnalysisDictionary);
         $this->findLastActivity($craftsmen, $craftsmanAnalysisDictionary);
 
-        return $craftsmanAnalysisDictionary;
+        return array_values($craftsmanAnalysisDictionary);
     }
 
     /**

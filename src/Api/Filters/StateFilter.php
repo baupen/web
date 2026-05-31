@@ -12,8 +12,9 @@ readonly class StateFilter implements FilterInterface
 {
     public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        $parameter = $context['parameter'] ?? null;
-        $value = $this->normalizeValue($parameter?->getValue());
+        $filters = $context['filters'] ?? [];
+        $state = $filters['isDeleted'] ?? null;
+        $value = $this->normalizeValue($state);
         if (null === $value) {
             return;
         }

@@ -30,15 +30,17 @@ readonly class ConstructionSiteNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        unset($normalized['image']);
-        if (null !== $data->getImage()) {
-            $url = $this->urlGenerator->generate('construction_site_image', [
-                'constructionSite' => $data->getId(),
-                'constructionSiteImage' => $data->getImage()->getId(),
-                'filename' => $data->getImage()->getFilename(),
-            ]);
+        if (in_array('construction-site:read-self', $context['groups'], true)) {
+            unset($normalized['image']);
+            if (null !== $data->getImage()) {
+                $url = $this->urlGenerator->generate('construction_site_image', [
+                    'constructionSite' => $data->getId(),
+                    'constructionSiteImage' => $data->getImage()->getId(),
+                    'filename' => $data->getImage()->getFilename(),
+                ]);
 
-            $normalized['imageUrl'] = $url;
+                $normalized['imageUrl'] = $url;
+            }
         }
 
         return $normalized;

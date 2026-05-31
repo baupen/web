@@ -34,11 +34,13 @@ readonly class FilterNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        $url = $this->urlGenerator->generate('public_filtered', [
-            'token' => $data->getAuthenticationToken(),
-        ]);
+        if (in_array('filter:read', $context['groups'], true)) {
+            $url = $this->urlGenerator->generate('public_filtered', [
+                'token' => $data->getAuthenticationToken(),
+            ]);
 
-        $normalized['filteredUrl'] = $url;
+            $normalized['filteredUrl'] = $url;
+        }
 
         return $normalized;
     }

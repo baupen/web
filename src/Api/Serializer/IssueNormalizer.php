@@ -30,23 +30,25 @@ readonly class IssueNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        unset($normalized['image']);
-        if (null !== $data->getImage()) {
-            $url = $this->urlGenerator->generate('issue_image', [
-                'issue' => $data->getId(),
-                'issueImage' => $data->getImage()->getId(),
-                'filename' => $data->getImage()->getFilename(),
-            ]);
+        if (in_array('issue:read', $context['groups'], true)) {
+            unset($normalized['image']);
+            if (null !== $data->getImage()) {
+                $url = $this->urlGenerator->generate('issue_image', [
+                    'issue' => $data->getId(),
+                    'issueImage' => $data->getImage()->getId(),
+                    'filename' => $data->getImage()->getFilename(),
+                ]);
 
-            $normalized['imageUrl'] = $url;
-        }
+                $normalized['imageUrl'] = $url;
+            }
 
-        if ($data->hasPosition()) {
-            $url = $this->urlGenerator->generate('issue_map_render', [
-                'issue' => $data->getId(),
-            ]);
+            if ($data->hasPosition()) {
+                $url = $this->urlGenerator->generate('issue_map_render', [
+                    'issue' => $data->getId(),
+                ]);
 
-            $normalized['mapRenderUrl'] = $url;
+                $normalized['mapRenderUrl'] = $url;
+            }
         }
 
         return $normalized;

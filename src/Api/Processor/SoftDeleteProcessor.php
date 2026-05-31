@@ -7,7 +7,9 @@ use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\Map;
 use App\Security\TokenTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -18,8 +20,8 @@ readonly class SoftDeleteProcessor implements ProcessorInterface
     use TokenTrait;
 
     /**
-     * @param ProcessorInterface<Issue, Issue> $persistProcessor
-     * @param ProcessorInterface<Issue, Issue> $removeProcessor
+     * @param ProcessorInterface<Craftsman|Map, Craftsman|Map> $persistProcessor
+     * @param ProcessorInterface<Craftsman|Map, Craftsman|Map> $removeProcessor
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
@@ -32,7 +34,7 @@ readonly class SoftDeleteProcessor implements ProcessorInterface
     /**
      * @param Issue $data
      */
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Issue
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Craftsman|Map
     {
         if ($operation instanceof Delete) {
             $data->markAsDeleted();

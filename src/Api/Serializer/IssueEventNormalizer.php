@@ -30,15 +30,17 @@ readonly class IssueEventNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        unset($normalized['file']);
-        if (null !== $data->getFile()) {
-            $url = $this->urlGenerator->generate('issue_event_file', [
-                'issueEvent' => $data->getId(),
-                'issueEventFile' => $data->getFile()->getId(),
-                'filename' => $data->getFile()->getFilename(),
-            ]);
+        if (in_array('issue-event:read', $context['groups'], true)) {
+            unset($normalized['file']);
+            if (null !== $data->getFile()) {
+                $url = $this->urlGenerator->generate('issue_event_file', [
+                    'issueEvent' => $data->getId(),
+                    'issueEventFile' => $data->getFile()->getId(),
+                    'filename' => $data->getFile()->getFilename(),
+                ]);
 
-            $normalized['fileUrl'] = $url;
+                $normalized['fileUrl'] = $url;
+            }
         }
 
         return $normalized;
