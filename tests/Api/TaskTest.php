@@ -59,7 +59,7 @@ class TaskTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/tasks', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/tasks', $affiliation, $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/tasks', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/tasks', array_merge($sample, $optionalProperties), $affiliation);
 
         // test GET returns correct fields

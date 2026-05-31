@@ -19,7 +19,7 @@ class FilterVoter extends AbstractConstructionSiteInternalVoter
         return $subject instanceof Filter;
     }
 
-    protected function getConstructionSite(mixed $subject): ConstructionSite
+    protected function getConstructionSite(mixed $subject): ?ConstructionSite
     {
         return $subject->getConstructionSite();
     }

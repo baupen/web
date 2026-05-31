@@ -13,35 +13,32 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     processor: CraftsmanEmailProcessor::class,
-    denormalizationContext: ['groups' => ['email:create']],
+    denormalizationContext: ['groups' => ['craftsman-email:create']],
 )]
-#[Post]
+#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_MODIFY", object.getConstructionSite())')]
 class CraftsmanEmail
 {
-    #[ApiProperty(identifier: true)]
-    private ?string $noneIdentifier;
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-email:create'])]
+    private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['email-create'])]
-    private ConstructionSite $constructionSite;
-
-    #[Assert\NotBlank]
-    #[Groups(['email-create'])]
+    #[Groups(['craftsman-email:create'])]
     private Craftsman $receiver;
 
     #[Assert\NotBlank]
-    #[Groups(['email-create'])]
+    #[Groups(['craftsman-email:create'])]
     private string $subject;
 
     #[Assert\NotBlank]
-    #[Groups(['email-create'])]
+    #[Groups(['craftsman-email:create'])]
     private string $body;
 
     #[Assert\NotNull]
-    #[Groups(['email-create'])]
+    #[Groups(['craftsman-email:create'])]
     private bool $selfBcc;
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
