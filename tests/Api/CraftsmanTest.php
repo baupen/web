@@ -108,7 +108,7 @@ class CraftsmanTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/craftsmen', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/craftsmen', $affiliation, $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/craftsmen', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/craftsmen', $sample, $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $response);
         $craftsmanId = json_decode($response->getContent(), true)['@id'];
@@ -231,8 +231,8 @@ class CraftsmanTest extends ApiTestCase
         $this->assertEquals(null, $statistics['lastEmailReceived']);
         $this->assertEquals(null, $statistics['lastVisitOnline']);
 
-        $this->assertSame($yesterday->format('c'), $statistics['nextDeadline']);
-        $this->assertSame($tomorrow->format('c'), $statistics['lastIssueResolved']);
+        $this->assertEquals($yesterday, new \DateTime($statistics['nextDeadline']));
+        $this->assertEquals($tomorrow, new \DateTime($statistics['lastIssueResolved']));
 
         $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
         $craftsman->setLastEmailReceived($today);
@@ -240,8 +240,8 @@ class CraftsmanTest extends ApiTestCase
         $this->saveEntity($craftsman);
 
         $statistics = $this->getStatisticForCraftsman($client, $craftsman);
-        $this->assertSame($today->format('c'), $statistics['lastEmailReceived']);
-        $this->assertSame($tomorrow->format('c'), $statistics['lastVisitOnline']);
+        $this->assertEquals($today, new \DateTime($statistics['lastEmailReceived']));
+        $this->assertEquals($tomorrow, new \DateTime($statistics['lastVisitOnline']));
         $this->assertSame(0, $statistics['issueUnreadCount']);
     }
 

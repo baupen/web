@@ -4,6 +4,7 @@ namespace App\Service\Analysis\Database;
 
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Extension\UTCDateTimeImmutableType;
 use App\Extension\UTCDateTimeType;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\Analysis\CraftsmanIssueAnalysis;
@@ -123,7 +124,7 @@ class CraftsmanService
             $queryBuilder,
             'MIN(i.deadline)',
             function (string $craftsmanId, $value) use ($statisticsDictionary): void {
-                $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
+                $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeImmutableType::tryParseDateTime($value));
             }
         );
     }
@@ -142,7 +143,7 @@ class CraftsmanService
             $queryBuilder,
             'MAX(i.resolvedAt)',
             function (string $craftsmanId, $value) use ($statisticsDictionary): void {
-                $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
+                $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeImmutableType::tryParseDateTime($value));
             }
         );
     }

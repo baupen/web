@@ -36,7 +36,7 @@ readonly class CraftsmanStatisticsProvider implements ProviderInterface
         $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);
 
         $craftsmen = $this->collectionProvider->provide($operation, $uriVariables, $context);
-        $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysisByCraftsman($craftsmen);
+        $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysis($craftsmen);
 
         return array_map(
             static fn (CraftsmanAnalysis $craftsmanAnalysis): CraftsmanStatisticsDto => CraftsmanStatisticsDto::create($craftsmanAnalysis),

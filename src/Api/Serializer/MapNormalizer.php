@@ -30,15 +30,17 @@ readonly class MapNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        unset($normalized['file']);
-        if (null !== $data->getFile()) {
-            $url = $this->urlGenerator->generate('map_file', [
-                'map' => $data->getId(),
-                'mapFile' => $data->getFile()->getId(),
-                'filename' => $data->getFile()->getFilename(),
-            ]);
+        if (in_array('map:read', $context['groups'], true)) {
+            unset($normalized['file']);
+            if (null !== $data->getFile()) {
+                $url = $this->urlGenerator->generate('map_file', [
+                    'map' => $data->getId(),
+                    'mapFile' => $data->getFile()->getId(),
+                    'filename' => $data->getFile()->getFilename(),
+                ]);
 
-            $normalized['fileUrl'] = $url;
+                $normalized['fileUrl'] = $url;
+            }
         }
 
         return $normalized;

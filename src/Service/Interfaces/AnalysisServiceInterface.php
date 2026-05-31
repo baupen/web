@@ -24,5 +24,5 @@ interface AnalysisServiceInterface
      *
      * @return CraftsmanAnalysis[]
      */
-    public function createCraftsmanAnalysisByCraftsman(array $craftsmen): array;
+    public function createCraftsmanAnalysis(array $craftsmen): array;
 }

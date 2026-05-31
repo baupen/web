@@ -11,8 +11,9 @@ readonly class IsDeletedFilter implements FilterInterface
 {
     public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        $parameter = $context['parameter'] ?? null;
-        $value = $this->normalizeValue($parameter?->getValue());
+        $filters = $context['filters'] ?? [];
+        $isDeleted = $filters['isDeleted'] ?? null;
+        $value = $this->normalizeValue($isDeleted);
         if (null === $value) {
             return;
         }

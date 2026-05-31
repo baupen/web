@@ -10,13 +10,13 @@ class CraftsmanAnalysis
 
     private CraftsmanIssueAnalysis $issueAnalysis;
 
-    private ?\DateTime $nextDeadline = null;
+    private ?\DateTimeImmutable $nextDeadline = null;
 
-    private ?\DateTime $lastEmailReceived = null;
+    private ?\DateTimeImmutable $lastEmailReceived = null;
 
-    private ?\DateTime $lastVisitOnline = null;
+    private ?\DateTimeImmutable $lastVisitOnline = null;
 
-    private ?\DateTime $lastIssueResolved = null;
+    private ?\DateTimeImmutable $lastIssueResolved = null;
 
     public static function create(Craftsman $craftsman, CraftsmanIssueAnalysis $issueAnalysis): self
     {
@@ -38,42 +38,42 @@ class CraftsmanAnalysis
         return $this->issueAnalysis;
     }
 
-    public function getNextDeadline(): ?\DateTime
+    public function getNextDeadline(): ?\DateTimeImmutable
     {
         return $this->nextDeadline;
     }
 
-    public function setNextDeadline(?\DateTime $nextDeadline): void
+    public function setNextDeadline(?\DateTimeImmutable $nextDeadline): void
     {
         $this->nextDeadline = $nextDeadline;
     }
 
-    public function getLastEmailReceived(): ?\DateTime
+    public function getLastEmailReceived(): ?\DateTimeImmutable
     {
         return $this->lastEmailReceived;
     }
 
-    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
+    public function setLastEmailReceived(?\DateTimeImmutable $lastEmailReceived): void
     {
         $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?\DateTime
+    public function getLastVisitOnline(): ?\DateTimeImmutable
     {
         return $this->lastVisitOnline;
     }
 
-    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
+    public function setLastVisitOnline(?\DateTimeImmutable $lastVisitOnline): void
     {
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
-    public function getLastIssueResolved(): ?\DateTime
+    public function getLastIssueResolved(): ?\DateTimeImmutable
     {
         return $this->lastIssueResolved;
     }
 
-    public function setLastIssueResolved(?\DateTime $lastIssueResolved): void
+    public function setLastIssueResolved(?\DateTimeImmutable $lastIssueResolved): void
     {
         $this->lastIssueResolved = $lastIssueResolved;
     }

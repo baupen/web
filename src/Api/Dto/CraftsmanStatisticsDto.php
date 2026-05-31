@@ -23,16 +23,16 @@ class CraftsmanStatisticsDto
     public int $issueOverdueCount;
 
     #[Groups(['craftsman-statistics:read'])]
-    public ?DateTime $nextDeadline;
+    public ?\DateTimeImmutable $nextDeadline;
 
     #[Groups(['craftsman-statistics:read'])]
-    public ?DateTime $lastEmailReceived;
+    public ?\DateTimeImmutable $lastEmailReceived;
 
     #[Groups(['craftsman-statistics:read'])]
-    public ?DateTime $lastVisitOnline;
+    public ?\DateTimeImmutable $lastVisitOnline;
 
     #[Groups(['craftsman-statistics:read'])]
-    public ?DateTime $lastIssueResolved;
+    public ?\DateTimeImmutable $lastIssueResolved;
 
     public static function create(CraftsmanAnalysis $craftsmanAnalysis): self
     {
@@ -70,22 +70,22 @@ class CraftsmanStatisticsDto
         return $this->issueOverdueCount;
     }
 
-    public function getNextDeadline(): ?DateTime
+    public function getNextDeadline(): ?\DateTimeImmutable
     {
         return $this->nextDeadline;
     }
 
-    public function getLastEmailReceived(): ?DateTime
+    public function getLastEmailReceived(): ?\DateTimeImmutable
     {
         return $this->lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?DateTime
+    public function getLastVisitOnline(): ?\DateTimeImmutable
     {
         return $this->lastVisitOnline;
     }
 
-    public function getLastIssueResolved(): ?DateTime
+    public function getLastIssueResolved(): ?\DateTimeImmutable
     {
         return $this->lastIssueResolved;
     }

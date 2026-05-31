@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
+use App\Api\Processor\SoftDeleteProcessor;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
+    processor: SoftDeleteProcessor::class,
     denormalizationContext: ['groups' => ['map:write']],
     normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]

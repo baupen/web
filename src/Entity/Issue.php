@@ -17,11 +17,11 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\QueryParameter;
 use App\Api\CustomController\IssuesRender;
 use App\Api\CustomController\IssuesReport;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
+use App\Api\Processor\IssueProcessor;
 use App\Api\Provider\IssueCollectionProvider;
 use App\Api\Provider\IssueGroupProvider;
 use App\Api\Provider\IssueSummaryProvider;
@@ -41,6 +41,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Entity(repositoryClass: IssueRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
+    processor: IssueProcessor::class,
     denormalizationContext: ['groups' => ['issue:write']],
     normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false]
 )]

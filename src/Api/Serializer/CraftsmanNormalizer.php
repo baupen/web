@@ -35,12 +35,14 @@ readonly class CraftsmanNormalizer implements NormalizerInterface
     {
         $normalized = $this->decoratedNormalizer->normalize($data, $format, $context);
 
-        if ($this->tryGetConstructionManager($this->tokenStorage->getToken()) instanceof ConstructionManager) {
-            $url = $this->urlGenerator->generate('public_resolve', [
-                'token' => $data->getAuthenticationToken(),
-            ]);
+        if (in_array('craftsman:read', $context['groups'], true)) {
+            if ($this->tryGetConstructionManager($this->tokenStorage->getToken())) {
+                $url = $this->urlGenerator->generate('public_resolve', [
+                    'token' => $data->getAuthenticationToken(),
+                ]);
 
-            $normalized['resolveUrl'] = $url;
+                $normalized['resolveUrl'] = $url;
+            }
         }
 
         return $normalized;
