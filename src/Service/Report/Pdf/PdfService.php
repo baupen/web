@@ -352,7 +352,7 @@ class PdfService
         foreach ($issues as $issue) {
             $row = [];
 
-            $row[] = $issue->getNumber();
+            $row[] = (string) $issue->getNumber();
             $maxIssueNumber = max($issue->getNumber(), $maxIssueNumber);
 
             $row[] = $issue->getCraftsman()->getCompany() . "\n" . $issue->getCraftsman()->getTrade();
@@ -384,7 +384,7 @@ class PdfService
         $tableSizes = [];
 
         $tableHeader[] = '#';
-        $tableSizes[] = $cellPadding + strlen($maxIssueNumber) * $numberWidth;
+        $tableSizes[] = $cellPadding + strlen((string) $maxIssueNumber) * $numberWidth;
 
         $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
         $tableSizes[] = 0;

@@ -59,7 +59,7 @@ readonly class GdService
         $fillColor = $this->createColorForLabel($color, $image);
         $width = $textWidth + 2 * $padding + 2;
         $height = $textHeight + 2 * $padding + 2;
-        imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) $xPosition + $width, (int) $yPosition + $height, $fillColor);
+        imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) ($xPosition + $width), (int) ($yPosition + $height), $fillColor);
 
         // draw text
         imagettftext($image, $textFontSize, 0, (int) ($xPosition + $padding), (int) ($yPosition + $padding + $textHeight), $white, self::FONT, $text);
