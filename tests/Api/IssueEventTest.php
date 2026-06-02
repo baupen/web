@@ -196,16 +196,17 @@ class IssueEventTest extends ApiTestCase
         $constructionSiteId = $this->getIriFromItem($constructionSite);
         $map = $constructionSite->getMaps()[0];
         $mapId = $this->getIriFromItem($map);
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
         $basePayload = [
             'constructionSite' => $constructionSiteId,
             'map' => $mapId,
+            'craftsman' => $craftsmanId,
 
             'createdBy' => $constructionManagerId,
             'createdAt' => (new \DateTime())->format('c'),
         ];
 
-        $craftsman = $constructionSite->getCraftsmen()[0];
-        $craftsmanId = $this->getIriFromItem($craftsman);
         $time = (new \DateTime())->format('c');
 
         // post initially; no status change
