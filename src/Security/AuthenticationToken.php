@@ -1,17 +1,7 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Security;
 
-use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
@@ -22,12 +12,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * The authentication token authenticates API calls.
  */
-class AuthenticationToken extends BaseEntity implements UserInterface
+class AuthenticationToken implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
 
-    public const ROLE_API_USER = 'ROLE_API_USER';
+    public const string ROLE_API_USER = 'ROLE_API_USER';
 
     private string $token;
 
@@ -79,6 +69,10 @@ class AuthenticationToken extends BaseEntity implements UserInterface
 
     public function getRoles(): array
     {
+        if ($this->constructionManager) {
+            return array_merge([self::ROLE_API_USER], $this->constructionManager->getRoles());
+        }
+
         return [self::ROLE_API_USER];
     }
 
@@ -102,7 +96,8 @@ class AuthenticationToken extends BaseEntity implements UserInterface
         return $this->token;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
+        // TODO: Implement eraseCredentials() method.
     }
 }

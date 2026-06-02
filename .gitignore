@@ -27,11 +27,6 @@ assets/samples/**/*.tmp
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-
-###> friendsofphp/php-cs-fixer ###
-/.php-cs-fixer.cache
-###< friendsofphp/php-cs-fixer ###
-
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -40,9 +35,14 @@ yarn-error.log
 
 ###> phpunit/phpunit ###
 /phpunit.xml
-.phpunit.result.cache
+/.phpunit.cache/
 ###< phpunit/phpunit ###
 
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###

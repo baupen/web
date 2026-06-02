@@ -1,25 +1,21 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
+use App\Api\Processor\SoftDeleteProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -27,54 +23,45 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * An Map is a logical plan of some part of the construction site.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('MAP_MODIFY', object)", "denormalization_context"={"groups"={"map-create", "map-write"}}}
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('MAP_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('MAP_MODIFY', object)"},
- *      "delete" = {"security" = "is_granted('MAP_MODIFY', object)"},
- *     },
- *     normalizationContext={"groups"={"map-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"map-write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    processor: SoftDeleteProcessor::class,
+    denormalizationContext: ['groups' => ['map:write']],
+    normalizationContext: ['groups' => ['map:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false
+)]
+#[Get(security: 'is_granted("MAP_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("MAP_MODIFY", object)', denormalizationContext: ['groups' => ['map:create', 'map:write']])]
+#[Patch(security: 'is_granted("MAP_MODIFY", object)')]
+#[Delete(security: 'is_granted("MAP_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'id'], strategy: SearchFilter::STRATEGY_EXACT)]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(IsDeletedFilter::class)]
+class Map extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['map-read', 'map-write'])]
+    #[Groups(['map:read', 'map:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]
-    #[Groups(['map-create'])]
+    #[Groups(['map:create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'maps')]
     private ?ConstructionSite $constructionSite = null;
 
-    /**
-     * @ApiProperty(readableLink=false, writableLink=false)
-     */
-    #[Groups(['map-read', 'map-write'])]
+    #[Groups(['map:read', 'map:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'children')]
     private ?self $parent = null;
 
@@ -84,6 +71,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'parent')]
     private Collection $children;
 
+    #[Groups(['map:read'])]
     #[ORM\ManyToOne(targetEntity: MapFile::class, cascade: ['persist'])]
     private ?MapFile $file = null;
 
@@ -109,7 +97,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->name = $name;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
@@ -117,11 +105,6 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 
     public function getParent(): ?self
@@ -152,13 +135,13 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     public function getContext(): string
     {
-        if ($this->getParent() instanceof Map) {
+        if ($this->getParent()) {
             $parentContext = $this->getParent()->getContext();
             if ('' !== $parentContext) {
                 $parentContext .= ' > ';
             }
 
-            return $parentContext.$this->getParent()->getName();
+            return $parentContext . $this->getParent()->getName();
         }
 
         return '';
@@ -171,7 +154,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
             $context .= ' > ';
         }
 
-        return $context.$this->getName();
+        return $context . $this->getName();
     }
 
     public function getFile(): ?MapFile
@@ -182,17 +165,5 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setFile(?MapFile $file): void
     {
         $this->file = $file;
-    }
-
-    #[Groups(['map-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['map-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 }

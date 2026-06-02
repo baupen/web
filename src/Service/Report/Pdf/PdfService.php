@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Pdf;
 
 use App\Entity\ConstructionSite;
@@ -16,6 +7,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Enum\IssueState;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Helper\IssueHelper;
@@ -54,7 +46,7 @@ class PdfService
 
         $this->setScriptRuntime(count($issues));
 
-        $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+        $formattedDate = (new \DateTimeImmutable())->format(DateTimeFormatter::DATE_TIME_FORMAT);
         if (null === $author) {
             $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
         } else {
@@ -62,7 +54,7 @@ class PdfService
         }
 
         // initialize report
-        $logoPath = $this->reportAssetDir.'/logo.png';
+        $logoPath = $this->reportAssetDir . '/logo.png';
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footer, $logoPath);
         $report = new Report($pdfDefinition, $this->reportAssetDir);
 
@@ -76,11 +68,11 @@ class PdfService
         FileHelper::ensureFolderExists($folder);
 
         $humanReadablePrefix = $this->getHumanReadableFilenamePrefix($constructionSite, $filter);
-        $optimalFilename = $humanReadablePrefix.'.pdf';
-        $optimalPath = $folder.'/'.$optimalFilename;
-        $filename = file_exists($optimalPath) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
+        $optimalFilename = $humanReadablePrefix . '.pdf';
+        $optimalPath = $folder . '/' . $optimalFilename;
+        $filename = file_exists($optimalPath) ? $humanReadablePrefix . '_' . uniqid() . '.pdf' : $optimalFilename;
 
-        $path = $folder.'/'.$filename;
+        $path = $folder . '/' . $filename;
         $report->save($path);
 
         return $filename;
@@ -88,19 +80,19 @@ class PdfService
 
     private function getHumanReadableFilenamePrefix(ConstructionSite $constructionSite, Filter $filter): string
     {
-        $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
-        $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($constructionSite->getName());
+        $humanReadablePrefix = (new \DateTimeImmutable())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
+        $humanReadablePrefix .= '_' . FileHelper::sanitizeFileName($constructionSite->getName());
 
         if ($filter->getCraftsmanIds() && 1 === count($filter->getCraftsmanIds())) {
             $craftsmanRepository = $this->doctrine->getRepository(Craftsman::class);
             $craftsman = $craftsmanRepository->findOneBy(['id' => $filter->getCraftsmanIds()[0]]);
-            $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($craftsman->getCompany());
+            $humanReadablePrefix .= '_' . FileHelper::sanitizeFileName($craftsman->getCompany());
         }
 
         if ($filter->getMapIds() && 1 === count($filter->getMapIds())) {
             $mapRepository = $this->doctrine->getRepository(Map::class);
             $map = $mapRepository->findOneBy(['id' => $filter->getMapIds()[0]]);
-            $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($map->getName());
+            $humanReadablePrefix .= '_' . FileHelper::sanitizeFileName($map->getName());
         }
 
         return $humanReadablePrefix;
@@ -120,6 +112,7 @@ class PdfService
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
+            /** @var Issue[] $issues */
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
 
@@ -127,13 +120,14 @@ class PdfService
                 return $a->getNumber() <=> $b->getNumber();
             });
 
+            /** @var Issue[] $sortedIssues */
             $sortedIssues = [...$issues];
             if ($reportElements->getGroupIssuesByCraftsman()) {
                 usort($sortedIssues, function (Issue $a, Issue $b): int {
                     // order by craftsman
                     if ($a->getCraftsman() !== $b->getCraftsman()) {
-                        return $a->getCraftsman()->getCompany().$a->getCraftsman()->getTrade() <=>
-                            $b->getCraftsman()->getCompany().$b->getCraftsman()->getTrade();
+                        return $a->getCraftsman()->getCompany() . $a->getCraftsman()->getTrade() <=>
+                            $b->getCraftsman()->getCompany() . $b->getCraftsman()->getTrade();
                     }
 
                     // order by limit (early first)
@@ -222,7 +216,7 @@ class PdfService
         if (null !== $filter->getNumbers()) {
             $key = $this->translator->trans('number', [], 'entity_issue');
             $or = $this->translator->trans('introduction.filter.or', [], 'report');
-            $filterEntries[$key] = implode(' '.$or.' ', $filter->getNumbers());
+            $filterEntries[$key] = implode(' ' . $or . ' ', $filter->getNumbers());
         }
 
         if (null !== $filter->getDescription()) {
@@ -233,22 +227,22 @@ class PdfService
         // collect all set status
         if (null !== $filter->getState()) {
             $status = [];
-            if (($filter->getState() & Issue::STATE_CREATED) !== 0) {
+            if (($filter->getState() & IssueState::CREATED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.created', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_REGISTERED) !== 0) {
+            if (($filter->getState() & IssueState::REGISTERED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_RESOLVED) !== 0) {
+            if (($filter->getState() & IssueState::RESOLVED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
             }
-            if (($filter->getState() & Issue::STATE_CLOSED) !== 0) {
+            if (($filter->getState() & IssueState::CLOSED->value) !== 0) {
                 $status[] = $this->translator->trans('state_values.closed', [], 'entity_issue');
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
             $or = $this->translator->trans('introduction.filter.or', [], 'report');
-            $filterEntries[$key] = implode(' '.$or.' ', $status);
+            $filterEntries[$key] = implode(' ' . $or . ' ', $status);
         }
 
         // add craftsmen
@@ -299,16 +293,16 @@ class PdfService
         }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_images', [], 'report');
+            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
         }
         if ($reportElements->getWithRenders()) {
-            $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_renders', [], 'report');
+            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_renders', [], 'report');
         }
         $reportElements = implode(', ', $elements);
 
         $addressLines = implode("\n", $constructionSite->getAddressLines());
 
-        $constructionSiteImage = $constructionSite->getImage() instanceof \App\Entity\ConstructionSiteImage ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
+        $constructionSiteImage = $constructionSite->getImage() ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
 
         $report->addIntroduction(
             $constructionSiteImage,
@@ -320,20 +314,20 @@ class PdfService
         );
     }
 
-    private function tryGetDateString(?\DateTime $before, ?\DateTime $after): ?string
+    private function tryGetDateString(?\DateTimeImmutable $before, ?\DateTimeImmutable $after): ?string
     {
-        $beforeString = $before instanceof \DateTime ? $before->format(DateTimeFormatter::DATE_FORMAT) : null;
-        $afterString = $after instanceof \DateTime ? $after->format(DateTimeFormatter::DATE_FORMAT) : null;
+        $beforeString = $before?->format(DateTimeFormatter::DATE_FORMAT);
+        $afterString = $after?->format(DateTimeFormatter::DATE_FORMAT);
 
-        if ($before instanceof \DateTime && $after instanceof \DateTime) {
-            return $afterString.' - '.$beforeString;
+        if ($before && $after) {
+            return $afterString . ' - ' . $beforeString;
         }
 
-        if ($before instanceof \DateTime) {
+        if ($before) {
             return $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $beforeString], 'report');
         }
 
-        if ($after instanceof \DateTime) {
+        if ($after) {
             return $this->translator->trans('introduction.filter.later_than', ['%date%' => $afterString], 'report');
         }
 
@@ -345,12 +339,12 @@ class PdfService
      */
     private function addIssueTable(Report $report, Filter $filter, array $issues): void
     {
-        $showRegistered = !$filter->getRegisteredAtBefore() instanceof \DateTime || $filter->getRegisteredAtAfter();
-        $showResolved = !$filter->getResolvedAtBefore() instanceof \DateTime || $filter->getResolvedAtAfter();
-        $showClosed = !$filter->getClosedAtBefore() instanceof \DateTime || $filter->getClosedAtAfter();
+        $showRegistered = !$filter->getRegisteredAtBefore() || $filter->getRegisteredAtAfter();
+        $showResolved = !$filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
+        $showClosed = !$filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
-        $formatDateTime = function (?\DateTime $dateTime, string $format) {
-            return $dateTime instanceof \DateTime ? $dateTime->format($format) : '-';
+        $formatDateTime = function (?\DateTimeImmutable $dateTime, string $format) {
+            return $dateTime?->format($format) ?? '-';
         };
 
         $tableContent = [];
@@ -358,10 +352,10 @@ class PdfService
         foreach ($issues as $issue) {
             $row = [];
 
-            $row[] = $issue->getNumber();
+            $row[] = (string) $issue->getNumber();
             $maxIssueNumber = max($issue->getNumber(), $maxIssueNumber);
 
-            $row[] = $issue->getCraftsman()->getCompany()."\n".$issue->getCraftsman()->getTrade();
+            $row[] = $issue->getCraftsman()->getCompany() . "\n" . $issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
 
             $deadlineFormat = $formatDateTime($issue->getDeadline(), DateTimeFormatter::DATE_FORMAT);
@@ -390,7 +384,7 @@ class PdfService
         $tableSizes = [];
 
         $tableHeader[] = '#';
-        $tableSizes[] = $cellPadding + strlen($maxIssueNumber) * $numberWidth;
+        $tableSizes[] = $cellPadding + strlen((string) $maxIssueNumber) * $numberWidth;
 
         $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
         $tableSizes[] = 0;
@@ -538,6 +532,6 @@ class PdfService
 
         // 500 kb per issue seems reasonable
         $memoryLimitMbs = (int) max(256, 0.5 * $numberOfIssues);
-        ini_set('memory_limit', $memoryLimitMbs.'M');
+        ini_set('memory_limit', $memoryLimitMbs . 'M');
     }
 }

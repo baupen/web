@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Pdf;
 
 class ReportElements
@@ -27,11 +18,11 @@ class ReportElements
     {
         $self = new self();
 
-        $self->tableByCraftsman = static::getValue($parameters, 'tableByCraftsman', false);
-        $self->tableByMap = static::getValue($parameters, 'tableByMap', false);
-        $self->withImages = static::getValue($parameters, 'withImages', true);
-        $self->withRenders = static::getValue($parameters, 'withRenders', true);
-        $self->groupIssuesByCraftsman = static::getValue($parameters, 'groupIssuesByCraftsman', true);
+        $self->tableByCraftsman = self::getValue($parameters, 'tableByCraftsman', false);
+        $self->tableByMap = self::getValue($parameters, 'tableByMap', false);
+        $self->withImages = self::getValue($parameters, 'withImages', true);
+        $self->withRenders = self::getValue($parameters, 'withRenders', true);
+        $self->groupIssuesByCraftsman = self::getValue($parameters, 'groupIssuesByCraftsman', true);
 
         return $self;
     }

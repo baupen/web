@@ -1,34 +1,17 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Email;
 
-use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use App\Helper\DateTimeFormatter;
 use App\Service\Report\Email\ConstructionSiteReport;
+use App\Service\Report\Email\CraftsmanDeltaReport;
 use App\Service\Report\Email\CraftsmanReport;
-use App\Service\Report\Email\IssueCountDeltaTrait;
-use App\Service\Report\Email\IssueCountTrait;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class EmailBodyGenerator
+readonly class EmailBodyGenerator
 {
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * EmailBodyGenerator constructor.
-     */
-    public function __construct(TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function fromConstructionSiteReports(array $constructionSiteReports): array
@@ -47,7 +30,7 @@ class EmailBodyGenerator
     public function fromCraftsmanReport(CraftsmanReport $craftsmanReport): array
     {
         $normalizedCraftsmanReport = [];
-        if ($craftsmanReport->getComparisonTimestamp() instanceof \DateTime) {
+        if ($craftsmanReport->getComparisonTimestamp()) {
             $normalizedCraftsmanReport['comparisonTimeStamp'] = $craftsmanReport->getComparisonTimestamp()->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
@@ -65,7 +48,7 @@ class EmailBodyGenerator
             $constructionManagers[] = $constructionManager->getName();
         }
 
-        $dashboardUrl = $this->urlGenerator->generate('construction_site_dashboard', ['constructionSite' => $constructionSite->getId()], UrlGeneratorInterface::ABS_URL);
+        $dashboardUrl = $this->urlGenerator->generate('construction_site_dashboard', ['constructionSite' => $constructionSite->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $craftsmanReports = [];
         foreach ($constructionSiteReport->getCraftsmanDeltaReports() as $craftsmanDeltaReport) {
@@ -80,7 +63,9 @@ class EmailBodyGenerator
         }
 
         // sort craftsmen
-        usort($craftsmanReports, function (array $a, array $b): int { return strcmp($a['company'], $b['company']); });
+        usort($craftsmanReports, function (array $a, array $b): int {
+            return strcmp($a['company'], $b['company']);
+        });
 
         $normalizedConstructionSiteReport = [
             'name' => $constructionSite->getName(),
@@ -94,10 +79,7 @@ class EmailBodyGenerator
         return array_merge($normalizedConstructionSiteReport, $issueCountProperties, $issueCountDeltaProperties);
     }
 
-    /**
-     * @param IssueCountTrait $issueCountTrait
-     */
-    private function getIssueCountProperties($issueCountTrait): array
+    private function getIssueCountProperties(ConstructionSiteReport|CraftsmanDeltaReport $issueCountTrait): array
     {
         return [
             'openCount' => $issueCountTrait->getOpenCount(),
@@ -106,10 +88,7 @@ class EmailBodyGenerator
         ];
     }
 
-    /**
-     * @param IssueCountDeltaTrait $issueCountDeltaTrait
-     */
-    private function getIssueCountDeltaProperties($issueCountDeltaTrait): array
+    private function getIssueCountDeltaProperties(ConstructionSiteReport|CraftsmanDeltaReport $issueCountDeltaTrait): array
     {
         return [
             'openCountDelta' => $issueCountDeltaTrait->getOpenCountDelta(),

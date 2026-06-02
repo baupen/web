@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
 use App\Entity\ConstructionManager;
@@ -21,25 +12,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AuthorizationRefreshCommand extends Command
 {
-    private ManagerRegistry $registry;
-
-    private UserServiceInterface $userService;
-
-    /**
-     * ImportLdapUsersCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, UserServiceInterface $authorizationService)
+    public function __construct(private readonly ManagerRegistry $registry, private readonly UserServiceInterface $userService)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->userService = $authorizationService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:authorization:refresh')
@@ -47,10 +25,7 @@ class AuthorizationRefreshCommand extends Command
         ;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $entityManager = $this->registry->getManager();
 
@@ -63,7 +38,7 @@ class AuthorizationRefreshCommand extends Command
         $entityManager->flush();
 
         $io = new SymfonyStyle($input, $output);
-        $io->text('Refreshed authorization of '.count($constructionManagers).' construction managers.');
+        $io->text('Refreshed authorization of ' . count($constructionManagers) . ' construction managers.');
 
         return 0;
     }

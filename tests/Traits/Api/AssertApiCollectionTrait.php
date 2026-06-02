@@ -1,22 +1,14 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiCollectionTrait
 {
-    private function assertApiCollectionContainsResponseItem(Client $client, string $url, Response $itemResponse): void
+    private function assertApiCollectionContainsResponseItem(Client $client, string $url, ResponseInterface $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
@@ -25,7 +17,7 @@ trait AssertApiCollectionTrait
         $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
-    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, Response $itemResponse): void
+    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, ResponseInterface $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
@@ -48,7 +40,7 @@ trait AssertApiCollectionTrait
             }
         }
 
-        $this->fail('iri '.$iri.' not found in '.$collectionResponse->getContent());
+        $this->fail('iri ' . $iri . ' not found in ' . $collectionResponse->getContent());
     }
 
     private function assertApiCollectionNotContainsIri(Client $client, string $url, string $iri): void
@@ -58,7 +50,7 @@ trait AssertApiCollectionTrait
 
         foreach ($collection['hydra:member'] as $entry) {
             if ($entry['@id'] == $iri) {
-                $this->fail('iri '.$iri.' found in '.$collectionResponse->getContent());
+                $this->fail('iri ' . $iri . ' found in ' . $collectionResponse->getContent());
             }
         }
 
@@ -78,6 +70,6 @@ trait AssertApiCollectionTrait
             }
         }
 
-        $this->fail('item '.json_encode($item).' not found in collection '.$collectionResponse->getContent());
+        $this->fail('item ' . json_encode($item) . ' not found in collection ' . $collectionResponse->getContent());
     }
 }

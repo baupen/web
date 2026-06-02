@@ -1,17 +1,10 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /*
  * automatically keeps track of creation time & last change time
@@ -19,13 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait SoftDeleteTrait
 {
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
 
-    public function getDeletedAt(): ?\DateTime
+    public function getDeletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
     }
@@ -33,8 +23,14 @@ trait SoftDeleteTrait
     /**
      * never undelete an entity!
      */
-    public function delete(): void
+    public function markAsDeleted(): void
     {
-        $this->deletedAt = new \DateTime();
+        $this->deletedAt = new \DateTimeImmutable();
+    }
+
+    #[Groups(['soft-delete:read'])]
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 }

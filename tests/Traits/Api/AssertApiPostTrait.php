@@ -1,24 +1,17 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
-use App\DataFixtures\Model\AssetFile;
+use App\Service\Sample\AssetFile;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiPostTrait
 {
-    private function assertApiPostStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
+    private function assertApiPostStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload): ResponseInterface
     {
         return $this->assertApiStatusCodeSame('POST', $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, $payload);
     }
@@ -33,7 +26,7 @@ trait AssertApiPostTrait
         }
     }
 
-    private function assertApiPostPayloadPersisted(Client $client, string $url, array $payload, array $additionalPayload = [])
+    private function assertApiPostPayloadPersisted(Client $client, string $url, array $payload, array $additionalPayload = []): ResponseInterface
     {
         $actualPayload = array_merge($payload, $additionalPayload);
         $response = $this->assertApiPostStatusCodeSame(StatusCode::HTTP_CREATED, $client, $url, $actualPayload);
@@ -42,9 +35,9 @@ trait AssertApiPostTrait
         return $response;
     }
 
-    private function assertApiPostFile(KernelBrowser $kernelBrowser, string $url, AssetFile $file)
+    private function assertApiPostFile(KernelBrowser $kernelBrowser, string $url, AssetFile $file): false|string
     {
-        $kernelBrowser->request(\Symfony\Component\HttpFoundation\Request::METHOD_POST, $url, [], ['file' => $file]);
+        $kernelBrowser->request(Request::METHOD_POST, $url, [], ['file' => $file]);
 
         $this->assertEquals(StatusCode::HTTP_CREATED, $kernelBrowser->getResponse()->getStatusCode());
 
@@ -53,7 +46,7 @@ trait AssertApiPostTrait
 
     private function assertApiDeleteFile(KernelBrowser $kernelBrowser, string $url): void
     {
-        $kernelBrowser->request(\Symfony\Component\HttpFoundation\Request::METHOD_DELETE, $url);
+        $kernelBrowser->request(Request::METHOD_DELETE, $url);
 
         $this->assertEquals(StatusCode::HTTP_NO_CONTENT, $kernelBrowser->getResponse()->getStatusCode());
     }

@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Api\Processor;
+
+use ApiPlatform\Doctrine\Common\State\PersistProcessor;
+use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use App\Entity\Craftsman;
+use App\Entity\Issue;
+use App\Entity\IssueEvent;
+use App\Entity\Map;
+use App\Security\TokenTrait;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
+readonly class SoftDeleteProcessor implements ProcessorInterface
+{
+    use TokenTrait;
+
+    /**
+     * @param ProcessorInterface<Craftsman|Map|IssueEvent, Craftsman|Map|IssueEvent> $persistProcessor
+     */
+    public function __construct(
+        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor
+    ) {
+    }
+
+    /**
+     * @param Craftsman|Map|IssueEvent $data
+     */
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Craftsman|Map|IssueEvent
+    {
+        if ($operation instanceof Delete) {
+            $data->markAsDeleted();
+        }
+
+        return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+    }
+}

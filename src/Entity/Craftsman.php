@@ -1,24 +1,22 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
+use App\Api\Processor\SoftDeleteProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
+use App\Api\Provider\CraftsmanStatisticsProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -27,39 +25,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * a craftsman receives information about open issues, and answers them.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}},
- *      "get_statistics"={
- *          "method"="GET",
- *          "path"="/craftsmen/statistics"
- *      }
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
- *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
- *     },
- *     normalizationContext={"groups"={"craftsman-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"craftsman-write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    processor: SoftDeleteProcessor::class,
+    denormalizationContext: ['groups' => ['craftsman:write']],
+    normalizationContext: ['groups' => ['craftsman:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false
+)]
+#[GetCollection(uriTemplate: '/craftsmen/statistics', provider: CraftsmanStatisticsProvider::class, normalizationContext: ['groups' => ['craftsman-statistics:read'], "skip_null_values" => false], paginationEnabled: false)]
+#[Get(security: 'is_granted("CRAFTSMAN_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("CRAFTSMAN_MODIFY", object)', denormalizationContext: ['groups' => ['craftsman:create', 'craftsman:write']])]
+#[Patch(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
+#[Delete(security: 'is_granted("CRAFTSMAN_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'id', 'trade'], strategy: SearchFilter::STRATEGY_EXACT)]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(IsDeletedFilter::class)]
+class Craftsman extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -67,51 +55,52 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $contactName;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $contactJobTitle;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $company;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $trade;
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $email;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $telephone;
 
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $address;
 
     /**
      * @var string[]
      */
-    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $emailCCs = null;
 
-    #[Groups(['craftsman-read-self', 'craftsman-write'])]
+    #[Groups(['craftsman:read', 'craftsman:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $canEdit = true;
 
     #[Assert\NotBlank]
-    #[Groups(['craftsman-create'])]
+    #[Groups(['craftsman:read', 'craftsman:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'craftsmen')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -127,12 +116,12 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'resolvedBy')]
     private Collection $resolvedIssues;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $lastEmailReceived = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastEmailReceived = null;
 
-    #[Groups(['craftsman-read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $lastVisitOnline = null;
+    #[Groups(['craftsman:read'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastVisitOnline = null;
 
     /**
      * Craftsman constructor.
@@ -229,12 +218,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->emailCCs = $emailCCs;
     }
 
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
-    }
-
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
@@ -262,49 +246,37 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 
     public function getName(): string
     {
-        return $this->getTrade().' ('.$this->getCompany().')';
+        return $this->getTrade() . ' (' . $this->getCompany() . ')';
     }
 
-    public function getLastEmailReceived(): ?\DateTime
+    public function getLastEmailReceived(): ?\DateTimeImmutable
     {
         return $this->lastEmailReceived;
     }
 
-    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
+    public function setLastEmailReceived(?\DateTimeImmutable $lastEmailReceived): void
     {
         $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?\DateTime
+    public function getLastVisitOnline(): ?\DateTimeImmutable
     {
         return $this->lastVisitOnline;
     }
 
-    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
+    public function setLastVisitOnline(?\DateTimeImmutable $lastVisitOnline): void
     {
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
-    public function getLastAction(): ?\DateTime
+    public function getLastAction(): ?\DateTimeImmutable
     {
         $lastAction = $this->getLastVisitOnline();
-        if (!$lastAction instanceof \DateTime || $lastAction < $this->getLastEmailReceived()) {
+        if (!$lastAction || $lastAction < $this->getLastEmailReceived()) {
             return $this->getLastEmailReceived();
         }
 
         return $lastAction;
-    }
-
-    #[Groups(['craftsman-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['craftsman-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 
     public function sort(Craftsman $other): int

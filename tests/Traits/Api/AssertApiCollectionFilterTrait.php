@@ -1,49 +1,40 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
 
 trait AssertApiCollectionFilterTrait
 {
-    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue): void
+    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTimeImmutable $currentValue): void
     {
-        $format = function (\DateTime $dateTime): string {
+        $format = function (\DateTimeImmutable $dateTime): string {
             return urlencode($dateTime->format('c'));
         };
 
-        $formatAlternative = function (\DateTime $dateTime): string {
+        $formatAlternative = function (\DateTimeImmutable $dateTime): string {
             $utcDateTime = clone $dateTime;
-            $utcDateTime->setTimezone(new \DateTimeZone('UTC'));
+            $utcDateTime = $utcDateTime->setTimezone(new \DateTimeZone('UTC'));
 
             return urlencode($utcDateTime->format('Y-m-d\TH:i:s.u\Z'));
         };
 
         // after and before are both inclusive
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($currentValue), $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($currentValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[after]=' . $format($currentValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[before]=' . $format($currentValue), $iri);
 
         $afterValue = clone $currentValue;
-        $afterValue->add(new \DateInterval('PT1M'));
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($afterValue), $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($afterValue), $iri);
+        $afterValue = $afterValue->add(new \DateInterval('PT1M'));
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '[after]=' . $format($afterValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[before]=' . $format($afterValue), $iri);
 
         $beforeValue = clone $currentValue;
-        $beforeValue->sub(new \DateInterval('PT1M'));
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($beforeValue), $iri);
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($beforeValue), $iri);
+        $beforeValue = $beforeValue->sub(new \DateInterval('PT1M'));
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[after]=' . $format($beforeValue), $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '[before]=' . $format($beforeValue), $iri);
 
         // ensure timezones & different formatting respected
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$formatAlternative($currentValue).'&'.$propertyName.'[before]='.$format($currentValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[after]=' . $formatAlternative($currentValue) . '&' . $propertyName . '[before]=' . $format($currentValue), $iri);
     }
 
     private function assertApiCollectionFilterBoolean(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, bool $currentValue): void
@@ -55,10 +46,10 @@ trait AssertApiCollectionFilterTrait
         $notCurrentValueToString = $currentValue ? $falseValues : $trueValues;
 
         foreach ($currentValueToString as $stringValue) {
-            $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$stringValue, $iri);
+            $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $stringValue, $iri);
         }
         foreach ($notCurrentValueToString as $stringValue) {
-            $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$stringValue, $iri);
+            $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $stringValue, $iri);
         }
     }
 
@@ -71,10 +62,10 @@ trait AssertApiCollectionFilterTrait
         $foundParts = [$startPart, $middlePart, $endPart];
 
         foreach ($foundParts as $foundPart) {
-            $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$foundPart, $iri);
+            $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $foundPart, $iri);
         }
 
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$currentValue.'null', $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $currentValue . 'null', $iri);
     }
 
     private function assertApiCollectionFilterSearchExact(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, string $currentValue): void
@@ -82,15 +73,15 @@ trait AssertApiCollectionFilterTrait
         $invalidPart = substr($currentValue, 0, -1);
 
         // check single
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$invalidPart, $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$currentValue, $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $invalidPart, $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '=' . $currentValue, $iri);
 
         // check multiple syntax, with single value
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[]='.$currentValue, $iri);
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[]='.$invalidPart, $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[]=' . $currentValue, $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '[]=' . $invalidPart, $iri);
 
         // check multiple syntax, with multiple values
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[]='.$currentValue.'&'.$propertyName.'[]='.$invalidPart, $iri);
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[]='.$invalidPart.'&'.$propertyName.'[]='.$invalidPart, $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix . $propertyName . '[]=' . $currentValue . '&' . $propertyName . '[]=' . $invalidPart, $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix . $propertyName . '[]=' . $invalidPart . '&' . $propertyName . '[]=' . $invalidPart, $iri);
     }
 }

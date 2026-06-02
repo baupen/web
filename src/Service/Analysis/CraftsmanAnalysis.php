@@ -1,35 +1,36 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Analysis;
+
+use App\Entity\Craftsman;
 
 class CraftsmanAnalysis
 {
+    private Craftsman $craftsman;
+
     private CraftsmanIssueAnalysis $issueAnalysis;
 
-    private ?\DateTime $nextDeadline = null;
+    private ?\DateTimeImmutable $nextDeadline = null;
 
-    private ?\DateTime $lastEmailReceived = null;
+    private ?\DateTimeImmutable $lastEmailReceived = null;
 
-    private ?\DateTime $lastVisitOnline = null;
+    private ?\DateTimeImmutable $lastVisitOnline = null;
 
-    private ?\DateTime $lastIssueResolved = null;
+    private ?\DateTimeImmutable $lastIssueResolved = null;
 
-    public static function createWithIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis): self
+    public static function create(Craftsman $craftsman, CraftsmanIssueAnalysis $issueAnalysis): self
     {
         $self = new self();
 
+        $self->craftsman = $craftsman;
         $self->issueAnalysis = $issueAnalysis;
 
         return $self;
+    }
+
+    public function getCraftsman(): Craftsman
+    {
+        return $this->craftsman;
     }
 
     public function getIssueAnalysis(): CraftsmanIssueAnalysis
@@ -37,47 +38,42 @@ class CraftsmanAnalysis
         return $this->issueAnalysis;
     }
 
-    public function setIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis): void
-    {
-        $this->issueAnalysis = $issueAnalysis;
-    }
-
-    public function getNextDeadline(): ?\DateTime
+    public function getNextDeadline(): ?\DateTimeImmutable
     {
         return $this->nextDeadline;
     }
 
-    public function setNextDeadline(?\DateTime $nextDeadline): void
+    public function setNextDeadline(?\DateTimeImmutable $nextDeadline): void
     {
         $this->nextDeadline = $nextDeadline;
     }
 
-    public function getLastEmailReceived(): ?\DateTime
+    public function getLastEmailReceived(): ?\DateTimeImmutable
     {
         return $this->lastEmailReceived;
     }
 
-    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
+    public function setLastEmailReceived(?\DateTimeImmutable $lastEmailReceived): void
     {
         $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?\DateTime
+    public function getLastVisitOnline(): ?\DateTimeImmutable
     {
         return $this->lastVisitOnline;
     }
 
-    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
+    public function setLastVisitOnline(?\DateTimeImmutable $lastVisitOnline): void
     {
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
-    public function getLastIssueResolved(): ?\DateTime
+    public function getLastIssueResolved(): ?\DateTimeImmutable
     {
         return $this->lastIssueResolved;
     }
 
-    public function setLastIssueResolved(?\DateTime $lastIssueResolved): void
+    public function setLastIssueResolved(?\DateTimeImmutable $lastIssueResolved): void
     {
         $this->lastIssueResolved = $lastIssueResolved;
     }

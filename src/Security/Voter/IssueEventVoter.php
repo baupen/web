@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
@@ -16,67 +7,50 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\IssueEvent;
 use App\Enum\IssueEventTypes;
-use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
+use App\Security\TokenTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
+class IssueEventVoter extends Voter
 {
-    public const ISSUE_EVENT_VIEW = 'ISSUE_EVENT_VIEW';
-    public const ISSUE_EVENT_CREATE = 'ISSUE_EVENT_CREATE';
-    public const ISSUE_EVENT_MODIFY = 'ISSUE_EVENT_MODIFY';
-    public const ISSUE_EVENT_DELETE = 'ISSUE_EVENT_DELETE';
+    use TokenTrait;
+
+    public const string ISSUE_EVENT_VIEW = 'ISSUE_EVENT_VIEW';
+    public const string ISSUE_EVENT_CREATE = 'ISSUE_EVENT_CREATE';
+    public const string ISSUE_EVENT_MODIFY = 'ISSUE_EVENT_MODIFY';
+    public const string ISSUE_EVENT_DELETE = 'ISSUE_EVENT_DELETE';
 
     public function __construct(private readonly ManagerRegistry $registry)
     {
     }
 
-    protected function isInstanceOf($entity): bool
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        return $entity instanceof IssueEvent;
-    }
-
-    protected function getAllAttributes(): array
-    {
-        return [self::ISSUE_EVENT_VIEW, self::ISSUE_EVENT_CREATE, self::ISSUE_EVENT_MODIFY, self::ISSUE_EVENT_DELETE];
-    }
-
-    protected function getReadOnlyAttributes(): array
-    {
-        return [self::ISSUE_EVENT_VIEW];
-    }
-
-    protected function getModifyAttributes(): array
-    {
-        return [self::ISSUE_EVENT_CREATE, self::ISSUE_EVENT_MODIFY, self::ISSUE_EVENT_DELETE];
-    }
-
-    protected function getRelatedCraftsmanAccessibleAttributes(): array
-    {
-        return $this->getModifyAttributes();
+        return $subject instanceof IssueEvent && in_array($attribute, [self::ISSUE_EVENT_VIEW, self::ISSUE_EVENT_CREATE, self::ISSUE_EVENT_MODIFY, self::ISSUE_EVENT_DELETE]);
     }
 
     /**
      * @param IssueEvent $subject
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         // disable editing of read-only events
         if (self::ISSUE_EVENT_VIEW !== $attribute && !IssueEventTypes::isManualEvent($subject->getType())) {
             return false;
         }
 
-        $craftsman = $this->tryGetCraftsman($token);
-        if ($craftsman instanceof Craftsman) {
-            return $this->checkAccessCraftsman($subject, $craftsman, $attribute) && parent::voteOnAttribute($attribute, $subject, $token);
-        }
-
         $constructionManager = $this->tryGetConstructionManager($token);
         if ($constructionManager instanceof ConstructionManager) {
-            return $this->checkAccessConstructionManager($subject, $constructionManager, $attribute) && parent::voteOnAttribute($attribute, $subject, $token);
+            return $this->checkAccessConstructionManager($subject, $constructionManager, $attribute);
         }
 
-        return parent::voteOnAttribute($attribute, $subject, $token);
+        $craftsman = $this->tryGetCraftsman($token);
+        if ($craftsman instanceof Craftsman) {
+            return $this->checkAccessCraftsman($subject, $craftsman, $attribute);
+        }
+
+        return false;
     }
 
     private function checkAccessCraftsman(IssueEvent $subject, Craftsman $craftsman, string $attribute): bool
@@ -111,10 +85,6 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
 
                 // must use correct time
                 if (self::ISSUE_EVENT_CREATE === $attribute) {
-                    if (!$subject->isConstructionSiteSet()) {
-                        return false;
-                    }
-
                     // must use correct construction site
                     if ($issue->getConstructionSite() !== $subject->getConstructionSite()) {
                         return false;
@@ -125,7 +95,7 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
                         return false;
                     }
 
-                    if ($subject->getTimestamp() > new \DateTime('now + 5min') || $subject->getTimestamp() < new \DateTime('now - 5min')) {
+                    if ($subject->getTimestamp() > new \DateTimeImmutable('now + 5min') || $subject->getTimestamp() < new \DateTimeImmutable('now - 5min')) {
                         return false;
                     }
                 } else {
@@ -144,6 +114,10 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
 
     private function checkAccessConstructionManager(IssueEvent $subject, ConstructionManager $constructionManager, string $attribute): bool
     {
+        if (!$constructionManager->getCanAssociateSelf() && !$constructionManager->getConstructionSites()->contains($subject->getConstructionSite())) {
+            return false;
+        }
+
         if (in_array($attribute, [self::ISSUE_EVENT_CREATE, self::ISSUE_EVENT_MODIFY, self::ISSUE_EVENT_DELETE], true)) {
             // must use valid event type
             if (!IssueEventTypes::isManualEvent($subject->getType())) {
@@ -162,12 +136,13 @@ class IssueEventVoter extends ConstructionSiteOwnedEntityVoter
                         return false;
                     }
 
-                    if (!$subject->isConstructionSiteSet()) {
+                    if (!$subject->getConstructionSite()) {
                         return false;
                     }
 
                     // must reference valid root belonging to construction site
-                    if ($subject->getRoot() !== $subject->getConstructionSite()->getId()
+                    if (
+                        $subject->getRoot() !== $subject->getConstructionSite()->getId()
                         && !$this->registry->getRepository(Issue::class)
                             ->findOneBy(['id' => $subject->getRoot(), 'constructionSite' => $subject->getConstructionSite()->getId()])
                         && !$this->registry->getRepository(Craftsman::class)

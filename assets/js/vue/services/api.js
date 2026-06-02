@@ -343,10 +343,10 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getHydraCollection('/api/issues/timeseries?' + queryString)
   },
-  getIssuesGroup: function (constructionSite, group, query = {}) {
+  getIssuesMapGroup: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&group=' + group
     queryString += '&' + this._getQueryString(query)
+    queryString += '&group=map'
     queryString += '&isDeleted=false'
     return this._getHydraCollection('/api/issues/group?' + queryString)
   },
@@ -485,8 +485,8 @@ const api = {
   postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
     return this._postAttachment(constructionSite, image, 'image', successMessage)
   },
-  postEmail: function (email, successMessage = null) {
-    return this._postRaw('/api/emails', email, successMessage)
+  postCraftsmanEmail: function (email, successMessage = null) {
+    return this._postRaw('/api/craftsman_emails', email, successMessage)
   },
   postIssueEvent: function (issueEvent, successMessage = null) {
     return this._postRaw('/api/issue_events', issueEvent, successMessage)

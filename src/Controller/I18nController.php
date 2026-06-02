@@ -1,36 +1,26 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Entity\ConstructionManager;
 use App\Helper\DoctrineHelper;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-class I18nController extends BaseController
+class I18nController extends AbstractController
 {
-    /**
-     * @return Response
-     */
     #[Route(path: '/set_locale/{locale}', name: 'set_locale')]
-    public function setLocale(Request $request, string $locale, ManagerRegistry $registry): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function setLocale(Request $request, string $locale, ManagerRegistry $registry): RedirectResponse
     {
         // only change locale to valid values
         if (\in_array($locale, ['de', 'it'], true)) {
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);
 
+            /** @var ConstructionManager|null $user */
             $user = $this->getUser();
             if ($user) {
                 $user->setLocale($locale);

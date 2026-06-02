@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\Craftsman;
@@ -18,23 +9,13 @@ use App\Service\Analysis\CraftsmanIssueAnalysis;
 use App\Service\Analysis\Database\CraftsmanService;
 use App\Service\Analysis\Database\IssueService;
 use App\Service\Analysis\IssueAnalysis;
-use App\Service\Analysis\IssueCountAnalysisTrait;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\ORM\QueryBuilder;
 
-class AnalysisService implements AnalysisServiceInterface
+readonly class AnalysisService implements AnalysisServiceInterface
 {
-    private IssueService $issueService;
-
-    private CraftsmanService $craftsmanService;
-
-    /**
-     * CraftsmanService constructor.
-     */
-    public function __construct(IssueService $issueService, CraftsmanService $craftsmanService)
+    public function __construct(private IssueService $issueService, private CraftsmanService $craftsmanService)
     {
-        $this->issueService = $issueService;
-        $this->craftsmanService = $craftsmanService;
     }
 
     /**
@@ -42,7 +23,7 @@ class AnalysisService implements AnalysisServiceInterface
      *
      * @return IssueAnalysis[]
      */
-    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array
+    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array
     {
         $issueAnalysis = $this->createIssueAnalysis($rootAlias, $queryBuilder);
 
@@ -68,7 +49,7 @@ class AnalysisService implements AnalysisServiceInterface
             $currentFormat = $current->format($dateFormat);
             $issueAnalysisByTime[$currentFormat] = $currentIssueAnalysis;
 
-            $current->sub($stepSize);
+            $current = $current->sub($stepSize);
         }
 
         return $issueAnalysisByTime;
@@ -98,29 +79,32 @@ class AnalysisService implements AnalysisServiceInterface
      *
      * @return CraftsmanAnalysis[]
      */
-    public function createCraftsmanAnalysisByCraftsman(array $craftsmen): array
+    public function createCraftsmanAnalysis(array $craftsmen): array
     {
         $craftsmanIssueAnalysisByCraftsman = [];
+        $craftsmenDictionary = [];
         foreach ($craftsmen as $craftsman) {
             $craftsmanIssueAnalysisByCraftsman[$craftsman->getId()] = new CraftsmanIssueAnalysis();
+            $craftsmenDictionary[$craftsman->getId()] = $craftsman;
         }
 
         $this->craftsmanService->findIssueAnalysisByCraftsman($craftsmen, $craftsmanIssueAnalysisByCraftsman);
 
         $craftsmanAnalysisDictionary = [];
         foreach ($craftsmanIssueAnalysisByCraftsman as $craftsmanId => $craftsmanIssueAnalysis) {
-            $craftsmanAnalysisDictionary[$craftsmanId] = CraftsmanAnalysis::createWithIssueAnalysis($craftsmanIssueAnalysis);
+            $craftsmanAnalysisDictionary[$craftsmanId] = CraftsmanAnalysis::create($craftsmenDictionary[$craftsmanId], $craftsmanIssueAnalysis);
         }
 
         $this->craftsmanService->findNextDeadline($craftsmen, $craftsmanAnalysisDictionary);
         $this->craftsmanService->findLastIssueResolved($craftsmen, $craftsmanAnalysisDictionary);
         $this->findLastActivity($craftsmen, $craftsmanAnalysisDictionary);
 
-        return $craftsmanAnalysisDictionary;
+        return array_values($craftsmanAnalysisDictionary);
     }
 
     /**
      * @param Craftsman[] $craftsmen
+     * @param CraftsmanAnalysis[] $craftsmanAnalysisDictionary
      */
     private function findLastActivity(array $craftsmen, array $craftsmanAnalysisDictionary): void
     {
@@ -130,12 +114,9 @@ class AnalysisService implements AnalysisServiceInterface
         }
     }
 
-    /**
-     * @param IssueCountAnalysisTrait $issueCountAnalysis
-     */
-    private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
+    private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTimeImmutable $timestamp, ?\DateTimeImmutable $registeredAt, ?\DateTimeImmutable $resolvedAt, ?\DateTimeImmutable $closedAt): void
     {
-        if ($closedAt instanceof \DateTime) {
+        if ($closedAt) {
             // summary counted issue at "completed"
             if ($closedAt > $timestamp) {
                 $issueCountAnalysis->setClosedCount($issueCountAnalysis->getClosedCount() - 1);
@@ -145,7 +126,7 @@ class AnalysisService implements AnalysisServiceInterface
                     $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() + 1);
                 }
             }
-        } elseif ($resolvedAt instanceof \DateTime) {
+        } elseif ($resolvedAt) {
             // summary counted issue at "resolved"
             if ($resolvedAt > $timestamp) {
                 $issueCountAnalysis->setInspectableCount($issueCountAnalysis->getInspectableCount() - 1);
@@ -159,12 +140,12 @@ class AnalysisService implements AnalysisServiceInterface
         }
     }
 
-    private function getBacktrackDate(\DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount): \DateTime
+    private function getBacktrackDate(\DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount): \DateTimeImmutable
     {
         $backtrackDate = clone $lastPeriodEnd;
         $currentStep = $stepCount;
         while ($currentStep-- > 0) {
-            $backtrackDate->sub($stepSize);
+            $backtrackDate = $backtrackDate->sub($stepSize);
         }
 
         return $backtrackDate;

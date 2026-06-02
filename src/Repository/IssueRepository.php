@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\Issue;
@@ -37,7 +28,7 @@ class IssueRepository extends EntityRepository
 
                 $update = $this->createQueryBuilder('i')
                     ->update()
-                    ->set('i.number', '('.$select->getQuery()->getDQL().')')
+                    ->set('i.number', '(' . $select->getQuery()->getDQL() . ')')
                     ->where('i.id = :id')
                     ->setParameter(':id', $issue->getId())
                     ->setParameter(':constructionSiteId', $issue->getConstructionSite()->getId()); // for subquery
@@ -61,39 +52,39 @@ class IssueRepository extends EntityRepository
 
     public function filterNewIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.registeredAt IS NULL');
-        $builder->andWhere($rootAlias.'.closedAt IS NULL');
+        $builder->andWhere($rootAlias . '.registeredAt IS NULL');
+        $builder->andWhere($rootAlias . '.closedAt IS NULL');
 
         return $builder;
     }
 
     public function filterOpenIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
+        $builder->andWhere($rootAlias . '.registeredAt IS NOT NULL')
+            ->andWhere($rootAlias . '.resolvedAt IS NULL')
+            ->andWhere($rootAlias . '.closedAt IS NULL');
 
         return $builder;
     }
 
     public function filterInspectableIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.resolvedAt IS NOT NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
+        $builder->andWhere($rootAlias . '.resolvedAt IS NOT NULL')
+            ->andWhere($rootAlias . '.closedAt IS NULL');
 
         return $builder;
     }
 
     public function filterResolvedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.resolvedAt IS NOT NULL');
+        $builder->andWhere($rootAlias . '.resolvedAt IS NOT NULL');
 
         return $builder;
     }
 
     public function filterClosedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.closedAt IS NOT NULL');
+        $builder->andWhere($rootAlias . '.closedAt IS NOT NULL');
 
         return $builder;
     }

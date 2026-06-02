@@ -1,16 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -23,9 +15,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 trait TestDataTrait
 {
-    private function getIriFromItem($item)
+    private function getIriFromItem($item): ?string
     {
-        return static::getClient()->getContainer()->get('api_platform.iri_converter')->getIriFromItem($item);
+        return static::getClient()->getContainer()->get(IriConverterInterface::class)->getIriFromResource($item);
     }
 
     private function getTestConstructionManager(): ConstructionManager
@@ -66,11 +58,12 @@ trait TestDataTrait
         return $constructionManagerRepository->findOneBy(['email' => $constructionManagerEmail]);
     }
 
-    private function addConstructionManager(ConstructionSite $constructionSite, string $email = 'some@mail.com'): ConstructionManager
+    private function addAssociatedConstructionManager(ConstructionSite $constructionSite, string $email = 'some@mail.com'): ConstructionManager
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->getConstructionSites()->add($constructionSite);
         $constructionManager->setEmail($email);
+        $constructionManager->setCanAssociateSelf(false);
 
         $this->saveEntity($constructionManager);
 
@@ -82,8 +75,8 @@ trait TestDataTrait
         $craftsman = new Craftsman();
         $craftsman->setConstructionSite($constructionSite);
         $craftsman->setContactName($name);
-        $craftsman->setEmail($name.'@ch.ch');
-        $craftsman->setCompany($name.' AG');
+        $craftsman->setEmail($name . '@ch.ch');
+        $craftsman->setCompany($name . ' AG');
         $craftsman->setTrade($name);
         $craftsman->setAuthenticationToken();
 
@@ -124,7 +117,7 @@ trait TestDataTrait
         $issue = new Issue();
         $issue->setConstructionSite($constructionSite);
         $issue->setNumber(999);
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($manager);
 
         $this->saveEntity($issue);
@@ -138,9 +131,9 @@ trait TestDataTrait
         $issue->setConstructionSite($constructionSite);
         $issue->setCraftsman($craftsman);
         $issue->setNumber(999);
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($manager);
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($manager);
 
         $this->saveEntity($issue);

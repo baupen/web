@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command\Base;
 
 use Doctrine\DBAL\Connection;
@@ -19,7 +10,7 @@ abstract class DatabaseCommand extends Command
 {
     private ManagerRegistry $registry;
 
-    protected const BACKUP_FILE_PREFIX = 'mysql_';
+    protected const string BACKUP_FILE_PREFIX = 'mysql_';
 
     /**
      * DatabaseCommand constructor.
@@ -35,20 +26,20 @@ abstract class DatabaseCommand extends Command
     {
         /** @var Connection $connection */
         $connection = $this->registry->getConnection();
+        $params = $connection->getParams();
 
-        /* @noinspection PhpDeprecationInspection */
         return [
-            'host' => $connection->getHost(),
-            'database' => $connection->getDatabase(),
-            'username' => $connection->getUsername(),
-            'password' => $connection->getPassword(),
+            'host' => $params['host'],
+            'database' => $params['dbname'] ?? $params['path'],
+            'username' => $params['user'],
+            'password' => $params['password'],
         ];
     }
 
-    protected function getMysqlCommandLineConnectionParameters()
+    protected function getMysqlCommandLineConnectionParameters(): string
     {
         $config = $this->getDatabaseConfiguration();
 
-        return '--host='.$config['host'].' --user='.$config['username'].' --password='.$config['password'].' '.$config['database'];
+        return '--host=' . $config['host'] . ' --user=' . $config['username'] . ' --password=' . $config['password'] . ' ' . $config['database'];
     }
 }

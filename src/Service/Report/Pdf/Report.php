@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
@@ -28,11 +19,13 @@ class Report
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         // prepare fonts
-        $checkFilePath = K_PATH_FONTS.'/.copied';
+        /** @phpstan-ignore-next-line provided by tcpdf */
+        $k_PATH_FONTS = K_PATH_FONTS;
+        $checkFilePath = $k_PATH_FONTS . '/.copied';
         if (!file_exists($checkFilePath)) {
-            $sourceFolder = $reportAssetDir.'/fonts';
+            $sourceFolder = $reportAssetDir . '/fonts';
             // copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r '.$sourceFolder.'/* '.K_PATH_FONTS);
+            shell_exec('\cp -r ' . $sourceFolder . '/* ' . $k_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
 
@@ -91,7 +84,7 @@ class Report
             $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
             foreach ($filterEntries as $name => $value) {
                 $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-                $this->printHtmlP('<b>'.$name.'</b>: '.$value);
+                $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
             }
         }
 
@@ -150,9 +143,9 @@ class Report
     }
 
     /**
-     * @param string[]   $columnWidths
-     * @param string[]   $head
-     * @param string[][] $body
+     * @param float[]   $columnWidths
+     * @param array<string|null>   $head
+     * @param array<array<string|null>> $body
      */
     public function addSizedTable(array $columnWidths, array $head, array $body): void
     {
@@ -276,7 +269,8 @@ class Report
 
             // print images
             $currentColumn = 0;
-            foreach ($row as &$entry) {
+            unset($entry);
+            foreach ($row as $entry) {
                 // image
                 $height = $entry['height'];
                 $width = $entry['width'];
@@ -369,7 +363,7 @@ class Report
         $this->pdfDocument->SetY($this->pdfDocument->GetY());
     }
 
-    private function getHeightOf(\Closure $closure): int|float
+    private function getHeightOf(\Closure $closure): float
     {
         $this->pdfDocument->startTransaction();
         if ($this->pdfDocument->GetY() > $this->pdfSizes->getPageSizeY()) {
@@ -380,6 +374,7 @@ class Report
         $closure();
         $endY = $this->pdfDocument->GetY();
         $endPage = $this->pdfDocument->getPage();
+        /** @phpstan-ignore-next-line */
         $this->pdfDocument = $this->pdfDocument->rollbackTransaction();
         $pageAdapt = $this->pdfSizes->getContentYSize() * ($endPage - $startPage);
 
@@ -390,7 +385,7 @@ class Report
      * if return false, call again with same parameters.
      *
      * @param float[]  $columnWidths
-     * @param string[] $row
+     * @param array<string|null> $row
      */
     private function printSizedRow(array $columnWidths, array $row, bool $fill = false, bool $retry = false): void
     {
@@ -408,7 +403,7 @@ class Report
 
             // draw column content
             $this->pdfDocument->SetXY($currentXStart, $startY);
-            $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, $currentColumn, 0, 'L', $fill, 1);
+            $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, (string) $currentColumn, 0, 'L', $fill, 1);
 
             // if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {

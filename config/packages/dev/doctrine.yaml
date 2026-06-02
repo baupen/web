@@ -1,5 +1,0 @@
-doctrine:
-    dbal:
-        url: '%env(stripschema:DATABASE_URL)%'
-        server_version: 'mariadb-0.0.0'
-        driver_class: App\Doctrine\Driver

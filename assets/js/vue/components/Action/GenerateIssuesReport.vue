@@ -117,7 +117,7 @@ export default {
     getSizeAwareReports: function (query, progressLabelPrefix = null) {
       return new Promise(
         (resolve) => {
-          api.getIssuesGroup(this.constructionSite, 'map', query)
+          api.getIssuesMapGroup(this.constructionSite, query)
             .then(issuesGroupByMap => {
               const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
 

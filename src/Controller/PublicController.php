@@ -1,17 +1,7 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
@@ -19,25 +9,22 @@ use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class PublicController extends BaseController
+class PublicController extends AbstractController
 {
     use TokenTrait;
     use FileResponseTrait;
 
-    /**
-     * @return Response
-     */
     #[Route(path: '/download/{filename}', name: 'public_download')]
-    public function download(string $filename, PathServiceInterface $pathService)
+    public function download(string $filename, PathServiceInterface $pathService): Response
     {
         $path = $pathService->getTransientFolderForReports();
 
-        $response = $this->tryCreateAttachmentFileResponse($path.'/'.$filename, $filename);
+        $response = $this->tryCreateAttachmentFileResponse($path . '/' . $filename, $filename);
         $response->deleteFileAfterSend();
 
         return $response;
@@ -48,11 +35,11 @@ class PublicController extends BaseController
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
-            $craftsman->setLastVisitOnline(new \DateTime());
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
+            $craftsman->setLastVisitOnline(new \DateTimeImmutable());
             DoctrineHelper::persistAndFlush($registry, $craftsman);
         }
 
@@ -63,11 +50,11 @@ class PublicController extends BaseController
     public function filtered(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
-        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
-            throw new NotFoundHttpException();
+        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTimeImmutable())) {
+            throw $this->createNotFoundException();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
             $filter->setLastUsedAt();
             DoctrineHelper::persistAndFlush($registry, $filter);
         }

@@ -1,75 +1,52 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Traits;
 
 use App\Helper\HashHelper;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
 {
-    #[Groups(['construction-manager-read', 'construction-manager-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Groups(['user:read', 'user:write'])]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
     private ?string $email = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $authenticationHash = null;
 
-    #[Groups(['construction-manager-read'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[Groups(['user:read'])]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $isEnabled = true;
 
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $registrationCompletedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registrationCompletedAt = null;
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return static
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    /**
-     * @param bool $isEnabled
-     *
-     * @return static
-     */
-    public function setIsEnabled($isEnabled)
+    public function getIsEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(?bool $isEnabled): void
     {
         $this->isEnabled = $isEnabled;
-
-        return $this;
     }
 
     public function setAuthenticationHash(): string
@@ -79,14 +56,6 @@ trait UserTrait
         return $this->authenticationHash;
     }
 
-    /**
-     * checks if the user is allowed to login.
-     */
-    public function canLogin(): bool
-    {
-        return $this->isEnabled;
-    }
-
     public function getAuthenticationHash(): ?string
     {
         return $this->authenticationHash;
@@ -94,12 +63,20 @@ trait UserTrait
 
     public function setRegistrationCompletedNow(): void
     {
-        $this->registrationCompletedAt = new \DateTime();
+        $this->registrationCompletedAt = new \DateTimeImmutable();
     }
 
-    public function getRegistrationCompletedAt(): ?\DateTime
+    public function getRegistrationCompletedAt(): ?\DateTimeImmutable
     {
         return $this->registrationCompletedAt;
+    }
+
+    /**
+     * checks if the user has completed the registration.
+     */
+    public function getRegistrationCompleted(): bool
+    {
+        return null !== $this->password;
     }
 
     /**
@@ -108,38 +85,16 @@ trait UserTrait
      * This should be the encoded password. On authentication, a plain-text
      * password will be salted, encoded, and then compared to this value.
      *
-     * @return string The password
+     * @return ?string The password
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * Returns the salt that was originally used to encode the password.
-     *
-     * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
-     */
-    public function getSalt(): null
+    public function setPassword(?string $password): void
     {
-        return null;
-    }
-
-    /**
-     * Checks whether the user is enabled.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a DisabledException and prevent login.
-     *
-     * @return bool true if the user is enabled, false otherwise
-     *
-     * @see DisabledException
-     */
-    public function getIsEnabled(): bool
-    {
-        return $this->isEnabled;
+        $this->password = $password;
     }
 
     /**
@@ -153,48 +108,8 @@ trait UserTrait
         // nothing to do
     }
 
-    /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string The username
-     */
-    public function getUsername(): string
-    {
-        return $this->email;
-    }
-
     public function getUserIdentifier(): string
     {
-        return $this->getUsername();
-    }
-
-    /**
-     * hashes the plainPassword and erases credentials.
-     */
-    public function setPasswordFromPlain(string $plainPassword): void
-    {
-        $this->password = password_hash($plainPassword, PASSWORD_BCRYPT);
-    }
-
-    /**
-     * checks if the user has completed the registration.
-     */
-    public function getRegistrationCompleted(): bool
-    {
-        return null !== $this->password;
-    }
-
-    /**
-     * check if two users are equal.
-     *
-     * @param UserTrait $user
-     */
-    protected function isEqualToUser($user): bool
-    {
-        if ($this->getUsername() !== $user->getUsername()) {
-            return false;
-        }
-
-        return $this->getPassword() === $user->getPassword();
+        return $this->email;
     }
 }

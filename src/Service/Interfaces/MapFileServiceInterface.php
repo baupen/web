@@ -1,19 +1,15 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Interfaces;
 
 use App\Entity\MapFile;
 
 interface MapFileServiceInterface
 {
+    /**
+     * optimizes the PDF for mobile devices, which had a less performant renderer
+     * introduced around 2020, and was very effective notably on iOS
+     * unclear whether this still brings a benefit (2026), but cheap to leave in
+     */
     public function renderForMobileDevice(MapFile $mapFile): ?string;
 }

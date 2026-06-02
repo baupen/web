@@ -1,24 +1,15 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/admin')]
-class AdminController extends BaseController
+class AdminController extends AbstractController
 {
     #[Route(path: '', name: 'admin_index')]
     public function index(ManagerRegistry $registry): Response

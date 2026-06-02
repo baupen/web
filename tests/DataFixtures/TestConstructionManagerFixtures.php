@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
@@ -18,10 +9,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = 1;
-    public const CONSTRUCTION_MANAGER_EMAIL = 'test@baupen.ch';
-    public const ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@baupen.ch';
-    public const DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@baupen.ch';
+    public const int ORDER = 1;
+    public const string CONSTRUCTION_MANAGER_EMAIL = 'test@test.ch';
+    public const string ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@test.ch';
+    public const string DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@test.ch';
 
     public function load(ObjectManager $manager): void
     {
@@ -34,7 +25,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
         foreach ($entries as $entry) {
             $constructionManager = new ConstructionManager();
             $constructionManager->setEmail($entry[0]);
-            $constructionManager->setPasswordFromPlain($entry[1]);
+            $constructionManager->setPassword(password_hash($entry[1], PASSWORD_BCRYPT));
             $constructionManager->setGivenName($entry[2]);
             $constructionManager->setFamilyName($entry[3]);
             $constructionManager->setCanAssociateSelf($entry[4]);

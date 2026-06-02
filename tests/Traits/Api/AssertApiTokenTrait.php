@@ -1,22 +1,14 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiTokenTrait
 {
-    private function assertApiTokenRequestSuccessful(Client $client, string $token, string $method, string $url, ?array $payload = null)
+    private function assertApiTokenRequestSuccessful(Client $client, string $token, string $method, string $url, ?array $payload = null): ResponseInterface
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -25,7 +17,7 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function assertApiTokenRequestForbidden(Client $client, string $token, string $method, string $url, ?array $payload = null)
+    private function assertApiTokenRequestForbidden(Client $client, string $token, string $method, string $url, ?array $payload = null): ResponseInterface
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -34,7 +26,7 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function assertApiTokenRequestNotFound(Client $client, string $token, string $method, string $url, ?array $payload = null)
+    private function assertApiTokenRequestNotFound(Client $client, string $token, string $method, string $url, ?array $payload = null): ResponseInterface
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -48,7 +40,7 @@ trait AssertApiTokenTrait
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $token]]);
     }
 
-    private function requestWithApiToken(Client $client, string $token, string $method, string $url, ?array $payload = null): \Symfony\Contracts\HttpClient\ResponseInterface
+    private function requestWithApiToken(Client $client, string $token, string $method, string $url, ?array $payload = null): ResponseInterface
     {
         $body = ['headers' => ['X-AUTHENTICATION' => $token]];
         if (is_array($payload)) {

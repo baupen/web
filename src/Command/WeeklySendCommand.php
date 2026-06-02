@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
 use App\Entity\ConstructionManager;
@@ -24,28 +15,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class WeeklySendCommand extends Command
 {
-    private ManagerRegistry $registry;
-
-    private EmailServiceInterface $emailService;
-
-    private ReportServiceInterface $reportService;
-
-    /**
-     * ImportLdapUsersCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService)
+    public function __construct(private readonly ManagerRegistry $registry, private readonly EmailServiceInterface $emailService, private readonly ReportServiceInterface $reportService)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->emailService = $emailService;
-        $this->reportService = $reportService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:weekly:send')
@@ -53,10 +28,7 @@ class WeeklySendCommand extends Command
             ->addOption('only', 'o', InputOption::VALUE_OPTIONAL, 'Only send to specific E-Mail');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -73,22 +45,22 @@ class WeeklySendCommand extends Command
                 $relevantConstructionSites[$constructionSite->getId()] = $constructionSite;
             }
         }
-        $io->text('Found '.count($relevantConstructionSites).' relevant construction sites.');
+        $io->text('Found ' . count($relevantConstructionSites) . ' relevant construction sites.');
 
-        $nowWeekAgo = new \DateTime('now - 1 week');
+        $nowWeekAgo = new \DateTimeImmutable('now - 1 week');
         $constructionSiteReportLookup = [];
         foreach ($relevantConstructionSites as $constructionSite) {
             $report = $this->reportService->createConstructionSiteReport($constructionSite, $nowWeekAgo);
             $constructionSiteReportLookup[$constructionSite->getId()] = $report;
         }
-        $io->text('Created '.count($constructionSiteReportLookup).' reports.');
+        $io->text('Created ' . count($constructionSiteReportLookup) . ' reports.');
 
         foreach ($constructionManagers as $constructionManager) {
             $relevantConstructionSiteReports = $this->getOrderedConstructionSiteReportsForManager($constructionManager, $constructionSiteReportLookup);
 
             $this->emailService->sendConstructionSitesReport($constructionManager, $relevantConstructionSiteReports);
         }
-        $io->text('Sent '.count($constructionManagers).' emails.');
+        $io->text('Sent ' . count($constructionManagers) . ' emails.');
 
         return 0;
     }

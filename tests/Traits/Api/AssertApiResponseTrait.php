@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
@@ -65,7 +56,7 @@ trait AssertApiResponseTrait
                 return $url;
             }
 
-            $this->fail('no member has a the property '.$fileUrlProperty.' set, hence can not assert this url is valid.');
+            $this->fail('no member has a the property ' . $fileUrlProperty . ' set, hence can not assert this url is valid.');
         }
 
         $this->fail('only collections support this assertion.');

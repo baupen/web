@@ -1,61 +1,56 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use App\Api\Filters\ExactSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Filters\IsDeletedFilter;
+use App\Api\Processor\ConstructionSiteProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * a construction site is the place the construction manager & the craftsmen work together.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CONSTRUCTION_SITE_CREATE', object)"}
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('CONSTRUCTION_SITE_MODIFY', object)"}
- *     },
- *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-site-write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(BooleanFilter::class, properties={"isArchived", "isHidden"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    denormalizationContext: ['groups' => ['construction-site:write', 'address:write']],
+    normalizationContext: ['groups' => ['construction-site:read', 'time:read', 'address:read', 'soft-delete:read'], "skip_null_values" => false],
+    processor: ConstructionSiteProcessor::class,
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false,
+    parameters: [
+        'constructionManagers.id' => new QueryParameter(filter: new IriFilter(), property: 'constructionManagers'),
+    ],
+)]
+#[Get(security: 'is_granted("CONSTRUCTION_SITE_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_CREATE", object)', denormalizationContext: ['groups' => ['construction-site:create', 'construction-site:write', 'address:write']])]
+#[Patch(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
+#[Delete(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(BooleanFilter::class, properties: ['isArchived', 'isHidden'])]
+#[ApiFilter(IsDeletedFilter::class)]
+class ConstructionSite extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
@@ -63,17 +58,18 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $folderName = null;
 
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isArchived = false;
 
+    #[Groups(['construction-site:read'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
     private ?ConstructionSiteImage $image = null;
 
@@ -81,7 +77,8 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, ConstructionManager>
      */
     #[ORM\JoinTable(name: 'construction_site_construction_manager')]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[Groups(['construction-site:read', 'construction-site:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(targetEntity: ConstructionManager::class, inversedBy: 'constructionSites')]
     private Collection $constructionManagers;
 
@@ -89,7 +86,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, Map>
      */
     #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['name' => Criteria::ASC])]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $maps;
 
     /**
@@ -120,7 +117,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, EmailTemplate>
      */
     #[ORM\OneToMany(targetEntity: EmailTemplate::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['purpose' => Criteria::ASC, 'name' => 'ASC'])]
+    #[ORM\OrderBy(['purpose' => 'ASC', 'name' => 'ASC'])]
     private Collection $emailTemplates;
 
     /**
@@ -129,7 +126,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     #[ORM\OneToMany(targetEntity: Filter::class, mappedBy: 'constructionSite')]
     private Collection $filters;
 
-    #[Groups(['construction-site-read'])]
+    #[Groups(['construction-site:read'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isHidden = false;
 
@@ -280,33 +277,5 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function setFolderName(string $uniqueFolderName): void
     {
         $this->folderName = $uniqueFolderName;
-    }
-
-    #[Groups(['construction-site-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['construction-site-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
-    }
-
-    #[Groups(['construction-site-read'])]
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return true;
-    }
-
-    public function getConstructionSite(): ConstructionSite
-    {
-        return $this;
     }
 }

@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\ConstructionSiteImage;
@@ -19,19 +10,10 @@ use App\Service\Interfaces\CacheServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\MapFileServiceInterface;
 
-class CacheService implements CacheServiceInterface
+readonly class CacheService implements CacheServiceInterface
 {
-    private ImageServiceInterface $imageService;
-
-    private MapFileServiceInterface $mapFileService;
-
-    /**
-     * CacheService constructor.
-     */
-    public function __construct(ImageServiceInterface $imageService, MapFileServiceInterface $mapFileService)
+    public function __construct(private ImageServiceInterface $imageService, private MapFileServiceInterface $mapFileService)
     {
-        $this->imageService = $imageService;
-        $this->mapFileService = $mapFileService;
     }
 
     /**

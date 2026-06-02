@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestEmailTemplateFixtures;
@@ -34,12 +25,12 @@ class EmailTemplateTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/email_templates/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/email_templates/' . $constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/email_templates', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/email_templates/'.$constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/email_templates/' . $constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testPostPatchAndDelete(): void
@@ -62,12 +53,12 @@ class EmailTemplateTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/email_templates', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/email_templates', $affiliation, $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/email_templates', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/email_templates', $sample, $affiliation);
 
         // test GET returns correct fields
-        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $response);
-        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc');
+        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $response);
+        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc', 'createdAt', 'lastChangedAt', 'constructionSite');
 
         $emailTemplateId = json_decode($response->getContent(), true)['@id'];
 
@@ -88,10 +79,10 @@ class EmailTemplateTest extends ApiTestCase
             'selfBcc' => true,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $emailTemplateId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $response);
 
         // test DELETE removes item
         $this->assertApiDeleteOk($client, $emailTemplateId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $emailTemplateId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/email_templates?constructionSite=' . $constructionSite->getId(), $emailTemplateId);
     }
 }

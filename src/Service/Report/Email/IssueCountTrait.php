@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Email;
 
 trait IssueCountTrait
@@ -18,11 +9,7 @@ trait IssueCountTrait
     private int $resolvedCount = 0;
 
     private int $closedCount = 0;
-
-    /**
-     * @param IssueCountTrait $other
-     */
-    protected function addIssueCount($other)
+    protected function addIssueCount(ConstructionSiteReport|CraftsmanDeltaReport $other): void
     {
         $this->openCount += $other->getOpenCount();
         $this->resolvedCount += $other->getResolvedCount();

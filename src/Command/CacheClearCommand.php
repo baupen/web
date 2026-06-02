@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
 use App\Service\Interfaces\PathServiceInterface;
@@ -20,24 +11,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheClearCommand extends Command
 {
-    private PathServiceInterface $pathService;
+    public const int RETURN_CODE_NO_FORCE = 1;
 
-    public const RETURN_CODE_NO_FORCE = 1;
-
-    /**
-     * ClearCacheCommand constructor.
-     */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(private readonly PathServiceInterface $pathService)
     {
         parent::__construct();
-
-        $this->pathService = $pathService;
     }
 
     /**
      * @see Command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:cache:clear')
@@ -49,17 +33,16 @@ class CacheClearCommand extends Command
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'If you add the --construction-sites or --authorization you must set the this parameter.');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         $clearConstructionSites = $input->getOption('construction-sites');
         $clearAuthentication = $input->getOption('authorization');
-        if (($clearConstructionSites || $clearAuthentication)
-            && !$input->getOption('force')) {
+        if (
+            ($clearConstructionSites || $clearAuthentication)
+            && !$input->getOption('force')
+        ) {
             $io->warning('To clear construction sites or authentication, you must run this command --force.');
 
             return self::RETURN_CODE_NO_FORCE;
@@ -106,7 +89,7 @@ class CacheClearCommand extends Command
 
     private function clearFolder(SymfonyStyle $io, string $folder): void
     {
-        $io->text('Removing the folder at '.$folder);
-        exec('rm -rf '.$folder);
+        $io->text('Removing the folder at ' . $folder);
+        exec('rm -rf ' . $folder);
     }
 }

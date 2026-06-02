@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
@@ -16,16 +7,10 @@ use App\Entity\Filter;
 use App\Service\Interfaces\FilterServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-class FilterService implements FilterServiceInterface
+readonly class FilterService implements FilterServiceInterface
 {
-    private ManagerRegistry $manager;
-
-    /**
-     * FilterService constructor.
-     */
-    public function __construct(ManagerRegistry $manager)
+    public function __construct(private ManagerRegistry $manager)
     {
-        $this->manager = $manager;
     }
 
     public function createFromQuery(array $filters): Filter
@@ -55,21 +40,21 @@ class FilterService implements FilterServiceInterface
 
         $dateTimeMethods = ['deadline', 'createdAt', 'registeredAt', 'resolvedAt', 'closedAt'];
         foreach ($dateTimeMethods as $dateTimeMethod) {
-            $setter = 'set'.ucfirst($dateTimeMethod);
+            $setter = 'set' . ucfirst($dateTimeMethod);
 
-            $beforeSetter = $setter.'Before';
-            $filter->$beforeSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[before]'));
+            $beforeSetter = $setter . 'Before';
+            $filter->$beforeSetter($this->getNullableDateTimeImmutable($filters, $dateTimeMethod . '[before]'));
 
-            $afterSetter = $setter.'After';
-            $filter->$afterSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[after]'));
+            $afterSetter = $setter . 'After';
+            $filter->$afterSetter($this->getNullableDateTimeImmutable($filters, $dateTimeMethod . '[after]'));
         }
 
         return $filter;
     }
 
-    private function getNullableValue(array $source, string $key)
+    private function getNullableValue(array $source, string $key): mixed
     {
-        return isset($source[$key]) ? $source[$key] : null;
+        return $source[$key] ?? null;
     }
 
     private function getNullableBoolean(array $source, string $key): ?bool
@@ -86,9 +71,9 @@ class FilterService implements FilterServiceInterface
         return isset($source[$key]) ? (int) $source[$key] : null;
     }
 
-    private function getNullableDateTime(array $source, string $key): ?\DateTime
+    private function getNullableDateTimeImmutable(array $source, string $key): ?\DateTimeImmutable
     {
-        return isset($source[$key]) ? new \DateTime($source[$key]) : null;
+        return isset($source[$key]) ? new \DateTimeImmutable($source[$key]) : null;
     }
 
     private function getArray(array $source, string $key): array

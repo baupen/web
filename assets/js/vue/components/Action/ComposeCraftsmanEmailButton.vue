@@ -94,11 +94,7 @@ export default {
     defaultPurpose: {
       type: Number,
       default: 1 // issues open template
-    },
-    type: {
-      type: Number,
-      default: 4 // craftsman issue reminder
-    },
+    }
   },
   computed: {
     disabled: function () {
@@ -145,14 +141,14 @@ export default {
     },
     sendEmails: function () {
       this.unsentEmails = this.craftsmen.map(craftsman => {
-        return Object.assign({ type: this.type, selfBcc: this.selfBcc }, this.email, { receiver: craftsman['@id'] })
+        return Object.assign({ selfBcc: this.selfBcc }, this.email, { constructionSite: this.constructionSite['@id'], receiver: craftsman['@id'] })
       })
 
       this.processUnsentEmails()
     },
     processUnsentEmails () {
       const email = this.unsentEmails[0]
-      api.postEmail(email)
+      api.postCraftsmanEmail(email)
           .then(_ => {
                 this.unsentEmails.shift()
                 this.$emit('email-sent', this.craftsmen.find(c => c['@id'] === email.receiver))

@@ -17,3 +17,28 @@ It suggests the following workflow:
  - the construction manager inspects the issues the craftsman resolved, and closes those which are completed to satisfaction
 
 The first and the last step are best executed using the [iOS](https://github.com/baupen/iOS) or [Android](https://github.com/baupen/Android) apps.
+
+
+Backend:
+- check CSRF is enabled on login
+- check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
+
+Frontend:
+- Replace noty (noty longer maintained)
+- Replace vue-i18n (high maintenance cost due to ever-evolving api/compilation/owner, overly complicated implementation)
+- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
+- UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
+- Refactor table implementation
+
+UX:
+- Introduce profile / password change page, where also weekly can be configured
+- First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
+- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
+
+fix behaviour:
+- When construction manager is POSTed, if email already exists, generic error is thrown.
+
+after release:
+- remove BASE_URI from .env of instances
+- cleanup craftsman statistics / craftsman analysis
+- add profile update page, with mobile connection, profile update, password set (+ checkbox whether to update mobile token)

@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
@@ -22,9 +13,9 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 {
     private SampleServiceInterface $sampleService;
 
-    public const ORDER = TestConstructionManagerFixtures::ORDER + 1;
-    public const TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
-    public const EMPTY_CONSTRUCTION_SITE_NAME = 'empty';
+    public const int ORDER = TestConstructionManagerFixtures::ORDER + 1;
+    public const string TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
+    public const string EMPTY_CONSTRUCTION_SITE_NAME = 'empty';
 
     /**
      * TestConstructionSiteFixtures constructor.

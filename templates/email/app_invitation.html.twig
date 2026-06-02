@@ -17,7 +17,7 @@
     <h2>2.</h2>
     <p>{{ "app_invitation.authenticate"|trans({"%page%": app.request.httpHost})  }}</p>
     <center>
-        <button href="{{ sentBy|iOSLoginLink }}">
+        <button href="{{ sentBy|login_link }}">
             {{ "app_invitation.login_link"|trans }}
         </button>
     </center>

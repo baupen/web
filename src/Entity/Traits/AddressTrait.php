@@ -1,18 +1,10 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /*
@@ -22,25 +14,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait AddressTrait
 {
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $streetAddress = null;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $postalCode = null;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[Groups(['address:read', 'address:write'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $locality = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT)]
     #[Assert\Country]
     private ?string $country = 'CH';
 
-    public function getStreetAddress(): string
+    public function getStreetAddress(): ?string
     {
         return $this->streetAddress;
     }
@@ -50,7 +42,7 @@ trait AddressTrait
         $this->streetAddress = $streetAddress;
     }
 
-    public function getPostalCode(): int
+    public function getPostalCode(): ?int
     {
         return $this->postalCode;
     }
@@ -60,7 +52,7 @@ trait AddressTrait
         $this->postalCode = $postalCode;
     }
 
-    public function getLocality(): string
+    public function getLocality(): ?string
     {
         return $this->locality;
     }
@@ -70,7 +62,7 @@ trait AddressTrait
         $this->locality = $locality;
     }
 
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }
@@ -89,24 +81,17 @@ trait AddressTrait
     {
         $res = explode("\n", $this->getStreetAddress());
         $prefix = '';
-        if (mb_strlen($this->getCountry()) > 0) {
-            $prefix = $this->getCountry().((mb_strlen($this->getPostalCode()) > 0) ? '-' : ' ');
+        if ($this->getCountry()) {
+            $prefix = $this->getCountry() . ($this->getPostalCode() ? '-' : ' ');
         }
-        if (mb_strlen($this->getPostalCode()) > 0) {
-            $prefix .= $this->getPostalCode().' ';
+        if ($this->getPostalCode()) {
+            $prefix .= $this->getPostalCode() . ' ';
         }
-        if (mb_strlen($this->getLocality()) > 0) {
+        if ($this->getLocality()) {
             $prefix .= $this->getLocality();
         }
         $res[] = trim($prefix);
 
-        $result = [];
-        foreach ($res as $entry) {
-            if (mb_strlen($entry) > 0) {
-                $result[] = $entry;
-            }
-        }
-
-        return $result;
+        return array_filter($res);
     }
 }

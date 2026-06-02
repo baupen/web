@@ -1,71 +1,42 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Api\Filters;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Core\Exception\InvalidArgumentException;
-use App\Entity\Issue;
+use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
+use App\Enum\IssueState;
 use Doctrine\ORM\QueryBuilder;
 
-class StateFilter extends AbstractContextAwareFilter
+readonly class StateFilter implements FilterInterface
 {
-    public const STATE_PROPERTY_NAME = 'state';
-
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
+    public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        // otherwise filter is applied to order and page as well
-        if (!$this->isPropertyEnabled($property, $resourceClass)) {
-            return;
-        }
-
-        $value = $this->normalizeValue($value);
+        $filters = $context['filters'] ?? [];
+        $state = $filters['state'] ?? null;
+        $value = $this->normalizeValue($state);
         if (null === $value) {
             return;
         }
 
         $alias = $queryBuilder->getRootAliases()[0];
         $orQueries = [];
-        if (($value & Issue::STATE_CREATED) !== 0) {
-            $orQueries[] = $alias.'.registeredAt IS NULL AND '.$alias.'.resolvedAt IS NULL AND '.$alias.'.closedAt IS NULL';
+        if (($value & IssueState::CREATED->value) !== 0) {
+            $orQueries[] = $alias . '.registeredAt IS NULL AND ' . $alias . '.resolvedAt IS NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_REGISTERED) !== 0) {
-            $orQueries[] = $alias.'.registeredAt IS NOT NULL AND '.$alias.'.resolvedAt IS NULL AND '.$alias.'.closedAt IS NULL';
+        if (($value & IssueState::REGISTERED->value) !== 0) {
+            $orQueries[] = $alias . '.registeredAt IS NOT NULL AND ' . $alias . '.resolvedAt IS NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_RESOLVED) !== 0) {
-            $orQueries[] = $alias.'.resolvedAt IS NOT NULL AND '.$alias.'.closedAt IS NULL';
+        if (($value & IssueState::RESOLVED->value) !== 0) {
+            $orQueries[] = $alias . '.resolvedAt IS NOT NULL AND ' . $alias . '.closedAt IS NULL';
         }
-        if (($value & Issue::STATE_CLOSED) !== 0) {
-            $orQueries[] = $alias.'.closedAt IS NOT NULL';
+        if (($value & IssueState::CLOSED->value) !== 0) {
+            $orQueries[] = $alias . '.closedAt IS NOT NULL';
         }
 
         if ([] !== $orQueries) {
-            $queryBuilder->andWhere('('.implode(') OR (', $orQueries).')');
+            $queryBuilder->andWhere('(' . implode(') OR (', $orQueries) . ')');
         }
-    }
-
-    private function normalizeValue($value): ?int
-    {
-        $intValue = (int) $value;
-        $maxCombination = Issue::STATE_CREATED | Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;
-        if (Issue::STATE_CREATED <= $intValue && $intValue <= $maxCombination) {
-            return $intValue;
-        }
-
-        $this->getLogger()->notice('Invalid filter ignored', [
-            'exception' => new InvalidArgumentException('Invalid value for '.self::STATE_PROPERTY_NAME.', expected in range '.Issue::STATE_CREATED.' - '.Issue::STATE_CLOSED),
-        ]);
-
-        return null;
     }
 
     public function getDescription(string $resourceClass): array
@@ -82,5 +53,16 @@ class StateFilter extends AbstractContextAwareFilter
                 ],
             ],
         ];
+    }
+
+    private function normalizeValue($value): ?int
+    {
+        $intValue = (int)$value;
+        $maxCombination = IssueState::CREATED->value | IssueState::REGISTERED->value | IssueState::RESOLVED->value | IssueState::CLOSED->value;
+        if (IssueState::CREATED->value <= $intValue && $intValue <= $maxCombination) {
+            return $intValue;
+        }
+
+        return null;
     }
 }

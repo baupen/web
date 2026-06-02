@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Security;
 
 use App\Entity\ConstructionManager;
@@ -16,7 +7,6 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -50,9 +40,6 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
         throw new \Exception('not implemented / not useful for tokens');
     }
 
-    /**
-     * @throws UsernameNotFoundException if the user is not found
-     */
     public function loadUserByUsername(string $username): AuthenticationToken
     {
         $token = new AuthenticationToken();
@@ -74,7 +61,7 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
 
         $filter = $this->manager->getRepository(Filter::class)->findOneBy(['authenticationToken' => $username]);
         if (null !== $filter) {
-            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() > new \DateTime()) {
+            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() > new \DateTimeImmutable()) {
                 $token->setFilter($filter);
 
                 return $token;

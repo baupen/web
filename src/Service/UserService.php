@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
@@ -20,15 +11,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class UserService implements UserServiceInterface
 {
-    public const AUTHORIZATION_METHOD_DEFAULT_ALLOW_SELF_ASSOCIATION = 'default_allow_self_association';
-    public const AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
-    public const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
-
-    private PathServiceInterface $pathService;
-
-    private EmailServiceInterface $emailService;
-
-    private ManagerRegistry $registry;
+    public const string AUTHORIZATION_METHOD_DEFAULT_ALLOW_SELF_ASSOCIATION = 'default_allow_self_association';
+    public const string AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
+    public const string AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
 
     /**
      * @var string[][]|null
@@ -45,17 +30,8 @@ class UserService implements UserServiceInterface
      */
     private ?array $domainWhitelistCache = null;
 
-    private string $authorizationMethod;
-
-    /**
-     * AuthorizationService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, ManagerRegistry $manager, EmailServiceInterface $emailService, string $authorizationMethod)
+    public function __construct(private readonly PathServiceInterface $pathService, private readonly ManagerRegistry $registry, private readonly EmailServiceInterface $emailService, private readonly string $authorizationMethod)
     {
-        $this->pathService = $pathService;
-        $this->registry = $manager;
-        $this->emailService = $emailService;
-        $this->authorizationMethod = $authorizationMethod;
     }
 
     public function authorize(ConstructionManager $constructionManager): void
@@ -71,7 +47,7 @@ class UserService implements UserServiceInterface
                 $this->doWhitelistAuthorization($constructionManager);
                 break;
             default:
-                throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
+                throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
         }
     }
 
@@ -85,22 +61,22 @@ class UserService implements UserServiceInterface
                 $this->doWhitelistAuthorization($constructionManager);
                 break;
             default:
-                throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
+                throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
         }
     }
 
     public function tryRegister(ConstructionManager $template, ?string &$error = null): bool
     {
-        /** @var ConstructionManager $existing */
+        /** @var ConstructionManager|null $existing */
         $existing = $this->registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $template->getEmail()]);
 
-        if (null !== $existing && $existing->getRegistrationCompleted()) {
+        if ($existing?->getRegistrationCompleted()) {
             $error = UserServiceInterface::REGISTRATION_FAIL_ALREADY_REGISTERED;
 
             return false;
         }
 
-        if (null !== $existing) {
+        if ($existing) {
             $template = $existing;
         }
 
@@ -143,10 +119,10 @@ class UserService implements UserServiceInterface
     {
         if ($this->isEmailOnWhitelist($constructionManager->getEmail())) {
             // is on whitelist
-            $constructionManager->setAuthorizationAuthority(ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST);
+            $constructionManager->setAuthorizationAuthority(UserServiceInterface::AUTHORIZATION_AUTHORITY_WHITELIST);
             $constructionManager->setCanAssociateSelf(true);
             $constructionManager->setIsEnabled(true);
-        } elseif (ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST === $constructionManager->getAuthorizationAuthority()) {
+        } elseif (UserServiceInterface::AUTHORIZATION_AUTHORITY_WHITELIST === $constructionManager->getAuthorizationAuthority()) {
             // was on whitelist, but not anymore
             $constructionManager->setIsEnabled(false);
         } else {
@@ -154,15 +130,15 @@ class UserService implements UserServiceInterface
         }
     }
 
-    private function isEmailOnWhitelist(string $email)
+    private function isEmailOnWhitelist(string $email): bool
     {
         if (null == $this->emailWhitelistCache) {
             $this->emailWhitelistCache = [];
             $this->domainWhitelistCache = [];
 
-            $whitelistRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'whitelists';
-            $domainWhitelistPath = $whitelistRoot.\DIRECTORY_SEPARATOR.'domains.txt';
-            foreach (glob($whitelistRoot.\DIRECTORY_SEPARATOR.'*.txt') as $whitelistFile) {
+            $whitelistRoot = $this->pathService->getTransientFolderForAuthorization() . \DIRECTORY_SEPARATOR . 'whitelists';
+            $domainWhitelistPath = $whitelistRoot . \DIRECTORY_SEPARATOR . 'domains.txt';
+            foreach (glob($whitelistRoot . \DIRECTORY_SEPARATOR . '*.txt') as $whitelistFile) {
                 $whitelist = file_get_contents($whitelistFile);
                 $lines = explode("\n", $whitelist);
                 foreach ($lines as $line) {
@@ -201,8 +177,8 @@ class UserService implements UserServiceInterface
         if (null == $this->userDataCache) {
             $this->userDataCache = [];
 
-            $userDataRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'user_data';
-            foreach (glob($userDataRoot.\DIRECTORY_SEPARATOR.'*.json') as $userDataFile) {
+            $userDataRoot = $this->pathService->getTransientFolderForAuthorization() . \DIRECTORY_SEPARATOR . 'user_data';
+            foreach (glob($userDataRoot . \DIRECTORY_SEPARATOR . '*.json') as $userDataFile) {
                 $json = file_get_contents($userDataFile);
 
                 $entries = json_decode($json, true);

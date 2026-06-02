@@ -1,16 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /*
@@ -21,17 +13,18 @@ trait IdTrait
 {
     /**
      * @var string|null
-     *                  will be null when not inserted into the db yet
+     * will be null when not inserted into the db yet
      */
     #[ORM\Id]
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::GUID)]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
-    private $id;
+    #[ORM\Column(type: Types::GUID, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?string $id;
 
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }

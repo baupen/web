@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\EventSubscriber;
 
 use App\Entity\ConstructionManager;
@@ -37,7 +28,12 @@ class ConstructionManagerLocaleSubscriber implements EventSubscriberInterface
 
     private function setLocaleFromUser(Request $request, UserInterface $user): void
     {
-        if ($request->hasSession() && ($session = $request->getSession()) && $user instanceof ConstructionManager) {
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+        if ($user instanceof ConstructionManager) {
             $session->set('_locale', $user->getLocale());
         }
     }
@@ -60,7 +56,7 @@ class ConstructionManagerLocaleSubscriber implements EventSubscriberInterface
      *
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',

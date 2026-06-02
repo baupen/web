@@ -1,21 +1,13 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Analysis\Database;
 
-use App\Doctrine\UTCDateTimeType;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Extension\UTCDateTimeImmutableType;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\Analysis\CraftsmanIssueAnalysis;
+use App\Service\Report\Email\CraftsmanDeltaReport;
 use App\Service\Report\Email\IssueCountTrait;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -34,7 +26,7 @@ class CraftsmanService
 
     /**
      * @param Craftsman[]       $craftsmen
-     * @param IssueCountTrait[] $issueCountByCraftsman
+     * @param CraftsmanDeltaReport[] $issueCountByCraftsman
      */
     public function findIssueCountByCraftsman(array $craftsmen, array $issueCountByCraftsman): void
     {
@@ -44,7 +36,8 @@ class CraftsmanService
         $issueRepository = $this->manager->getRepository(Issue::class);
         $queryBuilderResolvedIssues = $issueRepository->filterResolvedIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderResolvedIssues, 'COUNT(i)',
+            $queryBuilderResolvedIssues,
+            'COUNT(i)',
             function (string $craftsmanId, $value) use ($issueCountByCraftsman): void {
                 $issueCountByCraftsman[$craftsmanId]->setResolvedCount($value);
             }
@@ -63,7 +56,8 @@ class CraftsmanService
         $issueRepository = $this->manager->getRepository(Issue::class);
         $queryBuilderInspectableIssues = $issueRepository->filterInspectableIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderInspectableIssues, 'COUNT(i)',
+            $queryBuilderInspectableIssues,
+            'COUNT(i)',
             function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setInspectableCount($value);
             }
@@ -74,7 +68,8 @@ class CraftsmanService
             ->join('i.craftsman', 'c')
             ->andWhere('i.registeredAt > c.lastVisitOnline OR c.lastVisitOnline IS NULL');
         $this->groupByCraftsmanAndEvaluate(
-            $unreadIssuesQueryBuilder, 'COUNT(i)',
+            $unreadIssuesQueryBuilder,
+            'COUNT(i)',
             function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setUnreadCount($value);
             }
@@ -83,9 +78,10 @@ class CraftsmanService
         $overdueIssuesQueryBuilder = (clone $openIssuesQueryBuilder)
             ->andWhere('i.deadline IS NOT NULL')
             ->andWhere('i.deadline < :now')
-            ->setParameter(':now', new \DateTime());
+            ->setParameter(':now', new \DateTimeImmutable());
         $this->groupByCraftsmanAndEvaluate(
-            $overdueIssuesQueryBuilder, 'COUNT(i)',
+            $overdueIssuesQueryBuilder,
+            'COUNT(i)',
             function (string $craftsmanId, int $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setOverdueCount($value);
             }
@@ -97,7 +93,8 @@ class CraftsmanService
         $openIssuesQueryBuilder = $this->getOpenIssuesQueryBuilder('i', $craftsmen);
         $issueRepository = $this->manager->getRepository(Issue::class);
         $this->groupByCraftsmanAndEvaluate(
-            $openIssuesQueryBuilder, 'COUNT(i)',
+            $openIssuesQueryBuilder,
+            'COUNT(i)',
             function (string $craftsmanId, $value) use ($targetByCraftsman): void {
                 $targetByCraftsman[$craftsmanId]->setOpenCount($value);
             }
@@ -106,7 +103,8 @@ class CraftsmanService
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen);
         $queryBuilderClosedIssues = $issueRepository->filterClosedIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderClosedIssues, 'COUNT(i)',
+            $queryBuilderClosedIssues,
+            'COUNT(i)',
             function (string $craftsmanId, $value) use ($targetByCraftsman): void {
                 $targetByCraftsman[$craftsmanId]->setClosedCount($value);
             }
@@ -123,9 +121,10 @@ class CraftsmanService
             ->andWhere('i.deadline IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, 'MIN(i.deadline)',
+            $queryBuilder,
+            'MIN(i.deadline)',
             function (string $craftsmanId, $value) use ($statisticsDictionary): void {
-                $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
+                $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeImmutableType::tryParseDateTime($value));
             }
         );
     }
@@ -138,29 +137,30 @@ class CraftsmanService
     {
         $rootAlias = 'i';
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)
-            ->andWhere($rootAlias.'.registeredAt IS NOT NULL');
+            ->andWhere($rootAlias . '.registeredAt IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, 'MAX(i.resolvedAt)',
+            $queryBuilder,
+            'MAX(i.resolvedAt)',
             function (string $craftsmanId, $value) use ($statisticsDictionary): void {
-                $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
+                $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeImmutableType::tryParseDateTime($value));
             }
         );
     }
 
-    public function getCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    public function getCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen): QueryBuilder
     {
         $craftsmanIds = $this->getCraftsmanIds($craftsmen);
 
         $issueRepository = $this->manager->getRepository(Issue::class);
 
         return $issueRepository->createQueryBuilder($rootAlias)
-            ->andWhere($rootAlias.'.deletedAt IS NULL')
-            ->andWhere($rootAlias.'.craftsman IN (:craftsmanIds)')
+            ->andWhere($rootAlias . '.deletedAt IS NULL')
+            ->andWhere($rootAlias . '.craftsman IN (:craftsmanIds)')
             ->setParameter(':craftsmanIds', $craftsmanIds);
     }
 
-    private function getOpenIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    private function getOpenIssuesQueryBuilder(string $rootAlias, array $craftsmen): QueryBuilder
     {
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen);
 
@@ -173,8 +173,8 @@ class CraftsmanService
     private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, string $selectExpression, \Closure $processResult): void
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->groupBy($rootAlias.'.craftsman')
-            ->select('identity('.$rootAlias.'.craftsman)')
+        $queryBuilder->groupBy($rootAlias . '.craftsman')
+            ->select('identity(' . $rootAlias . '.craftsman)')
             ->addSelect($selectExpression);
 
         $nextDeadlineResult = $queryBuilder->getQuery()->getResult();

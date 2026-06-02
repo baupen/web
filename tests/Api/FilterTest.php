@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
@@ -36,11 +27,11 @@ class FilterTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/filters', 'POST');
         $someId = $constructionSite->getId();
-        $this->assertApiOperationNotAuthorized($client, '/api/filters/'.$someId, 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/filters/' . $someId, 'GET');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/filters', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/filters/'.$constructionSite->getFilters()[0]->getId(), 'GET');
+        $this->assertApiOperationForbidden($client, '/api/filters/' . $constructionSite->getFilters()[0]->getId(), 'GET');
     }
 
     public function testPost(): void
@@ -55,7 +46,7 @@ class FilterTest extends ApiTestCase
             'constructionSite' => $constructionSiteId,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/filters', $affiliation);
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/filters', $affiliation);
     }
 }

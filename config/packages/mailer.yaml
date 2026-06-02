@@ -1,3 +1,9 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+
+when@test:
+  framework:
+    mailer:
+      envelope:
+        recipients: [ 'git@famoser.ch' ] # send to git@ instead of the real address

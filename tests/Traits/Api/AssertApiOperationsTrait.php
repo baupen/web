@@ -1,18 +1,10 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiOperationsTrait
 {
@@ -42,7 +34,7 @@ trait AssertApiOperationsTrait
         }
     }
 
-    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE, ?array $payload = null)
+    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE, ?array $payload = null): ResponseInterface
     {
         $body = ['headers' => ['Accept' => $acceptHeader]];
         if (is_array($payload)) {

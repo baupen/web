@@ -1,18 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
-use ApiPlatform\Api\IriConverterInterface;
-use App\Controller\Base\BaseController;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\ConstructionSite;
@@ -28,13 +18,14 @@ use App\Security\TokenTrait;
 use App\Security\Voter\ConstructionSiteVoter;
 use App\Security\Voter\IssueEventVoter;
 use App\Security\Voter\IssueVoter;
-use App\Security\Voter\MapVoter;
+use App\Security\Voter\Owned\MapVoter;
 use App\Service\Interfaces\CacheServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\MapFileService;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -42,12 +33,11 @@ use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route(path: '/api')]
-class ApiController extends BaseController
+class ApiController extends AbstractController
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -98,15 +88,15 @@ class ApiController extends BaseController
     public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $sanitizedVariant = strtolower($request->query->get('variant', ''));
         if ('' !== $sanitizedVariant && 'ios' !== $sanitizedVariant) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
-        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
 
         if ('ios' === $sanitizedVariant) {
             $optimized = $mapFileService->renderForMobileDevice($mapFile);
@@ -122,7 +112,7 @@ class ApiController extends BaseController
     public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -139,7 +129,7 @@ class ApiController extends BaseController
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
-        if (!$mapFile instanceof MapFile) {
+        if (!$mapFile) {
             throw new BadRequestException('The map file could not be stored');
         }
 
@@ -166,7 +156,7 @@ class ApiController extends BaseController
     public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -183,7 +173,7 @@ class ApiController extends BaseController
         $image = $this->getImage($request->files);
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
-        if (!$constructionSiteImage instanceof ConstructionSiteImage) {
+        if (!$constructionSiteImage) {
             throw new BadRequestException('The construction site image could not be stored');
         }
 
@@ -207,14 +197,14 @@ class ApiController extends BaseController
     }
 
     #[Route(path: '/issue_events/{issueEvent}/file', name: 'post_issue_event_file', methods: ['POST'])]
-    public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, ImageServiceInterface $imageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
+    public function postIssueEventFile(Request $request, IssueEvent $issueEvent, StorageServiceInterface $storageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(IssueEventVoter::ISSUE_EVENT_MODIFY, $issueEvent);
 
         $file = $this->getSafeFile($request->files);
 
         $issueEventFile = $storageService->uploadIssueEventFile($file, $issueEvent);
-        if (!$issueEventFile instanceof IssueEventFile) {
+        if (!$issueEventFile) {
             throw new BadRequestException('The issue event file could not be stored');
         }
 
@@ -230,7 +220,7 @@ class ApiController extends BaseController
     public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService): BinaryFileResponse
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -243,7 +233,7 @@ class ApiController extends BaseController
     public function getIssueEventFile(Request $request, IssueEvent $issueEvent, IssueEventFile $issueEventFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService): BinaryFileResponse
     {
         if ($issueEvent->getFile() !== $issueEventFile || $issueEventFile->getFilename() !== $filename) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         if ($imageService->isImageFilename($filename)) {
@@ -253,7 +243,7 @@ class ApiController extends BaseController
             return $this->tryCreateInlineFileResponse($path, $issueEventFile->getFilename(), true);
         }
 
-        $path = $pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$issueEventFile->getFilename();
+        $path = $pathService->getFolderForIssueEventFiles($issueEventFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $issueEventFile->getFilename();
 
         return $this->tryCreateAttachmentFileResponse($path, $issueEventFile->getFilename());
     }
@@ -262,8 +252,8 @@ class ApiController extends BaseController
     public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService): BinaryFileResponse
     {
         $mapFile = $issue->getMap()->getFile();
-        if (!$mapFile instanceof MapFile) {
-            throw new NotFoundHttpException();
+        if (!$mapFile) {
+            throw $this->createNotFoundException();
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
@@ -280,7 +270,7 @@ class ApiController extends BaseController
         $image = $this->getImage($request->files);
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
-        if (!$issueImage instanceof IssueImage) {
+        if (!$issueImage) {
             throw new BadRequestException('The issue site image could not be stored');
         }
 
@@ -348,6 +338,6 @@ class ApiController extends BaseController
         } elseif ('application/octet-stream' === $candidate->getMimeType() && in_array($candidate->getExtension(), $octetWhitelist)) {
             return $candidate;
         }
-        throw new BadRequestException('Unexpected mimeType: '.$candidate->getMimeType());
+        throw new BadRequestException('Unexpected mimeType: ' . $candidate->getMimeType());
     }
 }

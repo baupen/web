@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -25,7 +16,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CaptchaType extends AbstractType
 {
-    public const CAPTCHA_CHALLENGE_SESSION_KEY = '_captcha_challenge';
+    public const string CAPTCHA_CHALLENGE_SESSION_KEY = '_captcha_challenge';
 
     public function __construct(private readonly RequestStack $requestStack, private readonly TranslatorInterface $translator)
     {

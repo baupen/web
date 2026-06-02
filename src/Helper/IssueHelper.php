@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Helper;
 
 use App\Entity\Craftsman;
@@ -42,7 +33,7 @@ class IssueHelper
 
     /**
      * @param Issue[]     $issues
-     * @param Craftsman[] $orderedCraftsman
+     * @param array<string, Craftsman|null> $orderedCraftsman
      * @param Issue[][]   $issuesPerCraftsman
      */
     public static function issuesToOrderedCraftsman(array $issues, ?array &$orderedCraftsman, ?array &$issuesPerCraftsman): void
@@ -51,7 +42,7 @@ class IssueHelper
         $issuesPerCraftsman = [];
         foreach ($issues as $issue) {
             $craftsman = $issue->getCraftsman();
-            $unorderedElements[$craftsman->getTrade().$craftsman->getCompany()] = $craftsman;
+            $unorderedElements[$craftsman->getTrade() . $craftsman->getCompany()] = $craftsman;
             $issuesPerCraftsman[$craftsman->getId()][] = $issue;
         }
 

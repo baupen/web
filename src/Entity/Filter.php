@@ -1,153 +1,148 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * A Filter is used to share a selection of issues.
- *
- * @ApiResource(
- *     collectionOperations={
- *      "post" = {"security_post_denormalize" = "is_granted('FILTER_CREATE', object)", "denormalization_context"={"groups"={"filter-create"}}}
- *      },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"}
- *     },
- *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"filter-write"}},
- * )
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    denormalizationContext: ['groups' => []],
+    normalizationContext: ['groups' => ['filter:read', 'time:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')",
+)]
+#[Get(security: 'is_granted("FILTER_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("FILTER_CREATE", object)', denormalizationContext: ['groups' => ['filter:create', 'filter:write']])]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
+class Filter extends BaseEntity
 {
     use IdTrait;
     use AuthenticationTrait;
     use TimeTrait;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $isDeleted = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $isMarked = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $wasAddedWithClient = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $numbers = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $state = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $craftsmanIds = null;
 
     /**
      * @var string[]|null
      */
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $mapIds = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deadlineBefore = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deadlineBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deadlineAfter = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deadlineAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $createdBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $registeredBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $closedBy = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $createdAtAfter = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $createdAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $createdAtBefore = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $createdAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $registeredAtAfter = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registeredAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $registeredAtBefore = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registeredAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $resolvedAtAfter = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $resolvedAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $resolvedAtBefore = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $resolvedAtBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $closedAtAfter = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAtAfter = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $closedAtBefore = null;
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAtBefore = null;
 
-    #[Groups(['filter-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $accessAllowedBefore = null;
+    #[Groups(['filter:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $accessAllowedBefore = null;
 
-    #[Groups(['filter-read', 'filter-create'])]
+    #[Groups(['filter:read', 'filter:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[Assert\NotBlank]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'filters')]
     private ?ConstructionSite $constructionSite = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $lastUsedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastUsedAt = null;
 
     public function getIsDeleted(): ?bool
     {
@@ -247,22 +242,22 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->mapIds = $mapIds;
     }
 
-    public function getDeadlineBefore(): ?\DateTime
+    public function getDeadlineBefore(): ?\DateTimeImmutable
     {
         return $this->deadlineBefore;
     }
 
-    public function setDeadlineBefore(?\DateTime $deadlineBefore): void
+    public function setDeadlineBefore(?\DateTimeImmutable $deadlineBefore): void
     {
         $this->deadlineBefore = $deadlineBefore;
     }
 
-    public function getDeadlineAfter(): ?\DateTime
+    public function getDeadlineAfter(): ?\DateTimeImmutable
     {
         return $this->deadlineAfter;
     }
 
-    public function setDeadlineAfter(?\DateTime $deadlineAfter): void
+    public function setDeadlineAfter(?\DateTimeImmutable $deadlineAfter): void
     {
         $this->deadlineAfter = $deadlineAfter;
     }
@@ -297,97 +292,97 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->closedBy = $closedBy;
     }
 
-    public function getCreatedAtAfter(): ?\DateTime
+    public function getCreatedAtAfter(): ?\DateTimeImmutable
     {
         return $this->createdAtAfter;
     }
 
-    public function setCreatedAtAfter(?\DateTime $createdAtAfter): void
+    public function setCreatedAtAfter(?\DateTimeImmutable $createdAtAfter): void
     {
         $this->createdAtAfter = $createdAtAfter;
     }
 
-    public function getCreatedAtBefore(): ?\DateTime
+    public function getCreatedAtBefore(): ?\DateTimeImmutable
     {
         return $this->createdAtBefore;
     }
 
-    public function setCreatedAtBefore(?\DateTime $createdAtBefore): void
+    public function setCreatedAtBefore(?\DateTimeImmutable $createdAtBefore): void
     {
         $this->createdAtBefore = $createdAtBefore;
     }
 
-    public function getRegisteredAtAfter(): ?\DateTime
+    public function getRegisteredAtAfter(): ?\DateTimeImmutable
     {
         return $this->registeredAtAfter;
     }
 
-    public function setRegisteredAtAfter(?\DateTime $registeredAtAfter): void
+    public function setRegisteredAtAfter(?\DateTimeImmutable $registeredAtAfter): void
     {
         $this->registeredAtAfter = $registeredAtAfter;
     }
 
-    public function getRegisteredAtBefore(): ?\DateTime
+    public function getRegisteredAtBefore(): ?\DateTimeImmutable
     {
         return $this->registeredAtBefore;
     }
 
-    public function setRegisteredAtBefore(?\DateTime $registeredAtBefore): void
+    public function setRegisteredAtBefore(?\DateTimeImmutable $registeredAtBefore): void
     {
         $this->registeredAtBefore = $registeredAtBefore;
     }
 
-    public function getResolvedAtAfter(): ?\DateTime
+    public function getResolvedAtAfter(): ?\DateTimeImmutable
     {
         return $this->resolvedAtAfter;
     }
 
-    public function setResolvedAtAfter(?\DateTime $resolvedAtAfter): void
+    public function setResolvedAtAfter(?\DateTimeImmutable $resolvedAtAfter): void
     {
         $this->resolvedAtAfter = $resolvedAtAfter;
     }
 
-    public function getResolvedAtBefore(): ?\DateTime
+    public function getResolvedAtBefore(): ?\DateTimeImmutable
     {
         return $this->resolvedAtBefore;
     }
 
-    public function setResolvedAtBefore(?\DateTime $resolvedAtBefore): void
+    public function setResolvedAtBefore(?\DateTimeImmutable $resolvedAtBefore): void
     {
         $this->resolvedAtBefore = $resolvedAtBefore;
     }
 
-    public function getClosedAtAfter(): ?\DateTime
+    public function getClosedAtAfter(): ?\DateTimeImmutable
     {
         return $this->closedAtAfter;
     }
 
-    public function setClosedAtAfter(?\DateTime $closedAtAfter): void
+    public function setClosedAtAfter(?\DateTimeImmutable $closedAtAfter): void
     {
         $this->closedAtAfter = $closedAtAfter;
     }
 
-    public function getClosedAtBefore(): ?\DateTime
+    public function getClosedAtBefore(): ?\DateTimeImmutable
     {
         return $this->closedAtBefore;
     }
 
-    public function setClosedAtBefore(?\DateTime $closedAtBefore): void
+    public function setClosedAtBefore(?\DateTimeImmutable $closedAtBefore): void
     {
         $this->closedAtBefore = $closedAtBefore;
     }
 
-    public function getAccessAllowedBefore(): ?\DateTime
+    public function getAccessAllowedBefore(): ?\DateTimeImmutable
     {
         return $this->accessAllowedBefore;
     }
 
-    public function setAccessAllowedBefore(?\DateTime $accessAllowedBefore): void
+    public function setAccessAllowedBefore(?\DateTimeImmutable $accessAllowedBefore): void
     {
         $this->accessAllowedBefore = $accessAllowedBefore;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
@@ -397,18 +392,13 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->constructionSite = $constructionSite;
     }
 
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
-    }
-
-    public function getLastUsedAt(): ?\DateTime
+    public function getLastUsedAt(): ?\DateTimeImmutable
     {
         return $this->lastUsedAt;
     }
 
     public function setLastUsedAt(): void
     {
-        $this->lastUsedAt = new \DateTime();
+        $this->lastUsedAt = new \DateTimeImmutable();
     }
 }

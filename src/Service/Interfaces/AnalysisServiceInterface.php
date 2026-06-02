@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Interfaces;
 
 use App\Entity\Craftsman;
@@ -24,7 +15,7 @@ interface AnalysisServiceInterface
      *
      * @return IssueAnalysis[]
      */
-    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array;
+    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array;
 
     public function createIssueAnalysis(string $rootAlias, QueryBuilder $queryBuilder): IssueAnalysis;
 
@@ -33,5 +24,5 @@ interface AnalysisServiceInterface
      *
      * @return CraftsmanAnalysis[]
      */
-    public function createCraftsmanAnalysisByCraftsman(array $craftsmen): array;
+    public function createCraftsmanAnalysis(array $craftsmen): array;
 }

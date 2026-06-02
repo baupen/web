@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Email;
 
 use App\Entity\ConstructionSite;
@@ -20,7 +11,7 @@ class ConstructionSiteReport
 
     private ConstructionSite $constructionSite;
 
-    private \DateTime $comparisonTimestamp;
+    private \DateTimeImmutable $comparisonTimestamp;
 
     /**
      * @var CraftsmanDeltaReport[]
@@ -32,7 +23,7 @@ class ConstructionSiteReport
      *
      * @param CraftsmanDeltaReport[] $craftsmanDeltaReports
      */
-    public function __construct(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp, array $craftsmanDeltaReports)
+    public function __construct(ConstructionSite $constructionSite, \DateTimeImmutable $comparisonTimestamp, array $craftsmanDeltaReports)
     {
         $this->constructionSite = $constructionSite;
         $this->comparisonTimestamp = $comparisonTimestamp;
@@ -49,7 +40,7 @@ class ConstructionSiteReport
         return $this->constructionSite;
     }
 
-    public function getComparisonTimestamp(): \DateTime
+    public function getComparisonTimestamp(): \DateTimeImmutable
     {
         return $this->comparisonTimestamp;
     }

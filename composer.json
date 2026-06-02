@@ -4,45 +4,43 @@
   "description": "improve issue management on construction sites ",
   "license": "MIT",
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.4",
     "ext-ctype": "*",
     "ext-exif": "*",
     "ext-gd": "*",
     "ext-iconv": "*",
     "ext-json": "*",
     "ext-pdo": "*",
-    "api-platform/core": "^2",
-    "doctrine/annotations": "^1.0",
-    "doctrine/dbal": "^2.13",
-    "doctrine/doctrine-bundle": "^2.1",
-    "doctrine/doctrine-migrations-bundle": "^3.0",
-    "doctrine/orm": "^2.7",
+    "api-platform/symfony": "^4",
+    "api-platform/doctrine-orm": "^4",
+    "doctrine/dbal": "^3",
+    "doctrine/doctrine-bundle": "^2.13",
+    "doctrine/doctrine-migrations-bundle": "^3.3",
+    "doctrine/orm": "^3.3",
     "nelmio/cors-bundle": "^2.1",
-    "phpdocumentor/reflection-docblock": "^5.2",
-    "phpstan/phpdoc-parser": "^1",
-    "symfony/asset": "^6",
-    "symfony/console": "^6",
-    "symfony/dotenv": "^6",
-    "symfony/expression-language": "^6",
-    "symfony/filesystem": "^6",
-    "symfony/flex": "^1.3.1",
-    "symfony/form": "^6",
-    "symfony/framework-bundle": "^6",
-    "symfony/intl": "^6",
-    "symfony/mailer": "^6",
+    "symfony/asset": "^7",
+    "symfony/console": "^7",
+    "symfony/dotenv": "^7",
+    "symfony/expression-language": "^7",
+    "symfony/filesystem": "^7",
+    "symfony/flex": "^2",
+    "symfony/form": "^7",
+    "symfony/framework-bundle": "^7",
+    "symfony/intl": "^7",
+    "symfony/mailer": "^7",
     "symfony/monolog-bundle": "^3",
-    "symfony/property-access": "^6",
-    "symfony/property-info": "^6",
-    "symfony/runtime": "^6",
-    "symfony/security-bundle": "^6",
-    "symfony/security-core": "^6",
-    "symfony/serializer": "^6",
-    "symfony/translation": "^6",
-    "symfony/twig-bundle": "^6",
-    "symfony/uid": "^6",
-    "symfony/validator": "^6",
-    "symfony/webpack-encore-bundle": "^v2",
-    "symfony/yaml": "^6",
+    "symfony/property-access": "^7",
+    "symfony/property-info": "^7",
+    "symfony/runtime": "^7",
+    "symfony/security-bundle": "^7",
+    "symfony/security-core": "^7",
+    "symfony/serializer": "^7",
+    "symfony/translation": "^7",
+    "symfony/twig-bundle": "^7",
+    "symfony/uid": "^7",
+    "symfony/validator": "^7",
+    "symfony/webpack-encore-bundle": "^2",
+    "symfony/yaml": "^7",
     "tecnickcom/tcpdf": "^6.4.4",
     "twig/cssinliner-extra": "^3.0",
     "twig/extra-bundle": "^3.0",
@@ -50,21 +48,23 @@
     "twig/twig": "^3.0"
   },
   "require-dev": {
-    "doctrine/doctrine-fixtures-bundle": "^3.3",
+    "doctrine/doctrine-fixtures-bundle": "^4.3",
     "famoser/agnes": "^4.0",
-    "friendsofphp/php-cs-fixer": "^3",
     "liip/functional-test-bundle": "^4.2",
-    "liip/test-fixtures-bundle": "^2",
-    "rector/rector": "^1.2",
-    "symfony/browser-kit": "^6",
-    "symfony/css-selector": "^6",
-    "symfony/debug-bundle": "^6",
-    "symfony/http-client": "^6",
-    "symfony/maker-bundle": "^1.21",
-    "symfony/phpunit-bridge": "^6",
-    "symfony/stopwatch": "^6",
-    "symfony/var-dumper": "^6",
-    "symfony/web-profiler-bundle": "^6"
+    "liip/test-fixtures-bundle": "^3",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-doctrine": "^2",
+    "phpstan/phpstan-phpunit": "^2",
+    "phpstan/phpstan-symfony": "^2",
+    "squizlabs/php_codesniffer": "^4.0",
+    "symfony/browser-kit": "^7",
+    "symfony/css-selector": "^7",
+    "symfony/debug-bundle": "^7",
+    "symfony/http-client": "^7",
+    "symfony/phpunit-bridge": "^7",
+    "symfony/stopwatch": "^7",
+    "symfony/var-dumper": "^7",
+    "symfony/web-profiler-bundle": "^7"
   },
   "config": {
     "optimize-autoloader": true,
@@ -72,20 +72,12 @@
       "*": "dist"
     },
     "platform": {
-      "php": "8.2"
+      "php": "8.4"
     },
     "sort-packages": true,
     "allow-plugins": {
       "symfony/flex": true,
       "symfony/runtime": true
-    },
-    "audit": {
-      "ignore": {
-        "PKSA-gs8r-6kz6-pp56": "Applies only to GraphQL.",
-        "PKSA-gnn4-pxdg-q76m": "Applies only to GraphQL.",
-        "PKSA-dsd6-6541-26zs": "Authorizations over collections is done over URL parameters.",
-        "PKSA-2j74-htpf-prz8": "Outside of the threat model; craftsmen cannot delete anything."
-      }
     }
   },
   "autoload": {
@@ -102,6 +94,7 @@
     "paragonie/random_compat": "2.*",
     "symfony/polyfill-ctype": "*",
     "symfony/polyfill-iconv": "*",
+    "symfony/polyfill-php83": "*",
     "symfony/polyfill-php82": "*",
     "symfony/polyfill-php81": "*",
     "symfony/polyfill-php80": "*",
@@ -130,8 +123,9 @@
   },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
-      "require": "^6"
+      "allow-contrib": true,
+      "require": "7.4.*",
+      "docker": false
     }
   }
 }

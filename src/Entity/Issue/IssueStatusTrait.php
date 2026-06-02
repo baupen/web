@@ -1,67 +1,59 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Issue;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
+use App\Validator\CloseToNowWhenPreviouslyNull;
+use App\Validator\MatchesIssueCraftsman;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait IssueStatusTrait
 {
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[Groups(['issue:read', 'issue:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-create'])]
+    #[Groups(['issue:read', 'issue:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $registeredAt = null;
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $registeredAt = null;
 
     #[Assert\NotBlank(groups: ['after-register'])]
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $resolvedAt = null;
+    #[Groups(['issue:read', 'issue:write', 'issue:write-craftsman'])]
+    #[CloseToNowWhenPreviouslyNull]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $resolvedAt = null;
 
-    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
+    #[Groups(['issue:read', 'issue:write', 'issue:write-craftsman'])]
+    #[MatchesIssueCraftsman]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $closedAt = null;
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAt = null;
 
-    #[Groups(['issue-read', 'issue-write'])]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 
@@ -81,12 +73,12 @@ trait IssueStatusTrait
         }
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -101,12 +93,12 @@ trait IssueStatusTrait
         $this->createdBy = $createdBy;
     }
 
-    public function getRegisteredAt(): ?\DateTime
+    public function getRegisteredAt(): ?\DateTimeImmutable
     {
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(?\DateTime $registeredAt): void
+    public function setRegisteredAt(?\DateTimeImmutable $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
@@ -121,12 +113,12 @@ trait IssueStatusTrait
         $this->registeredBy = $registeredBy;
     }
 
-    public function getResolvedAt(): ?\DateTime
+    public function getResolvedAt(): ?\DateTimeImmutable
     {
         return $this->resolvedAt;
     }
 
-    public function setResolvedAt(?\DateTime $resolvedAt): void
+    public function setResolvedAt(?\DateTimeImmutable $resolvedAt): void
     {
         $this->resolvedAt = $resolvedAt;
     }
@@ -141,12 +133,12 @@ trait IssueStatusTrait
         $this->resolvedBy = $resolvedBy;
     }
 
-    public function getClosedAt(): ?\DateTime
+    public function getClosedAt(): ?\DateTimeImmutable
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?\DateTime $closedAt): void
+    public function setClosedAt(?\DateTimeImmutable $closedAt): void
     {
         $this->closedAt = $closedAt;
     }

@@ -1,44 +1,29 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Image;
 
 use App\Entity\Issue;
 
-class ContentDrawingService
+readonly class ContentDrawingService
 {
-    private GdService $gdService;
-
-    /**
-     * ImageService constructor.
-     */
-    public function __construct(GdService $gdService)
+    public function __construct(private GdService $gdService)
     {
-        $this->gdService = $gdService;
     }
 
     /**
      * constants for drawing the issues on the maps.
      */
-    private const PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
-    private const SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
-    private const MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
-    private const MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
-    private const MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
-    private const MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
+    private const float PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
+    private const float SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
+    private const float MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
+    private const float MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
+    private const float MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
+    private const float MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
 
     /**
      * @param Issue[] $issues
      *
-     * @return string[][]
+     * @return array<array<string, float|string|null>>
      */
     public function getContent(array $issues): array
     {
@@ -221,9 +206,9 @@ class ContentDrawingService
     }
 
     /**
-     * @return mixed[]
+     * @param-out array $groups
      */
-    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups): array
+    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups = null): array
     {
         // sort by row and xCoordinate
         usort($content, function (array $a, array $b): int {
@@ -316,7 +301,7 @@ class ContentDrawingService
 
         $result = '';
         while ($index >= 0) {
-            $result = $values[$index % $len].$result;
+            $result = $values[$index % $len] . $result;
             $index = intval($index / $len) - 1;
         }
 

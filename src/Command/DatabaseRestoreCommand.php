@@ -1,43 +1,24 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
 use App\Command\Base\DatabaseCommand;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DatabaseRestoreCommand extends DatabaseCommand
 {
-    private const ERROR_NO_BACKUP = 1;
+    private const int ERROR_NO_BACKUP = 1;
 
-    private PathServiceInterface $pathService;
-
-    /**
-     * MigrateSqliteCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
+    public function __construct(ManagerRegistry $registry, private readonly PathServiceInterface $pathService)
     {
         parent::__construct($registry);
-        $this->pathService = $pathService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:database:restore')
@@ -45,15 +26,12 @@ class DatabaseRestoreCommand extends DatabaseCommand
             ->setHelp('Calls mysql and uses the newest backup from the persistent folder.');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         $backupFolder = $this->pathService->getDatabaseBackupFolder();
-        $backups = glob($backupFolder.DIRECTORY_SEPARATOR.self::BACKUP_FILE_PREFIX.'*');
+        $backups = glob($backupFolder . DIRECTORY_SEPARATOR . self::BACKUP_FILE_PREFIX . '*');
         if (0 === count($backups)) {
             $io->error('No backup found.');
 
@@ -61,9 +39,9 @@ class DatabaseRestoreCommand extends DatabaseCommand
         }
 
         $latestBackup = $backups[count($backups) - 1];
-        $io->text('Importing '.$latestBackup);
+        $io->text('Importing ' . $latestBackup);
 
-        exec('mysql '.$this->getMysqlCommandLineConnectionParameters().' < '.$latestBackup);
+        exec('mysql ' . $this->getMysqlCommandLineConnectionParameters() . ' < ' . $latestBackup);
         $io->text('Imported.');
 
         return 0;

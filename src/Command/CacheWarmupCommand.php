@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
 use App\Entity\ConstructionSiteImage;
@@ -23,35 +14,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheWarmupCommand extends Command
 {
-    private ManagerRegistry $registry;
-
-    private CacheServiceInterface $cacheService;
-
-    /**
-     * ImportLdapUsersCommand constructor.
-     */
-    public function __construct(ManagerRegistry $registry, CacheServiceInterface $cacheService)
+    public function __construct(private readonly ManagerRegistry $registry, private readonly CacheServiceInterface $cacheService)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->cacheService = $cacheService;
     }
 
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:cache:warmup')
             ->setDescription('Warms up the cache for all database entries.');
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfony = new SymfonyStyle($input, $output);
 
@@ -77,7 +52,7 @@ class CacheWarmupCommand extends Command
     {
         $constructionSiteImageCount = count($entities);
 
-        $io->text('Warming up cache for '.$constructionSiteImageCount.' '.$entityPlural);
+        $io->text('Warming up cache for ' . $constructionSiteImageCount . ' ' . $entityPlural);
         $io->progressStart($constructionSiteImageCount);
         foreach ($entities as $entity) {
             $actionPerEntity($entity);

@@ -1,113 +1,101 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
+use App\Api\Processor\SoftDeleteProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Enum\IssueEventTypes;
+use App\Enum\IssueState;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * An issue event adds context to the linked entity.
- *
- * @ApiResource(
- *      collectionOperations={
- *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_CREATE', object)", "denormalization_context"={"groups"={"issue-event-create", "issue-event-write"}}},
- *      },
- *      itemOperations={
- *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
- *       "patch" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('ISSUE_EVENT_DELETE', object)"},
- *      },
- *      denormalizationContext={"groups"={"issue-event-write"}},
- *      normalizationContext={"groups"={"issue-event-read"}, "skip_null_values"=false}
- *  )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite","createdBy"})
- * @ApiFilter(DateFilter::class, properties={"createdAt"})
- * @ApiFilter(SearchFilter::class, properties={"root": "exact"})
- * @ApiFilter(BooleanFilter::class, properties={"contextualForChildren"})
- * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    processor: SoftDeleteProcessor::class,
+    denormalizationContext: ['groups' => ['issue-event:write']],
+    normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class
+)]
+#[Get(security: 'is_granted("ISSUE_EVENT_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_CREATE", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
+#[Patch(security: 'is_granted("ISSUE_EVENT_MODIFY", object)')]
+#[Delete(security: 'is_granted("ISSUE_EVENT_DELETE", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+#[ApiFilter(SearchFilter::class, properties: ['root', 'createdBy'], strategy: SearchFilterInterface::STRATEGY_EXACT)]
+#[ApiFilter(BooleanFilter::class, properties: ['contextualForChildren'])]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt'])]
+#[ApiFilter(IsDeletedFilter::class)]
+class IssueEvent extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use SoftDeleteTrait;
 
-    public const ISSUE_STATE_CREATED_TEXT = 'CREATED';
-    public const ISSUE_STATE_REGISTERED_TEXT = 'REGISTERED';
-    public const ISSUE_STATE_RESOLVED_TEXT = 'RESOLVED';
-    public const ISSUE_STATE_CLOSED_TEXT = 'CLOSED';
-
-    public const EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER = 'CRAFTSMAN_ISSUE_REMINDER';
-
     #[Assert\NotBlank]
-    #[Groups(['issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issueEvents')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $root = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
+    #[Groups(['issue-event:read', 'issue-event:create'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $createdBy = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $lastChangedBy = null;
 
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $payload = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $timestamp = null;
+    #[Groups(['issue-event:read', 'issue-event:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $timestamp = null;
 
-    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[Groups(['issue-event:read', 'issue-event:write'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private ?bool $contextualForChildren = true;
 
     #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]
+    #[Groups(['issue-event:read'])]
     private ?IssueEventFile $file = null;
 
     /**
@@ -121,7 +109,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
             $entry = new self();
             $entry->setConstructionSite($current->getConstructionSite());
             $entry->setRoot($current->getId());
-            $entry->setTimestamp(new \DateTime());
+            $entry->setTimestamp(new \DateTimeImmutable());
             $entry->setCreatedBy($authority);
             $entry->setLastChangedBy($authority);
 
@@ -130,7 +118,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
         if (!$previousState || null === $previousState['createdAt']) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_CREATED_TEXT);
+            $entry->setPayload(IssueState::CREATED->name);
             $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
@@ -138,7 +126,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
 
         if ((!$previousState || null === $previousState['registeredAt']) && $current->getRegisteredAt()) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_REGISTERED_TEXT);
+            $entry->setPayload(IssueState::REGISTERED->name);
             $entry->setType(IssueEventTypes::StatusSet);
 
             $entries[] = $entry;
@@ -147,7 +135,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         // state may be removed or changed
         if ($previousState && ($previousState['resolvedAt'] != $current->getResolvedAt())) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
+            $entry->setPayload(IssueState::RESOLVED->name);
             $entry->setType($current->getResolvedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
             $createdBy = $current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority;
             $entry->setCreatedBy($createdBy);
@@ -159,7 +147,7 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         // state may be removed or changed
         if ($previousState && ($previousState['closedAt'] != $current->getClosedAt())) {
             $entry = $createEntry();
-            $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);
+            $entry->setPayload(IssueState::CLOSED->name);
             $entry->setType($current->getClosedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
 
             $entries[] = $entry;
@@ -168,7 +156,21 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         return $entries;
     }
 
-    public function getConstructionSite(): ConstructionSite
+    public static function createFromEmail(ConstructionSite $constructionSite, string $receiver, string $authority, array $payload): self
+    {
+        // add event
+        $issueEvent = new IssueEvent();
+        $issueEvent->setConstructionSite($constructionSite);
+        $issueEvent->setRoot($receiver);
+        $issueEvent->setCreatedBy($authority);
+        $issueEvent->setLastChangedBy($authority);
+        $issueEvent->setTimestamp(new \DateTimeImmutable());
+        $issueEvent->setType(IssueEventTypes::Email);
+        $issueEvent->setPayload(json_encode($payload));
+        return  $issueEvent;
+    }
+
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
@@ -228,12 +230,12 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         $this->payload = $payload;
     }
 
-    public function getTimestamp(): ?\DateTimeInterface
+    public function getTimestamp(): ?\DateTimeImmutable
     {
         return $this->timestamp;
     }
 
-    public function setTimestamp(?\DateTimeInterface $timestamp): void
+    public function setTimestamp(?\DateTimeImmutable $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
@@ -256,28 +258,5 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public function setFile(?IssueEventFile $file): void
     {
         $this->file = $file;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    #[Groups(['issue-event-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
-    {
-        return $this->lastChangedAt;
     }
 }

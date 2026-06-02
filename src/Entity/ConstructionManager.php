@@ -1,25 +1,23 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use App\Api\Filters\PatchedExactSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Api\Filters\RelatedConstructionManagerFilter;
+use App\Api\Processor\ConstructionManagerProcessor;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Entity\Traits\UserTrait;
+use App\Enum\Role;
 use App\Repository\ConstructionManagerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,28 +25,23 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-/**
- * @ApiResource(
- *     collectionOperations={
- *      "get",
- *      "post" = {"denormalization_context"={"groups"={"construction-manager-create", "construction-manager-write"}}},
- *     },
- *     itemOperations={
- *      "get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('CONSTRUCTION_MANAGER_SELF', object)"}
- *     },
- *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-manager-write"}},
- *     attributes={"pagination_enabled"=false}
- * )
- *
- * @ApiFilter(PatchedExactSearchFilter::class, properties={"constructionSites.id": "exact"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- */
 #[ORM\Entity(repositoryClass: ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    processor: ConstructionManagerProcessor::class,
+    denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']],
+    normalizationContext: ['groups' => ['construction-manager:read', 'time:read', 'user:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+)]
+#[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
+#[Post(denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']])]
+#[Patch(security: 'is_granted("CONSTRUCTION_MANAGER_MODIFY", object)')]
+#[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
+#[ApiFilter(RelatedConstructionManagerFilter::class)] // exposes constructionSites.id
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdTrait;
@@ -56,26 +49,15 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     use AuthenticationTrait;
     use UserTrait;
 
-    public const AUTHORIZATION_AUTHORITY_WHITELIST = 'AUTHORIZATION_AUTHORITY_WHITELIST';
-
-    // can use any features & impersonate users
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-
-    // can use any features
-    public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
-
-    // can not see data related to other construction sites (including the other construction sites itself)
-    public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
-
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $givenName = null;
 
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $familyName = null;
 
-    #[Groups(['construction-manager-read', 'construction-manager-write'])]
+    #[Groups(['construction-manager:read', 'construction-manager:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $phone = null;
 
@@ -85,7 +67,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     #[ORM\ManyToMany(targetEntity: ConstructionSite::class, mappedBy: 'constructionManagers')]
     private Collection $constructionSites;
 
-    #[ORM\Column(type: Types::TEXT, options: ['default' => 'de'])]
+    #[ORM\Column(type: Types::STRING, options: ['default' => 'de'])]
     private string $locale = 'de';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -94,11 +76,11 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isAdminAccount = false;
 
-    #[Groups(['construction-manager-read-self'])]
+    #[Groups(['construction-manager:read-self'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $canAssociateSelf = false;
 
-    #[Groups(['construction-manager-read-self', 'construction-manager-write'])]
+    #[Groups(['construction-manager:write', 'construction-manager:read-self'])]
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $receiveWeekly = false;
 
@@ -150,7 +132,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
 
     public function getName(): string
     {
-        return trim($this->getGivenName().' '.$this->getFamilyName());
+        return trim($this->getGivenName() . ' ' . $this->getFamilyName());
     }
 
     /**
@@ -172,18 +154,18 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     public function getRoles(): array
     {
         if ($this->isAdminAccount || str_ends_with($this->email, '@baupen.ch')) {
-            return [self::ROLE_ADMIN];
+            return [Role::ADMIN->value];
         }
 
         if (!$this->getCanAssociateSelf()) {
-            return [self::ROLE_ASSOCIATED_CONSTRUCTION_MANAGER];
+            return [Role::ASSOCIATED_CONSTRUCTION_MANAGER->value];
         }
 
-        return [self::ROLE_CONSTRUCTION_MANAGER];
+        return [Role::CONSTRUCTION_MANAGER->value];
     }
 
-    #[Groups(['construction-manager-read'])]
-    public function getLastChangedAt(): \DateTimeInterface
+    #[Groups(['construction-manager:read'])]
+    public function getLastChangedAt(): \DateTimeImmutable
     {
         return $this->lastChangedAt;
     }

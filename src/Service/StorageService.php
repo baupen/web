@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
@@ -19,23 +10,16 @@ use App\Entity\IssueEventFile;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use App\Entity\Traits\FileTrait;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class StorageService implements StorageServiceInterface
+readonly class StorageService implements StorageServiceInterface
 {
-    private PathServiceInterface $pathService;
-
-    /**
-     * UploadService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(private PathServiceInterface $pathService)
     {
-        $this->pathService = $pathService;
     }
 
     public function setNewFolderName(ConstructionSite $constructionSite): void
@@ -49,7 +33,7 @@ class StorageService implements StorageServiceInterface
             if ($counter++ > 0) {
                 $uniqueFolderName .= $counter;
             }
-        } while (is_dir($rootFolder.\DIRECTORY_SEPARATOR.$uniqueFolderName));
+        } while (is_dir($rootFolder . \DIRECTORY_SEPARATOR . $uniqueFolderName));
 
         $constructionSite->setFolderName($uniqueFolderName);
     }
@@ -114,19 +98,14 @@ class StorageService implements StorageServiceInterface
         return $issueEventFile;
     }
 
-    /**
-     * @param FileTrait $entity
-     */
     private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage|IssueEventFile $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());
-        if (!$file->move($targetFolder, $targetFileName)) {
-            return false;
-        }
+        $file->move($targetFolder, $targetFileName);
 
         // write filetrait properties
-        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$targetFileName;
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
         $hash = hash_file('sha256', $targetPath);
         $entity->setHash($hash);
         $entity->setFilename($targetFileName);
@@ -141,21 +120,21 @@ class StorageService implements StorageServiceInterface
         $fileName = $pathInfo['filename'];
         $extension = $pathInfo['extension'];
 
-        $sanitizedFileName = FileHelper::sanitizeFileName($fileName).'.'.$extension;
-        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$sanitizedFileName;
+        $sanitizedFileName = FileHelper::sanitizeFileName($fileName) . '.' . $extension;
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $sanitizedFileName;
         if (!is_file($targetPath)) {
             return $sanitizedFileName;
         }
 
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $counter = 0;
         do {
-            $prefix = $sanitizedFileName.'_duplicate_'.$now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
+            $prefix = $sanitizedFileName . '_duplicate_' . $now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
             if ($counter++ > 0) {
-                $prefix .= '_'.$counter;
+                $prefix .= '_' . $counter;
             }
-            $uniqueFileName = $prefix.'.'.$extension;
-            $uniqueTargetPath = $targetFolder.\DIRECTORY_SEPARATOR.$uniqueFileName;
+            $uniqueFileName = $prefix . '.' . $extension;
+            $uniqueTargetPath = $targetFolder . \DIRECTORY_SEPARATOR . $uniqueFileName;
         } while (file_exists($uniqueTargetPath));
 
         return $uniqueFileName;

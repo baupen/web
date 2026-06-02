@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -34,7 +25,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationUnsupported($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'DELETE', 'PUT');
+        $this->assertApiOperationUnsupported($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication(): void
@@ -44,11 +35,11 @@ class ConstructionSiteTest extends ApiTestCase
 
         $testConstructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'GET');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/construction_sites', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
+        $this->assertApiOperationForbidden($client, '/api/construction_sites/' . $testConstructionSite->getId(), 'GET');
     }
 
     public function testGet(): void
@@ -74,18 +65,18 @@ class ConstructionSiteTest extends ApiTestCase
 
         // ensure filter is applied
         $constructionManager = $this->loginApiConstructionManager($client);
-        $this->assertApiCollectionContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $constructionSiteId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $emptyConstructionSiteId);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId(), $constructionSiteId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId(), $emptyConstructionSiteId);
 
         // ensure filter is enforced for associated construction managers
         $associatedConstructionManager = $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites');
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites', $emptyConstructionSiteId);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId());
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id='.$associatedConstructionManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id=' . $constructionManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id=' . $associatedConstructionManager->getId());
     }
 
-    public function testPostAndPatch(): void
+    public function testPostAndPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -123,7 +114,10 @@ class ConstructionSiteTest extends ApiTestCase
 
         $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id']);
-        $this->assertApiPatchStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id'], $sample);
+        $response = $this->assertApiPatchStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id'], $sample);
+
+        $this->assertApiDeleteOk($client, $newConstructionSite['@id']);
+        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/construction_sites', $response);
     }
 
     public function testLastChangedAtFilter(): void

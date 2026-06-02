@@ -1,19 +1,10 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Api\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\Model;
-use ApiPlatform\Core\OpenApi\OpenApi;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model;
+use ApiPlatform\OpenApi\OpenApi;
 
 class OpenApiFactory implements OpenApiFactoryInterface
 {
@@ -32,7 +23,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $this->setSummaryResponse($openApi);
         $this->addFilePaths($openApi);
         $this->addFileUrlProperties($openApi);
-        $this->configureEmailEndpoint($openApi);
         $this->configureRegistrationEndpoint($openApi);
 
         return $openApi;
@@ -71,25 +61,13 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $summarySchemeContent = [
             'application/json' => [
                 'schema' => [
-                    '$ref' => '#/components/schemas/'.$summarySchemaName,
+                    '$ref' => '#/components/schemas/' . $summarySchemaName,
                 ],
             ],
         ];
 
         $response = new Model\Response('Issue summary', new \ArrayObject($summarySchemeContent));
         $openApi->getPaths()->getPath('/api/issues/summary')->getGet()->addResponse($response, 200);
-    }
-
-    private function createRequiredPathParameter(string $name): array
-    {
-        return [
-            'name' => $name,
-            'in' => 'path',
-            'required' => true,
-            'schema' => [
-                'type' => 'string',
-            ],
-        ];
     }
 
     private function addFilePaths(OpenApi &$openApi): void
@@ -134,7 +112,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $postOperation = (new Model\Operation('postIssueImage'))
             ->withTags(['Issue'])
             ->withSummary('Add / replace the image of the issue')
-            ->withParameters([$this->createRequiredPathParameter('id')])
+            ->withParameters([new Model\Parameter('id', "path", required: true, schema: ['type' => 'string'])])
             ->withRequestBody($requestBody)
             ->addResponse($response, 201);
 
@@ -142,7 +120,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $deleteOperation = (new Model\Operation('deleteIssueImage'))
             ->withTags(['Issue'])
             ->withSummary('Remove the image of the issue')
-            ->withParameters([$this->createRequiredPathParameter('id')])
+            ->withParameters([new Model\Parameter('id', "path", required: true, schema: ['type' => 'string'])])
             ->addResponse($response, 204);
 
         $path = (new Model\PathItem())
@@ -150,15 +128,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ->withDelete($deleteOperation);
 
         $openApi->getPaths()->addPath('/api/issues/{id}/image', $path);
-    }
-
-    private function configureEmailEndpoint(OpenApi &$openApi): void
-    {
-        $openApi = $this->removePath($openApi, '/api/emails/{noneIdentifier}');
-
-        $postOperation = $openApi->getPaths()->getPath('/api/emails')->getPost();
-        $postOperation->addResponse(new Model\Response('E-Mail sent'), 200);
-        $postOperation->addResponse(new Model\Response('E-Mail server unreachable'), 503);
     }
 
     private function configureRegistrationEndpoint(OpenApi $openApi): void
@@ -188,19 +157,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $components = $openApi->getComponents()->withSchemas(new \ArrayObject($schemas));
         $openApi = $openApi->withComponents($components);
-    }
-
-    private function removePath(OpenApi $openApi, string $path): OpenApi
-    {
-        $paths = $openApi->getPaths()->getPaths();
-        unset($paths[$path]);
-
-        $newPaths = new Model\Paths();
-        foreach ($paths as $url => $path) {
-            $newPaths->addPath($url, $path);
-        }
-
-        return $openApi->withPaths($newPaths);
     }
 
     private function addFileUrlProperties(OpenApi &$openApi): void

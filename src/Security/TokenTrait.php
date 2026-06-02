@@ -1,19 +1,12 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Security;
 
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 trait TokenTrait
@@ -58,7 +51,7 @@ trait TokenTrait
         }
 
         $craftsman = $this->tryGetCraftsman($token);
-        if ($craftsman) {
+        if ($craftsman instanceof Craftsman) {
             return $craftsman->getId();
         }
 
@@ -77,5 +70,21 @@ trait TokenTrait
         }
 
         return null;
+    }
+
+    protected function getConstructionSiteRestriction(TokenInterface $token): ?array
+    {
+        if (($constructionManager = $this->tryGetConstructionManager($token))) {
+            $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
+            $constructionSiteRestriction = $constructionManager->getCanAssociateSelf() ? null : $ownConstructionSiteIds;
+        } elseif (($craftsman = $this->tryGetCraftsman($token))) {
+            $constructionSiteRestriction = [$craftsman->getConstructionSite()->getId()];
+        } elseif (($filter = $this->tryGetFilter($token))) {
+            $constructionSiteRestriction = [$filter->getConstructionSite()->getId()];
+        } else {
+            throw new BadRequestException('Invalid authentication');
+        }
+
+        return $constructionSiteRestriction;
     }
 }

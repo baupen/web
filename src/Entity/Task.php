@@ -1,97 +1,86 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
-use App\Api\Filters\PatchedOrderFilter;
-use App\Api\Filters\RequiredExactSearchFilter;
+use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * A task helps to remember something to do on the level of construction site.
- *
- * @ApiResource(
- *      collectionOperations={
- *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('TASK_MODIFY', object)", "denormalization_context"={"groups"={"task-create", "task-write"}}},
- *      },
- *      itemOperations={
- *       "get" = {"security" = "is_granted('TASK_VIEW', object)"},
- *       "patch" = {"security" = "is_granted('TASK_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('TASK_MODIFY', object)"},
- *      },
- *      denormalizationContext={"groups"={"task-write"}},
- *      normalizationContext={"groups"={"task-read"}, "skip_null_values"=false}
- *  )
- *
- * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(DateFilter::class, properties={"createdAt", "deadline", "closedAt",})
- * @ApiFilter(ExistsFilter::class, properties={"closedAt"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "DESC"}, "createdAt": "ASC", "closedAt": "ASC"})
- */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+#[ApiResource(
+    denormalizationContext: ['groups' => ['task:write']],
+    normalizationContext: ['groups' => ['task:read'], "skip_null_values" => false],
+)]
+#[GetCollection(
+    provider: AuthenticatedCollectionProvider::class,
+    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')"
+)]
+#[Get(security: 'is_granted("TASK_VIEW", object)')]
+#[Post(securityPostDenormalize: 'is_granted("TASK_MODIFY", object)', denormalizationContext: ['groups' => ['task:create', 'task:write']])]
+#[Patch(security: 'is_granted("TASK_MODIFY", object)')]
+#[Delete(security: 'is_granted("TASK_MODIFY", object)')]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite'], strategy: SearchFilter::STRATEGY_EXACT)]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt', 'closedAt'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', "deadline", "closedAt"])]
+#[ApiFilter(ExistsFilter::class, properties: ['closedAt'])]
+class Task extends BaseEntity
 {
     use IdTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['task-create', 'task-read'])]
+    #[Groups(['task:create', 'task:read'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'tasks')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['task-read', 'task-write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deadline = null;
-
-    /**
-     * @var \DateTime|null
-     */
-    #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-create'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[Groups(['task:read', 'task:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deadline = null;
 
     #[Assert\NotBlank]
-    #[Groups(['task-read', 'task-create'])]
+    #[Groups(['task:read', 'task:create'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[Assert\NotBlank]
+    #[Groups(['task:read', 'task:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    #[Groups(['task-read', 'task-write'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $closedAt = null;
+    #[Groups(['task:read', 'task:write'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $closedAt = null;
 
-    #[Groups(['task-read', 'task-write'])]
+    #[Groups(['task:read', 'task:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 
-    public function getConstructionSite(): ConstructionSite
+    public function getConstructionSite(): ?ConstructionSite
     {
         return $this->constructionSite;
     }
@@ -111,12 +100,12 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->description = $description;
     }
 
-    public function getDeadline(): ?\DateTime
+    public function getDeadline(): ?\DateTimeImmutable
     {
         return $this->deadline;
     }
 
-    public function setDeadline(?\DateTime $deadline): void
+    public function setDeadline(?\DateTimeImmutable $deadline): void
     {
         $this->deadline = $deadline;
     }
@@ -131,12 +120,12 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->createdBy = $createdBy;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTime $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -151,18 +140,13 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->closedBy = $closedBy;
     }
 
-    public function getClosedAt(): ?\DateTimeInterface
+    public function getClosedAt(): ?\DateTimeImmutable
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?\DateTimeInterface $closedAt): void
+    public function setClosedAt(?\DateTimeImmutable $closedAt): void
     {
         $this->closedAt = $closedAt;
-    }
-
-    public function isConstructionSiteSet(): bool
-    {
-        return null !== $this->constructionSite;
     }
 }

@@ -1,25 +1,17 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionSite;
 use App\Entity\EmailTemplate;
+use App\Enum\EmailTemplatePurpose;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = TestConstructionSiteFixtures::ORDER + 1;
+    public const int ORDER = TestConstructionSiteFixtures::ORDER + 1;
 
     public function load(ObjectManager $manager): void
     {
@@ -28,7 +20,7 @@ class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterfa
 
         $emailTemplate = new EmailTemplate();
         $emailTemplate->setConstructionSite($constructionSite);
-        $emailTemplate->setPurpose(EmailTemplate::PURPOSE_OPEN_ISSUES);
+        $emailTemplate->setPurpose(EmailTemplatePurpose::OPEN_ISSUES);
         $emailTemplate->setName('Template');
         $emailTemplate->setSubject('Subject');
         $emailTemplate->setBody('Body');

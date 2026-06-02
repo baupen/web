@@ -1,97 +1,42 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
-use App\Entity\Craftsman;
-use App\Entity\Filter;
-use App\Security\Voter\Base\ConstructionSiteRelatedEntityVoter;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Security\TokenTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
+class ConstructionManagerVoter extends Voter
 {
-    public const CONSTRUCTION_MANAGER_VIEW = 'CONSTRUCTION_MANAGER_VIEW';
-    public const CONSTRUCTION_MANAGER_SELF = 'CONSTRUCTION_MANAGER_SELF';
+    use TokenTrait;
 
-    public function __construct(private readonly ManagerRegistry $registry)
+    public const string CONSTRUCTION_MANAGER_VIEW = 'CONSTRUCTION_MANAGER_VIEW';
+    public const string CONSTRUCTION_MANAGER_MODIFY = 'CONSTRUCTION_MANAGER_MODIFY';
+
+    protected function supports(string $attribute, mixed $subject): bool
     {
+        return $subject instanceof ConstructionManager && in_array($attribute, [self::CONSTRUCTION_MANAGER_MODIFY, self::CONSTRUCTION_MANAGER_VIEW]);
     }
 
     /**
-     * @param ConstructionManager $subject
-     */
-    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject): bool
-    {
-        if ($constructionManager === $subject) {
-            return true;
-        }
-
-        $constructionManagerRepository = $this->registry->getRepository(ConstructionManager::class);
-        if ($constructionManagerRepository->checkConstructionManagerRelated($subject, $constructionManager->getConstructionSites())) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function isCraftsmanRelated(Craftsman $craftsman, $subject)
-    {
-        return $craftsman->getConstructionSite()->getConstructionManagers()->contains($subject);
-    }
-
-    protected function isFilterRelated(Filter $filter, $subject)
-    {
-        return $filter->getConstructionSite()->getConstructionManagers()->contains($subject);
-    }
-
-    protected function isInstanceOf($entity): bool
-    {
-        return $entity instanceof ConstructionManager;
-    }
-
-    protected function getAllAttributes(): array
-    {
-        return [self::CONSTRUCTION_MANAGER_VIEW, self::CONSTRUCTION_MANAGER_SELF];
-    }
-
-    protected function getReadOnlyAttributes(): array
-    {
-        return [self::CONSTRUCTION_MANAGER_VIEW];
-    }
-
-    protected function getDissociatedConstructionManagerAttributes(bool $canAssociateSelf): array
-    {
-        if (!$canAssociateSelf) {
-            return [];
-        }
-
-        return [self::CONSTRUCTION_MANAGER_VIEW];
-    }
-
-    /**
-     * Perform a single access check operation on a given attribute, subject and token.
-     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
-     *
      * @param string $attribute
+     * @param ConstructionManager $subject
+     * @param TokenInterface $token
+     * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        if (self::CONSTRUCTION_MANAGER_SELF === $attribute) {
-            $constructionManager = $this->tryGetConstructionManager($token);
-
-            return null !== $subject && $subject === $constructionManager;
+        if (($constructionManager = $this->tryGetConstructionManager($token))) {
+            if ($attribute == self::CONSTRUCTION_MANAGER_MODIFY) {
+                return $constructionManager === $subject;
+            }
         }
 
-        return parent::voteOnAttribute($attribute, $subject, $token);
+        // this is not 100% precise; but its good enough
+        // overall, leakage of construction managers not a problem, as need to guess GUID
+        // note that there is the edge case of construction managers B leaving construction sites A, but B should remain accessible to all construction managers with access to A
+        // also note that this voter may be called often, so cannot do expensive work in here
+        return true;
     }
 }

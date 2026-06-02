@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
@@ -42,25 +33,25 @@ class CraftsmanTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen/' . $constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/craftsmen', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/craftsmen/'.$constructionSite->getCraftsmen()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/craftsmen/' . $constructionSite->getCraftsmen()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
+        $this->loginApiAssociatedConstructionManager($client);
 
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
 
         $constructionSite = $this->getTestConstructionSite();
-        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'contactJobTitle', 'company', 'trade', 'address', 'telephone', 'lastVisitOnline', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'canEdit');
+        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite=' . $constructionSite->getId());
+        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'contactJobTitle', 'company', 'trade', 'address', 'telephone', 'lastVisitOnline', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'createdAt', 'canEdit', 'constructionSite');
     }
 
     public function testCanEdit(): void
@@ -78,7 +69,7 @@ class CraftsmanTest extends ApiTestCase
         $issue = $this->addIssue($constructionSite, $constructionManager);
         $issue->setCraftsman($craftsman);
         $issue->setMap($map);
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($constructionManager);
 
         $this->saveEntity($issue, $craftsman);
@@ -117,9 +108,9 @@ class CraftsmanTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/craftsmen', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/craftsmen', $affiliation, $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/craftsmen', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/craftsmen', $sample, $affiliation);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $response);
         $craftsmanId = json_decode($response->getContent(), true)['@id'];
 
         $emptyConstructionSite = $this->getEmptyConstructionSite();
@@ -136,10 +127,10 @@ class CraftsmanTest extends ApiTestCase
             'email' => 'new@wood.ch',
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $craftsmanId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $craftsmanId);
-        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $response);
     }
 
     public function testIsDeletedFilter(): void
@@ -153,9 +144,9 @@ class CraftsmanTest extends ApiTestCase
         $this->assertFalse($craftsman->getIsDeleted(), 'ensure craftsman is not deleted, else the following tests will fail');
 
         $craftsmanIri = $this->getIriFromItem($craftsman);
-        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $craftsmanIri);
-        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=false', $craftsmanIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=true', $craftsmanIri);
+        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $craftsmanIri);
+        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId() . '&isDeleted=false', $craftsmanIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId() . '&isDeleted=true', $craftsmanIri);
     }
 
     public function testLastChangedAtFilter(): void
@@ -168,7 +159,7 @@ class CraftsmanTest extends ApiTestCase
         $craftsman = $constructionSite->getCraftsmen()[0];
         $craftsmanIri = $this->getIriFromItem($craftsman);
 
-        $this->assertApiCollectionFilterDateTime($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&', $craftsmanIri, 'lastChangedAt', $craftsman->getLastChangedAt());
+        $this->assertApiCollectionFilterDateTime($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId() . '&', $craftsmanIri, 'lastChangedAt', $craftsman->getLastChangedAt());
     }
 
     public function testAllFilters(): void
@@ -189,10 +180,10 @@ class CraftsmanTest extends ApiTestCase
         ];
 
         $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/craftsmen', $sample);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite=' . $constructionSite->getId(), $response);
         $craftsmanIri = json_decode($response->getContent(), true)['@id'];
 
-        $collectionUrlPrefix = '/api/craftsmen?constructionSite='.$constructionSite->getId().'&';
+        $collectionUrlPrefix = '/api/craftsmen?constructionSite=' . $constructionSite->getId() . '&';
 
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'id', $craftsmanIri);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
@@ -208,9 +199,9 @@ class CraftsmanTest extends ApiTestCase
         $constructionManager = $this->getTestConstructionManager();
         $craftsman = $constructionSite->getCraftsmen()[0];
 
-        $yesterday = new \DateTime('yesterday');
-        $today = new \DateTime('today');
-        $tomorrow = new \DateTime('tomorrow');
+        $yesterday = new \DateTimeImmutable('yesterday');
+        $today = new \DateTimeImmutable('today');
+        $tomorrow = new \DateTimeImmutable('tomorrow');
 
         foreach ([$yesterday, $today, $tomorrow] as $item) {
             $deadlineIssue = $this->createRegisteredIssueForCraftsman($constructionSite, $constructionManager, $craftsman);
@@ -240,8 +231,8 @@ class CraftsmanTest extends ApiTestCase
         $this->assertEquals(null, $statistics['lastEmailReceived']);
         $this->assertEquals(null, $statistics['lastVisitOnline']);
 
-        $this->assertSame($yesterday->format('c'), $statistics['nextDeadline']);
-        $this->assertSame($tomorrow->format('c'), $statistics['lastIssueResolved']);
+        $this->assertEquals($yesterday, new \DateTime($statistics['nextDeadline']));
+        $this->assertEquals($tomorrow, new \DateTime($statistics['lastIssueResolved']));
 
         $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
         $craftsman->setLastEmailReceived($today);
@@ -249,8 +240,8 @@ class CraftsmanTest extends ApiTestCase
         $this->saveEntity($craftsman);
 
         $statistics = $this->getStatisticForCraftsman($client, $craftsman);
-        $this->assertSame($today->format('c'), $statistics['lastEmailReceived']);
-        $this->assertSame($tomorrow->format('c'), $statistics['lastVisitOnline']);
+        $this->assertEquals($today, new \DateTime($statistics['lastEmailReceived']));
+        $this->assertEquals($tomorrow, new \DateTime($statistics['lastVisitOnline']));
         $this->assertSame(0, $statistics['issueUnreadCount']);
     }
 
@@ -261,10 +252,10 @@ class CraftsmanTest extends ApiTestCase
         $issue->setConstructionSite($constructionSite);
         $issue->setNumber(0);
 
-        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedAt(new \DateTimeImmutable());
         $issue->setCreatedBy($constructionManager);
 
-        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredAt(new \DateTimeImmutable());
         $issue->setRegisteredBy($constructionManager);
 
         $issue->setCraftsman($craftsman);
@@ -282,7 +273,7 @@ class CraftsmanTest extends ApiTestCase
     {
         $craftsmanIri = $this->getIriFromItem($craftsman);
 
-        $response = $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite='.$craftsman->getConstructionSite()->getId());
+        $response = $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite=' . $craftsman->getConstructionSite()->getId());
         $craftsmenStatistics = json_decode($response->getContent(), true);
         $statistics = [];
         foreach ($craftsmenStatistics['hydra:member'] as $craftsmenStatistic) {

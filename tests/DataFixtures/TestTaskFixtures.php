@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
@@ -20,8 +11,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestTaskFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = TestConstructionSiteFixtures::ORDER + TestConstructionManagerFixtures::ORDER + 1;
-    public const TEST_TEXT_ENTRY = 'hello world';
+    public const int ORDER = TestConstructionSiteFixtures::ORDER + TestConstructionManagerFixtures::ORDER + 1;
+    public const string TEST_TEXT_ENTRY = 'hello world';
 
     public function load(ObjectManager $manager): void
     {
@@ -34,7 +25,7 @@ class TestTaskFixtures extends Fixture implements OrderedFixtureInterface
         $issueEvent = new Task();
         $issueEvent->setConstructionSite($constructionSite);
         $issueEvent->setDescription(self::TEST_TEXT_ENTRY);
-        $issueEvent->setCreatedAt(new \DateTime());
+        $issueEvent->setCreatedAt(new \DateTimeImmutable());
         $issueEvent->setCreatedBy($constructionManager);
         $manager->persist($issueEvent);
 

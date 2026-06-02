@@ -1,18 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
-use TCPDF;
 
 class Pdf extends \TCPDF
 {
@@ -40,7 +30,7 @@ class Pdf extends \TCPDF
     /**
      * logo right & text left.
      */
-    public function Header(): void
+    public function Header(): void // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         // image max one third, the header text the other two thirds
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 3;
@@ -59,7 +49,7 @@ class Pdf extends \TCPDF
     /**
      * bottom left author.
      */
-    public function Footer(): void
+    public function Footer(): void // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         // author three forths, page numbers one forth
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 8;
@@ -72,13 +62,13 @@ class Pdf extends \TCPDF
         // set page numbers
         // +10 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
         $this->SetXY($this->pdfSizes->getContentXEnd() - $contentWidthPart + 6.5, $this->pdfSizes->getFooterYStart());
-        $this->Cell($contentWidthPart, 0, $this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, 0, 'R');
+        $this->Cell($contentWidthPart, 0, $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
     }
 
     /**
      * @throws \Exception
      */
-    public function Error($msg)
+    public function Error($msg) // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         throw new \Exception($msg);
     }

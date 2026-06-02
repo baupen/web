@@ -1,19 +1,11 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Email;
+use App\Enum\EmailType;
 use App\Helper\DoctrineHelper;
 use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
@@ -30,49 +22,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class EmailService implements EmailServiceInterface
+readonly class EmailService implements EmailServiceInterface
 {
-    private TranslatorInterface $translator;
-
-    private LoggerInterface $logger;
-
-    private RequestStack $requestStack;
-
-    private UrlGeneratorInterface $urlGenerator;
-
-    private ManagerRegistry $registry;
-
-    private MailerInterface $mailer;
-
-    private SerializerInterface $serializer;
-
-    private EmailBodyGenerator $emailBodyGenerator;
-
-    private string $mailerFromEmail;
-
-    private string $baseUri;
-
-    /**
-     * EmailService constructor.
-     */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $baseUri, EmailBodyGenerator $emailBodyGenerator)
+    public function __construct(private TranslatorInterface $translator, private LoggerInterface $logger, private RequestStack $requestStack, private UrlGeneratorInterface $urlGenerator, private ManagerRegistry $registry, private MailerInterface $mailer, private SerializerInterface $serializer, private string $mailerFromEmail, private string $defaultUri, private EmailBodyGenerator $emailBodyGenerator)
     {
-        $this->translator = $translator;
-        $this->logger = $logger;
-        $this->requestStack = $request;
-        $this->urlGenerator = $urlGenerator;
-        $this->registry = $registry;
-        $this->mailer = $mailer;
-        $this->serializer = $serializer;
-        $this->mailerFromEmail = $mailerFromEmail;
-        $this->emailBodyGenerator = $emailBodyGenerator;
-        $this->baseUri = $baseUri;
     }
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
         $link = $this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
-        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager, $link);
+        $entity = Email::create(EmailType::REGISTER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -88,7 +47,7 @@ class EmailService implements EmailServiceInterface
     {
         $emailBody = $this->emailBodyGenerator->fromConstructionSiteReports($constructionSiteReports);
         $json = $this->serializer->serialize($emailBody, 'json');
-        $entity = Email::create(Email::TYPE_CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
+        $entity = Email::create(EmailType::CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
         $subject = $this->translator->trans('construction_sites_overview.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -103,7 +62,7 @@ class EmailService implements EmailServiceInterface
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
         $link = $this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
-        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager, $link);
+        $entity = Email::create(EmailType::RECOVER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -117,7 +76,7 @@ class EmailService implements EmailServiceInterface
 
     public function sendAppInvitation(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
+        $entity = Email::create(EmailType::APP_INVITATION, $constructionManager);
         $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -129,20 +88,15 @@ class EmailService implements EmailServiceInterface
         return $this->sendAndStoreEMail($message, $entity);
     }
 
-    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC): bool
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC, ?Email &$email = null): bool
     {
         $report = $this->emailBodyGenerator->fromCraftsmanReport($craftsmanReport);
         $emailBody = ['report' => $report, 'body' => $body];
         $json = $this->serializer->serialize($emailBody, 'json');
         $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
-        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
+        $entity = Email::create(EmailType::CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
-        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
-        if (!$message instanceof TemplatedEmail) {
-            return false;
-        }
-
-        $message
+        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
             ->subject($subject)
             ->textTemplate('email/craftsman_issue_reminder.txt.twig')
             ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
@@ -152,7 +106,7 @@ class EmailService implements EmailServiceInterface
             return false;
         }
 
-        $craftsman->setLastEmailReceived(new \DateTime());
+        $craftsman->setLastEmailReceived(new \DateTimeImmutable());
         DoctrineHelper::persistAndFlush($this->registry, $craftsman);
 
         return true;
@@ -169,7 +123,7 @@ class EmailService implements EmailServiceInterface
         return $templatedEmail;
     }
 
-    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): ?TemplatedEmail
+    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): TemplatedEmail
     {
         $templatedEmail = new TemplatedEmail();
 
@@ -196,7 +150,7 @@ class EmailService implements EmailServiceInterface
             return $currentRequest->getHttpHost();
         }
 
-        return preg_replace('(^https?://)', '', $this->baseUri);
+        return preg_replace('(^https?://)', '', $this->defaultUri);
     }
 
     private function sendAndStoreEMail(TemplatedEmail $email, Email $entity): bool

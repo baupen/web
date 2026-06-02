@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service;
 
 use App\Entity\MapFile;
@@ -17,32 +8,23 @@ use App\Service\Image\GsService;
 use App\Service\Interfaces\MapFileServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 
-class MapFileService implements MapFileServiceInterface
+readonly class MapFileService implements MapFileServiceInterface
 {
-    private PathServiceInterface $pathService;
-
-    private GsService $gsService;
-
-    /**
-     * MapFileService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, GsService $gsService)
+    public function __construct(private PathServiceInterface $pathService, private GsService $gsService)
     {
-        $this->pathService = $pathService;
-        $this->gsService = $gsService;
     }
 
     public function renderForMobileDevice(MapFile $mapFile): ?string
     {
-        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $mapFile->getFilename();
 
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
         /** @var string $fileName */
         $fileName = pathinfo($sourceFilePath, PATHINFO_FILENAME);
         /** @var string $extension */
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $targetFileName = $fileName.'_outlines_'.$extension;
-        $targetFilePath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
+        $targetFileName = $fileName . '_outlines_' . $extension;
+        $targetFilePath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
 
         if (is_file($targetFilePath)) {
             return $targetFilePath;

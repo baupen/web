@@ -1,26 +1,15 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
     private string $defaultLocale;
-    private const LOCALE_KEY = '_locale';
+    private const string LOCALE_KEY = '_locale';
 
     public function __construct(string $defaultLocale = 'en')
     {

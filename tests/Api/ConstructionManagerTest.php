@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\ConstructionManager;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -35,7 +26,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $testUser = $this->loginApiConstructionManager($client);
 
-        $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT');
+        $this->assertApiOperationUnsupported($client, '/api/construction_managers/' . $testUser->getId(), 'DELETE', 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication(): void
@@ -47,7 +38,7 @@ class ConstructionManagerTest extends ApiTestCase
 
         $userRepository = static::getClient()->getContainer()->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
         $testUser = $userRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET', 'PATCH');
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/' . $testUser->getId(), 'GET', 'PATCH');
     }
 
     public function testPost(): void
@@ -64,8 +55,8 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => 'test2@mail.com']);
         $this->assertEmailCount(1);
 
-        // can execute on already created accounts without error / reregistration
-        $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        // cannot create account twice
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertEmailCount(0);
 
         // associated construction manager does not get more info
@@ -99,7 +90,7 @@ class ConstructionManagerTest extends ApiTestCase
             'receiveWeekly' => true,
         ];
         $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionManagerId, $patch);
-        $this->assertApiPatchPayloadPersisted($client, '/api/construction_managers/'.$ownConstructionManager->getId(), $patch);
+        $this->assertApiPatchPayloadPersisted($client, '/api/construction_managers/' . $ownConstructionManager->getId(), $patch);
     }
 
     public function testGetAuthenticationToken(): void
@@ -108,7 +99,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
-        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'isEnabled', 'email', 'phone', 'lastChangedAt'];
+        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'isEnabled', 'email', 'phone', 'lastChangedAt', 'createdAt'];
         $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf', 'receiveWeekly']);
         sort($otherConstructionManagerFields);
         sort($selfConstructionManagerFields);
@@ -138,21 +129,20 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
-        $emptyManager = $this->addConstructionManager($emptyConstructionSite);
+        $emptyManager = $this->addAssociatedConstructionManager($emptyConstructionSite);
         $emptyManagerIri = $this->getIriFromItem($emptyManager);
 
         // ensure filter is applied
         $this->loginApiConstructionManager($client);
-        $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId(), $constructionManagerIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId(), $constructionManagerIri);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id=' . $constructionSite->getId(), $constructionManagerIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers?constructionSites.id=' . $emptyConstructionSite->getId(), $constructionManagerIri);
 
         // ensure associated construction manager cannot access empty construction site
         $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers');
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers', $emptyManagerIri);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $emptyManagerIri);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId());
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id=' . $emptyConstructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $constructionSite->getId());
     }
 
     public function testConstructionSiteFiltersWithDisassociatedConstructionManagers(): void
@@ -163,7 +153,7 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
 
         $emptyConstructionSite = $this->getEmptyConstructionSite();
-        $newManager = $this->addConstructionManager($emptyConstructionSite);
+        $newManager = $this->addAssociatedConstructionManager($emptyConstructionSite);
         $newManagerIri = $this->getIriFromItem($newManager);
 
         $this->addIssue($constructionSite, $newManager);
@@ -171,9 +161,9 @@ class ConstructionManagerTest extends ApiTestCase
         // ensure associated construction manager gets access to all relevant construction managers
         // note: newManager never added to constructionSite, but still returned, as has an issue created for it
         $this->loginApiAssociatedConstructionManager($client);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers/'.$newManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers/' . $newManager->getId());
         $this->assertApiCollectionContainsIri($client, '/api/construction_managers', $newManagerIri);
-        $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId(), $newManagerIri);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id=' . $constructionSite->getId(), $newManagerIri);
     }
 
     public function testLastChangedAtFilter(): void

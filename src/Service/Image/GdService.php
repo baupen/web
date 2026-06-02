@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Service\Image;
 
 use App\Helper\ImageHelper;
@@ -19,18 +10,15 @@ use Psr\Log\LoggerInterface;
  *
  * Class GdService
  */
-class GdService
+readonly class GdService
 {
-    private LoggerInterface $logger;
-
-    private const FONT = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
+    private const string FONT = __DIR__ . '/../../../assets/report/fonts/OpenSans-Bold.ttf';
 
     /**
      * GdService constructor.
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function measureTextDimensions(float $fontSize, string $text): array
@@ -71,7 +59,7 @@ class GdService
         $fillColor = $this->createColorForLabel($color, $image);
         $width = $textWidth + 2 * $padding + 2;
         $height = $textHeight + 2 * $padding + 2;
-        imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) $xPosition + $width, (int) $yPosition + $height, $fillColor);
+        imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) ($xPosition + $width), (int) ($yPosition + $height), $fillColor);
 
         // draw text
         imagettftext($image, $textFontSize, 0, (int) ($xPosition + $padding), (int) ($yPosition + $padding + $textHeight), $white, self::FONT, $text);
@@ -175,7 +163,7 @@ class GdService
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagegif($newImage, $targetPath);
         } else {
-            $this->logger->warning('cannot resize image with ending '.$ending);
+            $this->logger->warning('cannot resize image with ending ' . $ending);
             // can not resize; but at least create the file
             copy($sourcePath, $targetPath);
         }
@@ -184,27 +172,19 @@ class GdService
     }
 
     /**
-     * @param \GdImage|resource $image
-     *
      * @throws \Exception
      */
-    private function createColorForLabel(string $label, &$image, float $opacity = 1): int|false
+    private function createColorForLabel(string $label, $image, float $opacity = 1): int|false
     {
         $alpha = (int) ((1 - $opacity) * 127);
-        switch ($label) {
-            case 'gray':
-                return $this->createColor($image, 18, 18, 18, $alpha);
-            case 'green':
-                return $this->createColor($image, 18, 140, 45, $alpha);
-            case 'orange':
-                return $this->createColor($image, 201, 151, 0, $alpha);
-            case 'blue':
-                return $this->createColor($image, 52, 52, 119, $alpha);
-            case 'white':
-                return $this->createColor($image, 255, 255, 255, $alpha);
-            default:
-                throw new \Exception('Unknown color');
-        }
+        return match ($label) {
+            'gray' => $this->createColor($image, 18, 18, 18, $alpha),
+            'green' => $this->createColor($image, 18, 140, 45, $alpha),
+            'orange' => $this->createColor($image, 201, 151, 0, $alpha),
+            'blue' => $this->createColor($image, 52, 52, 119, $alpha),
+            'white' => $this->createColor($image, 255, 255, 255, $alpha),
+            default => throw new \Exception('Unknown color'),
+        };
     }
 
     /**

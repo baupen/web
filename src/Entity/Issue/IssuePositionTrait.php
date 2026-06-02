@@ -1,36 +1,28 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity\Issue;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait IssuePositionTrait
 {
     #[Assert\NotBlank(groups: ['position'])]
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $positionX = null;
 
     #[Assert\NotBlank(groups: ['position'])]
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $positionY = null;
 
     #[Assert\NotBlank(groups: ['position'])]
-    #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
+    #[Groups(['issue:read', 'issue:write'])]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $positionZoomScale = null;
 
     #[Assert\Callback]

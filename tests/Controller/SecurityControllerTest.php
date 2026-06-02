@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the baupen project.
- *
- * (c) Florian Moser <git@famoser.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Tests\Controller;
 
 use App\Entity\ConstructionManager;
@@ -97,7 +88,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $authenticationHash = $this->getAuthenticationHash($email);
 
-        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/register/confirm/'.$authenticationHash);
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/register/confirm/' . $authenticationHash);
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('register_confirm_submit')->form();
@@ -134,7 +125,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $authenticationHash = $this->getAuthenticationHash($email);
 
-        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/recover/confirm/'.$authenticationHash);
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/recover/confirm/' . $authenticationHash);
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('set_password_submit')->form();
