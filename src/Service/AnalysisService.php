@@ -23,7 +23,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
      *
      * @return IssueAnalysis[]
      */
-    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array
+    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array
     {
         $issueAnalysis = $this->createIssueAnalysis($rootAlias, $queryBuilder);
 
@@ -49,7 +49,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
             $currentFormat = $current->format($dateFormat);
             $issueAnalysisByTime[$currentFormat] = $currentIssueAnalysis;
 
-            $current->sub($stepSize);
+            $current = $current->sub($stepSize);
         }
 
         return $issueAnalysisByTime;
@@ -114,9 +114,9 @@ readonly class AnalysisService implements AnalysisServiceInterface
         }
     }
 
-    private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
+    private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTimeImmutable $timestamp, ?\DateTimeImmutable $registeredAt, ?\DateTimeImmutable $resolvedAt, ?\DateTimeImmutable $closedAt): void
     {
-        if ($closedAt instanceof \DateTime) {
+        if ($closedAt instanceof \DateTimeImmutable) {
             // summary counted issue at "completed"
             if ($closedAt > $timestamp) {
                 $issueCountAnalysis->setClosedCount($issueCountAnalysis->getClosedCount() - 1);
@@ -126,7 +126,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
                     $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() + 1);
                 }
             }
-        } elseif ($resolvedAt instanceof \DateTime) {
+        } elseif ($resolvedAt instanceof \DateTimeImmutable) {
             // summary counted issue at "resolved"
             if ($resolvedAt > $timestamp) {
                 $issueCountAnalysis->setInspectableCount($issueCountAnalysis->getInspectableCount() - 1);
@@ -140,12 +140,12 @@ readonly class AnalysisService implements AnalysisServiceInterface
         }
     }
 
-    private function getBacktrackDate(\DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount): \DateTime
+    private function getBacktrackDate(\DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount): \DateTimeImmutable
     {
         $backtrackDate = clone $lastPeriodEnd;
         $currentStep = $stepCount;
         while ($currentStep-- > 0) {
-            $backtrackDate->sub($stepSize);
+            $backtrackDate = $backtrackDate->sub($stepSize);
         }
 
         return $backtrackDate;

@@ -22,7 +22,7 @@ class IssueService
         $this->issueRepository = $this->manager->getRepository(Issue::class);
     }
 
-    public function getStateChangeIssues(QueryBuilder $queryBuilder, string $rootAlias, \DateTime $backtrackDate): array
+    public function getStateChangeIssues(QueryBuilder $queryBuilder, string $rootAlias, \DateTimeImmutable $backtrackDate): array
     {
         $queryBuilder->addSelect($rootAlias . '.registeredAt registeredAt, ' . $rootAlias . '.resolvedAt resolvedAt, ' . $rootAlias . '.closedAt closedAt');
         $queryBuilder
