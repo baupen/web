@@ -2,8 +2,6 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         types:
-            datetime: App\Extension\UTCDateTimeType
-            datetimetz: App\Extension\UTCDateTimeType
             datetime_immutable: App\Extension\UTCDateTimeImmutableType
             datetimetz_immutable: App\Extension\UTCDateTimeImmutableType
 

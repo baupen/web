@@ -21,30 +21,6 @@ UNION SELECT created_by_id as id, construction_site_id FROM task
 UNION SELECT closed_by_id as id, construction_site_id FROM task';
 
     /**
-     * @param Collection<int, ConstructionSite> $constructionSites
-     */
-    public function checkConstructionManagerRelated(ConstructionManager $constructionManager, Collection $constructionSites): bool
-    {
-        $rsm = new ResultSetMapping();
-
-        $rsm->addScalarResult('involvement_count', 'involvement_count');
-        $query = $this->getEntityManager()->createNativeQuery(
-            '
-SELECT COUNT(*) as involvement_count FROM (' . self::INVOLVEMENT_SUBQUERY . ') as Involvement
-WHERE id = :id AND construction_site_id IN (:construction_site_ids);',
-            $rsm
-        );
-        $query->setParameter(':id', $constructionManager->getId());
-
-        $constructionSiteIds = DoctrineHelper::getIdList($constructionSites);
-        $query->setParameter(':construction_site_ids', $constructionSiteIds);
-
-        $hits = $query->getSingleScalarResult();
-
-        return $hits > 0;
-    }
-
-    /**
      * @param string[] $constructionSiteIds
      *
      * @return string[]

@@ -75,7 +75,9 @@ class SecurityController extends AbstractController
     #[Route(path: '/token', name: 'token')]
     public function token(): Response
     {
-        $token = $this->getUser()->getAuthenticationToken();
+        /** @var ConstructionManager $user */
+        $user = $this->getUser();
+        $token = $user->getAuthenticationToken();
 
         return new Response($token);
     }
@@ -123,8 +125,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
     public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, Security $security, UserPasswordHasherInterface $passwordHasher): RedirectResponse|Response
     {
-        /** @var ConstructionManager $constructionManager */
-        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager) || !$constructionManager) {
             return $this->redirectToRoute('login');
         }
 
@@ -170,7 +171,6 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ConstructionManager $existingConstructionManager */
             $existingConstructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
             if (null === $existingConstructionManager) {
                 $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
@@ -186,8 +186,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
     public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, Security $security, UserPasswordHasherInterface $passwordHasher): RedirectResponse|Response
     {
-        /** @var ConstructionManager $constructionManager */
-        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager) || !$constructionManager) {
             return $this->redirectToRoute('login');
         }
 
@@ -213,7 +212,7 @@ class SecurityController extends AbstractController
 
     private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, ?ConstructionManager &$constructionManager = null): bool
     {
-        /** @var ConstructionManager $constructionManager */
+        /** @phpstan-ignore-next-line */
         $constructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
         if (null === $constructionManager) {
             $this->addFlash('danger', $translator->trans('recover_confirm.error.invalid_hash', [], 'security'));

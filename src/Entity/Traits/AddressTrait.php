@@ -32,7 +32,7 @@ trait AddressTrait
     #[Assert\Country]
     private ?string $country = 'CH';
 
-    public function getStreetAddress(): string
+    public function getStreetAddress(): ?string
     {
         return $this->streetAddress;
     }
@@ -42,7 +42,7 @@ trait AddressTrait
         $this->streetAddress = $streetAddress;
     }
 
-    public function getPostalCode(): int
+    public function getPostalCode(): ?int
     {
         return $this->postalCode;
     }
@@ -52,7 +52,7 @@ trait AddressTrait
         $this->postalCode = $postalCode;
     }
 
-    public function getLocality(): string
+    public function getLocality(): ?string
     {
         return $this->locality;
     }
@@ -62,7 +62,7 @@ trait AddressTrait
         $this->locality = $locality;
     }
 
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }
@@ -81,24 +81,17 @@ trait AddressTrait
     {
         $res = explode("\n", $this->getStreetAddress());
         $prefix = '';
-        if (mb_strlen($this->getCountry()) > 0) {
-            $prefix = $this->getCountry() . ((mb_strlen($this->getPostalCode()) > 0) ? '-' : ' ');
+        if ($this->getCountry()) {
+            $prefix = $this->getCountry() . ($this->getPostalCode() ? '-' : ' ');
         }
-        if (mb_strlen($this->getPostalCode()) > 0) {
+        if ($this->getPostalCode()) {
             $prefix .= $this->getPostalCode() . ' ';
         }
-        if (mb_strlen($this->getLocality()) > 0) {
+        if ($this->getLocality()) {
             $prefix .= $this->getLocality();
         }
         $res[] = trim($prefix);
 
-        $result = [];
-        foreach ($res as $entry) {
-            if (mb_strlen($entry) > 0) {
-                $result[] = $entry;
-            }
-        }
-
-        return $result;
+        return array_filter($res);
     }
 }

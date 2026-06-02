@@ -10,9 +10,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 readonly class FilterNormalizer implements NormalizerInterface
 {
-    use TokenTrait;
-
-    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator, private TokenStorageInterface $tokenStorage)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator)
     {
     }
 

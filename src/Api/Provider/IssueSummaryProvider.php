@@ -24,11 +24,9 @@ class IssueSummaryProvider implements ProviderInterface
     use CollectionProviderQueryBuilderTrait;
 
     /**
-     * @param ProviderInterface<Issue> $collectionProvider
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
     public function __construct(
-        #[Autowire(service: CollectionProvider::class)] private readonly ProviderInterface $collectionProvider,
         private readonly AnalysisService $analysisService,
         TokenStorageInterface $tokenStorage,
         LoggerInterface $logger,

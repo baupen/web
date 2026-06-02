@@ -4,6 +4,7 @@ namespace App\Controller\Traits;
 
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ImageRequestTrait
 {
@@ -11,7 +12,7 @@ trait ImageRequestTrait
     {
         $size = $query->get('size', 'thumbnail');
         if (!in_array($size, ImageServiceInterface::VALID_SIZES)) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException();
         }
 
         return $size;

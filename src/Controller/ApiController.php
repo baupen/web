@@ -129,7 +129,7 @@ class ApiController extends AbstractController
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
-        if (!$mapFie) {
+        if (!$mapFile) {
             throw new BadRequestException('The map file could not be stored');
         }
 

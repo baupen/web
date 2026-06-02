@@ -5,6 +5,7 @@ namespace App\Controller\Traits;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait FileResponseTrait
 {
@@ -21,7 +22,7 @@ trait FileResponseTrait
     private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $cache): BinaryFileResponse
     {
         if (null === $path) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException();
         }
 
         $response = new BinaryFileResponse($path);

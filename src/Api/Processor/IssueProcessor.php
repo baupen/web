@@ -13,6 +13,7 @@ use App\Entity\Issue;
 use App\Entity\IssueEvent;
 use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -24,11 +25,9 @@ readonly class IssueProcessor implements ProcessorInterface
 
     /**
      * @param ProcessorInterface<Issue, Issue> $persistProcessor
-     * @param ProcessorInterface<Issue, Issue> $removeProcessor
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
-        #[Autowire(service: RemoveProcessor::class)] private ProcessorInterface $removeProcessor,
         private ManagerRegistry $doctrine,
         private TokenStorageInterface $tokenStorage
     ) {
@@ -55,8 +54,9 @@ readonly class IssueProcessor implements ProcessorInterface
         }
 
         if ($operation instanceof Patch) {
-            /** @var UnitOfWork $unitOfWork */
-            $unitOfWork = $this->doctrine->getManager()->getUnitOfWork();
+            /** @var EntityManagerInterface $objectManager */
+            $objectManager = $this->doctrine->getManager();
+            $unitOfWork = $objectManager->getUnitOfWork();
             $previousState = $unitOfWork->getOriginalEntityData($data);
 
             $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
