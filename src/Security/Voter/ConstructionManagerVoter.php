@@ -31,14 +31,12 @@ class ConstructionManagerVoter extends Voter
             if ($attribute == self::CONSTRUCTION_MANAGER_MODIFY) {
                 return $constructionManager === $subject;
             }
-
-            // this is not 100% precise; but its good enough
-            // overall, leakage of construction managers not a problem, as need to guess GUID
-            // note that there is the edge case of construction managers B leaving construction sites A, but B should remain accessible to all construction managers with access to A
-            // also note that this voter may be called often, so cannot do expensive work in here
-            return true;
-        } else {
-            return false;
         }
+
+        // this is not 100% precise; but its good enough
+        // overall, leakage of construction managers not a problem, as need to guess GUID
+        // note that there is the edge case of construction managers B leaving construction sites A, but B should remain accessible to all construction managers with access to A
+        // also note that this voter may be called often, so cannot do expensive work in here
+        return true;
     }
 }

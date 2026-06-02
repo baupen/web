@@ -58,11 +58,12 @@ trait TestDataTrait
         return $constructionManagerRepository->findOneBy(['email' => $constructionManagerEmail]);
     }
 
-    private function addConstructionManager(ConstructionSite $constructionSite, string $email = 'some@mail.com'): ConstructionManager
+    private function addAssociatedConstructionManager(ConstructionSite $constructionSite, string $email = 'some@mail.com'): ConstructionManager
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->getConstructionSites()->add($constructionSite);
         $constructionManager->setEmail($email);
+        $constructionManager->setCanAssociateSelf(false);
 
         $this->saveEntity($constructionManager);
 
