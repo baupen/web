@@ -97,7 +97,7 @@ readonly class EmailService implements EmailServiceInterface
         $entity = Email::create(EmailType::CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
         $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
-        if (!$message instanceof TemplatedEmail) {
+        if (!$message) {
             return false;
         }
 
