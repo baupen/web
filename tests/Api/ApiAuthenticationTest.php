@@ -229,7 +229,7 @@ class ApiAuthenticationTest extends ApiTestCase
 
         $constructionSiteCondition = 'constructionSite=' . $testConstructionSite->getId();
         $otherConstructionSiteCondition = 'constructionSite=' . $otherConstructionSite->getId();
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers'); // filter is applied under the hood
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $testConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
@@ -257,9 +257,9 @@ class ApiAuthenticationTest extends ApiTestCase
 
         $constructionSiteCondition = 'constructionSite=' . $testConstructionSite->getId();
         $otherConstructionSiteCondition = 'constructionSite=' . $otherConstructionSite->getId();
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers');
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?' . $otherConstructionSiteCondition);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?' . $constructionSiteCondition);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers'); // filter applied under the hood
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id=' . $otherConstructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id=' . $testConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen?' . $otherConstructionSiteCondition);
