@@ -61,7 +61,7 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
 
         $filter = $this->manager->getRepository(Filter::class)->findOneBy(['authenticationToken' => $username]);
         if (null !== $filter) {
-            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() > new \DateTime()) {
+            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() > new \DateTimeImmutable()) {
                 $token->setFilter($filter);
 
                 return $token;

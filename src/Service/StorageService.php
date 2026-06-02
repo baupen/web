@@ -128,7 +128,7 @@ readonly class StorageService implements StorageServiceInterface
             return $sanitizedFileName;
         }
 
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $counter = 0;
         do {
             $prefix = $sanitizedFileName . '_duplicate_' . $now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);

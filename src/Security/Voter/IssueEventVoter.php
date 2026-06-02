@@ -95,7 +95,7 @@ class IssueEventVoter extends Voter
                         return false;
                     }
 
-                    if ($subject->getTimestamp() > new \DateTime('now + 5min') || $subject->getTimestamp() < new \DateTime('now - 5min')) {
+                    if ($subject->getTimestamp() > new \DateTimeImmutable('now + 5min') || $subject->getTimestamp() < new \DateTimeImmutable('now - 5min')) {
                         return false;
                     }
                 } else {

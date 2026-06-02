@@ -77,9 +77,9 @@ class MyTwigExtension extends AbstractExtension
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $propertyName));
     }
 
-    public function formatDateFilter(?\DateTime $date): string
+    public function formatDateFilter(null|\DateTime|\DateTimeImmutable $date): string
     {
-        if ($date instanceof \DateTime) {
+        if ($date) {
             return $date->format(DateTimeFormatter::DATE_FORMAT);
         }
 

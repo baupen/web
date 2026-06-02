@@ -47,7 +47,7 @@ class WeeklySendCommand extends Command
         }
         $io->text('Found ' . count($relevantConstructionSites) . ' relevant construction sites.');
 
-        $nowWeekAgo = new \DateTime('now - 1 week');
+        $nowWeekAgo = new \DateTimeImmutable('now - 1 week');
         $constructionSiteReportLookup = [];
         foreach ($relevantConstructionSites as $constructionSite) {
             $report = $this->reportService->createConstructionSiteReport($constructionSite, $nowWeekAgo);

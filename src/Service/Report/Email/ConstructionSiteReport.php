@@ -11,7 +11,7 @@ class ConstructionSiteReport
 
     private ConstructionSite $constructionSite;
 
-    private \DateTime $comparisonTimestamp;
+    private \DateTimeImmutable $comparisonTimestamp;
 
     /**
      * @var CraftsmanDeltaReport[]
@@ -23,7 +23,7 @@ class ConstructionSiteReport
      *
      * @param CraftsmanDeltaReport[] $craftsmanDeltaReports
      */
-    public function __construct(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp, array $craftsmanDeltaReports)
+    public function __construct(ConstructionSite $constructionSite, \DateTimeImmutable $comparisonTimestamp, array $craftsmanDeltaReports)
     {
         $this->constructionSite = $constructionSite;
         $this->comparisonTimestamp = $comparisonTimestamp;
@@ -40,7 +40,7 @@ class ConstructionSiteReport
         return $this->constructionSite;
     }
 
-    public function getComparisonTimestamp(): \DateTime
+    public function getComparisonTimestamp(): \DateTimeImmutable
     {
         return $this->comparisonTimestamp;
     }
