@@ -38,6 +38,10 @@ class ConstructionSiteVoter extends Voter
             }
 
             return $constructionManager->getConstructionSites()->contains($subject);
+        } elseif (($craftsman = $this->tryGetCraftsman($token))) {
+            return $craftsman->getConstructionSite() === $subject;
+        } elseif (($filter = $this->tryGetFilter($token))) {
+            return $filter->getConstructionSite() === $subject;
         } else {
             return false;
         }

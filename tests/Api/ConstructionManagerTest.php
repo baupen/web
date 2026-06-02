@@ -129,7 +129,7 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
-        $emptyManager = $this->addConstructionManager($emptyConstructionSite);
+        $emptyManager = $this->addAssociatedConstructionManager($emptyConstructionSite);
         $emptyManagerIri = $this->getIriFromItem($emptyManager);
 
         // ensure filter is applied
@@ -153,7 +153,7 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
 
         $emptyConstructionSite = $this->getEmptyConstructionSite();
-        $newManager = $this->addConstructionManager($emptyConstructionSite);
+        $newManager = $this->addAssociatedConstructionManager($emptyConstructionSite);
         $newManagerIri = $this->getIriFromItem($newManager);
 
         $this->addIssue($constructionSite, $newManager);

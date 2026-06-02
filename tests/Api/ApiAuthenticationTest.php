@@ -29,8 +29,8 @@ class ApiAuthenticationTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
-        $constructionManager = $this->getTestConstructionManager();
-        $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
+        $associatedConstructionManager = $this->getTestAssociatedConstructionManager();
+        $otherConstructionManager = $this->addAssociatedConstructionManager($otherConstructionSite);
 
         $craftsman = $constructionSite->getCraftsmen()[0];
         $otherCraftsman = $this->addCraftsman($otherConstructionSite);
@@ -39,17 +39,17 @@ class ApiAuthenticationTest extends ApiTestCase
         $otherFilter = $this->addFilter($otherConstructionSite);
 
         $issue = $constructionSite->getIssues()[0];
-        $otherIssue = $this->addIssue($otherConstructionSite, $constructionManager);
+        $otherIssue = $this->addIssue($otherConstructionSite, $otherConstructionManager);
 
         $map = $constructionSite->getMaps()[0];
         $otherMap = $this->addMap($otherConstructionSite);
 
-        $constructionManagerToken = $this->createApiTokenFor($constructionManager);
+        $constructionManagerToken = $this->createApiTokenFor($associatedConstructionManager);
         $craftsmanToken = $this->createApiTokenFor($craftsman);
         $filterToken = $this->createApiTokenFor($filter);
 
         $payloads = [
-            'construction_managers' => [$constructionManager, $otherConstructionManager],
+            'construction_managers' => [$associatedConstructionManager, $otherConstructionManager],
             'construction_sites' => [$constructionSite, $otherConstructionSite],
             'craftsmen' => [$craftsman, $otherCraftsman],
             'filters' => [$filter, $otherFilter],
@@ -69,19 +69,28 @@ class ApiAuthenticationTest extends ApiTestCase
             $sameConstructionSiteId = $apiUrl . '/' . $own->getId();
             $otherConstructionSiteId = $apiUrl . '/' . $other->getId();
 
+            // GET of own construction site
             $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
-            if (in_array($url, ['construction_sites', 'construction_managers'])) {
-                $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
-            } else {
-                $this->assertApiTokenRequestForbidden($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
-            }
-
             if ('filters' === $url) {
-                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
+                $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $sameConstructionSiteId);
             } else {
                 $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
+                $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', $sameConstructionSiteId);
             }
-            $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
+
+            // GET of other construction site
+            if ('construction_managers' === $url) {
+                $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
+                $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
+                $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', $otherConstructionSiteId);
+            } else {
+                $this->assertApiTokenRequestForbidden($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
+                $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $otherConstructionSiteId);
+            }
+
+            // craftsman can only PATCH issues
             if (!in_array($url, $noPost)) {
                 $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'POST', $apiUrl, []);
             }
@@ -91,9 +100,8 @@ class ApiAuthenticationTest extends ApiTestCase
             if (!in_array($url, $noDelete)) {
                 $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'DELETE', $sameConstructionSiteId, []);
             }
-
-            $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', $sameConstructionSiteId);
-            $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $otherConstructionSiteId);
+            
+            // filter can do nothing
             if (!in_array($url, $noPost)) {
                 $this->assertApiTokenRequestForbidden($client, $filterToken, 'POST', $apiUrl, []);
             }
