@@ -28,7 +28,12 @@ class ConstructionManagerLocaleSubscriber implements EventSubscriberInterface
 
     private function setLocaleFromUser(Request $request, UserInterface $user): void
     {
-        if ($request->hasSession() && ($session = $request->getSession()) && $user instanceof ConstructionManager) {
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+        if ($user instanceof ConstructionManager) {
             $session->set('_locale', $user->getLocale());
         }
     }

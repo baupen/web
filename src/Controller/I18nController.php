@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ConstructionManager;
 use App\Helper\DoctrineHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,7 @@ class I18nController extends AbstractController
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);
 
+            /** @var ConstructionManager|null $user */
             $user = $this->getUser();
             if ($user) {
                 $user->setLocale($locale);

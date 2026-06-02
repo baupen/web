@@ -3,19 +3,15 @@
 namespace App\Api\Processor;
 
 use ApiPlatform\Doctrine\Common\State\PersistProcessor;
-use ApiPlatform\Doctrine\Common\State\RemoveProcessor;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\ConstructionManager;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\UserServiceInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 readonly class ConstructionManagerProcessor implements ProcessorInterface
 {
@@ -41,10 +37,6 @@ readonly class ConstructionManagerProcessor implements ProcessorInterface
             if (!$registrationSuccessful) {
                 throw new HttpException(Response::HTTP_BAD_REQUEST, $error);
             }
-        }
-
-        if ($operation instanceof Delete) {
-            $data->delete();
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);

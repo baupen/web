@@ -16,20 +16,4 @@ class DoctrineHelper
         }
         $manager->flush();
     }
-
-    /**
-     * @param Collection<int, BaseEntity> $collection
-     *
-     * @return array<string>
-     */
-    public static function getIdList(Collection $collection): array
-    {
-        $ids = [];
-
-        foreach ($collection->toArray() as $entry) {
-            $ids[] = $entry->getId();
-        }
-
-        return $ids;
-    }
 }

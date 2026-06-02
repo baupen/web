@@ -2,6 +2,7 @@
 
 namespace App\Api\Serializer;
 
+use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Controller\Traits\FileResponseTrait;
@@ -28,12 +29,12 @@ readonly class IssueRenderSerializer implements ProcessorInterface
         private ManagerRegistry $manager,
         private RequestStack $requestStack,
         private ImageServiceInterface $imageService,
-        private PathServiceInterface $pathService
     ) {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Response
     {
+        /** @var HttpOperation $operation */
         if ($operation->getUriTemplate() !== '/issues/render.jpg') {
             return $this->decorated->process($data, $operation, $uriVariables, $context);
         }

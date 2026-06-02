@@ -26,11 +26,7 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
 {
     use TokenTrait;
 
-    /**
-     * @param ProcessorInterface<CraftsmanEmail, CraftsmanEmail> $persistProcessor
-     */
     public function __construct(
-        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
         private TokenStorageInterface $tokenStorage,
         private ReportServiceInterface $reportService,
         private EmailServiceInterface $emailService,

@@ -2,6 +2,7 @@
 
 namespace App\Api\Serializer;
 
+use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Security\TokenTrait;
@@ -34,6 +35,7 @@ readonly class IssueReportSerializer implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Response
     {
+        /** @var HttpOperation $operation */
         if ($operation->getUriTemplate() !== '/issues/report') {
             return $this->decorated->process($data, $operation, $uriVariables, $context);
         }

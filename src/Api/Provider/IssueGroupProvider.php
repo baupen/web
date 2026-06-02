@@ -30,12 +30,9 @@ class IssueGroupProvider implements ProviderInterface
     use CollectionProviderQueryBuilderTrait;
 
     /**
-     * @param ProviderInterface<Issue> $collectionProvider
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
     public function __construct(
-        #[Autowire(service: CollectionProvider::class)] private readonly ProviderInterface $collectionProvider,
-        private readonly AnalysisService $analysisService,
         private readonly RequestStack $requestStack,
         private readonly IriConverterInterface $iriConverter,
         TokenStorageInterface $tokenStorage,

@@ -12,7 +12,7 @@ readonly class ConstructionManagerNormalizer implements NormalizerInterface
 {
     use TokenTrait;
 
-    public function __construct(private NormalizerInterface $decoratedNormalizer, private UrlGeneratorInterface $urlGenerator, private TokenStorageInterface $tokenStorage)
+    public function __construct(private NormalizerInterface $decoratedNormalizer, private TokenStorageInterface $tokenStorage)
     {
     }
 
