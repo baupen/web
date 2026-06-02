@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     processor: IssueProcessor::class,
-    denormalizationContext: ['groups' => ['issue:write']],
+    denormalizationContext: ['groups' => []],
     normalizationContext: ['groups' => ['issue:read', 'soft-delete:read'], "skip_null_values" => false]
 )]
 #[GetCollection(provider: IssueCollectionProvider::class)]
