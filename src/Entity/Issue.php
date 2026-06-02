@@ -56,13 +56,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_MODIFY", object)', denormalizationContext: ['groups' => ['issue:create', 'issue:write']])]
 #[Patch(security: 'is_granted("ISSUE_MODIFY", object) or is_granted("ISSUE_RESPOND", object)')]
 #[Delete(security: 'is_granted("ISSUE_MODIFY", object)')]
-#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'craftsman', 'map', 'createdBy', 'registeredBy', 'closedBy'], strategy: SearchFilter::STRATEGY_EXACT)]
+#[ApiFilter(SearchFilter::class, properties: ['constructionSite', 'craftsman', 'map', 'createdBy', 'registeredBy', 'closedBy', 'description' => SearchFilterInterface::STRATEGY_IPARTIAL], strategy: SearchFilter::STRATEGY_EXACT)]
 #[ApiFilter(IsDeletedFilter::class)]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt', "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"])]
 #[ApiFilter(BooleanFilter::class, properties: ['isMarked', 'wasAddedWithClient'])]
 #[ApiFilter(NumericFilter::class, properties: ['number'])]
-#[ApiFilter(SearchFilter::class, properties: ['description'], strategy: SearchFilterInterface::STRATEGY_IPARTIAL)]
-#[ApiFilter(OrderFilter::class, properties: ['lastChangedAt', 'number', 'craftsman.trade', 'map.name', 'description'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
+#[ApiFilter(OrderFilter::class, properties: ['lastChangedAt', 'number', 'craftsman.trade', 'map.name', 'description', 'deadline'], strategy: OrderFilterInterface::NULLS_ALWAYS_LAST)]
 #[ApiFilter(StateFilter::class)]
 class Issue extends BaseEntity
 {
@@ -225,5 +224,10 @@ class Issue extends BaseEntity
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
+    }
+
+    public function getLastChangedAt(): ?\DateTimeImmutable
+    {
+        return $this->lastChangedAt;
     }
 }

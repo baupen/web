@@ -252,7 +252,7 @@ class IssueTest extends ApiTestCase
         $counter = 1;
         foreach ($constructionSite->getIssues() as $issue) {
             $issue->setNumber($counter);
-            $issue->setDeadline(new \DateTime('today + ' . $counter++ . ' hours'));
+            $issue->setDeadline(new \DateTimeImmutable('today + ' . $counter++ . ' hours'));
         }
         $this->saveEntity(...$constructionSite->getIssues()->toArray());
 
@@ -394,7 +394,7 @@ class IssueTest extends ApiTestCase
 
         $dateTimeProperties = ['createdAt', 'registeredAt', 'resolvedAt', 'closedAt', 'deadline'];
         foreach ($dateTimeProperties as $dateTimeProperty) {
-            $this->assertApiCollectionFilterDateTime($client, $collectionUrlPrefix, $issueIri, $dateTimeProperty, new \DateTime($sample[$dateTimeProperty]));
+            $this->assertApiCollectionFilterDateTime($client, $collectionUrlPrefix, $issueIri, $dateTimeProperty, new \DateTimeImmutable($sample[$dateTimeProperty]));
         }
 
         $boolProperties = ['wasAddedWithClient', 'isMarked'];
