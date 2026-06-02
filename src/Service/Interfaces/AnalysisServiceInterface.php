@@ -15,7 +15,7 @@ interface AnalysisServiceInterface
      *
      * @return IssueAnalysis[]
      */
-    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array;
+    public function createIssueAnalysisByTime(string $rootAlias, QueryBuilder $queryBuilder, \DateTimeImmutable $lastPeriodEnd, \DateInterval $stepSize, int $stepCount, string $dateFormat = DateTimeFormatter::ISO_DATE_FORMAT): array;
 
     public function createIssueAnalysis(string $rootAlias, QueryBuilder $queryBuilder): IssueAnalysis;
 

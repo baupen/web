@@ -53,7 +53,7 @@ class IssueTimeseriesProvider implements ProviderInterface
         $queryBuilder = $this->provideQueryBuilder($operation, $uriVariables, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $lastPeriodEnd = new \DateTime('today');
+        $lastPeriodEnd = new \DateTimeImmutable('today');
         $stepSize = new \DateInterval('P1D');
         $stepCount = 30;
         $issueAnalysisByTime = $this->analysisService->createIssueAnalysisByTime($rootAlias, $queryBuilder, $lastPeriodEnd, $stepSize, $stepCount);
