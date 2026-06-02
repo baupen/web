@@ -2,7 +2,6 @@
 
 namespace App\Api\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\Api\Processor\CraftsmanEmailProcessor;

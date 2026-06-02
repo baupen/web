@@ -3,14 +3,12 @@
 namespace App\Api\Provider;
 
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
-use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Provider\Traits\AuthenticatedProviderTrait;
 use App\Entity\Issue;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 

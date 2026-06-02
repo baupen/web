@@ -15,7 +15,6 @@ use App\Api\Provider\Traits\CollectionProviderQueryBuilderTrait;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Extension\UTCDateTimeImmutableType;
-use App\Extension\UTCDateTimeType;
 use App\Service\AnalysisService;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Container\ContainerInterface;

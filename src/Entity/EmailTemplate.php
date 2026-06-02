@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
@@ -12,7 +11,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\QueryParameter;
 use App\Api\Provider\AuthenticatedCollectionProvider;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;

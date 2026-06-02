@@ -3,8 +3,6 @@
 namespace App\Api\Serializer;
 
 use ApiPlatform\State\SerializerContextBuilderInterface;
-use App\Entity\ConstructionManager;
-use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;

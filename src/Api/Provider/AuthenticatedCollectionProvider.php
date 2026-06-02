@@ -13,7 +13,6 @@ use App\Entity\Map;
 use App\Security\TokenTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 readonly class AuthenticatedCollectionProvider implements ProviderInterface
