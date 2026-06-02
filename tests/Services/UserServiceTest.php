@@ -13,7 +13,7 @@ class UserServiceTest extends TestCase
 {
     public function testWhitelist(): void
     {
-        $mockPathService = $this->getMockForAbstractClass(PathServiceInterface::class);
+        $mockPathService = $this->createMock(PathServiceInterface::class);
 
         $mockPathService->method('getTransientFolderForAuthorization')
             ->willReturn(__DIR__ . DIRECTORY_SEPARATOR . 'UserServiceTest');
