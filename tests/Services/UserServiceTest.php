@@ -7,10 +7,12 @@ use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\UserService;
 use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 class UserServiceTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testWhitelist(): void
     {
         $mockPathService = $this->createMock(PathServiceInterface::class);
