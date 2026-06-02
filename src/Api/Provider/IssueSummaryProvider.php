@@ -47,7 +47,8 @@ class IssueSummaryProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): IssueSummaryDto
     {
-        $this->ensureIssueCollectionAuthenticated($operation, $context);
+        $this->ensureGetCollectionOperation($operation);
+        $this->ensureIssueCollectionAuthenticated($context);
 
         $queryBuilder = $this->provideQueryBuilder($operation, $uriVariables, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];

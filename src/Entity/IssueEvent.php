@@ -38,8 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['issue-event:read', 'time:read', 'soft-delete:read'], "skip_null_values" => false],
 )]
 #[GetCollection(
-    provider: AuthenticatedCollectionProvider::class,
-    security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')"
+    provider: AuthenticatedCollectionProvider::class
 )]
 #[Get(security: 'is_granted("ISSUE_EVENT_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_EVENT_CREATE", object)', denormalizationContext: ['groups' => ['issue-event:create', 'issue-event:write']])]
