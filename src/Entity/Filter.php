@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -137,6 +138,7 @@ class Filter extends BaseEntity
     private ?\DateTimeImmutable $accessAllowedBefore = null;
 
     #[Groups(['filter:read', 'filter:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[Assert\NotBlank]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'filters')]
     private ?ConstructionSite $constructionSite = null;

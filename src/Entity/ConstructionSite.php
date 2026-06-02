@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -77,6 +78,7 @@ class ConstructionSite extends BaseEntity
      */
     #[ORM\JoinTable(name: 'construction_site_construction_manager')]
     #[Groups(['construction-site:read', 'construction-site:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(targetEntity: ConstructionManager::class, inversedBy: 'constructionSites')]
     private Collection $constructionManagers;
 

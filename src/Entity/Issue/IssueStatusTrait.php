@@ -2,6 +2,7 @@
 
 namespace App\Entity\Issue;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use Doctrine\DBAL\Types\Types;
@@ -19,6 +20,7 @@ trait IssueStatusTrait
 
     #[Assert\NotBlank]
     #[Groups(['issue:read', 'issue:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
@@ -29,6 +31,7 @@ trait IssueStatusTrait
 
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
@@ -37,6 +40,7 @@ trait IssueStatusTrait
     private ?\DateTimeImmutable $resolvedAt = null;
 
     #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 
@@ -45,6 +49,7 @@ trait IssueStatusTrait
     private ?\DateTimeImmutable $closedAt = null;
 
     #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 
