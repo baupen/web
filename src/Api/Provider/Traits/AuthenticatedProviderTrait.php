@@ -16,6 +16,14 @@ trait AuthenticatedProviderTrait
     private readonly TokenStorageInterface $tokenStorage;
     private readonly LoggerInterface $logger;
 
+    private function ensureGetCollectionOperation(Operation $operation): void
+    {
+        // check properly filtered
+        if (!$operation instanceof GetCollection) {
+            throw new BadRequestException('Only collection operations are supported by this provider.');
+        }
+    }
+
     private function ensureConstructionSiteFilteredByManagers(array $context): void
     {
         $token = $this->tokenStorage->getToken();
@@ -54,13 +62,8 @@ trait AuthenticatedProviderTrait
         }
     }
 
-    private function ensureConstructionSiteAttributedCollectionFiltered(Operation $operation, array $context): void
+    private function ensureConstructionSiteAttributedCollectionFiltered(array $context): void
     {
-        // check properly filtered
-        if (!$operation instanceof GetCollection) {
-            throw new BadRequestException('Only collection operations are supported by this provider.');
-        }
-
         $token = $this->tokenStorage->getToken();
         $constructionSiteRestriction = $this->getConstructionSiteRestriction($token);
 
@@ -68,14 +71,20 @@ trait AuthenticatedProviderTrait
         $this->ensureArraySearchFilterValid($existingFilter, 'constructionSite', $constructionSiteRestriction);
     }
 
-    private function ensureIssueCollectionAuthenticated(Operation $operation, array $context): void
+    private function ensureIssueEventCollectionAuthenticated(array $context): void
     {
-        $this->ensureConstructionSiteAttributedCollectionFiltered($operation, $context);
-        $this->ensureCraftsmanFilteredIfCraftsmanAuthentication($context);
+        $this->ensureConstructionSiteAttributedCollectionFiltered($context);
+        $this->ensureCraftsmanFilteredIfCraftsmanAuthentication($context, 'createdBy');
+    }
+
+    private function ensureIssueCollectionAuthenticated(array $context): void
+    {
+        $this->ensureConstructionSiteAttributedCollectionFiltered($context);
+        $this->ensureCraftsmanFilteredIfCraftsmanAuthentication($context, 'craftsman');
         $this->ensureFilterAppliedIfFilterAuthentication($context);
     }
 
-    private function ensureCraftsmanFilteredIfCraftsmanAuthentication(array $context): void
+    private function ensureCraftsmanFilteredIfCraftsmanAuthentication(array $context, string $craftsmanProperty): void
     {
         $token = $this->tokenStorage->getToken();
         $craftsman = $this->tryGetCraftsman($token);
@@ -84,7 +93,7 @@ trait AuthenticatedProviderTrait
         }
 
         $existingFilter = $context['filters'] ?? [];
-        $this->ensureArraySearchFilterValid($existingFilter, 'craftsman', [$craftsman->getId()]);
+        $this->ensureArraySearchFilterValid($existingFilter, $craftsmanProperty, [$craftsman->getId()]);
     }
 
     private function ensureFilterAppliedIfFilterAuthentication(array $context): void
