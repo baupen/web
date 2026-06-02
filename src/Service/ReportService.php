@@ -57,7 +57,7 @@ readonly class ReportService implements ReportServiceInterface
             return $a->getCraftsman()->sort($b->getCraftsman());
         });
 
-        return new ConstructionSiteReport($constructionSite, $comparisonTimestamp, array_values($craftsmanDeltaReportByCraftsman));
+        return new ConstructionSiteReport($constructionSite, $comparisonTimestamp, $craftsmanDeltaReportByCraftsman);
     }
 
     public function createCraftsmanReport(Craftsman $craftsman, ?\DateTimeImmutable $comparisonTimestamp): CraftsmanReport

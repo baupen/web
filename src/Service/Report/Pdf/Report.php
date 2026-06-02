@@ -143,9 +143,9 @@ class Report
     }
 
     /**
-     * @param string[]   $columnWidths
-     * @param string[]   $head
-     * @param string[][] $body
+     * @param float[]   $columnWidths
+     * @param array<string|null>   $head
+     * @param array<array<string|null>> $body
      */
     public function addSizedTable(array $columnWidths, array $head, array $body): void
     {
@@ -269,6 +269,7 @@ class Report
 
             // print images
             $currentColumn = 0;
+            unset($entry);
             foreach ($row as $entry) {
                 // image
                 $height = $entry['height'];
@@ -384,7 +385,7 @@ class Report
      * if return false, call again with same parameters.
      *
      * @param float[]  $columnWidths
-     * @param string[] $row
+     * @param array<string|null> $row
      */
     private function printSizedRow(array $columnWidths, array $row, bool $fill = false, bool $retry = false): void
     {
@@ -402,7 +403,7 @@ class Report
 
             // draw column content
             $this->pdfDocument->SetXY($currentXStart, $startY);
-            $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, $currentColumn, 0, 'L', $fill, 1);
+            $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, (string) $currentColumn, 0, 'L', $fill, 1);
 
             // if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {

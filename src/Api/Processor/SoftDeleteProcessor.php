@@ -29,7 +29,7 @@ readonly class SoftDeleteProcessor implements ProcessorInterface
     }
 
     /**
-     * @param Issue $data
+     * @param Craftsman|Map|IssueEvent $data
      */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Craftsman|Map|IssueEvent
     {
