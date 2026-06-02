@@ -5,6 +5,8 @@ namespace App\Entity\Issue;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
+use App\Validator\CloseToNowWhenPreviouslyNull;
+use App\Validator\MatchesIssueCraftsman;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -35,11 +37,13 @@ trait IssueStatusTrait
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
-    #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
+    #[Groups(['issue:read', 'issue:write', 'issue:write-craftsman'])]
+    #[CloseToNowWhenPreviouslyNull]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $resolvedAt = null;
 
-    #[Groups(['issue:read', 'issue:write', 'issue-craftsman:write'])]
+    #[Groups(['issue:read', 'issue:write', 'issue:write-craftsman'])]
+    #[MatchesIssueCraftsman]
     #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;

@@ -100,7 +100,7 @@ class ApiAuthenticationTest extends ApiTestCase
             if (!in_array($url, $noDelete)) {
                 $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'DELETE', $sameConstructionSiteId, []);
             }
-            
+
             // filter can do nothing
             if (!in_array($url, $noPost)) {
                 $this->assertApiTokenRequestForbidden($client, $filterToken, 'POST', $apiUrl, []);
@@ -304,13 +304,19 @@ class ApiAuthenticationTest extends ApiTestCase
             'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
             'resolvedBy' => $otherCraftsmanIri,
         ];
-        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $issueIri, $forbiddenUpdate);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, $client, $issueIri, $forbiddenUpdate);
 
-        $update = [
+        $forbiddenUpdate2 = [
             'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
             'resolvedBy' => $craftsmanIri,
         ];
-        $response = $this->assertApiPatchPayloadPersisted($client, $issueIri, $update);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, $client, $issueIri, $forbiddenUpdate2);
+
+        $validUpdate = [
+            'resolvedAt' => (new \DateTime())->format('c'),
+            'resolvedBy' => $craftsmanIri,
+        ];
+        $response = $this->assertApiPatchPayloadPersisted($client, $issueIri, $validUpdate);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite=' . $testConstructionSite->getId() . '&craftsman=' . $craftsman->getId() . '&isDeleted=false', $response);
 
         $writeProtected = [

@@ -27,12 +27,12 @@ readonly class ApiContextBuilder implements SerializerContextBuilderInterface
 
         if (Issue::class === $resourceClass && isset($context['groups']) && false === $normalization) {
             $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-            if ($constructionManager instanceof ConstructionManager) {
+            if ($constructionManager) {
                 $context['groups'][] = 'issue:write';
             }
 
             $craftsman = $this->tryGetCraftsman($this->tokenStorage->getToken());
-            if ($craftsman instanceof Craftsman) {
+            if ($craftsman) {
                 $context['groups'][] = 'issue:write-craftsman';
             }
         }
