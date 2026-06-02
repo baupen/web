@@ -59,8 +59,6 @@ class UTCDateTimeImmutableType extends DateTimeImmutableType
         // this assumes the datetime stored by the DB can be parsed by \DateTime (which is reasonable)
         // a better solution would need to replicated the behaviour of convertToPHPValue as seen above
         $dateTime = new \DateTimeImmutable($value, DateTimeZoneExtension::getUtc());
-        $dateTime->setTimezone(DateTimeZoneExtension::getLocal());
-
-        return $dateTime;
+        return $dateTime->setTimezone(DateTimeZoneExtension::getLocal());
     }
 }
