@@ -5,7 +5,6 @@ namespace App\Api\Dto;
 use App\Api\Dto\CraftsmanStatistics\IssueSummaryDto;
 use App\Entity\Craftsman;
 use App\Service\Analysis\CraftsmanAnalysis;
-use DateTime;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 class CraftsmanStatisticsDto

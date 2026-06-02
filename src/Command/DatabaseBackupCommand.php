@@ -35,7 +35,7 @@ class DatabaseBackupCommand extends DatabaseCommand
         $backupFolder = $this->pathService->getDatabaseBackupFolder();
         FileHelper::ensureFolderExists($backupFolder);
 
-        $filename = self::BACKUP_FILE_PREFIX . (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT) . '.sql';
+        $filename = self::BACKUP_FILE_PREFIX . (new \DateTimeImmutable())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT) . '.sql';
         $path = $backupFolder . DIRECTORY_SEPARATOR . $filename;
         $io->text('Dumping database to ' . $path . '.');
 

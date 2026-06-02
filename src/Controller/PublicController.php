@@ -50,7 +50,7 @@ class PublicController extends AbstractController
     public function filtered(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
-        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
+        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTimeImmutable())) {
             throw $this->createNotFoundException();
         }
 

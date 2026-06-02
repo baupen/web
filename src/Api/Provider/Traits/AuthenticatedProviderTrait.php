@@ -189,7 +189,7 @@ trait AuthenticatedProviderTrait
         }
     }
 
-    private function ensureDateTimeSearchFilterValid(array $query, string $property, string $timing, ?\DateTime $restriction): void
+    private function ensureDateTimeSearchFilterValid(array $query, string $property, string $timing, ?\DateTimeImmutable $restriction): void
     {
         if (!$restriction) {
             return;
@@ -200,7 +200,7 @@ trait AuthenticatedProviderTrait
         }
 
         $parsedValue = str_replace(' ', '+', $query[$property][$timing]);
-        $value = new \DateTime($parsedValue);
+        $value = new \DateTimeImmutable($parsedValue);
         if ($value != $restriction) {
             throw new BadRequestException($property . ' filter value ' . $value->format('c') . ' not in equal ' . $restriction->format('c') . '.');
         }

@@ -43,10 +43,10 @@ readonly class FilterService implements FilterServiceInterface
             $setter = 'set' . ucfirst($dateTimeMethod);
 
             $beforeSetter = $setter . 'Before';
-            $filter->$beforeSetter($this->getNullableDateTime($filters, $dateTimeMethod . '[before]'));
+            $filter->$beforeSetter($this->getNullableDateTimeImmutable($filters, $dateTimeMethod . '[before]'));
 
             $afterSetter = $setter . 'After';
-            $filter->$afterSetter($this->getNullableDateTime($filters, $dateTimeMethod . '[after]'));
+            $filter->$afterSetter($this->getNullableDateTimeImmutable($filters, $dateTimeMethod . '[after]'));
         }
 
         return $filter;
@@ -71,9 +71,9 @@ readonly class FilterService implements FilterServiceInterface
         return isset($source[$key]) ? (int) $source[$key] : null;
     }
 
-    private function getNullableDateTime(array $source, string $key): ?\DateTime
+    private function getNullableDateTimeImmutable(array $source, string $key): ?\DateTimeImmutable
     {
-        return isset($source[$key]) ? new \DateTime($source[$key]) : null;
+        return isset($source[$key]) ? new \DateTimeImmutable($source[$key]) : null;
     }
 
     private function getArray(array $source, string $key): array

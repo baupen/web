@@ -46,7 +46,7 @@ class PdfService
 
         $this->setScriptRuntime(count($issues));
 
-        $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+        $formattedDate = (new \DateTimeImmutable())->format(DateTimeFormatter::DATE_TIME_FORMAT);
         if (null === $author) {
             $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
         } else {
@@ -80,7 +80,7 @@ class PdfService
 
     private function getHumanReadableFilenamePrefix(ConstructionSite $constructionSite, Filter $filter): string
     {
-        $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
+        $humanReadablePrefix = (new \DateTimeImmutable())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
         $humanReadablePrefix .= '_' . FileHelper::sanitizeFileName($constructionSite->getName());
 
         if ($filter->getCraftsmanIds() && 1 === count($filter->getCraftsmanIds())) {
@@ -314,20 +314,20 @@ class PdfService
         );
     }
 
-    private function tryGetDateString(?\DateTime $before, ?\DateTime $after): ?string
+    private function tryGetDateString(?\DateTimeImmutable $before, ?\DateTimeImmutable $after): ?string
     {
-        $beforeString = $before instanceof \DateTime ? $before->format(DateTimeFormatter::DATE_FORMAT) : null;
-        $afterString = $after instanceof \DateTime ? $after->format(DateTimeFormatter::DATE_FORMAT) : null;
+        $beforeString = $before?->format(DateTimeFormatter::DATE_FORMAT);
+        $afterString = $after?->format(DateTimeFormatter::DATE_FORMAT);
 
-        if ($before instanceof \DateTime && $after instanceof \DateTime) {
+        if ($before && $after) {
             return $afterString . ' - ' . $beforeString;
         }
 
-        if ($before instanceof \DateTime) {
+        if ($before) {
             return $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $beforeString], 'report');
         }
 
-        if ($after instanceof \DateTime) {
+        if ($after) {
             return $this->translator->trans('introduction.filter.later_than', ['%date%' => $afterString], 'report');
         }
 
@@ -339,12 +339,12 @@ class PdfService
      */
     private function addIssueTable(Report $report, Filter $filter, array $issues): void
     {
-        $showRegistered = !$filter->getRegisteredAtBefore() instanceof \DateTime || $filter->getRegisteredAtAfter();
-        $showResolved = !$filter->getResolvedAtBefore() instanceof \DateTime || $filter->getResolvedAtAfter();
-        $showClosed = !$filter->getClosedAtBefore() instanceof \DateTime || $filter->getClosedAtAfter();
+        $showRegistered = !$filter->getRegisteredAtBefore() || $filter->getRegisteredAtAfter();
+        $showResolved = !$filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
+        $showClosed = !$filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
-        $formatDateTime = function (?\DateTime $dateTime, string $format) {
-            return $dateTime instanceof \DateTime ? $dateTime->format($format) : '-';
+        $formatDateTime = function (?\DateTimeImmutable $dateTime, string $format) {
+            return $dateTime?->format($format) ?? '-';
         };
 
         $tableContent = [];

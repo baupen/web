@@ -30,7 +30,7 @@ readonly class EmailBodyGenerator
     public function fromCraftsmanReport(CraftsmanReport $craftsmanReport): array
     {
         $normalizedCraftsmanReport = [];
-        if ($craftsmanReport->getComparisonTimestamp() instanceof \DateTime) {
+        if ($craftsmanReport->getComparisonTimestamp()) {
             $normalizedCraftsmanReport['comparisonTimeStamp'] = $craftsmanReport->getComparisonTimestamp()->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 

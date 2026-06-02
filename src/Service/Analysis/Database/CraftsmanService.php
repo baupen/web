@@ -78,7 +78,7 @@ class CraftsmanService
         $overdueIssuesQueryBuilder = (clone $openIssuesQueryBuilder)
             ->andWhere('i.deadline IS NOT NULL')
             ->andWhere('i.deadline < :now')
-            ->setParameter(':now', new \DateTime());
+            ->setParameter(':now', new \DateTimeImmutable());
         $this->groupByCraftsmanAndEvaluate(
             $overdueIssuesQueryBuilder,
             'COUNT(i)',

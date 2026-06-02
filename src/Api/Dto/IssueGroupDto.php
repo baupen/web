@@ -13,9 +13,9 @@ class IssueGroupDto
     private ?int $count = null;
 
     #[Groups(['issue-group:read'])]
-    private ?\DateTime $earliestDeadline = null;
+    private ?\DateTimeImmutable $earliestDeadline = null;
 
-    public static function create(string $entity, int $count, ?\DateTime $earliestDeadline): self
+    public static function create(string $entity, int $count, ?\DateTimeImmutable $earliestDeadline): self
     {
         $self = new self();
 
@@ -36,7 +36,7 @@ class IssueGroupDto
         return $this->count;
     }
 
-    public function getEarliestDeadline(): ?\DateTime
+    public function getEarliestDeadline(): ?\DateTimeImmutable
     {
         return $this->earliestDeadline;
     }

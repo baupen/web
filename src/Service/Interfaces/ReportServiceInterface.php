@@ -13,7 +13,7 @@ interface ReportServiceInterface
 {
     public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
 
-    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport;
+    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTimeImmutable $comparisonTimestamp): ConstructionSiteReport;
 
-    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTime $comparisonTimestamp): CraftsmanReport;
+    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTimeImmutable $comparisonTimestamp): CraftsmanReport;
 }

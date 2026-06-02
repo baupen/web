@@ -25,7 +25,7 @@ readonly class ReportService implements ReportServiceInterface
         return $this->pdfService->generatePdfReport($issues, $filter, $reportElements, $author);
     }
 
-    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport
+    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTimeImmutable $comparisonTimestamp): ConstructionSiteReport
     {
         $craftsmanDeltaReportByCraftsman = [];
         $relevantCraftsmen = [];
@@ -60,7 +60,7 @@ readonly class ReportService implements ReportServiceInterface
         return new ConstructionSiteReport($constructionSite, $comparisonTimestamp, array_values($craftsmanDeltaReportByCraftsman));
     }
 
-    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTime $comparisonTimestamp): CraftsmanReport
+    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTimeImmutable $comparisonTimestamp): CraftsmanReport
     {
         $craftsmanDeltaReport = new CraftsmanReport($craftsman, $comparisonTimestamp);
         $craftsmanDeltaReportByCraftsman = [$craftsman->getId() => $craftsmanDeltaReport];
@@ -69,7 +69,7 @@ readonly class ReportService implements ReportServiceInterface
         $this->craftsmanService->findIssueCountByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
 
         $rootAlias = 'i';
-        $queryComparisonTimestamp = $comparisonTimestamp instanceof \DateTime ? $comparisonTimestamp : (new \DateTime())->setTimestamp(0);
+        $queryComparisonTimestamp = $comparisonTimestamp ?: (new \DateTimeImmutable())->setTimestamp(0);
         $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity(' . $rootAlias . '.craftsman) AS craftsman');
         $stateChangeIssues = $this->issueService->getStateChangeIssues($queryBuilder, $rootAlias, $queryComparisonTimestamp);
 
@@ -84,13 +84,13 @@ readonly class ReportService implements ReportServiceInterface
         return $craftsmanDeltaReport;
     }
 
-    private function fillIssueCountDelta(CraftsmanDeltaReport|CraftsmanReport $issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
+    private function fillIssueCountDelta(CraftsmanDeltaReport|CraftsmanReport $issueCountDelta, \DateTimeImmutable $timestamp, ?\DateTimeImmutable $registeredAt, ?\DateTimeImmutable $resolvedAt, ?\DateTimeImmutable $closedAt): void
     {
         // (newly) closed -> no longer open
         // (newly) resolved => no longer open
         // (newly) registered
 
-        if ($closedAt instanceof \DateTime) {
+        if ($closedAt) {
             if ($closedAt > $timestamp) {
                 $issueCountDelta->setClosedCountDelta($issueCountDelta->getClosedCountDelta() + 1);
             }
@@ -98,7 +98,7 @@ readonly class ReportService implements ReportServiceInterface
             if ($registeredAt < $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
             }
-        } elseif ($resolvedAt instanceof \DateTime) {
+        } elseif ($resolvedAt) {
             if ($resolvedAt > $timestamp) {
                 $issueCountDelta->setResolvedCountDelta($issueCountDelta->getResolvedCountDelta() + 1);
             }
@@ -106,7 +106,7 @@ readonly class ReportService implements ReportServiceInterface
             if ($registeredAt < $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
             }
-        } elseif ($registeredAt instanceof \DateTime) {
+        } elseif ($registeredAt) {
             if ($registeredAt > $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() + 1);
             }
