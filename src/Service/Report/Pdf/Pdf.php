@@ -30,7 +30,7 @@ class Pdf extends \TCPDF
     /**
      * logo right & text left.
      */
-    public function Header(): void
+    public function Header(): void // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         // image max one third, the header text the other two thirds
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 3;
@@ -49,7 +49,7 @@ class Pdf extends \TCPDF
     /**
      * bottom left author.
      */
-    public function Footer(): void
+    public function Footer(): void // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         // author three forths, page numbers one forth
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 8;
@@ -68,7 +68,7 @@ class Pdf extends \TCPDF
     /**
      * @throws \Exception
      */
-    public function Error($msg)
+    public function Error($msg) // @phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
         throw new \Exception($msg);
     }
