@@ -41,14 +41,17 @@ services:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
+            $handleLinksLocator: !tagged_locator api_platform.doctrine.orm.links_handler
     App\Api\Provider\IssueSummaryProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
+            $handleLinksLocator: !tagged_locator api_platform.doctrine.orm.links_handler
     App\Api\Provider\IssueTimeseriesProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
+            $handleLinksLocator: !tagged_locator api_platform.doctrine.orm.links_handler
 
     'App\Api\Serializer\ConstructionManagerNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
