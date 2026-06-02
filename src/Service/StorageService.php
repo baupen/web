@@ -102,9 +102,7 @@ readonly class StorageService implements StorageServiceInterface
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());
-        if (!$file->move($targetFolder, $targetFileName)) {
-            return false;
-        }
+        $file->move($targetFolder, $targetFileName);
 
         // write filetrait properties
         $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;

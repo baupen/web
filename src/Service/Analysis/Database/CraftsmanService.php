@@ -7,6 +7,7 @@ use App\Entity\Issue;
 use App\Extension\UTCDateTimeImmutableType;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\Analysis\CraftsmanIssueAnalysis;
+use App\Service\Report\Email\CraftsmanDeltaReport;
 use App\Service\Report\Email\IssueCountTrait;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -25,7 +26,7 @@ class CraftsmanService
 
     /**
      * @param Craftsman[]       $craftsmen
-     * @param IssueCountTrait[] $issueCountByCraftsman
+     * @param CraftsmanDeltaReport[] $issueCountByCraftsman
      */
     public function findIssueCountByCraftsman(array $craftsmen, array $issueCountByCraftsman): void
     {

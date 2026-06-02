@@ -85,9 +85,9 @@ trait UserTrait
      * This should be the encoded password. On authentication, a plain-text
      * password will be salted, encoded, and then compared to this value.
      *
-     * @return string The password
+     * @return ?string The password
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }

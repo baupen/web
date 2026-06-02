@@ -9,11 +9,7 @@ trait IssueCountTrait
     private int $resolvedCount = 0;
 
     private int $closedCount = 0;
-
-    /**
-     * @param IssueCountTrait $other
-     */
-    protected function addIssueCount($other): void
+    protected function addIssueCount(ConstructionSiteReport|CraftsmanDeltaReport $other): void
     {
         $this->openCount += $other->getOpenCount();
         $this->resolvedCount += $other->getResolvedCount();

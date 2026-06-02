@@ -33,7 +33,7 @@ class IssueHelper
 
     /**
      * @param Issue[]     $issues
-     * @param Craftsman[] $orderedCraftsman
+     * @param array<string, Craftsman|null> $orderedCraftsman
      * @param Issue[][]   $issuesPerCraftsman
      */
     public static function issuesToOrderedCraftsman(array $issues, ?array &$orderedCraftsman, ?array &$issuesPerCraftsman): void

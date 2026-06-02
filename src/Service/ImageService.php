@@ -235,10 +235,10 @@ readonly class ImageService implements ImageServiceInterface
 
             // abort if creation failed
             if (!file_exists($pdfRenderPath)) {
-                return $pdfRenderPath;
+                return null;
             }
         }
 
-        return file_exists($pdfRenderPath) ? $pdfRenderPath : null;
+        return $pdfRenderPath;
     }
 }

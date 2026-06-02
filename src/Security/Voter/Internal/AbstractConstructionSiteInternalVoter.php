@@ -20,7 +20,7 @@ abstract class AbstractConstructionSiteInternalVoter extends Voter
     abstract protected function getConstructionSite(mixed $subject): ?ConstructionSite;
 
     /**
-     * @param T $subject
+     * @param mixed $subject
      */
     abstract protected function isInstanceOf(mixed $subject): bool;
 

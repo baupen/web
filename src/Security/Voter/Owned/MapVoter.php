@@ -6,7 +6,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Map;
 
 /**
- * @implements AbstractConstructionSiteOwnedVoter<Map>
+ * @extends AbstractConstructionSiteOwnedVoter<Map>
  */
 class MapVoter extends AbstractConstructionSiteOwnedVoter
 {

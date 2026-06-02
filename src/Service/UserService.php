@@ -67,16 +67,16 @@ class UserService implements UserServiceInterface
 
     public function tryRegister(ConstructionManager $template, ?string &$error = null): bool
     {
-        /** @var ConstructionManager $existing */
+        /** @var ConstructionManager|null $existing */
         $existing = $this->registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $template->getEmail()]);
 
-        if (null !== $existing && $existing->getRegistrationCompleted()) {
+        if ($existing?->getRegistrationCompleted()) {
             $error = UserServiceInterface::REGISTRATION_FAIL_ALREADY_REGISTERED;
 
             return false;
         }
 
-        if (null !== $existing) {
+        if ($existing) {
             $template = $existing;
         }
 

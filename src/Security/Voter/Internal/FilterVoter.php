@@ -7,7 +7,7 @@ use App\Entity\Filter;
 use App\Entity\Task;
 
 /**
- * @implements AbstractConstructionSiteInternalVoter<Task>
+ * @extends AbstractConstructionSiteInternalVoter<Filter>
  */
 class FilterVoter extends AbstractConstructionSiteInternalVoter
 {

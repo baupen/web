@@ -7,7 +7,7 @@ use App\Entity\EmailTemplate;
 use App\Entity\Task;
 
 /**
- * @implements AbstractConstructionSiteInternalVoter<Task>
+ * @extends AbstractConstructionSiteInternalVoter<EmailTemplate>
  */
 class EmailTemplateVoter extends AbstractConstructionSiteInternalVoter
 {

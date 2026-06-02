@@ -10,10 +10,7 @@ trait IssueCountDeltaTrait
 
     private int $closedCountDelta = 0;
 
-    /**
-     * @param IssueCountDeltaTrait $other
-     */
-    protected function addIssueCountDelta($other): void
+    protected function addIssueCountDelta(CraftsmanDeltaReport|ConstructionSiteReport $other): void
     {
         $this->openCountDelta += $other->getOpenCountDelta();
         $this->resolvedCountDelta += $other->getResolvedCountDelta();
