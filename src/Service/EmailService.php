@@ -96,12 +96,7 @@ readonly class EmailService implements EmailServiceInterface
         $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
         $entity = Email::create(EmailType::CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
-        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
-        if (!$message) {
-            return false;
-        }
-
-        $message
+        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
             ->subject($subject)
             ->textTemplate('email/craftsman_issue_reminder.txt.twig')
             ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
@@ -128,7 +123,7 @@ readonly class EmailService implements EmailServiceInterface
         return $templatedEmail;
     }
 
-    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): ?TemplatedEmail
+    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): TemplatedEmail
     {
         $templatedEmail = new TemplatedEmail();
 

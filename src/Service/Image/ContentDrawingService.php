@@ -6,9 +6,6 @@ use App\Entity\Issue;
 
 readonly class ContentDrawingService
 {
-    /**
-     * ImageService constructor.
-     */
     public function __construct(private GdService $gdService)
     {
     }
@@ -26,7 +23,7 @@ readonly class ContentDrawingService
     /**
      * @param Issue[] $issues
      *
-     * @return string[][]
+     * @return array<array<string, float|string|null>>
      */
     public function getContent(array $issues): array
     {
@@ -208,7 +205,10 @@ readonly class ContentDrawingService
         }
     }
 
-    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups): array
+    /**
+     * @param-out array $groups
+     */
+    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups = null): array
     {
         // sort by row and xCoordinate
         usort($content, function (array $a, array $b): int {

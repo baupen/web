@@ -6,7 +6,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Task;
 
 /**
- * @implements AbstractConstructionSiteInternalVoter<Task>
+ * @extends AbstractConstructionSiteInternalVoter<Task>
  */
 class TaskVoter extends AbstractConstructionSiteInternalVoter
 {

@@ -7,7 +7,7 @@ use App\Entity\Craftsman;
 use App\Entity\Map;
 
 /**
- * @implements AbstractConstructionSiteOwnedVoter<Map>
+ * @extends AbstractConstructionSiteOwnedVoter<Craftsman>
  */
 class CraftsmanVoter extends AbstractConstructionSiteOwnedVoter
 {

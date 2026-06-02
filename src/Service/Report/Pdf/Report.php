@@ -19,11 +19,13 @@ class Report
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         // prepare fonts
-        $checkFilePath = K_PATH_FONTS . '/.copied';
+        /** @phpstan-ignore-next-line provided by tcpdf */
+        $k_PATH_FONTS = K_PATH_FONTS;
+        $checkFilePath = $k_PATH_FONTS . '/.copied';
         if (!file_exists($checkFilePath)) {
             $sourceFolder = $reportAssetDir . '/fonts';
             // copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
+            shell_exec('\cp -r ' . $sourceFolder . '/* ' . $k_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
 
@@ -360,7 +362,7 @@ class Report
         $this->pdfDocument->SetY($this->pdfDocument->GetY());
     }
 
-    private function getHeightOf(\Closure $closure): int|float
+    private function getHeightOf(\Closure $closure): float
     {
         $this->pdfDocument->startTransaction();
         if ($this->pdfDocument->GetY() > $this->pdfSizes->getPageSizeY()) {
@@ -371,6 +373,7 @@ class Report
         $closure();
         $endY = $this->pdfDocument->GetY();
         $endPage = $this->pdfDocument->getPage();
+        /** @phpstan-ignore-next-line */
         $this->pdfDocument = $this->pdfDocument->rollbackTransaction();
         $pageAdapt = $this->pdfSizes->getContentYSize() * ($endPage - $startPage);
 
