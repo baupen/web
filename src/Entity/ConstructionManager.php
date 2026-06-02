@@ -67,7 +67,7 @@ class ConstructionManager extends BaseEntity implements UserInterface, PasswordA
     #[ORM\ManyToMany(targetEntity: ConstructionSite::class, mappedBy: 'constructionManagers')]
     private Collection $constructionSites;
 
-    #[ORM\Column(type: Types::TEXT, options: ['default' => 'de'])]
+    #[ORM\Column(type: Types::STRING, options: ['default' => 'de'])]
     private string $locale = 'de';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
