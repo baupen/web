@@ -6,7 +6,6 @@ use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
 use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -18,8 +17,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Api\CustomController\IssuesRender;
-use App\Api\CustomController\IssuesReport;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\StateFilter;
 use App\Api\Processor\IssueProcessor;
@@ -50,8 +47,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[GetCollection(uriTemplate: '/issues/summary', provider: IssueSummaryProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/timeseries', provider: IssueTimeseriesProvider::class, normalizationContext: ['groups' => ['issue-summary:read'], "skip_null_values" => false], paginationEnabled: false)]
 #[GetCollection(uriTemplate: '/issues/group', provider: IssueGroupProvider::class, normalizationContext: ['groups' => ['issue-group:read'], "skip_null_values" => false], paginationEnabled: false)]
-#[GetCollection(uriTemplate: '/issues/report', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesReport::class)]
-#[GetCollection(uriTemplate: '/issues/render.jpg', provider: IssueCollectionProvider::class, paginationEnabled: false, controller: IssuesRender::class, formats: ['jpeg'])]
+#[GetCollection(uriTemplate: '/issues/report', provider: IssueCollectionProvider::class, paginationEnabled: false)]
+#[GetCollection(uriTemplate: '/issues/render.jpg', provider: IssueCollectionProvider::class, paginationEnabled: false, formats: ['jpeg'])]
 #[Get(security: 'is_granted("ISSUE_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("ISSUE_MODIFY", object)', denormalizationContext: ['groups' => ['issue:create', 'issue:write']])]
 #[Patch(security: 'is_granted("ISSUE_MODIFY", object) or is_granted("ISSUE_RESPOND", object)')]

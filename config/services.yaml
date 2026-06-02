@@ -50,11 +50,6 @@ services:
         arguments:
             $collectionExtensions: !tagged_iterator api_platform.doctrine.orm.query_extension.collection
 
-    App\Api\CustomController\IssuesRender:
-        tags: [ 'controller.service_arguments']
-    App\Api\CustomController\IssuesReport:
-        tags: [ 'controller.service_arguments']
-
     'App\Api\Serializer\ConstructionManagerNormalizer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\ConstructionSiteNormalizer':

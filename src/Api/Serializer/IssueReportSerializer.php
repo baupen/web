@@ -1,33 +1,44 @@
 <?php
 
-namespace App\Api\CustomController;
+namespace App\Api\Serializer;
 
-use App\Controller\Traits\FileResponseTrait;
-use App\Entity\Issue;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\Processor\SerializeProcessor;
+use ApiPlatform\State\ProcessorInterface;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Pdf\ReportElements;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-readonly class IssuesReport
+#[AsDecorator(decorates: 'api_platform.state_processor.serialize')]
+readonly class IssueReportSerializer implements ProcessorInterface
 {
     use TokenTrait;
-    use FileResponseTrait;
 
-    public function __construct(private ReportServiceInterface $reportService, private RequestStack $requestStack, private TokenStorageInterface $tokenStorage, private RouterInterface $router, private FilterServiceInterface $filterService)
-    {
+    public function __construct(
+        #[AutowireDecorated]
+        private ProcessorInterface $decorated,
+        private ReportServiceInterface $reportService,
+        private RequestStack $requestStack,
+        private TokenStorageInterface $tokenStorage,
+        private RouterInterface $router,
+        private FilterServiceInterface $filterService
+    ) {
     }
 
-    /**
-     * @param Issue[] $data
-     */
-    public function __invoke(array $data): Response
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Response
     {
+        if ($operation->getUriTemplate() !== '/issues/report') {
+            return $this->decorated->process($data, $operation, $uriVariables, $context);
+        }
+
         $currentRequest = $this->requestStack->getCurrentRequest();
         $reportConfig = $currentRequest->query->all('report');
         $reportElements = ReportElements::fromRequest($reportConfig);
@@ -42,6 +53,7 @@ readonly class IssuesReport
 
         return new Response($path);
     }
+
 
     private function getAuthor(?TokenInterface $token): ?string
     {
