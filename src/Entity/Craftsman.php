@@ -274,7 +274,7 @@ class Craftsman extends BaseEntity
     public function getLastAction(): ?\DateTimeImmutable
     {
         $lastAction = $this->getLastVisitOnline();
-        if (!$lastAction instanceof \DateTimeImmutable || $lastAction < $this->getLastEmailReceived()) {
+        if (!$lastAction || $lastAction < $this->getLastEmailReceived()) {
             return $this->getLastEmailReceived();
         }
 

@@ -302,7 +302,7 @@ class PdfService
 
         $addressLines = implode("\n", $constructionSite->getAddressLines());
 
-        $constructionSiteImage = $constructionSite->getImage() instanceof \App\Entity\ConstructionSiteImage ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
+        $constructionSiteImage = $constructionSite->getImage() ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
 
         $report->addIntroduction(
             $constructionSiteImage,

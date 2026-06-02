@@ -137,7 +137,7 @@ class Map extends BaseEntity
 
     public function getContext(): string
     {
-        if ($this->getParent() instanceof Map) {
+        if ($this->getParent()) {
             $parentContext = $this->getParent()->getContext();
             if ('' !== $parentContext) {
                 $parentContext .= ' > ';

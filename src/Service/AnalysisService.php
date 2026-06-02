@@ -116,7 +116,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
 
     private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTimeImmutable $timestamp, ?\DateTimeImmutable $registeredAt, ?\DateTimeImmutable $resolvedAt, ?\DateTimeImmutable $closedAt): void
     {
-        if ($closedAt instanceof \DateTimeImmutable) {
+        if ($closedAt) {
             // summary counted issue at "completed"
             if ($closedAt > $timestamp) {
                 $issueCountAnalysis->setClosedCount($issueCountAnalysis->getClosedCount() - 1);
@@ -126,7 +126,7 @@ readonly class AnalysisService implements AnalysisServiceInterface
                     $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() + 1);
                 }
             }
-        } elseif ($resolvedAt instanceof \DateTimeImmutable) {
+        } elseif ($resolvedAt) {
             // summary counted issue at "resolved"
             if ($resolvedAt > $timestamp) {
                 $issueCountAnalysis->setInspectableCount($issueCountAnalysis->getInspectableCount() - 1);

@@ -48,17 +48,17 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
     {
         if ($operation instanceof Post) {
             $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-            if (!$constructionManager instanceof ConstructionManager) {
+            if (!$constructionManager) {
                 throw new AuthenticationException();
             }
 
             $craftsman = $data->getReceiver();
-            if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName()) instanceof Address) {
+            if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName())) {
                 throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid E-Mail set: ' . $craftsman->getEmail());
             }
 
             foreach ($craftsman->getEmailCCs() as $emailCC) {
-                if (!EmailService::tryConstructAddress($emailCC) instanceof Address) {
+                if (!EmailService::tryConstructAddress($emailCC)) {
                     throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid CC E-Mail set: ' . $emailCC);
                 }
             }

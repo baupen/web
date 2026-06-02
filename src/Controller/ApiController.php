@@ -129,7 +129,7 @@ class ApiController extends AbstractController
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
-        if (!$mapFile instanceof MapFile) {
+        if (!$mapFie) {
             throw new BadRequestException('The map file could not be stored');
         }
 
@@ -173,7 +173,7 @@ class ApiController extends AbstractController
         $image = $this->getImage($request->files);
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
-        if (!$constructionSiteImage instanceof ConstructionSiteImage) {
+        if (!$constructionSiteImage) {
             throw new BadRequestException('The construction site image could not be stored');
         }
 
@@ -204,7 +204,7 @@ class ApiController extends AbstractController
         $file = $this->getSafeFile($request->files);
 
         $issueEventFile = $storageService->uploadIssueEventFile($file, $issueEvent);
-        if (!$issueEventFile instanceof IssueEventFile) {
+        if (!$issueEventFile) {
             throw new BadRequestException('The issue event file could not be stored');
         }
 
@@ -252,7 +252,7 @@ class ApiController extends AbstractController
     public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService): BinaryFileResponse
     {
         $mapFile = $issue->getMap()->getFile();
-        if (!$mapFile instanceof MapFile) {
+        if (!$mapFile) {
             throw $this->createNotFoundException();
         }
 
@@ -270,7 +270,7 @@ class ApiController extends AbstractController
         $image = $this->getImage($request->files);
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
-        if (!$issueImage instanceof IssueImage) {
+        if (!$issueImage) {
             throw new BadRequestException('The issue site image could not be stored');
         }
 
