@@ -3,7 +3,6 @@
 namespace App\Api\Serializer;
 
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Processor\SerializeProcessor;
 use ApiPlatform\State\ProcessorInterface;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;

@@ -23,14 +23,10 @@ readonly class ConstructionManagerProcessor implements ProcessorInterface
 
     /**
      * @param ProcessorInterface<ConstructionManager, ConstructionManager> $persistProcessor
-     * @param ProcessorInterface<ConstructionManager, ConstructionManager> $removeProcessor
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
-        #[Autowire(service: RemoveProcessor::class)] private ProcessorInterface $removeProcessor,
         private UserServiceInterface $userService,
-        private ManagerRegistry $managerRegistry,
-        private TokenStorageInterface $tokenStorage
     ) {
     }
 

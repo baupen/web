@@ -15,7 +15,6 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
 {
     /**
      * @param ProcessorInterface<ConstructionSite, ConstructionSite> $persistProcessor
-     * @param ProcessorInterface<ConstructionSite, ConstructionSite> $removeProcessor
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,

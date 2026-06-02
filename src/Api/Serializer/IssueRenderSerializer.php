@@ -3,26 +3,18 @@
 namespace App\Api\Serializer;
 
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Processor\SerializeProcessor;
 use ApiPlatform\State\ProcessorInterface;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\Map;
-use App\Security\TokenTrait;
-use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Report\Pdf\ReportElements;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 #[AsDecorator(decorates: 'api_platform.state_processor.serialize')]
 readonly class IssueRenderSerializer implements ProcessorInterface

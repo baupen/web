@@ -7,7 +7,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Api\Entity\CraftsmanEmail;
-use App\Entity\ConstructionManager;
 use App\Entity\IssueEvent;
 use App\Enum\EmailType;
 use App\Helper\DoctrineHelper;
@@ -20,7 +19,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -33,7 +31,6 @@ readonly class CraftsmanEmailProcessor implements ProcessorInterface
      */
     public function __construct(
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
-        private ManagerRegistry $doctrine,
         private TokenStorageInterface $tokenStorage,
         private ReportServiceInterface $reportService,
         private EmailServiceInterface $emailService,

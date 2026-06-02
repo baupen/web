@@ -5,7 +5,6 @@ namespace App\Service\Analysis\Database;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Extension\UTCDateTimeImmutableType;
-use App\Extension\UTCDateTimeType;
 use App\Service\Analysis\CraftsmanAnalysis;
 use App\Service\Analysis\CraftsmanIssueAnalysis;
 use App\Service\Report\Email\IssueCountTrait;

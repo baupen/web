@@ -22,13 +22,9 @@ readonly class SoftDeleteProcessor implements ProcessorInterface
 
     /**
      * @param ProcessorInterface<Craftsman|Map|IssueEvent, Craftsman|Map|IssueEvent> $persistProcessor
-     * @param ProcessorInterface<Craftsman|Map|IssueEvent, Craftsman|Map|IssueEvent> $removeProcessor
      */
     public function __construct(
-        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
-        #[Autowire(service: RemoveProcessor::class)] private ProcessorInterface $removeProcessor,
-        private ManagerRegistry $doctrine,
-        private TokenStorageInterface $tokenStorage
+        #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor
     ) {
     }
 
