@@ -9,6 +9,7 @@ use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -48,6 +49,7 @@ class Task extends BaseEntity
 
     #[Assert\NotBlank]
     #[Groups(['task:create', 'task:read'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'tasks')]
     private ?ConstructionSite $constructionSite = null;
 
@@ -67,6 +69,7 @@ class Task extends BaseEntity
 
     #[Assert\NotBlank]
     #[Groups(['task:read', 'task:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
@@ -75,6 +78,7 @@ class Task extends BaseEntity
     private ?\DateTimeImmutable $closedAt = null;
 
     #[Groups(['task:read', 'task:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 

@@ -11,6 +11,7 @@ use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -113,16 +114,19 @@ class Issue extends BaseEntity
 
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'issues')]
     private ?Craftsman $craftsman = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue:read', 'issue:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'issues')]
     private ?Map $map = null;
 
     #[Assert\NotBlank]
     #[Groups(['issue:create'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issues')]
     private ?ConstructionSite $constructionSite = null;
 
