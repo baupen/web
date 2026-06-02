@@ -206,7 +206,7 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
         $craftsmanId = $this->getIriFromItem($craftsman);
-        $time = (new \DateTime('today'))->format('c');
+        $time = (new \DateTime('now'))->format('c');
 
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
         $issueId = json_decode($response->getContent(), true)['@id'];
@@ -220,7 +220,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=1', $issueId);
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=4', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['craftsman' => $craftsmanId, 'resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=4', $issueId);
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite=' . $constructionSite->getId() . '&state=8', $issueId);
