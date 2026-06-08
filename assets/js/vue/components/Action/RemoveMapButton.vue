@@ -23,7 +23,7 @@
 
 <script>
 
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
 import IssueSummaryBadges from '../View/IssueSummaryBadges'

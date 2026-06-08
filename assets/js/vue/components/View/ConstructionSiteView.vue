@@ -13,7 +13,7 @@
 
 <script>
 
-import {constructionSiteFormatter} from '../../services/formatters'
+import {constructionSiteFormatter} from '../../domain/formatters'
 
 export default {
   props: {

@@ -44,11 +44,11 @@
 <script>
 
 import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
-import { mapTransformer } from '../../services/transformers'
+import { mapTransformer } from '../../domain/transformers'
 import MapRenderLightbox from './MapRenderLightbox'
 import EditMapButton from '../Action/EditMapButton'
 import RemoveMapButton from '../Action/RemoveMapButton'
-import { mapFormatter } from '../../services/formatters'
+import { mapFormatter } from '../../domain/formatters'
 
 export default {
   components: {

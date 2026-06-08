@@ -42,7 +42,7 @@
 import ConstructionSitesEnterMasonryCard from './ConstructionSiteEnterCard'
 import IssueResolveCard from './IssueResolveCard'
 import MapRenderLightbox from './MapRenderLightbox'
-import {api, iriToId} from '../../services/api'
+import {api, iriToId} from '../../domain/api'
 import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'
 
 export default {

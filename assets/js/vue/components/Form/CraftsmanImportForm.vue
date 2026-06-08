@@ -26,8 +26,9 @@ import { displayError } from '../../services/notifiers'
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-import { craftsmanTransformer, excelTransformer } from '../../services/transformers'
+import { craftsmanTransformer } from '../../domain/transformers'
 import {isSafari} from "../../services/utils";
+import { excelTransformer } from '../../services/excel'
 
 export default {
   components: {
@@ -81,7 +82,7 @@ export default {
   },
   computed: {
     validFileTypes: function () {
-      return excelTransformer.getImportMimeTypes()
+      return excelTransformer.getSupportedMimeTypes()
     },
     filename: function () {
       return this.$t('_form.craftsmen_import.template_file_name') + ".xlsx"

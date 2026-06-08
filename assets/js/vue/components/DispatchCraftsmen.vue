@@ -15,7 +15,7 @@
 <script>
 import ComposeCraftsmanEmailButton from './Action/ComposeCraftsmanEmailButton'
 import CraftsmenStatisticsTable from './View/CraftsmenStatisticsTable'
-import { api } from '../services/api'
+import { api } from '../domain/api'
 
 export default {
   components: {

@@ -21,7 +21,7 @@
 
 import ExportIssuesButton from './Action/ExportIssuesButton'
 import IssuesTable from './View/IssuesTable'
-import { filterTransformer } from '../services/transformers'
+import { filterTransformer } from '../domain/transformers'
 
 export default {
   components: {

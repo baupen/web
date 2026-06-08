@@ -14,8 +14,9 @@
 import IssueLinkForm from '../Form/IssueLinkForm'
 import GenerateIssuesFilter from './GenerateIssuesLink'
 import {utils, writeFileXLSX} from "xlsx-js-style";
-import {api, iriToId} from "../../services/api";
-import { constructionManagerFormatter, dateTimeFormatter } from '../../services/formatters'
+import {api, iriToId} from "../../domain/api";
+import { constructionManagerFormatter } from '../../domain/formatters'
+import { dateTimeFormatter } from '../../services/formatters'
 
 
 export default {

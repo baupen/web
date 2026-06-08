@@ -8,7 +8,7 @@
 
 <script>
 
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 import TaskForm from '../Form/TaskForm'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 

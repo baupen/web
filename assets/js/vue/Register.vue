@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { api } from './services/api'
+import { api } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import RegisterIssues from './components/RegisterIssues'
 

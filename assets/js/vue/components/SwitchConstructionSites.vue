@@ -55,7 +55,7 @@
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicator from './Library/View/LoadingIndicator'
-import {addNonDuplicatesById, api} from '../services/api'
+import {addNonDuplicatesById, api} from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 import SwitchTasks from "./SwitchTasks.vue";

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { api } from './services/api'
+import { api } from './domain/api'
 import SwitchConstructionSites from './components/SwitchConstructionSites'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 

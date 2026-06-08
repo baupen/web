@@ -46,7 +46,7 @@
 <script>
 
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
-import {api, iriToId} from "../services/api";
+import {api, iriToId} from "../domain/api";
 import TaskRow from "./View/TaskRow.vue";
 import AddTaskButton from "./Action/AddTaskButton.vue";
 

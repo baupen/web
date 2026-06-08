@@ -218,7 +218,7 @@ import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
-import {mapTransformer} from "../../services/transformers";
+import {mapTransformer} from "../../domain/transformers";
 import SetMapPositionButton from "../Action/SetMapPositionButton.vue";
 import MapPositionCanvas from "../View/MapPositionCanvas.vue";
 

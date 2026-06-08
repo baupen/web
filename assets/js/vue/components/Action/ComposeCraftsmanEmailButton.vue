@@ -53,7 +53,7 @@
 
 <script>
 
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 import { displaySuccess } from '../../services/notifiers'
 import EmailForm from '../Form/EmailForm'
 import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'

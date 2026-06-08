@@ -6,7 +6,7 @@
 
 <script>
 
-import {router} from "../../services/api";
+import {router} from "../../domain/api";
 
 export default {
   props: {

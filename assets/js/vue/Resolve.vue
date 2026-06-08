@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { api } from './services/api'
+import { api } from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'

@@ -22,7 +22,7 @@
 </template>
 <script>
 
-import {api} from '../services/api'
+import {api} from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import Feed from './View/Feed'
 

@@ -13,7 +13,7 @@
 <script>
 
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import {constructionManagerFormatter} from '../../services/formatters'
+import {constructionManagerFormatter} from '../../domain/formatters'
 
 export default {
   components: {DateHumanReadable},

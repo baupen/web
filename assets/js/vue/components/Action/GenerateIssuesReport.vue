@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import { api, iriToId, maxIssuesPerReport } from '../../services/api'
-import { mapTransformer } from '../../services/transformers'
+import { api, iriToId, maxIssuesPerReport } from '../../domain/api'
+import { mapTransformer } from '../../domain/transformers'
 
 export default {
   components: {},

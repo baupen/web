@@ -5,7 +5,7 @@
 <script>
 import Lightbox from '../Library/Behaviour/Lightbox'
 import ImageLightbox from './ImageLightbox'
-import { api, iriToId } from '../../services/api'
+import { api, iriToId } from '../../domain/api'
 
 export default {
   components: {
