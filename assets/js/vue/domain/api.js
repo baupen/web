@@ -50,14 +50,21 @@ const router = {
     return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
   },
   currentRegisterUrl: function (initialState = null) {
-    let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
-
+    const url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
+    const query = {}
     if (initialState) {
-      url += '?state=' + initialState
+      query.state = initialState
     }
 
-    return url
+    return restClient._getQueryUrl(url, query)
   },
+  getIssuesRenderLink: function (constructionSite, map, query = {}) {
+    query.constructionSite = iriToId(constructionSite['@id'])
+    query.map = iriToId(map['@id'])
+    query.size = 'full'
+    query.isDeleted = 'false'
+    return restClient._getQueryUrl('/api/issues/render.jpg', query)
+  }
 }
 
 const api = {
@@ -334,16 +341,9 @@ const api = {
 
     return this._getHydraCollection('/api/issue_events' + queryString)
   },
-  getIssuesRenderLink: function (constructionSite, map, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&map=' + iriToId(map['@id'])
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    queryString += '&size=full'
-    return '/api/issues/render.jpg?' + queryString
   },
   getIssuesRenderProbe: function (constructionSite, map, query = {}) {
-    const link = this.getIssuesRenderLink(constructionSite, map, query)
+    const link = router.getIssuesRenderLink(constructionSite, map, query)
     return this._getEmptyResponse(link)
   },
   getTasks: function (constructionSite) {

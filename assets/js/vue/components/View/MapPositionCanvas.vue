@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import {api} from "../../domain/api";
+import { api, router } from '../../domain/api'
 
 const getCanvasPosition = function (position, canvasRect, imageRect) {
   const leftShift = imageRect.left - canvasRect.left;
@@ -120,7 +120,7 @@ export default {
         return null
       }
 
-      return api.getIssuesRenderLink(this.constructionSite, this.map, {number: -1})
+      return router.getIssuesRenderLink(this.constructionSite, this.map, {number: -1})
     },
   },
   mounted () {
