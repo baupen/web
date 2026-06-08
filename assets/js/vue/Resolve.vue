@@ -32,7 +32,6 @@ export default {
     }
   },
   mounted () {
-    api.setupErrorNotifications(this.$t)
     api.authenticateFromUrl()
         .then(me => {
           let craftsmanIri = me.craftsmanIri
