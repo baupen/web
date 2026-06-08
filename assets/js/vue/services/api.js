@@ -113,15 +113,21 @@ const restClient = {
   },
   post: async function (collectionUrl, post, options = {}) {
     return this._jsonRequest(collectionUrl, {
-      headers: { 'Content-Type': 'application/ld+json' },
       ...options,
+      headers: {
+        'Content-Type': 'application/ld+json',
+        ...options.headers
+      },
       method: 'POST'
     }, post)
   },
   patch: async function (instance, patch, options = {}) {
     const responseData = await this._jsonRequest(instance['@id'], {
-      headers: { 'Content-Type': 'application/merge-patch+json' },
       ...options,
+      headers: {
+        'Content-Type': 'application/merge-patch+json',
+        ...options.headers
+      },
       method: 'PATCH'
     }, patch)
 
