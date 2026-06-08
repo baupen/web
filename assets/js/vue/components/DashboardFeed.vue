@@ -22,7 +22,7 @@
 </template>
 <script>
 
-import {api} from '../domain/api'
+import { api, router } from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import Feed from './View/Feed'
 
@@ -73,7 +73,7 @@ export default {
       return this.craftsmenStatistics.reduce((acc, curr) => acc + curr.issueUnreadCount, 0)
     },
     dispatchUrl: function () {
-      return api.currentDispatchUrl()
+      return router.currentDispatchUrl()
     }
   },
   mounted() {
