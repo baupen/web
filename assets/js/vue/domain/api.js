@@ -69,7 +69,7 @@ const router = {
 }
 
 const apiClient = {
-  authenticate: async function () {
+  authenticate: function () {
     httpClient.additionalHeaders['X-AUTHENTICATION'] = window.token
     return window.me
   },
@@ -109,7 +109,7 @@ const api = {
   getById: function (id) {
     return restClient.get(id)
   },
-  getConstructionSite: function () {
+  getConstructionSite: async function () {
     return window.constructionSite
   },
   getConstructionManagers: function (constructionSite = null) {
@@ -205,7 +205,7 @@ const api = {
     }
   },
   getRecentlyChangedIssues: function (constructionSite, query = {}, weeksInThePast = 0) {
-    const recentlyChangedQuery = self._getRecentlyChangedQuery(weeksInThePast)
+    const recentlyChangedQuery = this._getRecentlyChangedQuery(weeksInThePast)
     const fullQuery = {
       ...query,
       ...recentlyChangedQuery,
@@ -218,7 +218,7 @@ const api = {
     return restClient.getCollection('/api/issues', fullQuery)
   },
   getRecentIssueEvents: function (constructionSite, query = null, weeksInThePast = 0) {
-    const recentlyChangedQuery = self._getRecentlyChangedQuery(weeksInThePast)
+    const recentlyChangedQuery = this._getRecentlyChangedQuery(weeksInThePast)
     const fullQuery = {
       ...query,
       ...recentlyChangedQuery,
