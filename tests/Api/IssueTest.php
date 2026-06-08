@@ -423,7 +423,6 @@ class IssueTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
         $map = $constructionSite->getMaps()[0];
