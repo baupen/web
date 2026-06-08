@@ -89,7 +89,7 @@ export default {
         this.$t('issue.image'),
       ]
 
-      const worksheet = utils.sheet_new()
+      const worksheet = utils.aoa_to_sheet([])
       worksheet["!cols"] = [{wch: 8}, {wch: 40}, {wch: 60}, {wch: 12}, {wch: 20}, {wch: 20}, {wch: 10}, {wch: 10}]; // set width
 
       // write header row (bold)
