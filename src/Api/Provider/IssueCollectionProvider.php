@@ -31,8 +31,10 @@ readonly class IssueCollectionProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $this->ensureGetCollectionOperation($operation);
-        $this->ensureIssueCollectionAuthenticated($context);
+        if ($operation->getUriTemplate() !== '/issues/render.jpg') {
+            $this->ensureGetCollectionOperation($operation);
+            $this->ensureIssueCollectionAuthenticated($context);
+        }
 
         // store filters in request for custom controllers
         $currentRequest = $this->requestStack->getCurrentRequest();

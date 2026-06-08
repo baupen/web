@@ -72,7 +72,7 @@ trait TokenTrait
         return null;
     }
 
-    protected function getConstructionSiteRestriction(TokenInterface $token): ?array
+    protected function getConstructionSiteRestriction(?TokenInterface $token): ?array
     {
         if (($constructionManager = $this->tryGetConstructionManager($token))) {
             $ownConstructionSiteIds = array_map(static fn(ConstructionSite $constructionSite) => $constructionSite->getId(), $constructionManager->getConstructionSites()->toArray());
