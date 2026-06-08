@@ -1,13 +1,13 @@
 <template>
   <span v-if="value">
-    {{ momentDateTime.format(showYear ? 'L' : 'DD.MM.') }}
+    {{ formatted }}
   </span>
   <span v-else>-</span>
 </template>
 
 <script>
 
-import moment from 'moment'
+import { dateTimeFormatter } from '../../../services/formatters'
 
 export default {
   props: {
@@ -29,8 +29,9 @@ export default {
       const now = new Date()
       return now.getFullYear() !== this.momentDateTime.year()
     },
-    momentDateTime: function () {
-      return moment(this.value);
+    formatted: function () {
+      const date = new Date(this.value)
+      return this.showYear ? dateTimeFormatter.date(date) : dateTimeFormatter.dateShort(date);
     },
   }
 }
