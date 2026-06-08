@@ -128,7 +128,7 @@ export default {
       }
     },
     isCreatedByConstructionManager: function () {
-      return this.createdBy['@id'].includes('construction_managers');
+      return this.createdBy && this.createdBy['@id'].includes('construction_managers');
     },
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
