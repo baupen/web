@@ -46,11 +46,11 @@
 </template>
 
 <script>
-import debounce from 'lodash.debounce'
 import { levenshteinDistance } from '../../services/algorithms'
 import { changedFieldValues, createField, requiredRule, validateField, validateFields } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
+import { debounce } from '../../services/utils'
 
 export default {
   components: {
