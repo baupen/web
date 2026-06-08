@@ -1,56 +1,122 @@
 import { displayError } from './notifiers'
 
-const restClient = {
-  setupErrorNotifications: function () {
-    axios.interceptors.response.use(
-      response => {
-        return response
-      },
-      error => {
-        /* eslint-disable-next-line eqeqeq */
-        if (error == 'AxiosError: Request aborted') {
-          // hide aborted errors (happens when navigating rapidly in firefox)
-          return
-        }
+const errorHandlingClient = {
+  _handleError: async function (response) {
+    let responseData = null
 
-        console.log(error)
-
-        let errorText = error
-        if (error.response) {
-          const response = error.response
-          if (response.data.title && response.data.description) {
-            errorText = response.data.title + ': ' + response.data.description
-          } else {
-            errorText = response.status
-            if (response.data && response.data.detail) {
-              errorText += ': ' + response.data.detail
-            } else if (response.statusText) {
-              errorText += ': ' + response.statusText
-            }
-          }
-        }
-
-        displayError('Failed: ' + errorText)
-
-        return Promise.reject(error)
-      }
-    )
-  },
-  _normalizePayload: function (payload) {
-    // undefined values would not be serialized, hence transform to null
-    const instance = { ...payload }
-    for (const prop in payload) {
-      if (Object.prototype.hasOwnProperty.call(payload, prop) && (payload[prop] === undefined || payload[prop] === '')) {
-        instance[prop] = null
-      }
+    try {
+      responseData = await response.json()
+    } catch (e) {
+      // response body is not JSON
     }
-    return instance
+
+    let errorText = response.status
+    if (responseData && responseData.title && responseData.description) {
+      errorText = responseData.title + ': ' + responseData.description
+    } else if (responseData && responseData.detail) {
+      errorText += ': ' + responseData.detail
+    } else if (response.statusText) {
+      errorText += ': ' + response.statusText
+    }
+
+    const error = new Error(errorText)
+    error.response = response
+    error.data = responseData
+
+    console.log(error)
+    displayError('Failed: ' + errorText)
+
+    throw error
   },
-  _writeAllProperties: function (instance, patch, responseData) {
-    // null values may not be delivered in response, hence check what values were in patch and apply them
+  _request: async function (url, init = {}) {
+    let response
+
+    try {
+      response = await fetch(url, init)
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        // hide aborted errors (happens when navigating rapidly in firefox)
+        return null
+      }
+
+      console.log(error)
+      displayError('Failed: ' + error)
+
+      throw error
+    }
+
+    if (!response.ok) {
+      await this._handleError(response)
+    }
+
+    return response
+  }
+}
+
+const restClient = {
+  _jsonRequest: async function (url, options = {}, body = undefined) {
+    const init = { ...options }
+    if (body) {
+      const normalizedBody = { ...body }
+      for (const prop in normalizedBody) {
+        if (Object.prototype.hasOwnProperty.call(normalizedBody, prop) && (normalizedBody[prop] === undefined || normalizedBody[prop] === '')) {
+          normalizedBody[prop] = null
+        }
+      }
+      init.body = JSON.stringify(normalizedBody)
+    }
+
+    const response = await errorHandlingClient._request(url, init)
+
+    if (response.status === 204) {
+      return null
+    }
+
+    return response.json()
+  },
+  _getQueryUrl: function (url, query) {
+    const queryUrl = new URL(url, window.location.origin)
+    Object.keys(query).forEach(key => {
+      if (Array.isArray(query[key])) {
+        query[key].forEach(value => queryUrl.searchParams.append(key + '[]', value))
+      } else {
+        queryUrl.searchParams.append(key, query[key])
+      }
+    })
+    return queryUrl.toString()
+  },
+  getCollection: async function (url, query) {
+    const fullUrl = this._getQueryUrl(url, query)
+    const responseData = await this._jsonRequest(fullUrl)
+    return responseData.member
+  },
+  getPaginatedCollection: async function (url, query) {
+    const fullUrl = this._getQueryUrl(url, query)
+    const responseData = await this._jsonRequest(fullUrl)
+    return {
+      items: responseData.member,
+      totalItems: responseData.totalItems
+    }
+  },
+  get: async function (url) {
+    return this._jsonRequest(url)
+  },
+  post: async function (collectionUrl, post) {
+    return this._jsonRequest(collectionUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/ld+json' }
+    }, post)
+  },
+  patch: async function (instance, patch) {
+    const responseData = await this._jsonRequest(instance['@id'], {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/merge-patch+json' }
+    }, patch)
+
+    // null values may not be delivered in response, hence check what values are only in patch and apply them
     for (const prop in patch) {
-      if (Object.prototype.hasOwnProperty.call(patch, prop) && patch[prop] === null) {
-        instance[prop] = undefined
+      if (Object.prototype.hasOwnProperty.call(patch, prop) && !Object.prototype.hasOwnProperty.call(responseData, prop)) {
+        instance[prop] = patch[prop]
       }
     }
 
@@ -60,48 +126,20 @@ const restClient = {
       }
     }
   },
-  _getFullUrl: function (url, query) {
-    const fullUrl = new URL(url, window.location.origin)
-    Object.keys(query).forEach(key => {
-      if (Array.isArray(query[key])) {
-        query[key].forEach(value => fullUrl.searchParams.append(key + '[]', value))
-      } else {
-        fullUrl.searchParams.append(key, query[key])
-      }
-    })
-    return fullUrl.toString()
-  },
-  getCollection: async function (url, query) {
-    const fullUrl = this._getFullUrl(url, query)
-    const response = await axios.get(fullUrl)
-    return response.data.member
-  },
-  getPaginatedCollection: async function (url, query) {
-    const fullUrl = this._getFullUrl(url, query)
-    const response = await axios.get(fullUrl)
-    return {
-      items: response.data.member,
-      totalItems: response.data.totalItems
-    }
-  },
-  get: async function (url) {
-    const response = await axios.get(url)
-    return response.data
-  },
-  post: async function (collectionUrl, post) {
-    const normalizedPost = this._normalizePayload(post)
-    const response = await axios.post(collectionUrl, normalizedPost, { headers: { 'Content-Type': 'application/ld+json' } })
-    return response.data
-  },
-  patch: async function (instance, patch) {
-    const normalizedPatch = this._normalizePayload(patch)
-    const response = await axios.patch(instance['@id'], normalizedPatch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
-    this._writeAllProperties(instance, normalizedPatch, response.data)
-  },
   delete: async function (instance) {
-    await axios.delete(instance['@id'])
-  },
+    const responseData = await this._jsonRequest(instance['@id'], {
+      method: 'DELETE'
+    })
+
+    if (responseData) {
+      // for some entities, DELETE is overridden to be soft delete
+      for (const prop in responseData) {
+        if (Object.prototype.hasOwnProperty.call(responseData, prop)) {
+          instance[prop] = responseData[prop]
+        }
+      }
+    }
+  }
 }
 
-restClient.setupErrorNotifications()
 export { restClient }
