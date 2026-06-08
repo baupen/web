@@ -12,7 +12,7 @@
 
 <script>
 
-import {api} from '../../services/api'
+import {api} from '../../domain/api'
 import {displaySuccess} from '../../services/notifiers'
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 

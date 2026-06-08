@@ -21,10 +21,10 @@
 
 <script>
 
-import {api, iriToId} from "../../services/api";
+import {api, iriToId} from "../../domain/api";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
-import {orderIssueEvents} from "../../services/sorters";
+import {orderIssueEvents} from "../../domain/sorters";
 import IssueEventRow from "./IssueEventRow.vue";
 
 export default {

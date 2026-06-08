@@ -67,14 +67,14 @@
 </template>
 
 <script>
-import {api, iriToId} from '../services/api'
+import {api, iriToId} from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import IssuesResolveView from './View/MapIssuesResolveView'
-import {mapTransformer} from '../services/transformers'
+import {mapTransformer} from '../domain/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 import GenerateIssuesReport from './Action/GenerateIssuesReport'
 import ExportIssuesReportView from './Action/ExportIssuesReportView'
-import {constructionSiteFormatter} from '../services/formatters'
+import {constructionSiteFormatter} from '../domain/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
 import ExportCraftsmanIssuesView from "./Action/ExportCraftsmanIssuesView.vue";
 import IssueRegistrationFeed from "./View/IssueRegistrationFeed.vue";

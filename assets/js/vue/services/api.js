@@ -1,47 +1,7 @@
-import axios from 'axios'
-import { displaySuccess, displayError } from './notifiers'
+import { displayError } from './notifiers'
 
-const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
-const validPdfFileTypes = ['application/pdf', 'application/x-pdf']
-// ensure remains in sync what is checked server-side
-const validSafeFileTypes = [
-  ...validPdfFileTypes,
-  ...validImageTypes,
-  'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // word
-  'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // excel
-  'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', // presentation
-  'application/vnd.ms-outlook', 'message/rfc822', // emails
-  'text/html', 'text/plain', // text or plain
-  'application/zip', 'application/octet-stream'// general
-]
-const maxIssuesPerReport = 800
-
-const iriToId = function (iri) {
-  return iri.substr(iri.lastIndexOf('/') + 1)
-}
-
-const displaySuccessMessageIfExists = function (successMessage = null) {
-  if (successMessage) {
-    displaySuccess(successMessage)
-  }
-}
-
-const addNonDuplicatesById = function (originalCollection, addCollection) {
-  addCollection.forEach(add => {
-    if (!originalCollection.find(o => o['@id'] === add['@id'])) {
-      originalCollection.push(add)
-    }
-  })
-}
-
-const router = {
-  constructionSiteDashboard: function (constructionSite) {
-    return constructionSite['@id'].replace('/api', '') + '/dashboard'
-  }
-}
-
-const api = {
-  setupErrorNotifications: function (translator) {
+const restClient = {
+  setupErrorNotifications: function () {
     axios.interceptors.response.use(
       response => {
         return response
@@ -58,8 +18,8 @@ const api = {
         let errorText = error
         if (error.response) {
           const response = error.response
-          if (response.data['hydra:title'] && response.data['hydra:description']) {
-            errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
+          if (response.data.title && response.data.description) {
+            errorText = response.data.title + ': ' + response.data.description
           } else {
             errorText = response.status
             if (response.data && response.data.detail) {
@@ -70,427 +30,78 @@ const api = {
           }
         }
 
-        const errorMessage = translator ? translator('_api.request_failed') : 'Failed'
-        displayError(errorMessage + ' (' + errorText + ')')
+        displayError('Failed: ' + errorText)
 
         return Promise.reject(error)
       }
     )
   },
-  _writeAllProperties: function (source, target) {
-    for (const prop in source) {
-      if (Object.prototype.hasOwnProperty.call(source, prop) && Object.prototype.hasOwnProperty.call(target, prop)) {
-        target[prop] = source[prop]
+  _normalizePayload: function (payload) {
+    // undefined values would not be serialized, hence transform to null
+    const instance = { ...payload }
+    for (const prop in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, prop) && (payload[prop] === undefined || payload[prop] === '')) {
+        instance[prop] = null
       }
     }
+    return instance
   },
-  _getConstructionSiteBaseUrlFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    urlArray.splice(3)
-    return urlArray.join('/')
-  },
-  _getConstructionSiteIriFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    urlArray.splice(3)
-    return '/api' + urlArray.join('/')
-  },
-  _getTokenFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    return urlArray[2] // location of the form "domain.com/resolve/<token>"
-  },
-  _getConstructionSiteQuery: function (constructionSite) {
-    return 'constructionSite=' + iriToId(constructionSite['@id'])
-  },
-  _getQueryString: function (query) {
-    const queryList = []
-    for (const entry in query) {
-      if (Object.prototype.hasOwnProperty.call(query, entry)) {
-        if (Array.isArray(query[entry])) {
-          query[entry].forEach(item => {
-            queryList.push(entry + '=' + item)
-          })
-        } else {
-          queryList.push(entry + '=' + query[entry])
-        }
+  _writeAllProperties: function (instance, patch, responseData) {
+    // null values may not be delivered in response, hence check what values were in patch and apply them
+    for (const prop in patch) {
+      if (Object.prototype.hasOwnProperty.call(patch, prop) && patch[prop] === null) {
+        instance[prop] = undefined
       }
     }
 
-    return queryList.join('&')
-  },
-  _getHydraCollection: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            resolve(response.data['hydra:member'])
-          })
+    for (const prop in responseData) {
+      if (Object.prototype.hasOwnProperty.call(responseData, prop)) {
+        instance[prop] = responseData[prop]
       }
-    )
-  },
-  _getPaginatedHydraCollection: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            const payload = {
-              items: response.data['hydra:member'],
-              totalItems: response.data['hydra:totalItems']
-            }
-            resolve(payload)
-          })
-      }
-    )
-  },
-  _getItem: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _getEmptyResponse: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
-          .then(response => {
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _postRaw: function (collectionUrl, post, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            resolve(response.data)
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  _post: function (collectionUrl, post, collection, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            collection.push(response.data)
-            displaySuccessMessageIfExists(successMessage)
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _postMultipart: function (collectionUrl, file, fileKey, successMessage = null) {
-    const formData = new FormData()
-    formData.append(fileKey, file)
-
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-          .then(response => {
-            displaySuccessMessageIfExists(successMessage)
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _postAttachment: function (entity, file, fileKey, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        this._postMultipart(entity['@id'] + '/' + fileKey, file, fileKey, successMessage)
-          .then(response => {
-            entity[fileKey + 'Url'] = response
-            resolve()
-          })
-      }
-    )
-  },
-  _getMe: function (authenticationToken) {
-    axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
-    return new Promise(
-      (resolve) => {
-        if (window.me && window.token === authenticationToken) {
-          resolve(window.me)
-        } else {
-          axios.get('/api/me')
-            .then(response => {
-              resolve(response.data)
-            })
-        }
-      }
-    )
-  },
-  currentFoyerUrl: function () {
-    return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
-  },
-  currentDispatchUrl: function () {
-    return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
-  },
-  currentRegisterUrl: function (initialState = null) {
-    let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
-
-    if (initialState) {
-      url += '?state=' + initialState
     }
-
-    return url
   },
-  authenticateFromUrl: function () {
-    const token = this._getTokenFromLocation()
-    return this._getMe(token)
-  },
-  authenticate: function () {
-    return new Promise(
-      (resolve) => {
-        if (window.token) {
-          this._getMe(window.token)
-            .then(response => {
-              resolve(response)
-            })
-        } else {
-          axios.get('/token')
-            .then(response => {
-              this._getMe(response.data)
-                .then(response => {
-                  resolve(response)
-                })
-            })
-        }
+  _getFullUrl: function (url, query) {
+    const fullUrl = new URL(url, window.location.origin)
+    Object.keys(query).forEach(key => {
+      if (Array.isArray(query[key])) {
+        query[key].forEach(value => fullUrl.searchParams.append(key + '[]', value))
+      } else {
+        fullUrl.searchParams.append(key, query[key])
       }
-    )
+    })
+    return fullUrl.toString()
   },
-  getById: function (id) {
-    return this._getItem(id)
+  getCollection: async function (url, query) {
+    const fullUrl = this._getFullUrl(url, query)
+    const response = await axios.get(fullUrl)
+    return response.data.member
   },
-  getConstructionSite: function () {
-    return new Promise(
-      (resolve) => {
-        if (window.constructionSite) {
-          resolve(window.constructionSite)
-        } else {
-          const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
-          axios.get(constructionSiteUrl)
-            .then(response => {
-              resolve(response.data)
-            })
-        }
-      }
-    )
-  },
-  getConstructionManagers: function (constructionSite = null) {
-    let urlSuffix = ''
-    if (constructionSite) {
-      urlSuffix = '?constructionSites.id=' + iriToId(constructionSite['@id'])
+  getPaginatedCollection: async function (url, query) {
+    const fullUrl = this._getFullUrl(url, query)
+    const response = await axios.get(fullUrl)
+    return {
+      items: response.data.member,
+      totalItems: response.data.totalItems
     }
-    return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
-  getConstructionSites: function (constructionManager = null) {
-    let urlSuffix = ''
-    if (constructionManager) {
-      urlSuffix = '?constructionManagers.id=' + iriToId(constructionManager['@id'])
-    }
-    return this._getHydraCollection('/api/construction_sites' + urlSuffix)
+  get: async function (url) {
+    const response = await axios.get(url)
+    return response.data
   },
-  getPaginatedIssues: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getPaginatedHydraCollection('/api/issues?' + queryString)
+  post: async function (collectionUrl, post) {
+    const normalizedPost = this._normalizePayload(post)
+    const response = await axios.post(collectionUrl, normalizedPost, { headers: { 'Content-Type': 'application/ld+json' } })
+    return response.data
   },
-  getIssues: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&pagination=0'
-    return this._getHydraCollection('/api/issues?' + queryString)
+  patch: async function (instance, patch) {
+    const normalizedPatch = this._normalizePayload(patch)
+    const response = await axios.patch(instance['@id'], normalizedPatch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
+    this._writeAllProperties(instance, normalizedPatch, response.data)
   },
-  getReportLink: function (constructionSite, reportQuery, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(reportQuery)
-    queryString += '&' + this._getQueryString(query)
-    return this._getItem('/api/issues/report?' + queryString)
+  delete: async function (instance) {
+    await axios.delete(instance['@id'])
   },
-  getMaps: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/maps?' + queryString)
-  },
-  getCraftsmen: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/craftsmen?' + queryString)
-  },
-  getCraftsmenStatistics: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/craftsmen/statistics?' + queryString)
-  },
-  getEmailTemplates: function (constructionSite) {
-    const queryString = this._getConstructionSiteQuery(constructionSite)
-    return this._getHydraCollection('/api/email_templates?' + queryString)
-  },
-  getIssuesSummary: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    return this._getItem('/api/issues/summary?' + queryString)
-  },
-  getIssuesTimeseries: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    return this._getHydraCollection('/api/issues/timeseries?' + queryString)
-  },
-  getIssuesMapGroup: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&group=map'
-    queryString += '&isDeleted=false'
-    return this._getHydraCollection('/api/issues/group?' + queryString)
-  },
-  getRecentlyChangedIssues: function (constructionSite, query = null, weeksInThePast = 0) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    const week = 7 * 24 * 60 * 60 * 1000
-    const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
-    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
-    const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
-    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
-    queryString += '&pagination=0'
-    queryString += '&order[lastChangedAt]=desc'
-    queryString += '&isDeleted=false'
-
-    if (query) {
-      queryString += '&' + this._getQueryString(query)
-    }
-
-    return this._getHydraCollection('/api/issues' + queryString)
-  },
-  getRecentIssueEvents: function (constructionSite, query = null, weeksInThePast = 0) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    const week = 7 * 24 * 60 * 60 * 1000
-    const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
-    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
-    const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
-    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
-    queryString += '&isDeleted=false'
-
-    if (query) {
-      queryString += '&' + this._getQueryString(query)
-    }
-
-    return this._getHydraCollection('/api/issue_events' + queryString)
-  },
-  getIssuesRenderLink: function (constructionSite, map, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&map=' + iriToId(map['@id'])
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    queryString += '&size=full'
-    return '/api/issues/render.jpg?' + queryString
-  },
-  getIssuesRenderProbe: function (constructionSite, map, query = {}) {
-    const link = this.getIssuesRenderLink(constructionSite, map, query)
-    return this._getEmptyResponse(link)
-  },
-  getTasks: function (constructionSite) {
-    const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-
-    return this._getHydraCollection('/api/tasks' + queryString)
-  },
-  getTasksQuery: function (query) {
-    const queryString = '?' + this._getQueryString(query)
-
-    return this._getHydraCollection('/api/tasks' + queryString)
-  },
-  getIssueEventsQuery: function (query) {
-    const queryString = '?' + this._getQueryString(query)
-
-    return this._getHydraCollection('/api/issue_events' + queryString)
-  },
-  getIssueEvents: function (constructionSite, root, onlyContextualForChildren = false) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    queryString += '&root=' + iriToId(root['@id'])
-    if (onlyContextualForChildren) {
-      queryString += '&contextualForChildren=true'
-    }
-    queryString += '&isDeleted=false'
-
-    return this._getHydraCollection('/api/issue_events' + queryString)
-  },
-  patch: function (instance, patch, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
-          .then(response => {
-            this._writeAllProperties(response.data, instance)
-            resolve()
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  delete: function (instance, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.delete(instance['@id'])
-          .then(response => {
-            if (response.status === 204) {
-              // if isDeleted property exists, this is an entity with soft delete
-              if (Object.prototype.hasOwnProperty.call(instance, 'isDeleted')) {
-                instance.isDeleted = true
-              }
-            }
-
-            resolve()
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  postMap: function (map, successMessage = null) {
-    return this._postRaw('/api/maps', map, successMessage)
-  },
-  postIssue: function (issue, successMessage = null) {
-    return this._postRaw('/api/issues', issue, successMessage)
-  },
-  postConstructionManager: function (constructionManager, successMessage = null) {
-    return this._postRaw('/api/construction_managers', constructionManager, successMessage)
-  },
-  postCraftsman: function (craftsman, successMessage = null) {
-    return this._postRaw('/api/craftsmen', craftsman, successMessage)
-  },
-  postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
-    return this._post('/api/email_templates', emailTemplate, collection, successMessage)
-  },
-  postConstructionSite: function (constructionSite, successMessage = null) {
-    return this._postRaw('/api/construction_sites', constructionSite, successMessage)
-  },
-  postFilter: function (filter, successMessage = null) {
-    return this._postRaw('/api/filters', filter, successMessage)
-  },
-  postTask: function (task, successMessage = null) {
-    return this._postRaw('/api/tasks', task, successMessage)
-  },
-  postMapFile: function (map, file, successMessage = null) {
-    return this._postAttachment(map, file, 'file', successMessage)
-  },
-  postIssueEventFile: function (issueEvent, file, successMessage = null) {
-    return this._postAttachment(issueEvent, file, 'file', successMessage)
-  },
-  postIssueImage: function (issue, image, successMessage = null) {
-    return this._postAttachment(issue, image, 'image', successMessage)
-  },
-  postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
-    return this._postAttachment(constructionSite, image, 'image', successMessage)
-  },
-  postCraftsmanEmail: function (email, successMessage = null) {
-    return this._postRaw('/api/craftsman_emails', email, successMessage)
-  },
-  postIssueEvent: function (issueEvent, successMessage = null) {
-    return this._postRaw('/api/issue_events', issueEvent, successMessage)
-  }
 }
 
-export { router, api, addNonDuplicatesById, iriToId, validImageTypes, validPdfFileTypes, validSafeFileTypes, maxIssuesPerReport }
+restClient.setupErrorNotifications()
+export { restClient }

@@ -29,10 +29,10 @@
 <script>
 
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
-import {api, iriToId} from "../services/api";
+import {api, iriToId} from "../domain/api";
 import AddIssueEventButton from "./Action/AddIssueEventButton.vue";
 import IssueEventRow from "./View/IssueEventRow.vue";
-import {orderIssueEvents} from "../services/sorters";
+import {orderIssueEvents} from "../domain/sorters";
 
 export default {
   components: {

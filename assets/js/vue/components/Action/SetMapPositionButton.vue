@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {api} from "../../services/api";
+import {api} from "../../domain/api";
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
 import SetMapPositionForm from "../Form/SetMapPositionForm.vue";
 

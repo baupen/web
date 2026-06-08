@@ -32,7 +32,7 @@
 <script>
 import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
-import { mapTransformer } from '../../../services/transformers'
+import { mapTransformer } from '../../../domain/transformers'
 import { entityFilterMixin } from './mixins'
 
 export default {

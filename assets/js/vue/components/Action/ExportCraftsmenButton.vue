@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { craftsmanTransformer } from '../../services/transformers'
+import { craftsmanTransformer } from '../../domain/transformers'
 
 export default {
   props: {

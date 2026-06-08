@@ -48,7 +48,7 @@
 
 <script>
 
-import {api, iriToId} from '../../services/api'
+import {api, iriToId} from '../../domain/api'
 import IssueEventTextForm from "../Form/IssueEventTextForm.vue";
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
 import MapForm from "../Form/MapForm.vue";

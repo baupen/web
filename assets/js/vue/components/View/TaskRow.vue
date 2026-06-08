@@ -29,7 +29,7 @@
 
 <script>
 
-import {constructionManagerFormatter} from "../../services/formatters";
+import {constructionManagerFormatter} from "../../domain/formatters";
 import DateTimeHumanReadable from "../Library/View/DateTimeHumanReadable.vue";
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import ToggleOpenClosedTask from "../Action/ToggleOpenClosedTask.vue";

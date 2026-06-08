@@ -24,7 +24,7 @@
 <script>
 
 import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
-import { constructionSiteFormatter } from '../../services/formatters'
+import { constructionSiteFormatter } from '../../domain/formatters'
 import ImageLightbox from './ImageLightbox'
 import EditConstructionSiteButton from '../Action/EditConstructionSiteButton'
 import ArchiveConstructionSiteButton from "../Action/ArchiveConstructionSiteButton.vue";

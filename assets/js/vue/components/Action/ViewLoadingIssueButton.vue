@@ -19,15 +19,15 @@
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import ImageLightbox from '../View/ImageLightbox'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import {issueTransformer} from '../../services/transformers'
+import {issueTransformer} from '../../domain/transformers'
 import ToggleIcon from '../Library/View/ToggleIcon'
-import {constructionManagerFormatter} from '../../services/formatters'
+import {constructionManagerFormatter} from '../../domain/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import IssueRenderLightbox from '../View/IssueRenderLightbox'
 import IssueEvents from "../View/IssueEvents.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import ViewIssueButton from "./ViewIssueButton.vue";
-import {api} from "../../services/api";
+import {api} from "../../domain/api";
 
 export default {
   components: {

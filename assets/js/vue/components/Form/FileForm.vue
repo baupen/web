@@ -18,7 +18,7 @@
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-import {validPdfFileTypes, validSafeFileTypes} from '../../services/api'
+import {validPdfFileTypes, validSafeFileTypes} from '../../domain/api'
 import {isSafari} from "../../services/utils";
 
 export default {

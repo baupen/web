@@ -13,7 +13,7 @@
 
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import ConstructionSiteForm from '../Form/ConstructionSiteForm'
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 import ImageForm from '../Form/ImageForm'
 
 export default {

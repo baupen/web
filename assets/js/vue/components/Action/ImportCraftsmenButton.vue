@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {api} from '../../services/api'
+import {api} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import CraftsmanForm from '../Form/CraftsmanForm'
 import FormField from '../Library/FormLayout/FormField'

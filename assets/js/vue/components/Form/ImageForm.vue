@@ -26,7 +26,7 @@
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-import {validImageTypes} from '../../services/api'
+import {validImageTypes} from '../../domain/api'
 import {isSafari} from "../../services/utils";
 
 export default {

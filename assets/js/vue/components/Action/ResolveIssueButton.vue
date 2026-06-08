@@ -9,7 +9,7 @@
 
 <script>
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 
 export default {
   components: { ButtonWithModal },
