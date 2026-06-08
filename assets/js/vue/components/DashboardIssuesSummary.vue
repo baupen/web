@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { api } from '../domain/api'
+import { api, router } from '../domain/api'
 import CardCounterAnimated from './Library/View/CardCounterAnimated'
 
 export default {
@@ -46,16 +46,16 @@ export default {
   },
   computed: {
     foyerUrl: function () {
-      return api.currentFoyerUrl()
+      return router.currentFoyerUrl()
     },
     registerOpenUrl: function () {
-      return api.currentRegisterUrl(2)
+      return router.currentRegisterUrl(2)
     },
     registerInspectUrl: function () {
-      return api.currentRegisterUrl(4)
+      return router.currentRegisterUrl(4)
     },
     registerClosedUrl: function () {
-      return api.currentRegisterUrl(8)
+      return router.currentRegisterUrl(8)
     },
   },
   mounted () {
