@@ -94,13 +94,13 @@ const apiClient = {
     formData.append(fileKey, file)
 
     const init = {
-      body: formData,
-      headers: { 'Content-Type': 'multipart/form-data' }
+      method: 'POST',
+      body: formData
     }
     const response = await httpClient.request(entity['@id'] + '/' + fileKey, init)
     displaySuccessMessageIfExists(successMessage)
 
-    entity[fileKey + 'Url'] = response.data
+    entity[fileKey + 'Url'] = await response.text()
   }
 }
 
