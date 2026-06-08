@@ -59,11 +59,12 @@
 <script>
 
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
-import {addNonDuplicatesById, api, iriToId} from "../services/api";
+import {addNonDuplicatesById, api, iriToId} from "../domain/api";
 import TaskRow from "./View/TaskRow.vue";
 import AddTaskButton from "./Action/AddTaskButton.vue";
 import DateHumanReadable from "./Library/View/DateHumanReadable.vue";
 import EnterConstructionSite from "./Action/EnterConstructionSite.vue";
+
 import { dateTimeFormatter } from '../services/formatters'
 
 export default {

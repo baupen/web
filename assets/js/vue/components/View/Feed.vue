@@ -16,10 +16,10 @@
 <script>
 
 import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
-import {iriToId} from "../../services/api";
+import {iriToId} from "../../domain/api";
 import FeedEntryConstructionManager from "./FeedEntryConstructionManager.vue";
 import FeedEntryCraftsman from "./FeedEntryCraftsman.vue";
-import {mapTransformer} from "../../services/transformers";
+import {mapTransformer} from "../../domain/transformers";
 
 export default {
   components: {

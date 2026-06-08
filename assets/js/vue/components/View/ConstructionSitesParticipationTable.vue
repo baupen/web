@@ -60,11 +60,11 @@
 <script>
 
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
-import {constructionSiteFormatter} from '../../services/formatters'
+import {constructionSiteFormatter} from '../../domain/formatters'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ImageLightbox from './ImageLightbox'
 import ToggleAssociationConstructionSite from '../Action/ToggleAssociationConstructionSite'
-import {router} from "../../services/api";
+import {router} from "../../domain/api";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {

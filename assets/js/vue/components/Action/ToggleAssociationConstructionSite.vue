@@ -9,7 +9,7 @@
 
 <script>
 
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 
 export default {
   props: {

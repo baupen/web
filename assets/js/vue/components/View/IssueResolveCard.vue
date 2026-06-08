@@ -71,16 +71,16 @@
 
 <script>
 
-import {constructionManagerFormatter} from '../../services/formatters'
+import {constructionManagerFormatter} from '../../domain/formatters'
 import ImageLightbox from './ImageLightbox'
 import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import {issueTransformer} from '../../services/transformers'
+import {issueTransformer} from '../../domain/transformers'
 import IssueRenderLightbox from './IssueRenderLightbox'
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
 import IssueEventRow from "./IssueEventRow.vue";
-import {iriToId} from "../../services/api";
+import {iriToId} from "../../domain/api";
 
 export default {
   components: {

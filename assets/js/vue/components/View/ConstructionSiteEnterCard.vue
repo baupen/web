@@ -25,7 +25,7 @@
 
 <script>
 
-import { constructionSiteFormatter, constructionManagerFormatter } from '../../services/formatters'
+import { constructionSiteFormatter, constructionManagerFormatter } from '../../domain/formatters'
 import EnterConstructionSite from '../Action/EnterConstructionSite'
 
 export default {

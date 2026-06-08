@@ -13,7 +13,7 @@
 <script>
 import AddCraftsmanButton from './Action/AddCraftsmanButton'
 import CraftsmenEditTable from './View/CraftsmenEditTable'
-import { addNonDuplicatesById, api } from '../services/api'
+import { addNonDuplicatesById, api } from '../domain/api'
 import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
 import AssociateConstructionManagerButton from './Action/AssociateConstructionManagerButton'
 import ConstructionManagerAssociationTable from './View/ConstructionManagerAssociationTable'

@@ -52,7 +52,7 @@
 import { createField, requiredRule, validateField, validateFields, changedFieldValues } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import { mapTransformer } from '../../services/transformers'
+import { mapTransformer } from '../../domain/transformers'
 
 export default {
   components: {

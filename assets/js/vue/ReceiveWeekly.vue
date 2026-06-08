@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { api } from './services/api'
+import { api } from './domain/api'
 import ToggleReceiveWeekly from './components/Action/ToggleReceiveWeekly'
 
 export default {

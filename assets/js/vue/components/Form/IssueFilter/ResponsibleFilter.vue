@@ -16,10 +16,10 @@
 <script>
 import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
-import {mapTransformer} from '../../../services/transformers'
+import {mapTransformer} from '../../../domain/transformers'
 import {entityFilterMixin} from './mixins'
 import FormField from "../../Library/FormLayout/FormField.vue";
-import {constructionManagerFormatter} from "../../../services/formatters";
+import {constructionManagerFormatter} from "../../../domain/formatters";
 
 export default {
   components: {

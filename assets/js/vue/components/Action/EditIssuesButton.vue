@@ -32,7 +32,7 @@
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssuesForm from '../Form/IssuesForm'
 import ImageForm from '../Form/ImageForm'
-import { api } from '../../services/api'
+import { api } from '../../domain/api'
 import { displaySuccess } from '../../services/notifiers'
 
 export default {

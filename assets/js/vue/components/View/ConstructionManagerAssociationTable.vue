@@ -38,7 +38,7 @@
 import EditCraftsmanButton from '../Action/EditCraftsmanButton'
 import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
 import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
-import { constructionManagerFormatter } from '../../services/formatters'
+import { constructionManagerFormatter } from '../../domain/formatters'
 import DissociateConstructionManagerButton from '../Action/DissociateConstructionManagerButton'
 
 export default {

@@ -70,7 +70,7 @@ import ImageLightbox from "./ImageLightbox.vue";
 import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
 import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
 import EditIssueEventButton from "../Action/EditIssueEventButton.vue";
-import {entityFormatter} from "../../services/formatters";
+import {entityFormatter} from "../../domain/formatters";
 
 export default {
   emits: ['removed'],

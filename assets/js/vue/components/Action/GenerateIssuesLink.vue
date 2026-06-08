@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import { api, iriToId, maxIssuesPerReport } from '../../services/api'
-import { filterTransformer, mapTransformer } from '../../services/transformers'
+import { api, iriToId, maxIssuesPerReport } from '../../domain/api'
+import { filterTransformer, mapTransformer } from '../../domain/transformers'
 
 export default {
   components: {},

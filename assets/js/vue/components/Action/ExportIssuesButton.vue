@@ -66,7 +66,7 @@
 
 <script>
 
-import { iriToId } from '../../services/api'
+import { iriToId } from '../../domain/api'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
 import CustomRadioField from '../Library/FormLayout/CustomRadioField'
 import FormField from '../Library/FormLayout/FormField'
@@ -77,7 +77,7 @@ import GenerateIssuesFilter from './GenerateIssuesLink'
 import ExportIssuesReportView from './ExportIssuesReportView'
 import ExportIssuesLinkView from './ExportIssuesLinkView'
 import ExportCraftsmanIssuesTableView from "./ExportCraftsmanIssuesTableView.vue";
-import {mapTransformer} from "../../services/transformers";
+import {mapTransformer} from "../../domain/transformers";
 
 export default {
   components: {

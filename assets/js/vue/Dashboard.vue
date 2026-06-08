@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {api} from './services/api'
+import {api} from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'

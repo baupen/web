@@ -39,7 +39,7 @@
 <script>
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
-import { mapTransformer } from '../../services/transformers'
+import { mapTransformer } from '../../domain/transformers'
 
 export default {
   emits: ['scroll-to-map'],

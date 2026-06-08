@@ -20,7 +20,7 @@
 
 <script>
 
-import {api, iriToId} from '../../services/api'
+import {api, iriToId} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
 import LoadingIndicator from "../Library/View/LoadingIndicator.vue";

@@ -17,7 +17,7 @@
 <script>
 import AddCraftsmanButton from './Action/AddCraftsmanButton'
 import CraftsmenEditTable from './View/CraftsmenEditTable'
-import { api } from '../services/api'
+import { api } from '../domain/api'
 import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
 import ExportCraftsmenButton from './Action/ExportCraftsmenButton'
 

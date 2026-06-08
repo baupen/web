@@ -26,11 +26,11 @@
 
 <script>
 
-import {api, iriToId} from '../../services/api'
+import {api, iriToId} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssueEventTextForm from "../Form/IssueEventTextForm.vue";
 import DateTimeHumanReadable from "../Library/View/DateTimeHumanReadable.vue";
-import {entityFormatter} from "../../services/formatters";
+import {entityFormatter} from "../../domain/formatters";
 import IssueEventMetaForm from "../Form/IssueEventMetaForm.vue";
 
 export default {
