@@ -61,42 +61,6 @@ const router = {
 }
 
 const api = {
-  setupErrorNotifications: function (translator) {
-    axios.interceptors.response.use(
-      response => {
-        return response
-      },
-      error => {
-        /* eslint-disable-next-line eqeqeq */
-        if (error == 'AxiosError: Request aborted') {
-          // hide aborted errors (happens when navigating rapidly in firefox)
-          return
-        }
-
-        console.log(error)
-
-        let errorText = error
-        if (error.response) {
-          const response = error.response
-          if (response.data['hydra:title'] && response.data['hydra:description']) {
-            errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
-          } else {
-            errorText = response.status
-            if (response.data && response.data.detail) {
-              errorText += ': ' + response.data.detail
-            } else if (response.statusText) {
-              errorText += ': ' + response.statusText
-            }
-          }
-        }
-
-        const errorMessage = translator ? translator('_api.request_failed') : 'Failed'
-        displayError(errorMessage + ' (' + errorText + ')')
-
-        return Promise.reject(error)
-      }
-    )
-  },
   _writeAllProperties: function (source, target) {
     for (const prop in source) {
       if (Object.prototype.hasOwnProperty.call(source, prop) && Object.prototype.hasOwnProperty.call(target, prop)) {
