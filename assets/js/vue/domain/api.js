@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { displaySuccess, displayError } from '../services/notifiers'
+import { displaySuccess } from '../services/notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validPdfFileTypes = ['application/pdf', 'application/x-pdf']
@@ -35,13 +35,13 @@ const addNonDuplicatesById = function (originalCollection, addCollection) {
 }
 
 const router = {
-  constructionSiteDashboard: function (constructionSite) {
-    return constructionSite['@id'].replace('/api', '') + '/dashboard'
-  },
   _getConstructionSiteBaseUrlFromLocation: function () {
     const urlArray = window.location.pathname.split('/')
     urlArray.splice(3)
     return urlArray.join('/')
+  },
+  constructionSiteDashboard: function (constructionSite) {
+    return constructionSite['@id'].replace('/api', '') + '/dashboard'
   },
   currentFoyerUrl: function () {
     return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
@@ -147,18 +147,6 @@ const api = {
           .then(response => {
             resolve(response.data)
             displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  _post: function (collectionUrl, post, collection, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            collection.push(response.data)
-            displaySuccessMessageIfExists(successMessage)
-            resolve(response.data)
           })
       }
     )
@@ -425,8 +413,8 @@ const api = {
   postCraftsman: function (craftsman, successMessage = null) {
     return this._postRaw('/api/craftsmen', craftsman, successMessage)
   },
-  postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
-    return this._post('/api/email_templates', emailTemplate, collection, successMessage)
+  postEmailTemplate: function (emailTemplate, successMessage = null) {
+    return this._postRaw('/api/email_templates', emailTemplate, successMessage)
   },
   postConstructionSite: function (constructionSite, successMessage = null) {
     return this._postRaw('/api/construction_sites', constructionSite, successMessage)

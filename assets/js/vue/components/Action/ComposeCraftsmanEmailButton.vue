@@ -179,9 +179,10 @@ export default {
           constructionSite: this.constructionSite['@id']
         }, this.email)
 
-        api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('_action.compose_craftsman_email.saved_email_template'))
+        api.postEmailTemplate(emailTemplate, this.$t('_action.compose_craftsman_email.saved_email_template'))
             .then(emailTemplate => {
               this.storingTemplate = false
+              this.emailTemplates.push(emailTemplate)
               this.selectedEmailTemplate = emailTemplate
             })
       }
