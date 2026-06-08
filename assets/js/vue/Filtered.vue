@@ -35,7 +35,6 @@ export default {
     }
   },
   mounted () {
-    api.setupErrorNotifications(this.$t)
     api.authenticateFromUrl()
         .then(me => {
           let filterIri = me.filterIri

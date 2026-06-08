@@ -28,7 +28,6 @@ export default {
     }
   },
   mounted () {
-    api.setupErrorNotifications(this.$t)
     api.authenticate()
         .then(me => {
           this.constructionManagerIri = me.constructionManagerIri
