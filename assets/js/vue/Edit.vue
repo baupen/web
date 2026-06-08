@@ -1,16 +1,16 @@
 <template>
   <div id="edit">
     <loading-indicator :spin="loading">
-      <edit-construction-site :construction-site="constructionSite" />
-      <edit-maps :construction-site="constructionSite" />
-      <edit-craftsmen :construction-site="constructionSite" />
-      <edit-construction-managers :construction-site="constructionSite" :construction-manager="constructionManager" />
+      <edit-construction-site :construction-site="constructionSite"/>
+      <edit-maps :construction-site="constructionSite"/>
+      <edit-craftsmen :construction-site="constructionSite"/>
+      <edit-construction-managers :construction-site="constructionSite" :construction-manager="constructionManager"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { apiClient, api } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import EditCraftsmen from './components/EditCraftsmen'
 import EditMaps from './components/EditMaps'
@@ -38,19 +38,17 @@ export default {
     }
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
-          this.constructionManagerIri = me.constructionManagerIri
-          api.getById(this.constructionManagerIri)
-              .then(constructionManager => {
-                this.constructionManager = constructionManager
-              })
+    const me = apiClient.authenticate()
+    this.constructionManagerIri = me.constructionManagerIri
+    api.getById(this.constructionManagerIri)
+      .then(constructionManager => {
+        this.constructionManager = constructionManager
+      })
 
-          api.getConstructionSite()
-              .then(constructionSite => {
-                this.constructionSite = constructionSite
-              })
-        })
+    api.getConstructionSite()
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+      })
   }
 }
 

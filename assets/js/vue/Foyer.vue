@@ -1,13 +1,13 @@
 <template>
   <div id="foyer">
     <loading-indicator :spin="isLoading">
-      <foyer-issues :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
+      <foyer-issues :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { api, apiClient } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import FoyerIssues from './components/FoyerIssues'
 
@@ -28,14 +28,12 @@ export default {
     }
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
-          this.constructionManagerIri = me.constructionManagerIri
-          api.getConstructionSite()
-              .then(constructionSite => {
-                this.constructionSite = constructionSite
-              })
-        })
+    const me = apiClient.authenticate()
+    this.constructionManagerIri = me.constructionManagerIri
+    api.getConstructionSite()
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+      })
   }
 }
 

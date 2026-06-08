@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { displaySuccess } from '../services/notifiers'
-import { errorHandlingClient, restClient } from '../services/api'
+import { httpClient, restClient } from '../services/api'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validPdfFileTypes = ['application/pdf', 'application/x-pdf']
@@ -69,8 +69,12 @@ const router = {
 }
 
 const apiClient = {
+  authenticate: async function () {
+    httpClient.additionalHeaders['X-AUTHENTICATION'] = window.token
+    return window.me
+  },
   patch: async function (instance, patch, successMessage = null) {
-    const result = await restClient.patch(instance, patch)
+    const result = await restClient.patch(instance, patch, { headers: { 'X-AUTHENTICATION': window.token } })
     displaySuccessMessageIfExists(successMessage)
 
     return result
@@ -94,79 +98,19 @@ const apiClient = {
       body: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     }
-    const response = await errorHandlingClient.request(entity['@id'] + '/' + fileKey, init)
+    const response = await httpClient.request(entity['@id'] + '/' + fileKey, init)
     displaySuccessMessageIfExists(successMessage)
 
     entity[fileKey + 'Url'] = response.data
-  },
+  }
 }
 
 const api = {
-  _getConstructionSiteIriFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    urlArray.splice(3)
-    return '/api' + urlArray.join('/')
-  },
-  _getTokenFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    return urlArray[2] // location of the form "domain.com/resolve/<token>"
-  },
-  _getMe: function (authenticationToken) {
-    axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
-    return new Promise(
-      (resolve) => {
-        if (window.me && window.token === authenticationToken) {
-          resolve(window.me)
-        } else {
-          axios.get('/api/me')
-            .then(response => {
-              resolve(response.data)
-            })
-        }
-      }
-    )
-  },
-  authenticateFromUrl: function () {
-    const token = this._getTokenFromLocation()
-    return this._getMe(token)
-  },
-  authenticate: function () {
-    return new Promise(
-      (resolve) => {
-        if (window.token) {
-          this._getMe(window.token)
-            .then(response => {
-              resolve(response)
-            })
-        } else {
-          axios.get('/token')
-            .then(response => {
-              this._getMe(response.data)
-                .then(response => {
-                  resolve(response)
-                })
-            })
-        }
-      }
-    )
-  },
   getById: function (id) {
     return restClient.get(id)
   },
   getConstructionSite: function () {
-    return new Promise(
-      (resolve) => {
-        if (window.constructionSite) {
-          resolve(window.constructionSite)
-        } else {
-          const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
-          axios.get(constructionSiteUrl)
-            .then(response => {
-              resolve(response.data)
-            })
-        }
-      }
-    )
+    return window.constructionSite
   },
   getConstructionManagers: function (constructionSite = null) {
     const query = {}
@@ -286,7 +230,7 @@ const api = {
   },
   getIssuesRenderProbe: function (constructionSite, map, query = {}) {
     const link = router.getIssuesRenderLink(constructionSite, map, query)
-    return errorHandlingClient.request(link, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
+    return httpClient.request(link, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
   },
   getTasksQuery: function (query) {
     return restClient.getCollection('/api/tasks', query)
@@ -357,6 +301,7 @@ const api = {
 export {
   router,
   api,
+  apiClient,
   addNonDuplicatesById,
   iriToId,
   validImageTypes,
