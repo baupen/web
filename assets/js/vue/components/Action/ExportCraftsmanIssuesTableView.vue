@@ -14,9 +14,8 @@
 import IssueLinkForm from '../Form/IssueLinkForm'
 import GenerateIssuesFilter from './GenerateIssuesLink'
 import {utils, writeFileXLSX} from "xlsx-js-style";
-import moment from 'moment'
 import {api, iriToId} from "../../services/api";
-import {constructionManagerFormatter} from "../../services/formatters";
+import { constructionManagerFormatter, dateTimeFormatter } from '../../services/formatters'
 
 
 export default {
@@ -133,7 +132,7 @@ export default {
       const workbook = utils.book_new();
       utils.book_append_sheet(workbook, worksheet, name);
 
-      const datePrefix = moment().format('DD-MM-YYYY-HHmm')
+      const datePrefix = dateTimeFormatter.isoFilename(new Date())
       const constructionSiteName = this.sanitizeFilename(this.constructionSite.name);
       writeFileXLSX(workbook, datePrefix + "_" + constructionSiteName + "_" + name + ".xlsx", {compression: true});
       this.loading = false;

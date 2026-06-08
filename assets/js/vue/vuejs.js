@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
-import moment from 'moment'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
@@ -59,7 +58,7 @@ import Resolve from './Resolve'
 import Switch from './Switch'
 
 // settings
-const locale = document.documentElement.lang.substr(0, 2)
+const locale = document.documentElement.lang.substring(0, 2)
 Flatpickr.localize(locale === 'it' ? Italian : German)
 
 // configure fontawesome
@@ -77,9 +76,6 @@ FontawesomeLibrary.add(
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid,
   faChevronRightSolid
 )
-
-// configure moment
-moment.locale(locale)
 
 // configure i18n
 const i18n = createI18n({

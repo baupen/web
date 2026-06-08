@@ -8,8 +8,8 @@
 
 import ButtonWithModalConfirm from './Library/Behaviour/ButtonWithModalConfirm'
 import {api} from '../services/api'
-import moment from 'moment'
 import {CategoryScale, Chart, Legend, LinearScale, LineController, LineElement, PointElement, Title, Tooltip} from "chart.js";
+import { dateTimeFormatter } from '../services/formatters'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale, Tooltip)
 export default {
@@ -33,7 +33,7 @@ export default {
       let closed = []
       let maxValue = 0
       timeseries.forEach(entry => {
-        labels.push(moment(entry.date).format('DD.MM.'))
+        labels.push(dateTimeFormatter.dateShort(new Date(entry.date)))
         open.push(entry.openCount)
         inspectable.push(entry.inspectableCount)
         closed.push(entry.closedCount)
@@ -43,8 +43,9 @@ export default {
 
       // if 5 issues are resolved on 01.01., then 5 is shown at 02.01., because "until then" the change happened
       // from a database point of view, this makes sense. for the user, we should adjust the labels
-      const preview = moment(timeseries[0].date).subtract(1, 'day')
-      labels.unshift(preview.format('DD.MM.'))
+      const preview = new Date(timeseries[0].date)
+      preview.setDate(preview.getDate() - 1)
+      labels.unshift(dateTimeFormatter.dateShort(preview))
       labels.pop()
 
       // set max/min of graph so relevant part is visible
