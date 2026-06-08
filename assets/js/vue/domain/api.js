@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { displaySuccess } from '../services/notifiers'
+import { errorHandlingClient, restClient } from '../services/api'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validPdfFileTypes = ['application/pdf', 'application/x-pdf']
@@ -67,14 +68,40 @@ const router = {
   }
 }
 
-const api = {
-  _writeAllProperties: function (source, target) {
-    for (const prop in source) {
-      if (Object.prototype.hasOwnProperty.call(source, prop) && Object.prototype.hasOwnProperty.call(target, prop)) {
-        target[prop] = source[prop]
-      }
-    }
+const apiClient = {
+  patch: async function (instance, patch, successMessage = null) {
+    const result = await restClient.patch(instance, patch)
+    displaySuccessMessageIfExists(successMessage)
+
+    return result
   },
+  delete: async function (instance, successMessage = null) {
+    const result = await restClient.delete(instance)
+    displaySuccessMessageIfExists(successMessage)
+
+    return result
+  },
+  post: async function (collectionUrl, post, successMessage = null) {
+    const result = await restClient.post(collectionUrl, post)
+    displaySuccessMessageIfExists(successMessage)
+    return result
+  },
+  postAttachment: async function (entity, file, fileKey, successMessage = null) {
+    const formData = new FormData()
+    formData.append(fileKey, file)
+
+    const init = {
+      body: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    const response = await errorHandlingClient.request(entity['@id'] + '/' + fileKey, init)
+    displaySuccessMessageIfExists(successMessage)
+
+    entity[fileKey + 'Url'] = response.data
+  },
+}
+
+const api = {
   _getConstructionSiteIriFromLocation: function () {
     const urlArray = window.location.pathname.split('/')
     urlArray.splice(3)
@@ -83,105 +110,6 @@ const api = {
   _getTokenFromLocation: function () {
     const urlArray = window.location.pathname.split('/')
     return urlArray[2] // location of the form "domain.com/resolve/<token>"
-  },
-  _getConstructionSiteQuery: function (constructionSite) {
-    return 'constructionSite=' + iriToId(constructionSite['@id'])
-  },
-  _getQueryString: function (query) {
-    const queryList = []
-    for (const entry in query) {
-      if (Object.prototype.hasOwnProperty.call(query, entry)) {
-        if (Array.isArray(query[entry])) {
-          query[entry].forEach(item => {
-            queryList.push(entry + '=' + item)
-          })
-        } else {
-          queryList.push(entry + '=' + query[entry])
-        }
-      }
-    }
-
-    return queryList.join('&')
-  },
-  _getHydraCollection: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            resolve(response.data['hydra:member'])
-          })
-      }
-    )
-  },
-  _getPaginatedHydraCollection: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            const payload = {
-              items: response.data['hydra:member'],
-              totalItems: response.data['hydra:totalItems']
-            }
-            resolve(payload)
-          })
-      }
-    )
-  },
-  _getItem: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url)
-          .then(response => {
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _getEmptyResponse: function (url) {
-    return new Promise(
-      (resolve) => {
-        axios.get(url, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
-          .then(response => {
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _postRaw: function (collectionUrl, post, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            resolve(response.data)
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  _postMultipart: function (collectionUrl, file, fileKey, successMessage = null) {
-    const formData = new FormData()
-    formData.append(fileKey, file)
-
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-          .then(response => {
-            displaySuccessMessageIfExists(successMessage)
-            resolve(response.data)
-          })
-      }
-    )
-  },
-  _postAttachment: function (entity, file, fileKey, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        this._postMultipart(entity['@id'] + '/' + fileKey, file, fileKey, successMessage)
-          .then(response => {
-            entity[fileKey + 'Url'] = response
-            resolve()
-          })
-      }
-    )
   },
   _getMe: function (authenticationToken) {
     axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
@@ -223,7 +151,7 @@ const api = {
     )
   },
   getById: function (id) {
-    return this._getItem(id)
+    return restClient.get(id)
   },
   getConstructionSite: function () {
     return new Promise(
@@ -241,125 +169,130 @@ const api = {
     )
   },
   getConstructionManagers: function (constructionSite = null) {
-    let urlSuffix = ''
+    const query = {}
     if (constructionSite) {
-      urlSuffix = '?constructionSites.id=' + iriToId(constructionSite['@id'])
+      query['constructionSites.id'] = iriToId(constructionSite['@id'])
     }
-    return this._getHydraCollection('/api/construction_managers' + urlSuffix)
+    return restClient.getCollection('/api/construction_managers', query)
   },
-  getConstructionSites: function (constructionManager = null) {
-    let urlSuffix = ''
-    if (constructionManager) {
-      urlSuffix = '?constructionManagers.id=' + iriToId(constructionManager['@id'])
-    }
-    return this._getHydraCollection('/api/construction_sites' + urlSuffix)
+  getConstructionSites: function () {
+    return restClient.getCollection('/api/construction_sites')
   },
   getPaginatedIssues: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getPaginatedHydraCollection('/api/issues?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id'])
+    }
+    return restClient.getPaginatedCollection('/api/issues', fullQuery)
   },
   getIssues: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&pagination=0'
-    return this._getHydraCollection('/api/issues?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id']),
+      pagination: 0
+    }
+    return restClient.getCollection('/api/issues', fullQuery)
   },
   getReportLink: function (constructionSite, reportQuery, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(reportQuery)
-    queryString += '&' + this._getQueryString(query)
-    return this._getItem('/api/issues/report?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id']),
+      ...reportQuery
+    }
+    return restClient.get('/api/issues/report', fullQuery)
   },
   getMaps: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/maps?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id'])
+    }
+    return restClient.getCollection('/api/maps', fullQuery)
   },
   getCraftsmen: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/craftsmen?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id'])
+    }
+    return restClient.getCollection('/api/craftsmen', fullQuery)
   },
   getCraftsmenStatistics: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/craftsmen/statistics?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id'])
+    }
+    return restClient.getCollection('/api/craftsmen/statistics', fullQuery)
   },
   getEmailTemplates: function (constructionSite) {
-    const queryString = this._getConstructionSiteQuery(constructionSite)
-    return this._getHydraCollection('/api/email_templates?' + queryString)
+    const fullQuery = { constructionSite: iriToId(constructionSite['@id']) }
+    return restClient.getCollection('/api/email_templates', fullQuery)
   },
   getIssuesSummary: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    return this._getItem('/api/issues/summary?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id']),
+      isDeleted: false
+    }
+    return restClient.get('/api/issues/summary', fullQuery)
   },
   getIssuesTimeseries: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&isDeleted=false'
-    return this._getHydraCollection('/api/issues/timeseries?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id']),
+      isDeleted: false
+    }
+    return restClient.getCollection('/api/issues/timeseries', fullQuery)
   },
   getIssuesMapGroup: function (constructionSite, query = {}) {
-    let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(query)
-    queryString += '&group=map'
-    queryString += '&isDeleted=false'
-    return this._getHydraCollection('/api/issues/group?' + queryString)
+    const fullQuery = {
+      ...query,
+      constructionSite: iriToId(constructionSite['@id']),
+      group: 'map',
+      isDeleted: false
+    }
+    return restClient.getCollection('/api/issues/group', fullQuery)
   },
-  getRecentlyChangedIssues: function (constructionSite, query = null, weeksInThePast = 0) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
+  _getRecentlyChangedQuery: function (weeksInThePast = 0) {
     const week = 7 * 24 * 60 * 60 * 1000
     const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
-    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
     const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
-    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
-    queryString += '&pagination=0'
-    queryString += '&order[lastChangedAt]=desc'
-    queryString += '&isDeleted=false'
-
-    if (query) {
-      queryString += '&' + this._getQueryString(query)
+    return {
+      'lastChangedAt[before]': lastChangedBefore.toISOString(),
+      'lastChangedAt[after]': lastChangedAfter.toISOString()
+    }
+  },
+  getRecentlyChangedIssues: function (constructionSite, query = {}, weeksInThePast = 0) {
+    const recentlyChangedQuery = self._getRecentlyChangedQuery(weeksInThePast)
+    const fullQuery = {
+      ...query,
+      ...recentlyChangedQuery,
+      constructionSite: iriToId(constructionSite['@id']),
+      'order[lastChangedAt]': 'desc',
+      pagination: 0,
+      isDeleted: false
     }
 
-    return this._getHydraCollection('/api/issues' + queryString)
+    return restClient.getCollection('/api/issues', fullQuery)
   },
   getRecentIssueEvents: function (constructionSite, query = null, weeksInThePast = 0) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    const week = 7 * 24 * 60 * 60 * 1000
-    const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
-    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
-    const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
-    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
-    queryString += '&isDeleted=false'
-
-    if (query) {
-      queryString += '&' + this._getQueryString(query)
+    const recentlyChangedQuery = self._getRecentlyChangedQuery(weeksInThePast)
+    const fullQuery = {
+      ...query,
+      ...recentlyChangedQuery,
+      constructionSite: iriToId(constructionSite['@id']),
+      isDeleted: false
     }
 
-    return this._getHydraCollection('/api/issue_events' + queryString)
-  },
+    return restClient.getCollection('/api/issue_events', fullQuery)
   },
   getIssuesRenderProbe: function (constructionSite, map, query = {}) {
     const link = router.getIssuesRenderLink(constructionSite, map, query)
-    return this._getEmptyResponse(link)
-  },
-  getTasks: function (constructionSite) {
-    const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-
-    return this._getHydraCollection('/api/tasks' + queryString)
+    return errorHandlingClient.request(link, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
   },
   getTasksQuery: function (query) {
-    const queryString = '?' + this._getQueryString(query)
-
-    return this._getHydraCollection('/api/tasks' + queryString)
+    return restClient.getCollection('/api/tasks', query)
   },
   getIssueEventsQuery: function (query) {
-    const queryString = '?' + this._getQueryString(query)
-
-    return this._getHydraCollection('/api/issue_events' + queryString)
+    return restClient.getCollection('/api/issue_events', query)
   },
   getIssueEvents: function (constructionSite, root, onlyContextualForChildren = false) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
@@ -369,80 +302,65 @@ const api = {
     }
     queryString += '&isDeleted=false'
 
-    return this._getHydraCollection('/api/issue_events' + queryString)
-  },
-  patch: function (instance, patch, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
-          .then(response => {
-            this._writeAllProperties(response.data, instance)
-            resolve()
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
-  },
-  delete: function (instance, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.delete(instance['@id'])
-          .then(response => {
-            if (response.status === 204) {
-              // if isDeleted property exists, this is an entity with soft delete
-              if (Object.prototype.hasOwnProperty.call(instance, 'isDeleted')) {
-                instance.isDeleted = true
-              }
-            }
-
-            resolve()
-            displaySuccessMessageIfExists(successMessage)
-          })
-      }
-    )
+    return restClient.getCollection('/api/issue_events', queryString)
   },
   postMap: function (map, successMessage = null) {
-    return this._postRaw('/api/maps', map, successMessage)
+    return apiClient.post('/api/maps', map, successMessage)
   },
   postIssue: function (issue, successMessage = null) {
-    return this._postRaw('/api/issues', issue, successMessage)
+    return apiClient.post('/api/issues', issue, successMessage)
   },
   postConstructionManager: function (constructionManager, successMessage = null) {
-    return this._postRaw('/api/construction_managers', constructionManager, successMessage)
+    return apiClient.post('/api/construction_managers', constructionManager, successMessage)
   },
   postCraftsman: function (craftsman, successMessage = null) {
-    return this._postRaw('/api/craftsmen', craftsman, successMessage)
+    return apiClient.post('/api/craftsmen', craftsman, successMessage)
   },
   postEmailTemplate: function (emailTemplate, successMessage = null) {
-    return this._postRaw('/api/email_templates', emailTemplate, successMessage)
+    return apiClient.post('/api/email_templates', emailTemplate, successMessage)
   },
   postConstructionSite: function (constructionSite, successMessage = null) {
-    return this._postRaw('/api/construction_sites', constructionSite, successMessage)
+    return apiClient.post('/api/construction_sites', constructionSite, successMessage)
   },
   postFilter: function (filter, successMessage = null) {
-    return this._postRaw('/api/filters', filter, successMessage)
+    return apiClient.post('/api/filters', filter, successMessage)
   },
   postTask: function (task, successMessage = null) {
-    return this._postRaw('/api/tasks', task, successMessage)
+    return apiClient.post('/api/tasks', task, successMessage)
   },
   postMapFile: function (map, file, successMessage = null) {
-    return this._postAttachment(map, file, 'file', successMessage)
+    return apiClient.postAttachment(map, file, 'file', successMessage)
   },
   postIssueEventFile: function (issueEvent, file, successMessage = null) {
-    return this._postAttachment(issueEvent, file, 'file', successMessage)
+    return apiClient.postAttachment(issueEvent, file, 'file', successMessage)
   },
   postIssueImage: function (issue, image, successMessage = null) {
-    return this._postAttachment(issue, image, 'image', successMessage)
+    return apiClient.postAttachment(issue, image, 'image', successMessage)
   },
   postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
-    return this._postAttachment(constructionSite, image, 'image', successMessage)
+    return apiClient.postAttachment(constructionSite, image, 'image', successMessage)
   },
   postCraftsmanEmail: function (email, successMessage = null) {
-    return this._postRaw('/api/craftsman_emails', email, successMessage)
+    return apiClient.post('/api/craftsman_emails', email, successMessage)
   },
   postIssueEvent: function (issueEvent, successMessage = null) {
-    return this._postRaw('/api/issue_events', issueEvent, successMessage)
-  }
+    return apiClient.post('/api/issue_events', issueEvent, successMessage)
+  },
+  patch: function (instance, patch, successMessage = null) {
+    return apiClient.patch(instance, patch, successMessage)
+  },
+  delete: async function (instance, successMessage = null) {
+    return apiClient.delete(instance, successMessage)
+  },
 }
 
-export { router, api, addNonDuplicatesById, iriToId, validImageTypes, validPdfFileTypes, validSafeFileTypes, maxIssuesPerReport }
+export {
+  router,
+  api,
+  addNonDuplicatesById,
+  iriToId,
+  validImageTypes,
+  validPdfFileTypes,
+  validSafeFileTypes,
+  maxIssuesPerReport
+}

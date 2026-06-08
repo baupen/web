@@ -28,7 +28,7 @@ const errorHandlingClient = {
 
     throw error
   },
-  _request: async function (url, init = {}) {
+  request: async function (url, init = {}) {
     let response
 
     try {
@@ -66,7 +66,7 @@ const restClient = {
       init.body = JSON.stringify(normalizedBody)
     }
 
-    const response = await errorHandlingClient._request(url, init)
+    const response = await errorHandlingClient.request(url, init)
 
     if (response.status === 204) {
       return null
@@ -85,32 +85,35 @@ const restClient = {
     })
     return queryUrl.toString()
   },
-  getCollection: async function (url, query) {
+  getCollection: async function (url, query = {}, options = {}) {
     const fullUrl = this._getQueryUrl(url, query)
-    const responseData = await this._jsonRequest(fullUrl)
-    return responseData.member
+    const responseData = await this._jsonRequest(fullUrl, options)
+    return responseData['hydra:member']
   },
-  getPaginatedCollection: async function (url, query) {
+  getPaginatedCollection: async function (url, query = {}, options = {}) {
     const fullUrl = this._getQueryUrl(url, query)
-    const responseData = await this._jsonRequest(fullUrl)
+    const responseData = await this._jsonRequest(fullUrl, options)
     return {
-      items: responseData.member,
-      totalItems: responseData.totalItems
+      items: responseData['hydra:member'],
+      totalItems: responseData['hydra:totalItems']
     }
   },
-  get: async function (url) {
-    return this._jsonRequest(url)
+  get: async function (url, query = {}, options = {}) {
+    const fullUrl = this._getQueryUrl(url, query)
+    return this._jsonRequest(fullUrl, options)
   },
-  post: async function (collectionUrl, post) {
+  post: async function (collectionUrl, post, options = {}) {
     return this._jsonRequest(collectionUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/ld+json' }
+      headers: { 'Content-Type': 'application/ld+json' },
+      ...options,
+      method: 'POST'
     }, post)
   },
-  patch: async function (instance, patch) {
+  patch: async function (instance, patch, options = {}) {
     const responseData = await this._jsonRequest(instance['@id'], {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/merge-patch+json' }
+      headers: { 'Content-Type': 'application/merge-patch+json' },
+      ...options,
+      method: 'PATCH'
     }, patch)
 
     // null values may not be delivered in response, hence check what values are only in patch and apply them
@@ -126,8 +129,9 @@ const restClient = {
       }
     }
   },
-  delete: async function (instance) {
+  delete: async function (instance, options = {}) {
     const responseData = await this._jsonRequest(instance['@id'], {
+      ...options,
       method: 'DELETE'
     })
 
@@ -142,4 +146,4 @@ const restClient = {
   }
 }
 
-export { restClient }
+export { restClient, errorHandlingClient }
