@@ -6,7 +6,6 @@
     "@fortawesome/pro-regular-svg-icons": "^6.3.0",
     "@fortawesome/pro-solid-svg-icons": "^6.3.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
-    "axios": "^1",
     "bootstrap": "^5",
     "chart.js": "^4",
     "flatpickr": "^4.6.6",

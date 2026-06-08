@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { displaySuccess } from '../services/notifiers'
 import { httpClient, restClient } from '../services/api'
 
