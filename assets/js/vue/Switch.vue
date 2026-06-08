@@ -2,14 +2,14 @@
   <div id="switch">
     <loading-indicator :spin="isLoading">
       <switch-construction-sites
-          :construction-manager-iri="constructionManagerIri"
-          :construction-manager="constructionManager" />
+        :construction-manager-iri="constructionManagerIri"
+        :construction-manager="constructionManager"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { api, apiClient } from './domain/api'
 import SwitchConstructionSites from './components/SwitchConstructionSites'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 
@@ -30,14 +30,12 @@ export default {
     },
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
-          this.constructionManagerIri = me.constructionManagerIri
-          api.getById(me.constructionManagerIri)
-              .then(constructionManager => {
-                this.constructionManager = constructionManager
-              })
-        })
+    const me = apiClient.authenticate()
+    this.constructionManagerIri = me.constructionManagerIri
+    api.getById(me.constructionManagerIri)
+      .then(constructionManager => {
+        this.constructionManager = constructionManager
+      })
   }
 }
 

@@ -11,7 +11,7 @@
           <dashboard-issues-graph class="shadow" :construction-site="constructionSite"/>
           <dashboard-feed class="shadow mt-4" :construction-site="constructionSite"
                           :craftsmen="craftsmen" :maps="maps" :construction-managers="constructionManagers"
-          :construction-manager-iri="constructionManagerIri"/>
+                          :construction-manager-iri="constructionManagerIri"/>
         </div>
         <div class="col-md-6 col-lg-4">
           <h3>{{ $t('issue._plural') }}</h3>
@@ -20,9 +20,9 @@
                            :construction-site="constructionSite" :construction-managers="constructionManagers"
                            :construction-manager-iri="constructionManagerIri"/>
           <dashboard-issues-events
-              class="shadow mt-4"
-              :construction-managers="constructionManagers" :construction-site="constructionSite"
-              :construction-manager-iri="constructionManagerIri"/>
+            class="shadow mt-4"
+            :construction-managers="constructionManagers" :construction-site="constructionSite"
+            :construction-manager-iri="constructionManagerIri"/>
         </div>
       </div>
     </loading-indicator>
@@ -30,15 +30,15 @@
 </template>
 
 <script>
-import {api} from './domain/api'
+import { api, apiClient } from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import AtomSpinner from './components/Library/View/Base/AtomSpinner'
-import DashboardTasks from "./components/DashboardTasks.vue";
-import DashboardIssuesEvents from "./components/DashboardIssuesEvents.vue";
+import DashboardTasks from './components/DashboardTasks.vue'
+import DashboardIssuesEvents from './components/DashboardIssuesEvents.vue'
 
 export default {
   components: {
@@ -51,7 +51,7 @@ export default {
     DashboardIssuesSummary,
     DashboardConstructionSite
   },
-  data() {
+  data () {
     return {
       constructionManagerIri: null,
       constructionSite: null,
@@ -60,26 +60,22 @@ export default {
       maps: null
     }
   },
-  mounted() {
-    api.authenticate()
-        .then(me => {
-              this.constructionManagerIri = me.constructionManagerIri
-              api.getConstructionSite()
-                  .then(constructionSite => {
-                    this.constructionSite = constructionSite
+  mounted () {
+    const me = apiClient.authenticate()
+    this.constructionManagerIri = me.constructionManagerIri
+    api.getConstructionSite()
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
 
-                    api.getConstructionManagers(this.constructionSite)
-                        .then(constructionManagers => this.constructionManagers = constructionManagers)
+        api.getConstructionManagers(this.constructionSite)
+          .then(constructionManagers => this.constructionManagers = constructionManagers)
 
-                    api.getCraftsmen(this.constructionSite)
-                        .then(craftsmen => this.craftsmen = craftsmen)
+        api.getCraftsmen(this.constructionSite)
+          .then(craftsmen => this.craftsmen = craftsmen)
 
-                    api.getMaps(this.constructionSite)
-                        .then(maps => this.maps = maps)
-                  })
-
-            }
-        )
+        api.getMaps(this.constructionSite)
+          .then(maps => this.maps = maps)
+      })
   }
 }
 </script>

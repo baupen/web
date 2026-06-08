@@ -1,13 +1,13 @@
 <template>
   <div id="resolve">
     <loading-indicator :spin="isLoading">
-      <resolve-issues :craftsman="craftsman" :construction-site="constructionSite" />
+      <resolve-issues :craftsman="craftsman" :construction-site="constructionSite"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { api, apiClient } from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
@@ -32,20 +32,18 @@ export default {
     }
   },
   mounted () {
-    api.authenticateFromUrl()
-        .then(me => {
-          let craftsmanIri = me.craftsmanIri
-          api.getById(craftsmanIri)
-              .then(craftsman => {
-                this.craftsman = craftsman
-              })
+    const me = apiClient.authenticateFromUrl()
+    let craftsmanIri = me.craftsmanIri
+    api.getById(craftsmanIri)
+      .then(craftsman => {
+        this.craftsman = craftsman
+      })
 
-          let constructionSiteIri = me.constructionSiteIri
-          api.getById(constructionSiteIri)
-              .then(constructionSite => {
-                this.constructionSite = constructionSite
-              })
-        })
+    let constructionSiteIri = me.constructionSiteIri
+    api.getById(constructionSiteIri)
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+      })
   }
 }
 

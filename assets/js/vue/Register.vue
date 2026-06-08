@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { api } from './domain/api'
+import { api, apiClient } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import RegisterIssues from './components/RegisterIssues'
 
@@ -37,14 +37,12 @@ export default {
     }
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
+    const me = apiClient.authenticate()
           this.constructionManagerIri = me.constructionManagerIri
           api.getConstructionSite()
               .then(constructionSite => {
                 this.constructionSite = constructionSite
               })
-        })
   }
 }
 

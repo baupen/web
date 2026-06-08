@@ -1,6 +1,7 @@
 import { displayError } from './notifiers'
 
-const errorHandlingClient = {
+const httpClient = {
+  additionalHeaders: {},
   _handleError: async function (response) {
     let responseData = null
 
@@ -31,8 +32,16 @@ const errorHandlingClient = {
   request: async function (url, init = {}) {
     let response
 
+    const fullInit = {
+      ...init,
+      headers: {
+        ...this.additionalHeaders,
+        ...init.headers
+      }
+    }
+
     try {
-      response = await fetch(url, init)
+      response = await fetch(url, fullInit)
     } catch (error) {
       if (error.name === 'AbortError') {
         // hide aborted errors (happens when navigating rapidly in firefox)
@@ -66,7 +75,7 @@ const restClient = {
       init.body = JSON.stringify(normalizedBody)
     }
 
-    const response = await errorHandlingClient.request(url, init)
+    const response = await httpClient.request(url, init)
 
     if (response.status === 204) {
       return null
@@ -146,4 +155,4 @@ const restClient = {
   }
 }
 
-export { restClient, errorHandlingClient }
+export { restClient, httpClient }

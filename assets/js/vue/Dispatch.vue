@@ -1,13 +1,14 @@
 <template>
   <div id="dispatch">
     <loading-indicator :spin="!constructionSite || !constructionManagers">
-      <dispatch-craftsmen :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite" :construction-managers="constructionManagers" />
+      <dispatch-craftsmen :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite"
+                          :construction-managers="constructionManagers"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { apiClient, api } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import DispatchCraftsmen from './components/DispatchCraftsmen'
 
@@ -24,17 +25,15 @@ export default {
     }
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
-          this.constructionManagerIri = me.constructionManagerIri
-          api.getConstructionSite()
-              .then(constructionSite => {
-                this.constructionSite = constructionSite
-              })
+    const me = apiClient.authenticate()
+    this.constructionManagerIri = me.constructionManagerIri
+    api.getConstructionSite()
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+      })
 
-          api.getConstructionManagers(this.constructionSite)
-              .then(constructionManagers => this.constructionManagers = constructionManagers)
-        })
+    api.getConstructionManagers(this.constructionSite)
+      .then(constructionManagers => this.constructionManagers = constructionManagers)
   }
 }
 
