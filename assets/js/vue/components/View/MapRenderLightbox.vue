@@ -5,7 +5,7 @@
 <script>
 import Lightbox from '../Library/Behaviour/Lightbox'
 import ImageLightbox from './ImageLightbox'
-import { api, iriToId } from '../../domain/api'
+import { api, iriToId, router } from '../../domain/api'
 
 export default {
   components: {
@@ -72,7 +72,7 @@ export default {
         query['number'] = -1
       }
 
-      return api.getIssuesRenderLink(this.constructionSite, this.map, query)
+      return router.getIssuesRenderLink(this.constructionSite, this.map, query)
     }
   }
 }
