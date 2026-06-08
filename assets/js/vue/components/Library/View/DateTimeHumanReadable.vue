@@ -1,13 +1,13 @@
 <template>
   <span v-if="value">
-    {{ momentDateTime.format('DD.MM.YYYY HH:mm') }}
+    {{ formatted }}
   </span>
   <span v-else>-</span>
 </template>
 
 <script>
 
-import moment from 'moment'
+import { dateTimeFormatter } from '../../../services/formatters'
 
 export default {
   props: {
@@ -17,9 +17,9 @@ export default {
     }
   },
   computed: {
-    momentDateTime: function () {
-      return moment(this.value);
-    }
+    formatted: function () {
+      return dateTimeFormatter.dateTime(new Date(this.value));
+    },
   }
 }
 </script>

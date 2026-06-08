@@ -64,7 +64,7 @@ import TaskRow from "./View/TaskRow.vue";
 import AddTaskButton from "./Action/AddTaskButton.vue";
 import DateHumanReadable from "./Library/View/DateHumanReadable.vue";
 import EnterConstructionSite from "./Action/EnterConstructionSite.vue";
-import moment from "moment";
+import { dateTimeFormatter } from '../services/formatters'
 
 export default {
   components: {
@@ -151,7 +151,7 @@ export default {
       const alreadyLoadedDeadline = new Date(today);
       alreadyLoadedDeadline.setDate(alreadyLoadedDeadline.getDate() + 7 * this.loadedUntilWeek);
 
-      return moment(alreadyLoadedDeadline).format('L')
+      return dateTimeFormatter.date(alreadyLoadedDeadline)
     }
   },
   methods: {
