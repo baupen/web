@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {api} from "../../domain/api";
+import { api, router } from '../../domain/api'
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
 import SetMapPositionForm from "../Form/SetMapPositionForm.vue";
 
@@ -48,7 +48,7 @@ export default {
         return null
       }
 
-      return api.getIssuesRenderLink(this.constructionSite, this.map, {number: -1})
+      return router.getIssuesRenderLink(this.constructionSite, this.map, {number: -1})
     },
   },
   methods: {
