@@ -1,13 +1,13 @@
 <template>
   <div id="filtered">
     <loading-indicator :spin="isLoading">
-      <filtered-issues :construction-site="constructionSite" :filter="filter" />
+      <filtered-issues :construction-site="constructionSite" :filter="filter"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { apiClient, api } from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
@@ -35,20 +35,18 @@ export default {
     }
   },
   mounted () {
-    api.authenticateFromUrl()
-        .then(me => {
-          let filterIri = me.filterIri
-          api.getById(filterIri)
-              .then(filter => {
-                this.filter = filter
-              })
+    const me = apiClient.authenticate()
+    let filterIri = me.filterIri
+    api.getById(filterIri)
+      .then(filter => {
+        this.filter = filter
+      })
 
-          let constructionSiteIri = me.constructionSiteIri
-          api.getById(constructionSiteIri)
-              .then(constructionSite => {
-                this.constructionSite = constructionSite
-              })
-        })
+    let constructionSiteIri = me.constructionSiteIri
+    api.getById(constructionSiteIri)
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+      })
   }
 }
 

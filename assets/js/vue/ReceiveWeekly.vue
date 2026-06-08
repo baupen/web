@@ -1,11 +1,11 @@
 <template>
   <div id="receive-weekly">
-    <toggle-receive-weekly v-if="constructionManager" :construction-manager="constructionManager" />
+    <toggle-receive-weekly v-if="constructionManager" :construction-manager="constructionManager"/>
   </div>
 </template>
 
 <script>
-import { api } from './domain/api'
+import { api, apiClient } from './domain/api'
 import ToggleReceiveWeekly from './components/Action/ToggleReceiveWeekly'
 
 export default {
@@ -18,14 +18,12 @@ export default {
     }
   },
   mounted () {
-    api.authenticate()
-        .then(me => {
-          let constructionManagerIri = me.constructionManagerIri
-          api.getById(constructionManagerIri)
-              .then(constructionManager => {
-                this.constructionManager = constructionManager
-              })
-        })
+    const me = apiClient.authenticate()
+    let constructionManagerIri = me.constructionManagerIri
+    api.getById(constructionManagerIri)
+      .then(constructionManager => {
+        this.constructionManager = constructionManager
+      })
   }
 }
 </script>
