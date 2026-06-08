@@ -37,7 +37,27 @@ const addNonDuplicatesById = function (originalCollection, addCollection) {
 const router = {
   constructionSiteDashboard: function (constructionSite) {
     return constructionSite['@id'].replace('/api', '') + '/dashboard'
-  }
+  },
+  _getConstructionSiteBaseUrlFromLocation: function () {
+    const urlArray = window.location.pathname.split('/')
+    urlArray.splice(3)
+    return urlArray.join('/')
+  },
+  currentFoyerUrl: function () {
+    return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
+  },
+  currentDispatchUrl: function () {
+    return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
+  },
+  currentRegisterUrl: function (initialState = null) {
+    let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
+
+    if (initialState) {
+      url += '?state=' + initialState
+    }
+
+    return url
+  },
 }
 
 const api = {
@@ -83,11 +103,6 @@ const api = {
         target[prop] = source[prop]
       }
     }
-  },
-  _getConstructionSiteBaseUrlFromLocation: function () {
-    const urlArray = window.location.pathname.split('/')
-    urlArray.splice(3)
-    return urlArray.join('/')
   },
   _getConstructionSiteIriFromLocation: function () {
     const urlArray = window.location.pathname.split('/')
@@ -223,21 +238,6 @@ const api = {
         }
       }
     )
-  },
-  currentFoyerUrl: function () {
-    return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
-  },
-  currentDispatchUrl: function () {
-    return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
-  },
-  currentRegisterUrl: function (initialState = null) {
-    let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
-
-    if (initialState) {
-      url += '?state=' + initialState
-    }
-
-    return url
   },
   authenticateFromUrl: function () {
     const token = this._getTokenFromLocation()
