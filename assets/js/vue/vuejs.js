@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createI18n } from 'vue-i18n'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
@@ -56,6 +55,7 @@ import ReceiveWeekly from './ReceiveWeekly'
 import Register from './Register'
 import Resolve from './Resolve'
 import Switch from './Switch'
+import { createTranslator, createVuePlugin } from './localization/translator'
 
 // settings
 const locale = document.documentElement.lang.substring(0, 2)
@@ -77,15 +77,8 @@ FontawesomeLibrary.add(
   faChevronRightSolid
 )
 
-// configure i18n
-const i18n = createI18n({
-  locale,
-  fallbackLocale: 'de',
-  messages: {
-    de,
-    it
-  }
-})
+const translator = createTranslator(locale, 'de', { de, it })
+const i18n = createVuePlugin(translator)
 
 // configure vue
 function createVue (app) {

@@ -14,7 +14,7 @@
                 v-else :issues="recentlyChangedIssues" :construction-managers="constructionManagers"/>
           </div>
           <div class="card-footer">
-            <b v-if="!isLoading">{{ $tc('resolve.total_open', issuesCount) }}</b>
+            <b v-if="!isLoading">{{ $t('resolve.total_open', { count: issuesCount }) }}</b>
           </div>
         </div>
       </div>

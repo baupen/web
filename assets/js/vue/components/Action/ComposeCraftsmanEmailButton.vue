@@ -104,7 +104,7 @@ export default {
       return !this.emailTemplates || this.emailTemplates.length < 3
     },
     sendEmailText: function () {
-      return this.$tc('_action.compose_craftsman_email.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
+      return this.$t('_action.compose_craftsman_email.send_emails', { count: this.craftsmen.length })
     },
     proposedEmailTemplate: function () {
       if (!this.emailTemplates) {

@@ -68,13 +68,13 @@ export default {
     textBlocks: function () {
       return this.entries.map(entry => {
         if (entry.type === 'UNIQUE_ISSUES_COMMENTED_COUNT') {
-          return this.$tc('_view.feed.entries.has_commented_issues', entry.count)
+          return this.$t('_view.feed.entries.has_commented_issues', {count: entry.count})
         } else if (entry.type === 'VISITED_WEBPAGE') {
-          return this.$t('_view.feed.entries.has_visited_webpage', entry.count)
+          return this.$t('_view.feed.entries.has_visited_webpage', { count: entry.count })
         } else if (entry.type === 'STATUS_SET_COUNT') {
           switch (entry.payload) {
             case 'RESOLVED':
-              return this.$tc('_view.feed.entries.has_resolved', entry.count)
+              return this.$t('_view.feed.entries.has_resolved', {count: entry.count})
             default:
               return null
           }
@@ -88,7 +88,7 @@ export default {
       if (parts.length > 1) {
         let lastEntry = parts.pop();
         let secondLastEntry = parts.pop()
-        parts.push(`${secondLastEntry} ${this.$tc('_view.feed.entries.glue_end')} ${lastEntry}`)
+        parts.push(`${secondLastEntry} ${this.$t('_view.feed.entries.glue_end')} ${lastEntry}`)
       }
 
       return parts.join(', ')

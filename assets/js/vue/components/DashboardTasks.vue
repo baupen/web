@@ -23,7 +23,7 @@
 
         <p class="text-center mb-0 mt-5" v-if="!closedTasks && !loadingClosedTasks">
           <button class="btn btn-outline-secondary" @click="loadClosedTasks">
-            {{ $tc('dashboard.load_closed_tasks') }}
+            {{ $t('dashboard.load_closed_tasks') }}
           </button>
         </p>
         <div class="loading-center mt-5" v-if="loadingClosedTasks && tasks.length">
