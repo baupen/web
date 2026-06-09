@@ -70,7 +70,7 @@
 
         <br />
         <tooltip-badge color-if-nonzero="secondary" :value="cws.statistics.issueUnreadCount + ' ' + $t('issue.state.unread')"
-                       :tooltip-title="$tc('_view.craftsmen.issues_published_since_last_visit', cws.statistics.issueUnreadCount)" />
+                       :tooltip-title="$t('_view.craftsmen.issues_published_since_last_visit', { count: cws.statistics.issueUnreadCount })" />
         </template>
 
         <span  class="badge bg-secondary">

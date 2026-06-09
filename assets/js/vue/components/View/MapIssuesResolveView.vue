@@ -27,7 +27,7 @@
             <p v-else class="text-center">
               <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading"
                       @click="loadNextPage">
-                {{ $tc('_view.show_more_issues', notLoadedIssueCount) }}
+                {{ $t('_view.show_more_issues', {count: notLoadedIssueCount}) }}
               </button>
             </p>
           </div>

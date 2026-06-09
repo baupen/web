@@ -4,7 +4,7 @@
 
     <span>
       {{ getConstructionManagerName(entry.registeredBy) }}
-      {{$tc('_view.feed.entries.has_registered', entry.count)}}
+      {{$t('_view.feed.entries.has_registered', {count: entry.count})}}
     </span>
     <span class="text-secondary">
       -

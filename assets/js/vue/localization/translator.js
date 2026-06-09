@@ -1,3 +1,11 @@
+export const createVuePlugin = function (translator) {
+  return {
+    install (app) {
+      app.config.globalProperties.$t = translator.translate.bind(translator)
+    }
+  }
+}
+
 export const createTranslator = function (locale, fallbackLocale, dictionary) {
   let _locale = locale
   const _fallbackLocale = fallbackLocale
@@ -34,10 +42,17 @@ export const createTranslator = function (locale, fallbackLocale, dictionary) {
       if ('count' in params) {
         const templateParts = template.split('|')
 
-        if (params.count < templateParts.length) {
-          return fillTemplate(templateParts[params.count], params)
+        if (templateParts.length === 2) {
+          // special case: two entries, then treat 0 as plural
+          const templateIndex = params.count === 1 ? 0 : 1
+          return fillTemplate(templateParts[templateIndex], params)
         } else {
-          return fillTemplate(templateParts[templateParts.length - 1], params)
+          // normal case: assume 0-based templates
+          if (params.count < templateParts.length) {
+            return fillTemplate(templateParts[params.count], params)
+          } else {
+            return fillTemplate(templateParts[templateParts.length - 1], params)
+          }
         }
       }
 

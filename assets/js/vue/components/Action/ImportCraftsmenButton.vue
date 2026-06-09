@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="importing" :title="$t('_action.import_craftsmen.title')"
-      :confirm-title="$tc('_action.import_craftsmen.confirm', this.pendingPost.length + this.pendingPatch.length)" :can-confirm="canConfirm"
+      :confirm-title="$t('_action.import_craftsmen.confirm', { count: pendingPost.length + pendingPatch.length })" :can-confirm="canConfirm"
       @shown="reset"
       @confirm="confirm">
 
@@ -9,7 +9,7 @@
 
     <template v-if="pendingPatch.length > 0">
       <p class="alert alert-warning">
-        {{ $tc('_action.import_craftsmen.matching_entries_found', pendingPatch.length) }}
+        {{ $t('_action.import_craftsmen.matching_entries_found', { count: pendingPatch.length }) }}
       </p>
     </template>
     <template v-else-if="importedCraftsmen">
