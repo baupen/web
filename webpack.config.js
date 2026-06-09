@@ -108,12 +108,6 @@ if (Encore.isProduction()) {
     __filename: false,
     __dirname: false,
   }
-
-  // use runtime build of vue-i18n for CSP compliance
-  // see https://vue-i18n.intlify.dev/ja/guide/advanced/optimization.html
-  webpackConfig.resolve.alias = Object.assign(webpackConfig.resolve.alias, {
-    "vue-i18n": "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js"
-  })
 }
 
 module.exports = webpackConfig

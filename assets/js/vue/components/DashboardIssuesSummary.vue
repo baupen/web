@@ -15,7 +15,7 @@
           :href="registerClosedUrl" />
     </div>
     <p class="alert alert-info" v-if="issuesSummary.newCount > 0">
-      {{ $tc('dashboard.new_issues_in_foyer', issuesSummary.newCount) }}
+      {{ $t('dashboard.new_issues_in_foyer', { count: issuesSummary.newCount }) }}
       <a :href="foyerUrl">{{ $t('foyer.title') }}</a>
     </p>
   </div>

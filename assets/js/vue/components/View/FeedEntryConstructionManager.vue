@@ -35,15 +35,15 @@ export default {
     textBlocks: function () {
       return this.entries.map(entry => {
         if (entry.type === 'EMAIL_COUNT') {
-          return this.$tc('_view.feed.entries.has_sent_mails', entry.count)
+          return this.$t('_view.feed.entries.has_sent_mails', {count: entry.count})
         } else if (entry.type === 'STATUS_SET_COUNT') {
           switch (entry.payload) {
             case 'CREATED':
-              return this.$tc('_view.feed.entries.has_created', entry.count)
+              return this.$t('_view.feed.entries.has_created', {count: entry.count})
             case 'REGISTERED':
-              return this.$tc('_view.feed.entries.has_registered', entry.count)
+              return this.$t('_view.feed.entries.has_registered', {count: entry.count})
             case 'CLOSED':
-              return this.$tc('_view.feed.entries.has_closed', entry.count)
+              return this.$t('_view.feed.entries.has_closed', {count: entry.count})
             default:
               return null
           }
@@ -57,7 +57,7 @@ export default {
       if (parts.length > 1) {
         let lastEntry = parts.pop();
         let secondLastEntry = parts.pop()
-        parts.push(`${secondLastEntry} ${this.$tc('_view.feed.entries.glue_end')} ${lastEntry}`)
+        parts.push(`${secondLastEntry} ${this.$t('_view.feed.entries.glue_end')} ${lastEntry}`)
       }
 
       return parts.join(', ')

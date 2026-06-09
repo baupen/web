@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     confirmTitle: function () {
-      return this.$tc('_action.remove_issues.confirm', this.issues.length, {'count': this.issues.length})
+      return this.$t('_action.remove_issues.confirm', {count: this.issues.length})
     },
   },
   methods: {

@@ -97,7 +97,7 @@ export default {
     },
     confirmTitle: function () {
       if (!this.patchPending) {
-        return this.$tc('_action.edit_issues.save_issues', this.issues.length, { 'count': this.issues.length })
+        return this.$t('_action.edit_issues.save_issues', { count: this.issues.length })
       }
 
       let translatedFields = []
@@ -122,9 +122,9 @@ export default {
         }
       }
 
-      return this.$tc('_action.edit_issues.save_issue_fields', this.issues.length, {
-        'count': this.issues.length,
-        'fields': translatedFields.join(', ')
+      return this.$t('_action.edit_issues.save_issue_fields', {
+        count: this.issues.length,
+        fields: translatedFields.join(', ')
       })
     },
     pendingChanges: function () {
