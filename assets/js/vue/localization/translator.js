@@ -1,48 +1,65 @@
-// source: https://github.com/lukeed/rosetta/blob/master/src/debug.js
-const translator = function (obj) {
-  let locale = '';
-  const tree = obj || {};
+export const createTranslator = function (locale, fallbackLocale, dictionary) {
+  let _locale = locale
+  const _fallbackLocale = fallbackLocale
+  const _dictionary = dictionary
 
   return {
-    set(lang, table) {
-      tree[lang] = Object.assign(tree[lang] || {}, table);
+    getLocale () {
+      return _locale
     },
 
-    locale(lang) {
-      return (locale = lang || locale);
+    setLocale (locale) {
+      _locale = locale
     },
 
-    t(key, params, lang) {
-      const val = dlv(tree[lang || locale], key);
-      if (val == null) {
-        return console.error(`[translator] Missing the "${[].concat(key).join('.')}" key within the "${lang || locale}" dictionary`);
+    translate (key, params = {}, locale = undefined) {
+      const currentLocale = locale || _locale
+      let template = getNestedValue(_dictionary[currentLocale], key)
+      if (!template) {
+        const error = `[translator] Missing the "${key}" key within the "${currentLocale}" dictionary`
+        if (_fallbackLocale !== currentLocale) {
+          template = getNestedValue(_dictionary[_fallbackLocale], key)
+          if (!template) {
+            console.error(error + ` and the "${_fallbackLocale}" fallback locale.`)
+            return ''
+          } else {
+            console.warn(error + `, but found it in the "${_fallbackLocale}" fallback locale.`)
+          }
+        } else {
+          console.error(error + '.')
+          return ''
+        }
       }
-      if (typeof val === 'function') return val(params);
-      if (typeof val === 'string') return tmpl(val, params);
-      return val;
-    }
-  };
-}
 
-// source: https://github.com/lukeed/templite/blob/master/src/index.js
-const RGX = /{{(.*?)}}/g;
-const tmpl = function (str, mix) {
-  return str.replace(RGX, (x, key, y) => {
-    x = 0;
-    y = mix;
-    key = key.trim().split('.');
-    while (y && x < key.length) {
-      y = y[key[x++]];
-    }
-    return y != null ? y : '';
-  });
-}
+      if ('count' in params) {
+        const templateParts = template.split('|')
 
-// source: https://github.com/developit/dlv/blob/master/index.js
-const dlv = function (obj, key, def, p, undef) {
-  key = key.split ? key.split('.') : key;
-  for (p = 0; p < key.length; p++) {
-    obj = obj ? obj[key[p]] : undef;
+        if (params.count < templateParts.length) {
+          return fillTemplate(templateParts[params.count], params)
+        } else {
+          return fillTemplate(templateParts[templateParts.length - 1], params)
+        }
+      }
+
+      return fillTemplate(template, params)
+    }
   }
-  return obj === undef ? def : obj;
+}
+
+const placeholderRegex = /{(.*?)}/g
+const fillTemplate = function (template, templateData) {
+  return template.replace(placeholderRegex, (match, placeholderPath) => {
+    return getNestedValue(templateData, placeholderPath.trim()) ?? ''
+  })
+}
+
+const getNestedValue = function (sourceObject, path) {
+  const pathSegments = path.split('.')
+
+  let currentValue = sourceObject
+  for (let pathIndex = 0; pathIndex < pathSegments.length; pathIndex++) {
+    currentValue = currentValue ? currentValue[pathSegments[pathIndex]] : undefined
+  }
+
+  return currentValue
 }
