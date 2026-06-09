@@ -34,7 +34,7 @@
     "eslint-plugin-vue": "^7.0.0-beta.4",
     "file-loader": "^6.0.0",
     "postcss": "^8.2.1",
-    "postcss-loader": "^7",
+    "postcss-loader": "^8",
     "regenerator-runtime": "^0.13.9",
     "sass": "^1",
     "sass-loader": "^16",
@@ -44,6 +44,11 @@
     "vue-loader": "^17",
     "webpack": "^5.74.0",
     "webpack-dev-server": "^5.2.2"
+  },
+  "overrides": {
+    "sockjs": {
+      "uuid": "^11"
+    }
   },
   "license": "MIT",
   "private": true,
