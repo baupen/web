@@ -3,6 +3,7 @@
 namespace App\Api\Provider;
 
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
+use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Api\Provider\Traits\AuthenticatedProviderTrait;
@@ -31,6 +32,7 @@ readonly class IssueCollectionProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
+        /** @var HttpOperation $operation */
         if ($operation->getUriTemplate() !== '/issues/render.jpg') {
             $this->ensureGetCollectionOperation($operation);
             $this->ensureIssueCollectionAuthenticated($context);
