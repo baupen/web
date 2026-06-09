@@ -23,8 +23,8 @@ $primary-200: #eaecef;
 $custom-control-cursor: pointer;
 
 @import '~bootstrap/scss/bootstrap';
-@import '~noty/src/noty';
-@import '~noty/src/themes/bootstrap-v4';
+@import '~nano-noty/src/noty';
+@import '~nano-noty/src/themes/bootstrap-v5';
 @import '~flatpickr/dist/flatpickr.css';
 @import 'bootstrap-responsive';
 @import 'dropzone';
