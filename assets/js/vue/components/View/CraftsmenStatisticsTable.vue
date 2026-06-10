@@ -29,8 +29,8 @@
         <p class="text-center">{{ $t('_view.no_craftsmen') }}</p>
       </td>
     </tr>
-    <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
-        class="clickable">
+    <tr v-else v-for="cws in orderedCraftsmenWithStatistics" :key="cws.craftsman['@id']"
+        @click.stop="toggleSelectedCraftsman(cws.craftsman)" class="clickable">
       <td class="w-minimal">
         <div>
           <input
@@ -124,10 +124,9 @@
 
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
-import TooltipNumber from '../Library/View/TooltipBadge'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
-import { arraysAreEqual } from '../../services/algorithms'
+import { entityListsAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
 import ToggleCanEdit from '../Action/ToggleCanEdit'
 import ViewCraftsmanIssuesEventsButton from '../Action/ViewCraftsmanIssuesEventsButton.vue'
@@ -141,7 +140,6 @@ export default {
     IssueSummaryBadges,
     DateTimeHumanReadable,
     DateHumanReadable,
-    TooltipNumber,
     CustomCheckbox,
     LoadingIndicatorTableBody,
     ViewCraftsmanIssuesEventsButton
@@ -208,30 +206,20 @@ export default {
     }
   },
   methods: {
-    setOrderBy (property, order) {
-      this.orderBy = {
-        property,
-        order
-      }
-    },
-    toggleSelectedCraftsmen (toggleArray) {
-      if (this.entityListsAreEqual(toggleArray, this.selectedCraftsmen)) {
+    entityListsAreEqual,
+    toggleSelectedCraftsmen: function (toggleArray) {
+      if (entityListsAreEqual(toggleArray, this.selectedCraftsmen)) {
         this.selectedCraftsmen = []
       } else {
         this.selectedCraftsmen = [...toggleArray]
       }
     },
-    toggleSelectedCraftsman (toggleCraftsman) {
+    toggleSelectedCraftsman: function (toggleCraftsman) {
       if (this.selectedCraftsmen.includes(toggleCraftsman)) {
         this.selectedCraftsmen = this.selectedCraftsmen.filter(c => c !== toggleCraftsman)
       } else {
         this.selectedCraftsmen = [...this.selectedCraftsmen, toggleCraftsman]
       }
-    },
-    entityListsAreEqual (array1, array2) {
-      return arraysAreEqual(array1, array2, (a, b) => {
-        return a['@id'].localeCompare(b['@id'])
-      })
     }
   },
   watch: {
