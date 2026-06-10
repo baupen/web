@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,9 @@ class ConstructionSiteController extends AbstractController
     #[Route(path: '/shared.js', name: 'construction_site_shared_js')]
     public function js(ConstructionSite $constructionSite): Response
     {
-        $response = $this->render('construction_site/shared.js.twig', ['constructionSite' => $constructionSite]);
+        /** @var ConstructionManager $user */
+        $user = $this->getUser();
+        $response = $this->render('construction_site/shared.js.twig', ['constructionSite' => $constructionSite, "token" => $user->getAuthenticationToken()]);
         $response->headers->set('Content-Type', 'text/javascript');
 
         return $response;

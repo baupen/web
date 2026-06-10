@@ -71,11 +71,8 @@ const apiClient = {
   authenticate: function () {
     httpClient.additionalHeaders['X-AUTHENTICATION'] = window.token
   },
-  getMe: function () {
-    return window.me
-  },
   patch: async function (instance, patch, successMessage = null) {
-    const result = await restClient.patch(instance, patch, { headers: { 'X-AUTHENTICATION': window.token } })
+    const result = await restClient.patch(instance, patch)
     displaySuccessMessageIfExists(successMessage)
 
     return result

@@ -1,4 +1,3 @@
-{% set token = app.user.authenticationToken %}
 window.token = "{{ token }}";
 window.me = {{ apiSubRequest('/api/me', token)|raw }}
 window.constructionSite = {{ apiSubRequest('/api/construction_sites/'~constructionSite.id, token)|raw }}
