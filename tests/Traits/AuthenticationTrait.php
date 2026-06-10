@@ -65,6 +65,11 @@ trait AuthenticationTrait
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$craftsman->getAuthenticationToken()]]]);
     }
 
+    private function loginApiFilter(Client $client, Filter $filter): void
+    {
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$filter->getAuthenticationToken()]]]);
+    }
+
     private function saveEntity(...$entities): void
     {
         $registry = static::getClient()->getContainer()->get(ManagerRegistry::class);

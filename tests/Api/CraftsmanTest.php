@@ -7,6 +7,7 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
+use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -187,6 +188,36 @@ class CraftsmanTest extends ApiTestCase
 
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'id', $craftsmanIri);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
+    }
+
+    public function testFilterRestrictsToFilterCraftsman(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $restrictingCraftsman = $constructionSite->getCraftsmen()->get(0);
+        $differentCraftsman = $constructionSite->getCraftsmen()->get(1);
+
+        // Create a filter set to craftsman1
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+        $filter->setCraftsmanIds([$restrictingCraftsman->getId()]);
+        $filter->setAuthenticationToken();
+        $this->saveEntity($filter);
+
+        // Login as the filter
+        $this->loginApiFilter($client, $filter);
+
+        // Query the craftsman collection, restricting only to the construction site
+        $collectionUrl = '/api/craftsmen?constructionSite=' . $constructionSite->getId();
+        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, $collectionUrl);
+        $collection = json_decode($response->getContent(), true);
+
+        // Verify that only restrictingCraftsman is in the results (filtered by the filter's craftsman)
+        $this->assertCount(1, $collection['hydra:member']);
+        $this->assertApiCollectionContainsIri($client, $collectionUrl, $this->getIriFromItem($restrictingCraftsman));
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrl, $this->getIriFromItem($differentCraftsman));
     }
 
     public function testStatistics(): void

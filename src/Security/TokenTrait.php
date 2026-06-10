@@ -87,4 +87,19 @@ trait TokenTrait
 
         return $constructionSiteRestriction;
     }
+
+    protected function getCraftsmanRestriction(?TokenInterface $token): ?array
+    {
+        if ($this->tryGetConstructionManager($token)) {
+            $craftsmanRestriction = null;
+        } elseif (($craftsman = $this->tryGetCraftsman($token))) {
+            $craftsmanRestriction = [$craftsman->getId()];
+        } elseif (($filter = $this->tryGetFilter($token))) {
+            $craftsmanRestriction = $filter->getCraftsmanIds();
+        } else {
+            throw new BadRequestException('Invalid authentication');
+        }
+
+        return $craftsmanRestriction;
+    }
 }
