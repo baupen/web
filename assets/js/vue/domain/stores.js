@@ -9,9 +9,9 @@ export const store = {
     }
 
     this.constructionSite = window.constructionSite;
-    this.constructionManagers = window.constructionManagers;
-    this.maps = window.maps;
-    this.craftsmen = window.craftsmen;
+    this.constructionManagers = window.constructionManagers['hydra:member'];
+    this.maps = window.maps['hydra:member'];
+    this.craftsmen = window.craftsmen['hydra:member'];
   }
 }
 
@@ -23,8 +23,8 @@ export const switchStore = {
       return
     }
 
-    this.constructionSites = window.constructionSites;
-    this.constructionManagers = window.constructionManagers;
+    this.constructionSites = window.constructionSites['hydra:member'];
+    this.constructionManagers = window.constructionManagers['hydra:member'];
   }
 }
 
@@ -40,4 +40,5 @@ export const meStore = {
 }
 
 store.initializePreloaded()
+switchStore.initializePreloaded()
 meStore.initializePreloaded()

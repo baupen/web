@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     constructionManager: function () {
-      return this.constructionManagers.find(cm => cm.iri === this.constructionManagerIri)
+      return this.constructionManagers.find(cm => cm['@id'] === this.constructionManagerIri)
     },
     isLoading: function () {
       return !this.constructionSites || !this.constructionManagers
