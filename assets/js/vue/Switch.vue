@@ -1,21 +1,17 @@
 <template>
   <div id="switch">
-    <loading-indicator :spin="isLoading">
-      <switch-construction-sites
-        :construction-manager-iri="constructionManagerIri"
-        :construction-managers="constructionManagers"/>
-    </loading-indicator>
+    <switch-construction-sites
+      :construction-manager-iri="constructionManagerIri"
+      :construction-managers="constructionManagers"/>
   </div>
 </template>
 
 <script>
 import SwitchConstructionSites from './components/SwitchConstructionSites'
-import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import { meStore, switchStore } from './domain/stores'
 
 export default {
   components: {
-    LoadingIndicator,
     SwitchConstructionSites,
   },
   data () {
@@ -24,12 +20,7 @@ export default {
       constructionManagers: null,
     }
   },
-  computed: {
-    isLoading: function () {
-      return !this.constructionManagerIri || !this.constructionManager
-    },
-  },
-  mounted () {
+  beforeMount () {
     const me = meStore.me
     this.constructionManagerIri = me.constructionManagerIri
     this.constructionManagers = switchStore.constructionManagers

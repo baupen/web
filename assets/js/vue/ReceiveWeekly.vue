@@ -7,6 +7,7 @@
 <script>
 import { api, apiClient } from './domain/api'
 import ToggleReceiveWeekly from './components/Action/ToggleReceiveWeekly'
+import { meStore, switchStore } from './domain/stores'
 
 export default {
   components: {
@@ -18,12 +19,8 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticate()
-    let constructionManagerIri = me.constructionManagerIri
-    api.getById(constructionManagerIri)
-      .then(constructionManager => {
-        this.constructionManager = constructionManager
-      })
+    const me = meStore.me
+    this.constructionManager = switchStore.constructionManagers.find(constructionManager => constructionManager['@id'] === me.constructionManagerIri)
   }
 }
 </script>
