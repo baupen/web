@@ -1,0 +1,7 @@
+{% set token = app.user.authenticationToken %}
+window.token = "{{ token }}";
+window.me = {{ apiSubRequest('/api/me', token)|raw }}
+window.constructionSite = {{ apiSubRequest('/api/construction_sites/'~constructionSite.id, token)|raw }}
+window.constructionManagers = {{ apiSubRequest('/api/construction_managers?constructionSites.id='~constructionSite.id, token)|raw }}
+window.craftsmen = {{ apiSubRequest('/api/craftsmen?constructionSite='~constructionSite.id, token)|raw }}
+window.maps = {{ apiSubRequest('/api/maps?constructionSite='~constructionSite.id, token)|raw }}
