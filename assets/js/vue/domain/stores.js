@@ -4,6 +4,10 @@ export const store = {
   maps: null,
   craftsmen: null,
   initializePreloaded() {
+    if (!window.constructionSite) {
+      return
+    }
+
     this.constructionSite = window.constructionSite;
     this.constructionManagers = window.constructionManagers;
     this.maps = window.maps;
@@ -11,9 +15,26 @@ export const store = {
   }
 }
 
+export const switchStore = {
+  constructionSites: null,
+  constructionManagers: null,
+  initializePreloaded() {
+    if (!window.constructionSites) {
+      return
+    }
+
+    this.constructionSites = window.constructionSites;
+    this.constructionManagers = window.constructionManagers;
+  }
+}
+
 export const meStore = {
   me: null,
   initializePreloaded() {
+    if (!window.me) {
+      return
+    }
+
     this.me = window.me;
   }
 }

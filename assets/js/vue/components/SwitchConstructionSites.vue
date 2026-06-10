@@ -23,7 +23,7 @@
         </div>
       </template>
       <div v-else class="alert alert-info">
-        <template v-if="canAssociateSelf">
+        <template v-if="constructionManager.canAssociateSelf">
           {{ $t('switch.mine_none_associate_self') }}
         </template>
         <template v-else>
@@ -33,7 +33,7 @@
 
     </loading-indicator-secondary>
   </div>
-  <div v-if="canAssociateSelf" class="mt-10">
+  <div v-if="constructionManager.canAssociateSelf" class="mt-10">
     <h2>{{ $t('switch.all') }}</h2>
     <p>{{ $t('switch.all_help') }}</p>
     <add-construction-site-button
@@ -54,11 +54,10 @@
 <script>
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
-import LoadingIndicator from './Library/View/LoadingIndicator'
-import {addNonDuplicatesById, api} from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 import SwitchTasks from "./SwitchTasks.vue";
+import { api } from '../domain/api'
 
 export default {
   components: {
@@ -67,25 +66,26 @@ export default {
     LoadingIndicatorSecondary,
     ConstructionSitesParticipationTable,
     AddConstructionSiteButton,
-    LoadingIndicator
   },
   data() {
     return {
       constructionSites: null,
-      constructionManagers: null,
     }
   },
   props: {
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
     constructionManagerIri: {
       type: String,
       required: true
     },
-    constructionManager: {
-      type: Object,
-      required: true
-    }
   },
   computed: {
+    constructionManager: function () {
+      return this.constructionManagers.find(cm => cm.iri === this.constructionManagerIri)
+    },
     isLoading: function () {
       return !this.constructionSites || !this.constructionManagers
     },
@@ -109,19 +109,11 @@ export default {
       return this.constructionSites
           .filter(constructionSite => !constructionSite.isDeleted)
           .sort((a, b) => a.name.localeCompare(b.name))
-    },
-    canAssociateSelf: function () {
-      return this.constructionManager.canAssociateSelf
     }
   },
   mounted() {
-    this.constructionManagers = [this.constructionManager]
     api.getConstructionSites()
         .then(constructionSites => this.constructionSites = constructionSites)
-    api.getConstructionManagers()
-        .then(addConstructionManagers => {
-          addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
-        })
   }
 }
 </script>
