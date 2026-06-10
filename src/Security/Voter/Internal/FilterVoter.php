@@ -5,6 +5,7 @@ namespace App\Security\Voter\Internal;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Task;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @extends AbstractConstructionSiteInternalVoter<Filter>
@@ -27,5 +28,15 @@ class FilterVoter extends AbstractConstructionSiteInternalVoter
     protected function getRoles(): array
     {
         return [self::FILTER_CREATE, self::FILTER_VIEW];
+    }
+
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    {
+        $filter = $this->tryGetFilter($token);
+        if ($filter === $subject) {
+            return true;
+        }
+
+        return parent::voteOnAttribute($attribute, $subject, $token);
     }
 }
