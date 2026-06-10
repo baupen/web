@@ -7,10 +7,6 @@ export default [
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   {
-    rules: {
-      // override/add rules settings here, such as:
-      // 'vue/no-unused-vars': 'error'
-    },
     languageOptions: {
       sourceType: 'module',
       globals: {

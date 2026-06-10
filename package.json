@@ -46,7 +46,6 @@
   },
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev-server": "encore dev-server --port 8080",
     "dev": "encore dev",
