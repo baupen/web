@@ -53,7 +53,7 @@ function renderQRCode (token) {
 
   const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
   Array.from(authenticationTokenCanvas).forEach(element => {
-    // eslint-disable-next-line no-new
+     
     new QRious({
       element,
       level: 'Q',
