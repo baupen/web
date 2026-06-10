@@ -73,7 +73,7 @@ class ApiControllerTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $image = $testConstructionSite->getImage();
@@ -109,7 +109,7 @@ class ApiControllerTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $issue = $testConstructionSite->getIssues()[0];
@@ -144,7 +144,7 @@ class ApiControllerTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $map = $testConstructionSite->getMaps()[0];
@@ -199,7 +199,7 @@ class ApiControllerTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestIssueEventFixtures::class]);
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $issueEvent = $testConstructionSite->getIssueEvents()->get(0);

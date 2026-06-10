@@ -18,7 +18,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements Authentication
 {
     public function supports(Request $request): bool
     {
-        return true;
+        return $request->headers->get('X-AUTHENTICATION') !== null;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $firewallName): ?Response
@@ -39,11 +39,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements Authentication
     public function authenticate(Request $request): SelfValidatingPassport
     {
         $authentication = $request->headers->get('X-AUTHENTICATION');
-        if (null === $authentication) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
-            throw new CustomUserMessageAuthenticationException('No API token provided');
-        }
+        assert($authentication !== null);
 
         return new SelfValidatingPassport(new UserBadge($authentication));
     }
