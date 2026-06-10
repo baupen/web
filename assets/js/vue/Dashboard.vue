@@ -36,7 +36,6 @@ import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
-import AtomSpinner from './components/Library/View/Base/AtomSpinner'
 import DashboardTasks from './components/DashboardTasks.vue'
 import DashboardIssuesEvents from './components/DashboardIssuesEvents.vue'
 
@@ -44,7 +43,6 @@ export default {
   components: {
     DashboardIssuesEvents,
     DashboardTasks,
-    AtomSpinner,
     LoadingIndicator,
     DashboardFeed,
     DashboardIssuesGraph,

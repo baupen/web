@@ -8,19 +8,13 @@
 
 <script>
 import { apiClient, api } from './domain/api'
-import DashboardConstructionSite from './components/DashboardConstructionSite'
-import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
-import ResolveIssues from './components/ResolveIssues'
 import FilteredIssues from './components/FilteredIssues'
 
 export default {
   components: {
     FilteredIssues,
-    ResolveIssues,
     LoadingIndicator,
-    DashboardIssuesSummary,
-    DashboardConstructionSite
   },
   data () {
     return {
