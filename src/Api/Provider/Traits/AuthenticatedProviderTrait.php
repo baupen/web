@@ -36,11 +36,9 @@ trait AuthenticatedProviderTrait
         if (!$constructionManager->getCanAssociateSelf()) {
             if (isset($filters['constructionManagers.id'])) {
                 $this->ensureSearchFilterValid($filters, 'constructionManagers.id', $constructionManager->getId());
-            } else {
-                // this is fine; we filter afterwards in the corresponding extension
-                // but should not rely on this, incorrect way to use REST API
-                $this->logger->warning('Construction manager restriction not applied to construction site collection.');
             }
+            // no filter is also fine; we filter afterwards in the corresponding extension
+            // but should not rely on this, incorrect way to use REST API
         }
     }
 
@@ -55,11 +53,9 @@ trait AuthenticatedProviderTrait
         $existingFilter = $context['filters'] ?? [];
         if (isset($existingFilter['constructionSites.id'])) {
             $this->ensureArraySearchFilterValid($existingFilter, 'constructionSites.id', $constructionSiteRestriction);
-        } else {
-            // this is fine; we filter afterwards in the corresponding extension
-            // but should not rely on this, incorrect way to use REST API
-            $this->logger->warning('Construction site restriction not applied to construction manager collection.');
         }
+        // no filter is also fine; we filter afterwards in the corresponding extension
+        // somewhat incorrect way to use REST API; but useful notably in the switch view to preload all constriction managers without getting the construction sites first
     }
 
     private function ensureConstructionSiteAttributedCollectionFiltered(array $context): void
