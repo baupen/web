@@ -66,7 +66,6 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
 
                 return $token;
             }
-            throw new UserNotFoundException();
         }
 
         throw new UserNotFoundException();
