@@ -38,9 +38,9 @@ trait AuthenticationTrait
         return $this->loginApiSpecificConstructionManager($client, TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
-    private function loginConstructionManager(KernelBrowser $client): ConstructionManager
+    private function loginConstructionManager(KernelBrowser $client, bool $setHeader = false): ConstructionManager
     {
-        return $this->loginSpecificConstructionManager($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
+        return $this->loginSpecificConstructionManager($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL, $setHeader);
     }
 
     private function loginApiSpecificConstructionManager(Client $client, string $email): ConstructionManager
@@ -51,11 +51,13 @@ trait AuthenticationTrait
         return $testUser;
     }
 
-    private function loginSpecificConstructionManager(KernelBrowser $client, string $email): ConstructionManager
+    private function loginSpecificConstructionManager(KernelBrowser $client, string $email, bool $setHeader = false): ConstructionManager
     {
         $testUser = $this->getConstructionManagerByEmail($email);
         $client->loginUser($testUser);
-        $client->setServerParameter('HTTP_X-AUTHENTICATION', $testUser->getAuthenticationToken());
+        if ($setHeader) {
+            $client->setServerParameter('HTTP_X-AUTHENTICATION', $testUser->getAuthenticationToken());
+        }
 
         return $testUser;
     }

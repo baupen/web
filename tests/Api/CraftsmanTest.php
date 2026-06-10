@@ -199,7 +199,6 @@ class CraftsmanTest extends ApiTestCase
         $restrictingCraftsman = $constructionSite->getCraftsmen()->get(0);
         $differentCraftsman = $constructionSite->getCraftsmen()->get(1);
 
-        // Create a filter set to craftsman1
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite);
         $filter->setCraftsmanIds([$restrictingCraftsman->getId()]);
