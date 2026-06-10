@@ -22,7 +22,7 @@ security:
             security: false
         api:
             pattern: ^/api/
-            stateless: true
+            stateless: false # must be false, else overrides context of the main firewall
             provider: api_tokens
             custom_authenticators:
                 - App\Security\TokenAuthenticator
