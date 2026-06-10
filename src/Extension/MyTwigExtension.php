@@ -4,6 +4,7 @@ namespace App\Extension;
 
 use App\Entity\ConstructionManager;
 use App\Helper\DateTimeFormatter;
+use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -49,9 +50,9 @@ class MyTwigExtension extends AbstractExtension
         return str_repeat($entry, $count);
     }
 
-    public function apiSubRequestFunction(string $url): false|string
+    public function apiSubRequestFunction(string $url, string $authentication): false|string
     {
-        $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null]);
+        $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null, 'X-AUTHENTICATION' => $authentication]);
         $request->setSession($this->requestStack->getSession());
         $response = $this->httpKernel->handle(
             $request,
