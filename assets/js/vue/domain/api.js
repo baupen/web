@@ -70,6 +70,8 @@ const router = {
 const apiClient = {
   authenticate: function () {
     httpClient.additionalHeaders['X-AUTHENTICATION'] = window.token
+  },
+  getMe: function () {
     return window.me
   },
   patch: async function (instance, patch, successMessage = null) {
@@ -103,6 +105,8 @@ const apiClient = {
     entity[fileKey + 'Url'] = await response.text()
   }
 }
+
+apiClient.authenticate()
 
 const api = {
   getById: function (id) {
