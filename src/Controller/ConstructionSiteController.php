@@ -10,10 +10,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/construction_sites/{constructionSite}')]
 class ConstructionSiteController extends AbstractController
 {
-    #[Route(path: '/common.js', name: 'construction_site_common_js')]
-    public function commonJson(ConstructionSite $constructionSite): Response
+    #[Route(path: '/shared.js', name: 'construction_site_shared_js')]
+    public function js(ConstructionSite $constructionSite): Response
     {
-        $response = $this->render('construction_site/_common.js.twig', ['constructionSite' => $constructionSite]);
+        $response = $this->render('construction_site/shared.js.twig', ['constructionSite' => $constructionSite]);
         $response->headers->set('Content-Type', 'text/javascript');
 
         return $response;
