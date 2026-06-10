@@ -12,17 +12,13 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class TokenAuthenticator extends AbstractAuthenticator
+class TokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    /**
-     * Called on every request to decide if this authenticator should be
-     * used for the request. Returning `false` will cause this authenticator
-     * to be skipped.
-     */
     public function supports(Request $request): bool
     {
-        return $request->headers->has('X-AUTHENTICATION');
+        return true;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $firewallName): ?Response
@@ -50,5 +46,10 @@ class TokenAuthenticator extends AbstractAuthenticator
         }
 
         return new SelfValidatingPassport(new UserBadge($authentication));
+    }
+
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
+    {
+        return $this->onAuthenticationFailure($request, $authException);
     }
 }

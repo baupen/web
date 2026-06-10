@@ -7,6 +7,7 @@ use App\Helper\DateTimeFormatter;
 use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -52,12 +53,9 @@ class MyTwigExtension extends AbstractExtension
 
     public function apiSubRequestFunction(string $url, string $authentication): false|string
     {
-        $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null, 'X-AUTHENTICATION' => $authentication]);
-        $request->setSession($this->requestStack->getSession());
-        $response = $this->httpKernel->handle(
-            $request,
-            HttpKernelInterface::SUB_REQUEST
-        );
+        $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null, 'HTTP_X-AUTHENTICATION' => $authentication]);
+        $request->setSession(new Session());
+        $response = $this->httpKernel->handle($request);
 
         return $response->getContent();
     }

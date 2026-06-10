@@ -3,6 +3,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Entity\Filter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
@@ -48,5 +49,26 @@ class FilterTest extends ApiTestCase
 
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/filters', $affiliation);
+    }
+
+    public function testAuthentication(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionSite = $this->getTestConstructionSite();
+
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+        $filter->setAuthenticationToken();
+        $this->saveEntity($filter);
+
+        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_UNAUTHORIZED, $client, '/api/construction_managers');
+
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => ['invalid']]]);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_UNAUTHORIZED, $client, '/api/construction_managers');
+
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $filter->getAuthenticationToken()]]);
+        $this->assertApiGetOk($client, '/api/construction_managers');
     }
 }

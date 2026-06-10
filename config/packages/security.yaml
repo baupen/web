@@ -26,6 +26,7 @@ security:
             provider: api_tokens
             custom_authenticators:
                 - App\Security\TokenAuthenticator
+            entry_point: App\Security\TokenAuthenticator
         main:
             provider: construction_managers
             form_login:

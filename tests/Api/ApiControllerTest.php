@@ -91,7 +91,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertImageDownloads($client, $url);
 
         // try a second time
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
         $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/preview.jpg');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
@@ -126,7 +126,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertImageDownloads($client, $url);
 
         // try a second time
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
         $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/issue_images/nachbessern.jpg');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
@@ -163,7 +163,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertFileNotFound($client->getKernelBrowser(), $url . '?variant=undefined');
 
         // try a second time
-        $this->loginConstructionManager($client->getKernelBrowser());
+        $this->loginConstructionManager($client->getKernelBrowser(), true);
         $uploadedFile2 = new AssetFile(__DIR__ . '/../../assets/samples/Test/map_files/2OG.pdf');
         $url2 = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $uploadedFile2);
 
