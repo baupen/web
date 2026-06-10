@@ -38,6 +38,7 @@ import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import DashboardTasks from './components/DashboardTasks.vue'
 import DashboardIssuesEvents from './components/DashboardIssuesEvents.vue'
+import { meStore, store } from './domain/stores'
 
 export default {
   components: {
@@ -59,21 +60,12 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticate()
+    const me = meStore.me
     this.constructionManagerIri = me.constructionManagerIri
-    api.getConstructionSite()
-      .then(constructionSite => {
-        this.constructionSite = constructionSite
-
-        api.getConstructionManagers(this.constructionSite)
-          .then(constructionManagers => this.constructionManagers = constructionManagers)
-
-        api.getCraftsmen(this.constructionSite)
-          .then(craftsmen => this.craftsmen = craftsmen)
-
-        api.getMaps(this.constructionSite)
-          .then(maps => this.maps = maps)
-      })
+    this.constructionSite = store.constructionSite
+    this.constructionManagers = store.constructionManagers
+    this.craftsmen = store.craftsmen
+    this.maps = store.maps
   }
 }
 </script>

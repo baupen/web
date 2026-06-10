@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import { apiClient, api } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import DispatchCraftsmen from './components/DispatchCraftsmen'
+import { meStore, store } from './domain/stores'
 
 export default {
   components: {
@@ -25,15 +25,10 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticate()
+    const me = meStore.me
     this.constructionManagerIri = me.constructionManagerIri
-    api.getConstructionSite()
-      .then(constructionSite => {
-        this.constructionSite = constructionSite
-      })
-
-    api.getConstructionManagers(this.constructionSite)
-      .then(constructionManagers => this.constructionManagers = constructionManagers)
+    this.constructionSite = store.constructionSite
+    this.constructionManagers = store.constructionManagers
   }
 }
 
