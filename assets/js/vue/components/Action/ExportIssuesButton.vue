@@ -13,7 +13,7 @@
     </custom-radio-field>
 
     <custom-radio-field for-id="export-source-selection"
-                        :label="$c('_action.export_issues.export_source_selection', { count: selectedIssues.length})">
+                        :label="$t('_action.export_issues.export_source_selection', { count: selectedIssues.length})">
       <input id="export-source-selection" class="form-check-input" type="radio"
              name="export-source" value="selection"
              :disabled="selectedIssues.length === 0"
