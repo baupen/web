@@ -24,8 +24,7 @@ Backend:
 - check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
 
 Frontend:
-- Replace noty (noty longer maintained)
-- Replace vue-i18n (high maintenance cost due to ever-evolving api/compilation/owner, overly complicated implementation)
+- Eslint: Recover tooling
 - Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
 - UI framework: Improve form fields abstraction, clearer loading indication (see meet-mvp)
 - Refactor table implementation
@@ -33,7 +32,6 @@ Frontend:
 UX:
 - Introduce profile / password change page, where also weekly can be configured
 - First-time flow: Create example construction site on user request. Add context to registration emails (e.g. when inviting external construction manager)
-- Construction managers: Allow safe removal of construction manager, even if with some changes on construction site.
 
 fix behaviour:
 - When construction manager is POSTed, if email already exists, generic error is thrown.
