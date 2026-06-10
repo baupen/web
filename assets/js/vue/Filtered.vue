@@ -7,9 +7,10 @@
 </template>
 
 <script>
-import { apiClient, api } from './domain/api'
+import { api } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import FilteredIssues from './components/FilteredIssues'
+import { meStore, store } from './domain/stores'
 
 export default {
   components: {
@@ -29,17 +30,14 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticate()
+    const me = meStore.me
+    this.constructionSite = store.constructionSite
+    this.craftsman = store.craftsmen.find(craftsman => craftsman['@id'] === me.craftsmanIri)
+
     let filterIri = me.filterIri
     api.getById(filterIri)
       .then(filter => {
         this.filter = filter
-      })
-
-    let constructionSiteIri = me.constructionSiteIri
-    api.getById(constructionSiteIri)
-      .then(constructionSite => {
-        this.constructionSite = constructionSite
       })
   }
 }

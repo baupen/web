@@ -8,17 +8,14 @@
 
 <script>
 import { api, apiClient } from './domain/api'
-import DashboardConstructionSite from './components/DashboardConstructionSite'
-import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import ResolveIssues from './components/ResolveIssues'
+import { meStore, store } from './domain/stores'
 
 export default {
   components: {
     ResolveIssues,
     LoadingIndicator,
-    DashboardIssuesSummary,
-    DashboardConstructionSite
   },
   data () {
     return {
@@ -32,18 +29,9 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticateFromUrl()
-    let craftsmanIri = me.craftsmanIri
-    api.getById(craftsmanIri)
-      .then(craftsman => {
-        this.craftsman = craftsman
-      })
-
-    let constructionSiteIri = me.constructionSiteIri
-    api.getById(constructionSiteIri)
-      .then(constructionSite => {
-        this.constructionSite = constructionSite
-      })
+    const me = meStore.me
+    this.constructionSite = store.constructionSite
+    this.craftsman = store.craftsmen.find(craftsman => craftsman['@id'] === me.craftsmanIri)
   }
 }
 

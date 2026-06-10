@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Controller\Traits\FileResponseTrait;
+use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Helper\DoctrineHelper;
@@ -43,7 +45,21 @@ class PublicController extends AbstractController
             DoctrineHelper::persistAndFlush($registry, $craftsman);
         }
 
-        return $this->render('public/resolve.html.twig');
+        return $this->render('public/resolve.html.twig', ['token' => $token]);
+    }
+
+    #[Route(path: '/resolve/{token}/shared.js', name: 'public_resolve_shared_js')]
+    public function resolveJs(string $token, ManagerRegistry $registry): Response
+    {
+        $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
+        if (null === $craftsman) {
+            throw $this->createNotFoundException();
+        }
+
+        $response = $this->render('construction_site/shared.js.twig', ['constructionSite' => $craftsman->getConstructionSite(), "token" => $craftsman->getAuthenticationToken()]);
+        $response->headers->set('Content-Type', 'text/javascript');
+
+        return $response;
     }
 
     #[Route(path: '/filtered/{token}', name: 'public_filtered')]
@@ -59,6 +75,20 @@ class PublicController extends AbstractController
             DoctrineHelper::persistAndFlush($registry, $filter);
         }
 
-        return $this->render('public/filtered.html.twig');
+        return $this->render('public/filtered.html.twig', ['token' => $token]);
+    }
+
+    #[Route(path: '/filtered/{token}/shared.js', name: 'public_filtered_shared_js')]
+    public function filteredJs(string $token, ManagerRegistry $registry): Response
+    {
+        $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
+        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTimeImmutable())) {
+            throw $this->createNotFoundException();
+        }
+
+        $response = $this->render('construction_site/shared.js.twig', ['constructionSite' => $filter->getConstructionSite(), "token" => $filter->getAuthenticationToken()]);
+        $response->headers->set('Content-Type', 'text/javascript');
+
+        return $response;
     }
 }
