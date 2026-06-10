@@ -23,6 +23,12 @@ const levenshteinDistance = function (a, b) {
   return m[b.length][a.length]
 }
 
+const entityListsAreEqual = function (array1, array2) {
+  return arraysAreEqual(array1, array2, (a, b) => {
+    return a['@id'].localeCompare(b['@id'])
+  })
+}
+
 const arraysAreEqual = function (array1, array2, compareFn = undefined) {
   if (!array1 || !array2) {
     return array1 === array2
@@ -75,4 +81,4 @@ const objectsAreEqual = function (object1, object2) {
   return true
 }
 
-export { levenshteinDistance, arraysAreEqual, objectsAreEqual }
+export { levenshteinDistance, entityListsAreEqual, arraysAreEqual, objectsAreEqual }
