@@ -10,6 +10,7 @@
 import { api, apiClient } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import FoyerIssues from './components/FoyerIssues'
+import { meStore, store } from './domain/stores'
 
 export default {
   components: {
@@ -28,12 +29,9 @@ export default {
     }
   },
   mounted () {
-    const me = apiClient.authenticate()
+    const me = meStore.me
     this.constructionManagerIri = me.constructionManagerIri
-    api.getConstructionSite()
-      .then(constructionSite => {
-        this.constructionSite = constructionSite
-      })
+    this.constructionSite = store.constructionSite
   }
 }
 

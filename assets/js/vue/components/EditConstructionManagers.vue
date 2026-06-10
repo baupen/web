@@ -1,7 +1,7 @@
 <template>
   <h2 class="mt-5">{{ $t('construction_manager._plural') }}</h2>
   <p>{{ $t('edit.construction_managers_help') }}</p>
-  <div class="btn-group" v-if="constructionManager.canAssociateSelf">
+  <div class="btn-group" v-if="constructionManager?.canAssociateSelf">
     <associate-construction-manager-button :construction-site="constructionSite" @added="constructionManagers.push($event)" />
   </div>
   <p class="alert alert-info" v-else>
@@ -11,10 +11,7 @@
 </template>
 
 <script>
-import AddCraftsmanButton from './Action/AddCraftsmanButton'
-import CraftsmenEditTable from './View/CraftsmenEditTable'
-import { addNonDuplicatesById, api } from '../domain/api'
-import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
+import { api } from '../domain/api'
 import AssociateConstructionManagerButton from './Action/AssociateConstructionManagerButton'
 import ConstructionManagerAssociationTable from './View/ConstructionManagerAssociationTable'
 
@@ -22,9 +19,6 @@ export default {
   components: {
     ConstructionManagerAssociationTable,
     AssociateConstructionManagerButton,
-    ImportCraftsmenButton,
-    CraftsmenEditTable,
-    AddCraftsmanButton
   },
   data() {
     return {
@@ -36,10 +30,15 @@ export default {
       type: Object,
       required: true
     },
-    constructionManager: {
-      type: Object,
+    constructionManagerIri: {
+      type: String,
       required: true
     },
+  },
+  computed: {
+    constructionManager: function () {
+      return this.constructionManagers?.find(cm => cm.iri === this.constructionManagerIri)
+    }
   },
   methods: {
     remove: function (constructionManager) {
@@ -47,10 +46,9 @@ export default {
     }
   },
   mounted () {
-    this.constructionManagers = [this.constructionManager]
     api.getConstructionManagers(this.constructionSite)
-    .then(addConstructionManagers => {
-      addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
+    .then(constructionManagers => {
+      this.constructionManagers = constructionManagers
     })
   }
 }
