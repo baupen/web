@@ -15,14 +15,17 @@ trait AddressTrait
 {
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $streetAddress = null;
 
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank]
     private ?int $postalCode = null;
 
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $locality = null;
 
     #[ORM\Column(type: Types::TEXT)]

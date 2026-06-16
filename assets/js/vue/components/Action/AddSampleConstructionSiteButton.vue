@@ -39,14 +39,17 @@ export default {
     },
     template: function () {
       return {
-        name: 'Beispiel: Sanierung EG & OG'
+        name: 'Beispiel: Sanierung EG & OG',
+        streetAddress: "Bahnhofsstrasse 1",
+        postalCode: 3000,
+        locality: 'Bern'
       }
     }
   },
   methods: {
     confirm: function () {
       this.posting = true
-      const payload = Object.assign({}, this.template, this.post, { constructionManagers: [this.constructionManagerIri] })
+      const payload = Object.assign({}, this.template, this.post)
 
       const successMessage = this.$t('_action.add_sample_construction_site.added')
 
