@@ -29,7 +29,8 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
         #[Autowire(service: PersistProcessor::class)] private ProcessorInterface $persistProcessor,
         private StorageServiceInterface $storageService,
         private SampleServiceInterface $sampleService,
-        private TokenStorageInterface $tokenStorage
+        private TokenStorageInterface $tokenStorage,
+        private ManagerRegistry $managerRegistry
     ) {
     }
 
@@ -41,10 +42,15 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
         /** @var HttpOperation $operation */
         if ($operation instanceof Post && $operation->getUriTemplate() === '/construction_sites/sample') {
             $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-            $name = $data->getName();
-            $data = $this->sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
-            $data->setName($name);
-            $data->setIsHidden(true);
+            $sample = $this->sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
+            $sample->setName($data->getName());
+            $sample->setStreetAddress($data->getStreetAddress());
+            $sample->setPostalCode($data->getPostalCode());
+            $sample->setLocality($data->getLocality());
+            $sample->setIsHidden(true);
+            $data = $sample;
+            dump($data);
+            DoctrineHelper::persistAndFlush($this->managerRegistry, $data, $constructionManager);
         } elseif ($operation instanceof Post) {
             $this->storageService->setNewFolderName($data);
         }
