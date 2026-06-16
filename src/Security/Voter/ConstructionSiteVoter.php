@@ -12,12 +12,13 @@ class ConstructionSiteVoter extends Voter
     use TokenTrait;
 
     public const string CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
+    public const string CONSTRUCTION_SITE_CREATE_SAMPLE = 'CONSTRUCTION_SITE_CREATE_SAMPLE';
     public const string CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
     public const string CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $subject instanceof ConstructionSite && in_array($attribute, [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_MODIFY, self::CONSTRUCTION_SITE_VIEW]);
+        return $subject instanceof ConstructionSite && in_array($attribute, [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_CREATE_SAMPLE, self::CONSTRUCTION_SITE_MODIFY, self::CONSTRUCTION_SITE_VIEW]);
     }
 
     /**
@@ -30,6 +31,10 @@ class ConstructionSiteVoter extends Voter
     {
         if (($constructionManager = $this->tryGetConstructionManager($token))) {
             if ($constructionManager->getCanAssociateSelf()) {
+                return true;
+            }
+
+            if ($attribute == self::CONSTRUCTION_SITE_CREATE_SAMPLE && $constructionManager->getConstructionSites()->count() === 0) {
                 return true;
             }
 

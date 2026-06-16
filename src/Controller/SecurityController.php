@@ -147,11 +147,6 @@ class SecurityController extends AbstractController
             $constructionManager->setRegistrationCompletedNow();
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
 
-            if (!$constructionManager->getCanAssociateSelf() && 0 === count($constructionManager->getConstructionSites())) {
-                $constructionSite = $sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
-                DoctrineHelper::persistAndFlush($registry, $constructionSite, $constructionManager);
-            }
-
             $security->login($constructionManager, 'form_login');
             $this->addFlash('success', $translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);

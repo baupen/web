@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_SITE_VIEW", object)')]
 #[Post(securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_CREATE", object)', denormalizationContext: ['groups' => ['construction-site:create', 'construction-site:write', 'address:write']])]
+#[Post(uriTemplate: '/construction_sites/sample', securityPostDenormalize: 'is_granted("CONSTRUCTION_SITE_CREATE_SAMPLE", object)', denormalizationContext: ['groups' => ['construction-site:create-sample']])]
 #[Patch(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 #[Delete(security: 'is_granted("CONSTRUCTION_SITE_MODIFY", object)')]
 #[ApiFilter(DateFilter::class, properties: ['lastChangedAt'])]
@@ -58,7 +59,7 @@ class ConstructionSite extends BaseEntity
     use SoftDeleteTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['construction-site:read', 'construction-site:write'])]
+    #[Groups(['construction-site:read', 'construction-site:write', 'construction-site:create-sample'])]
     #[ORM\Column(type: Types::TEXT)]
     private string $name;
 

@@ -120,6 +120,28 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/construction_sites', $response);
     }
 
+    public function testPostSample(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiDisassociatedConstructionManager($client);
+
+        $sample = [
+            'name' => 'New',
+        ];
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites/sample', $sample);
+        $newConstructionSite = json_decode($response->getContent(), true);
+        $this->assertEquals('New', $newConstructionSite['name']);
+
+        $this->assertApiCollectionContainsResponseItem($client, '/api/construction_sites', $response);
+
+        $constructionSiteId = substr($newConstructionSite['@id'], strrpos($newConstructionSite['@id'], '/') + 1);
+        $collectionResponse = $this->assertApiGetOk($client, '/api/issues?constructionSite=' . $constructionSiteId);
+        $collection = json_decode($collectionResponse->getContent(), true);
+        $this->assertNotCount(0, $collection['hydra:member']);
+    }
+
     public function testLastChangedAtFilter(): void
     {
         $client = $this->createClient();

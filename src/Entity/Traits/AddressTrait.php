@@ -13,17 +13,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait AddressTrait
 {
-    #[Assert\NotBlank]
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $streetAddress = null;
 
-    #[Assert\NotBlank]
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $postalCode = null;
 
-    #[Assert\NotBlank]
     #[Groups(['address:read', 'address:write'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $locality = null;
