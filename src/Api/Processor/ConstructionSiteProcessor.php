@@ -44,6 +44,7 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
             $name = $data->getName();
             $data = $this->sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
             $data->setName($name);
+            $data->setIsHidden(true);
         } elseif ($operation instanceof Post) {
             $this->storageService->setNewFolderName($data);
         }
