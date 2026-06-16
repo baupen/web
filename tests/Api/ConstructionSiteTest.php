@@ -128,6 +128,9 @@ class ConstructionSiteTest extends ApiTestCase
 
         $sample = [
             'name' => 'New',
+            'streetAddress' => 'Some Address',
+            'postalCode' => 4123,
+            'locality' => 'Allschwil',
         ];
 
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites/sample', $sample);
