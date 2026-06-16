@@ -1,3 +1,4 @@
 index:
   description: 'Selezionare il cantiere da gestire'
   title: 'Selezionare il cantiere'
+  start: 'Avvia Baupen'
