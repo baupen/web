@@ -4,6 +4,10 @@
       "added": "Baustelle hinzugefügt",
       "title": "Baustelle hinzufügen"
     },
+    "add_sample_construction_site": {
+      "added": "Beispiel-Baustelle hinzugefügt",
+      "title": "Beispiel-Baustelle hinzufügen"
+    },
     "add_craftsman": {
       "added": "Unternehmer hinzugefügt",
       "title": "Unternehmer hinzufügen",
@@ -36,7 +40,7 @@
       "title": "Aufgabe hinzufügen",
       "add_more": "weitere hinzufügen"
     },
-    "archive_construction_site" :{
+    "archive_construction_site": {
       "title_archive": "Baustelle archivieren",
       "title_unarchive": "Baustelle un-archivieren",
       "help_archive": "Wenn Sie die Baustelle archivieren, dann wird diese auf der Startseite (für alle) ausgeblendet. In der Tabelle mit allen Baustellen können die archivierten Baustellen wieder eingeblendet werden.",
@@ -298,7 +302,7 @@
   "_view": {
     "construction_sites_participation_table": {
       "search": "Baustelle suchen",
-      "show_archived":"Archivierte Baustellen anzeigen"
+      "show_archived": "Archivierte Baustellen anzeigen"
     },
     "craftsmen": {
       "issues_published_since_last_visit": "Eine Pendenz registriert seit dem letzten Besuch der Webseite | {count} Pendenzen registriert seit dem letzten Besuch der Webseite",
@@ -494,8 +498,8 @@
     "load_more_tasks": "Weitere Aufgaben laden.",
     "mine": "Meine Baustellen",
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
-    "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen.",
-    "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
+    "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Bitten Sie einen anderen Bauleiter, Sie einer Baustelle hinzuzufügen.",
+    "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, oder fügen Sie eine Beispiel-Baustelle hinzu.",
     "no_tasks_pending": "Keine Aufgaben fällig.",
     "tasks_loaded_until": "Aufgaben mit Frist vor dem {deadlineLoaded} geladen."
   },

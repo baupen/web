@@ -22,15 +22,19 @@
           </div>
         </div>
       </template>
-      <div v-else class="alert alert-info">
-        <template v-if="constructionManager.canAssociateSelf">
-          {{ $t('switch.mine_none_associate_self') }}
-        </template>
-        <template v-else>
-          {{ $t('switch.mine_none_ask_for_association') }}
-        </template>
-      </div>
-
+      <template v-else>
+        <div class="alert alert-info">
+          <template v-if="constructionManager.canAssociateSelf">
+            {{ $t('switch.mine_none_associate_self') }}
+          </template>
+          <template v-else>
+            {{ $t('switch.mine_none_ask_for_association') }}
+          </template>
+        </div>
+        <add-sample-construction-site-button
+          :construction-manager-iri="constructionManagerIri"
+          @added="constructionSites.push($event)" />
+      </template>
     </loading-indicator-secondary>
   </div>
   <div v-if="constructionManager.canAssociateSelf" class="mt-10">
@@ -58,9 +62,11 @@ import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 import SwitchTasks from "./SwitchTasks.vue";
 import { api } from '../domain/api'
+import AddSampleConstructionSiteButton from './Action/AddSampleConstructionSiteButton.vue'
 
 export default {
   components: {
+    AddSampleConstructionSiteButton,
     SwitchTasks,
     ConstructionSiteEnterCard,
     LoadingIndicatorSecondary,

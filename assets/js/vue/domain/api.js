@@ -266,6 +266,9 @@ const api = {
   postConstructionSite: function (constructionSite, successMessage = null) {
     return apiClient.post('/api/construction_sites', constructionSite, successMessage)
   },
+  postSampleConstructionSite: function (constructionSite, successMessage = null) {
+    return apiClient.post('/api/construction_sites/sample', constructionSite, successMessage)
+  },
   postFilter: function (filter, successMessage = null) {
     return apiClient.post('/api/filters', filter, successMessage)
   },
