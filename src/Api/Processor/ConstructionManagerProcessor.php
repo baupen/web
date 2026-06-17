@@ -32,11 +32,9 @@ readonly class ConstructionManagerProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ConstructionManager
     {
         if ($operation instanceof Post) {
-            $registrationSuccessful = $this->userService->tryRegister($data, $error);
-
-            if (!$registrationSuccessful) {
-                throw new HttpException(Response::HTTP_BAD_REQUEST, $error);
-            }
+            // we do not process errors here; the user registers here third-party construction managers, hence errors somewhat irrelevant at this point
+            $this->userService->tryRegister($data, $error);
+            return $data;
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
