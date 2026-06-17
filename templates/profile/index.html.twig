@@ -1,0 +1,20 @@
+{% extends "_navbar_layout.html.twig" %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "profile" %}
+
+{% block navbar_content %}
+    <div class="container-fluid p-3 mw-40em">
+        <h2>{{ "index.profile"|trans }}</h2>
+        {{ form(profile_form) }}
+
+        <h2 class="mt-5">{{ "index.settings"|trans }}</h2>
+        {{ form(settings_form) }}
+
+        <h2 class="mt-5">{{ "index.set_password"|trans }}</h2>
+        <p class="alert alert-info">{{ "index.set_password_hint"|trans }}</p>
+        {{ form(set_password_form) }}
+    </div>
+{% endblock %}
