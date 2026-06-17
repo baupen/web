@@ -20,7 +20,6 @@ The first and the last step are best executed using the [iOS](https://github.com
 
 
 Backend:
-- check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
 - fix construction site query for events
 
 after release:

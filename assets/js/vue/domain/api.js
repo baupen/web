@@ -143,7 +143,8 @@ const api = {
       constructionSite: iriToId(constructionSite['@id']),
       ...reportQuery
     }
-    return restClient.get('/api/issues/report', fullQuery)
+    const fullUrl = restClient._getQueryUrl('/api/issues/report', fullQuery)
+    return httpClient.request(fullUrl)
   },
   getMaps: function (constructionSite, query = {}) {
     const fullQuery = {
