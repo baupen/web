@@ -39,14 +39,14 @@
 </template>
 
 <script>
-import Modal from './Modal'
+import BaseModal from './BaseModal.vue'
 import CustomCheckbox from "../FormInput/CustomCheckbox.vue";
 
 export default {
   emits: ['confirm', 'shown', 'hidden', 'abort'],
   components: {
     CustomCheckbox,
-    Modal,
+    Modal: BaseModal,
   },
   data() {
     return {

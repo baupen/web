@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { api } from '../domain/api'
 import AssociateConstructionManagerButton from './Action/AssociateConstructionManagerButton'
 import ConstructionManagerAssociationTable from './View/ConstructionManagerAssociationTable'
 import LoadingIndicator from './Library/View/LoadingIndicator.vue'

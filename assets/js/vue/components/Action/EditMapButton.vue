@@ -62,14 +62,14 @@ export default {
 
       if (this.pendingPatch) {
         api.patch(this.map, this.patch, this.$t('_action.edit_map.saved'))
-            .then(_ => {
+            .then(() => {
               this.patch = null
               this.patching = this.pendingChanges > 0
             })
       }
       if (this.file) {
         api.postMapFile(this.map, this.file, this.$t('_action.edit_map.replaced_map_file'))
-            .then(_ => {
+            .then(() => {
               this.file = null
               this.patching = this.pendingChanges > 0
             })

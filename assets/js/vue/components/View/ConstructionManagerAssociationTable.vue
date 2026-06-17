@@ -35,8 +35,6 @@
 
 <script>
 
-import EditCraftsmanButton from '../Action/EditCraftsmanButton'
-import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
 import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
 import { constructionManagerFormatter } from '../../domain/formatters'
 import DissociateConstructionManagerButton from '../Action/DissociateConstructionManagerButton'
@@ -46,8 +44,6 @@ export default {
   components: {
     DissociateConstructionManagerButton,
     TableBodyLoadingIndicator,
-    RemoveCraftsmanButton,
-    EditCraftsmanButton
   },
   props: {
     constructionSite: {
@@ -69,7 +65,7 @@ export default {
         return null
       }
 
-      return this.constructionManagers.sort((a, b) => a.email.localeCompare(b.email))
+      return [...this.constructionManagers].sort((a, b) => a.email.localeCompare(b.email))
     }
   },
   methods: {

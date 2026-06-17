@@ -14,11 +14,9 @@
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import RegisterIssues from './components/RegisterIssues'
 import { meStore, store } from './domain/stores'
-import FilteredIssues from './components/FilteredIssues.vue'
 
 export default {
   components: {
-    FilteredIssues,
     RegisterIssues,
     LoadingIndicator
   },

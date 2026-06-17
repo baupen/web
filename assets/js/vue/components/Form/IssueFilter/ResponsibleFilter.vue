@@ -32,7 +32,7 @@ export default {
     },
     constructionManagers: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   data() {

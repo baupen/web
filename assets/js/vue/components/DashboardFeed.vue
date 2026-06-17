@@ -24,11 +24,11 @@
 
 import { api, router } from '../domain/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
-import Feed from './View/Feed'
+import FeedEntries from './View/FeedEntries.vue'
 
 export default {
   components: {
-    Feed,
+    Feed: FeedEntries,
     LoadingIndicatorSecondary,
   },
   data() {

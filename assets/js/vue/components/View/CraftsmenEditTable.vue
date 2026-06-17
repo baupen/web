@@ -85,7 +85,7 @@ export default {
         return null;
       }
 
-      return this.craftsmen.sort((a, b) => a.trade.localeCompare(b.trade))
+      return [...this.craftsmen].sort((a, b) => a.trade.localeCompare(b.trade))
     }
   },
 }

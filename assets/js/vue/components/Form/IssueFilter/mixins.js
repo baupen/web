@@ -10,7 +10,7 @@ const entityFilterMixin = {
   props: {
     entities: {
       type: Array,
-      default: []
+      default: () => []
     },
     initialSelectedEntities: {
       type: Array,

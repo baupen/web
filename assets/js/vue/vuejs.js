@@ -46,15 +46,14 @@ import it from './localization/it.json'
 import { clickOutside, focus } from './services/directives'
 
 // views
-import Dashboard from './Dashboard'
-import Dispatch from './Dispatch'
-import Edit from './Edit'
-import Filtered from './Filtered'
-import Foyer from './Foyer'
-import ReceiveWeekly from './ReceiveWeekly'
-import Register from './Register'
-import Resolve from './Resolve'
-import Switch from './Switch'
+import DashboardApp from './DashboardApp.vue'
+import DispatchApp from './DispatchApp.vue'
+import EditApp from './EditApp.vue'
+import FilteredApp from './FilteredApp.vue'
+import FoyerApp from './FoyerApp.vue'
+import RegisterApp from './RegisterApp.vue'
+import ResolveApp from './ResolveApp.vue'
+import SwitchApp from './SwitchApp.vue'
 import { createTranslator, createVuePlugin } from './localization/translator'
 
 // settings
@@ -94,46 +93,41 @@ function createVue (app) {
 }
 
 if (document.getElementById('dashboard') != null) {
-  createVue(Dashboard)
+  createVue(DashboardApp)
     .mount('#dashboard')
 }
 
 if (document.getElementById('dispatch') != null) {
-  createVue(Dispatch)
+  createVue(DispatchApp)
     .mount('#dispatch')
 }
 
 if (document.getElementById('edit') != null) {
-  createVue(Edit)
+  createVue(EditApp)
     .mount('#edit')
 }
 
 if (document.getElementById('filtered') != null) {
-  createVue(Filtered)
+  createVue(FilteredApp)
     .mount('#filtered')
 }
 
 if (document.getElementById('foyer') != null) {
-  createVue(Foyer)
+  createVue(FoyerApp)
     .mount('#foyer')
 }
 
-if (document.getElementById('receive-weekly') != null) {
-  createVue(ReceiveWeekly)
-    .mount('#receive-weekly')
-}
-
 if (document.getElementById('register') != null) {
-  createVue(Register)
+  createVue(RegisterApp)
     .mount('#register')
 }
 
 if (document.getElementById('resolve') != null) {
-  createVue(Resolve)
+  createVue(ResolveApp)
     .mount('#resolve')
 }
 
 if (document.getElementById('switch') != null) {
-  createVue(Switch)
+  createVue(SwitchApp)
     .mount('#switch')
 }

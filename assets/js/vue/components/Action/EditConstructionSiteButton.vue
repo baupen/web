@@ -58,14 +58,14 @@ export default {
 
       if (this.pendingPatch) {
         api.patch(this.constructionSite, this.patch, this.$t('_action.edit_construction_site.saved'))
-            .then(_ => {
+            .then(() => {
               this.patch = null
               this.patching = this.pendingChanges > 0
             })
       }
       if (this.image) {
         api.postConstructionSiteImage(this.constructionSite, this.image, this.$t('_action.edit_construction_site.replaced_construction_site_image'))
-            .then(_ => {
+            .then(() => {
               this.image = null
               this.patching = this.pendingChanges > 0
             })

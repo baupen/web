@@ -39,15 +39,15 @@ export default {
   props: {
     maps: {
       type: Array,
-      default: []
+      default: () => []
     },
     craftsmen: {
       type: Array,
-      default: []
+      default: () => []
     },
     constructionManagers: {
       type: Array,
-      default: []
+      default: () => []
     },
     default: {
       type: Object,

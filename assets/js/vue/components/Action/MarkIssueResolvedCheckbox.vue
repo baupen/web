@@ -43,7 +43,7 @@ export default {
       this.patching = true
 
       api.patch(this.issue, patch)
-          .then(_ => {
+          .then(() => {
             this.patching = false
             displaySuccess(this.$t('_action.mark_issue_resolved.marked'))
             this.$emit('marked')

@@ -36,7 +36,7 @@ export default {
       }
 
       api.patch(this.issue, patch)
-          .then(_ => {
+          .then(() => {
             this.isLoading = false
           })
     }

@@ -175,7 +175,7 @@
   <form-field for-id="craftsman" :label="$t('issue.craftsman')" :required="false">
     <select class="form-select mb-1"
             v-model="tradeFilter">
-      <option v-for="trade in sortedTrade" :value="trade">
+      <option v-for="trade in sortedTrade" :value="trade" :key="trade">
         {{ trade }}
       </option>
     </select>
@@ -213,7 +213,7 @@
 
 <script>
 
-import {createField, validateField, changedFieldValues, resetFields, requiredRule} from '../../services/validation'
+import {createField, validateField, changedFieldValues, resetFields} from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'

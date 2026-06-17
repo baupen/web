@@ -21,7 +21,6 @@
 
 <script>
 
-import LoadingIndicator from './Library/View/LoadingIndicator'
 import IssuesTable from './View/IssuesTable'
 import RegisterIssuesButton from './Action/RegisterIssuesButton'
 
@@ -29,7 +28,6 @@ export default {
   components: {
     RegisterIssuesButton,
     IssuesTable,
-    LoadingIndicator
   },
   data () {
     return {

@@ -15,11 +15,11 @@
 
 <script>
 
-import Modal from "./Modal";
+import BaseModal from "./BaseModal.vue";
 
 export default {
   emits: ['confirm', 'shown', 'hidden'],
-  components: {Modal},
+  components: { Modal: BaseModal},
   data() {
     return {
       show: false
