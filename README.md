@@ -23,8 +23,5 @@ Backend:
 - check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
 - fix construction site query for events
 
-fix behaviour:
-- When construction manager is POSTed, if email already exists, generic error is thrown.
-
 after release:
 - remove BASE_URI from .env of instances
