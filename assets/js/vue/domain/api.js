@@ -245,7 +245,7 @@ const api = {
       root: iriToId(root['@id']),
       isDeleted: false
     }
-    
+
     if (onlyContextualForChildren) {
       query.contextualForChildren = true
     }
