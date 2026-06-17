@@ -54,11 +54,11 @@ export default {
     },
     maps: {
       type: Array,
-      default: []
+      default: () => []
     },
     craftsmen: {
       type: Array,
-      default: []
+      default: () => []
     },
   },
   computed: {
@@ -100,7 +100,7 @@ export default {
       api.postIssue(payload)
           .then(issue => {
             api.postIssueImage(issue, this.image, successMessage)
-                .then(_ => finishedPosting(issue))
+                .then(() => finishedPosting(issue))
           })
     }
   }

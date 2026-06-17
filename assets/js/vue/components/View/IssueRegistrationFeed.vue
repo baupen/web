@@ -1,15 +1,17 @@
 <template>
-  <template v-if="issueGroups.length > 0" v-for="(entry, index) in issueGroups">
-    <hr v-if="index !== 0" />
+  <template v-if="issueGroups.length > 0">
+    <template v-for="(entry, index) in issueGroups" :key="index">
+      <hr v-if="index !== 0" />
 
-    <span>
-      {{ getConstructionManagerName(entry.registeredBy) }}
-      {{$t('_view.feed.entries.has_registered', {count: entry.count})}}
-    </span>
-    <span class="text-secondary">
-      -
-      <date-human-readable :value="entry.date" />
-    </span>
+      <span>
+        {{ getConstructionManagerName(entry.registeredBy) }}
+        {{$t('_view.feed.entries.has_registered', {count: entry.count})}}
+      </span>
+      <span class="text-secondary">
+        -
+        <date-human-readable :value="entry.date" />
+      </span>
+    </template>
   </template>
   <span v-else><i>{{ $t('_view.feed.no_entries') }}</i></span>
 </template>

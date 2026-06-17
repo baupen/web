@@ -25,14 +25,14 @@
 import { displayError } from '../../services/notifiers'
 
 import FormField from '../Library/FormLayout/FormField'
-import Dropzone from '../Library/FormInput/Dropzone'
+import FileDropzone from '../Library/FormInput/FileDropzone.vue'
 import { craftsmanTransformer } from '../../domain/transformers'
 import {isSafari} from "../../services/utils";
 import { excelTransformer } from '../../services/excel'
 
 export default {
   components: {
-    Dropzone,
+    Dropzone: FileDropzone,
     FormField
   },
   emits: ['imported'],

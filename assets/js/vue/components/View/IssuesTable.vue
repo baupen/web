@@ -264,7 +264,7 @@ export default {
     },
     hiddenIssues: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   computed: {
@@ -456,7 +456,8 @@ export default {
         this.filterConfiguration = payload.filterConfiguration
         this.filter = payload.filter
       } catch (e) {
-        // we do not care
+        // we do not care; simply cannot recover state
+        console.log(e)
       }
     }
 

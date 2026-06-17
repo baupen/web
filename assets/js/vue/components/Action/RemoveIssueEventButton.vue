@@ -42,7 +42,7 @@ export default {
   methods: {
     confirm: function () {
       api.delete(this.issueEvent, this.$t('_action.remove_issue_event.removed'))
-          .then(_ => this.$emit('removed'))
+          .then(() => this.$emit('removed'))
     },
   }
 }

@@ -98,11 +98,11 @@ import {
 } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import Help from '../Library/FormLayout/Help'
+import FormHelp from '../Library/FormLayout/FormHelp.vue'
 
 export default {
   components: {
-    Help,
+    Help: FormHelp,
     InvalidFeedback,
     FormField
   },

@@ -124,6 +124,8 @@ export default {
       } else if (this.root['@id'].includes('construction_sites')) {
         return this.$t('construction_site._name')
       }
+
+      return null
     },
     isCreatedByConstructionManager: function () {
       return this.createdBy && this.createdBy['@id'].includes('construction_managers');

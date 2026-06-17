@@ -67,7 +67,7 @@ export default {
       this.patching = true
       const constructionManagers = this.constructionSite.constructionManagers.filter(cm => cm !== this.constructionManager['@id'])
       api.patch(this.constructionSite, { constructionManagers }, this.$t('_action.dissociate_construction_manager.dissociated'))
-        .then(_ => {
+        .then(() => {
           this.$emit('dissociated')
           this.patching = false
         })

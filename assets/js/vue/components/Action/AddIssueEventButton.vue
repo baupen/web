@@ -151,7 +151,7 @@ export default {
           .then(issueEvent => {
             const file = this.entryType === 'IMAGE' ? this.image : this.file;
             api.postIssueEventFile(issueEvent, file, successMessage)
-                .then(_ => {
+                .then(() => {
                   this.file = null
                   this.posting = false
                   this.$emit('added', issueEvent)

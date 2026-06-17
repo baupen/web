@@ -40,7 +40,7 @@ export default {
           this.$t('_action.archive_construction_site.unarchived') :
           this.$t('_action.archive_construction_site.archived')
       api.patch(this.constructionSite, {isArchived: !this.constructionSite.isArchived}, successMessage)
-          .then(_ => {
+          .then(() => {
             this.patching = false
           })
     },

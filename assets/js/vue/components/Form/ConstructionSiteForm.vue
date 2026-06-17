@@ -82,7 +82,7 @@ export default {
     constructionSites: {
       type: Array,
       required: false,
-      default: []
+      default: () => []
     }
   },
   watch: {

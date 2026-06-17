@@ -1,12 +1,12 @@
 <template>
   <span>
     <view-issue-button
-        v-if="status === 'view'"
-        ref="viewIssueButton"
-        button-size="sm"
-        :construction-manager-iri="constructionManagerIri" :issue="issue" :craftsmen="craftsmen"
-        :construction-managers="constructionManagers" :map="mapContainer?.entity" :construction-site="constructionSite"
-        :map-parent-names="mapContainer?.mapParentNames"/>
+      v-if="status === 'view'"
+      ref="viewIssueButton"
+      button-size="sm"
+      :construction-manager-iri="constructionManagerIri" :issue="issue" :craftsmen="craftsmen"
+      :construction-managers="constructionManagers" :map="mapContainer?.entity" :construction-site="constructionSite"
+      :map-parent-names="mapContainer?.mapParentNames"/>
     <button v-else :disabled="status === 'loading'"
             class="btn btn-sm btn-outline-secondary" @click="load">
       <font-awesome-icon :icon="['far', 'dot-circle']"/>
@@ -16,14 +16,14 @@
 
 <script>
 
-import ViewIssueButton from "./ViewIssueButton.vue";
-import {api} from "../../domain/api";
+import ViewIssueButton from './ViewIssueButton.vue'
+import { api } from '../../domain/api'
 
 export default {
   components: {
     ViewIssueButton,
   },
-  data() {
+  data () {
     return {
       status: 'initial',
       issue: null,
@@ -67,11 +67,10 @@ export default {
   methods: {
     load: async function () {
       this.status = 'loading'
-      this.issue = await api.getById("/api/issues/" + this.issueId)
+      this.issue = await api.getById('/api/issues/' + this.issueId)
       this.status = 'view'
-      return this.$nextTick(() => {
-        this.$refs.viewIssueButton.$el.nextElementSibling.click()
-      })
+      await this.$nextTick()
+      this.$refs.viewIssueButton.$el.nextElementSibling.click()
     }
   }
 }

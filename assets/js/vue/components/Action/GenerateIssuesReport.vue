@@ -50,11 +50,11 @@ export default {
     },
     craftsmen: {
       type: Array,
-      default: []
+      default: () => []
     },
     maps: {
       type: Array,
-      default: []
+      default: () => []
     },
     reportConfiguration: {
       type: Object,
@@ -185,7 +185,7 @@ export default {
 
       const currentMap = currentReport.prerenderMaps[mapIndex]
       api.getIssuesRenderProbe(this.constructionSite, currentMap, query)
-        .then(_ => {
+        .then(() => {
           this.prerenderMap(reportIndex, mapIndex + 1)
         })
     },

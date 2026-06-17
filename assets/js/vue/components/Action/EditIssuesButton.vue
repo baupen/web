@@ -54,7 +54,7 @@ export default {
   props: {
     issues: {
       type: Array,
-      default: []
+      default: () => []
     },
     constructionSite: {
       type: Object,
@@ -62,11 +62,11 @@ export default {
     },
     craftsmen: {
       type: Array,
-      default: []
+      default: () => []
     },
     maps: {
       type: Array,
-      default: []
+      default: () => []
     },
     constructionManagerIri: {
       type: String,
@@ -233,7 +233,7 @@ export default {
     patchIssues () {
       const payload = this.prePatchedIssues[0]
       api.patch(payload.issue, payload.patch)
-          .then(_ => {
+          .then(() => {
                 this.prePatchedIssues.shift()
 
                 if (this.prePatchedIssues.length === 0) {
@@ -247,7 +247,7 @@ export default {
     postIssueImages () {
       const payload = this.prePostedIssueImages[0]
       api.postIssueImage(payload.issue, payload.image)
-          .then(_ => {
+          .then(() => {
                 this.prePostedIssueImages.shift()
 
                 if (this.prePostedIssueImages.length === 0) {

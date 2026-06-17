@@ -82,7 +82,7 @@ export default {
     },
     maps: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   watch: {
