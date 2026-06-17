@@ -49,7 +49,6 @@ readonly class ConstructionSiteProcessor implements ProcessorInterface
             $sample->setLocality($data->getLocality());
             $sample->setIsHidden(true);
             $data = $sample;
-            dump($data);
             DoctrineHelper::persistAndFlush($this->managerRegistry, $data, $constructionManager);
         } elseif ($operation instanceof Post) {
             $this->storageService->setNewFolderName($data);

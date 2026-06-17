@@ -81,7 +81,7 @@ export default {
       this.issue = await api.getById("/api/issues/" + this.issueId)
       this.status = 'view'
       return this.$nextTick(() => {
-        console.log(this.$refs.viewIssueButton.$el.nextElementSibling.click())
+        this.$refs.viewIssueButton.$el.nextElementSibling.click()
       })
     }
   }
