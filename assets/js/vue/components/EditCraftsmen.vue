@@ -20,6 +20,7 @@ import CraftsmenEditTable from './View/CraftsmenEditTable'
 import { api } from '../domain/api'
 import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
 import ExportCraftsmenButton from './Action/ExportCraftsmenButton'
+import { store } from '../domain/stores'
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
     }
   },
   mounted () {
-    this.reload()
+    this.craftsmen = [...store.craftsmen]
   }
 }
 </script>

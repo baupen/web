@@ -23,9 +23,6 @@ Backend:
 - check n+1 problem when querying for issues; need to join other entities? (when generating report, querying construction site, map, issue)
 - fix construction site query for events
 
-Frontend:
-- Data: Preload construction site data with dedicated js file, replace data injection by store for this general data.
-
 fix behaviour:
 - When construction manager is POSTed, if email already exists, generic error is thrown.
 
