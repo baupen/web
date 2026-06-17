@@ -17,10 +17,3 @@ It suggests the following workflow:
  - the construction manager inspects the issues the craftsman resolved, and closes those which are completed to satisfaction
 
 The first and the last step are best executed using the [iOS](https://github.com/baupen/iOS) or [Android](https://github.com/baupen/Android) apps.
-
-
-Backend:
-- fix construction site query for events
-
-after release:
-- remove BASE_URI from .env of instances
