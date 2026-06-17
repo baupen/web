@@ -69,7 +69,7 @@ class UserService implements UserServiceInterface
     {
         // retrieve existing construction manager if existing
         $template = $this->registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $template->getEmail()]) ?? $template;
-        if ($template?->getRegistrationCompleted()) {
+        if ($template->getRegistrationCompleted()) {
             $error = UserServiceInterface::REGISTRATION_FAIL_ALREADY_REGISTERED;
 
             return false;
