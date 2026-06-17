@@ -92,7 +92,7 @@ export default {
         ...(this.meta ?? {})
       }
       api.patch(this.issueEvent, payload, this.$t('_action.edit_issue_event.saved'))
-          .then(_ => { this.patching = false})
+          .then(() => { this.patching = false})
     }
   }
 }

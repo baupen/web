@@ -64,7 +64,7 @@ export default {
     processUnregisteredIssues () {
       const payload = this.preRegisterIssues[0]
       api.patch(payload.issue, payload.patch)
-          .then(_ => {
+          .then(() => {
                 this.$emit('registered', payload.issue)
                 this.preRegisterIssues.shift()
 

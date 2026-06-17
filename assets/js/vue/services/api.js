@@ -3,7 +3,7 @@ import { displayError } from './notifiers'
 const httpClient = {
   additionalHeaders: {},
   _handleError: async function (response) {
-    let responseData = null
+    let responseData
 
     try {
       responseData = await response.json()

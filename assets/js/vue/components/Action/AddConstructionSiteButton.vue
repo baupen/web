@@ -37,7 +37,7 @@ export default {
     },
     constructionSites: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   computed: {
@@ -64,7 +64,7 @@ export default {
       api.postConstructionSite(payload)
           .then(constructionSite => {
             api.postConstructionSiteImage(constructionSite, this.image, successMessage)
-                .then(_ => {
+                .then(() => {
                   this.posting = false
                   this.$emit('added', constructionSite)
                 })

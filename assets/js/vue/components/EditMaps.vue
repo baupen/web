@@ -10,7 +10,6 @@
 <script>
 import AddMapButton from './Action/AddMapButton'
 import MapsEditTable from './View/MapsEditTable'
-import { api } from '../domain/api'
 import { store } from '../domain/stores'
 
 export default {

@@ -66,7 +66,7 @@ export default {
       api.postMap(payload)
           .then(map => {
             api.postMapFile(map, this.file, successMessage)
-                .then(_ => {
+                .then(() => {
                   this.posting = false
                   this.$emit('added', map)
                 })

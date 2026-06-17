@@ -43,7 +43,7 @@ export default {
   props: {
     issues: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   computed: {
@@ -60,7 +60,7 @@ export default {
     deleteIssues () {
       const issue = this.preDeletedIssues[0]
       api.delete(issue)
-          .then(_ => {
+          .then(() => {
                 this.preDeletedIssues.shift()
                 this.$emit('removed', issue)
 

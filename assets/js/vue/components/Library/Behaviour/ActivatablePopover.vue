@@ -12,10 +12,10 @@
 
 <script>
 
-import Popover from "./Popover";
+import TitlePopover from "./TitlePopover.vue";
 
 export default {
-  components: {Popover},
+  components: { Popover: TitlePopover},
   emits: ['shown'],
   props: {
     title: {

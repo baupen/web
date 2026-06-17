@@ -147,7 +147,7 @@ export default {
     processUnsentEmails () {
       const email = this.unsentEmails[0]
       api.postCraftsmanEmail(email)
-          .then(_ => {
+          .then(() => {
                 this.unsentEmails.shift()
                 this.$emit('email-sent', this.craftsmen.find(c => c['@id'] === email.receiver))
 
@@ -169,7 +169,7 @@ export default {
         }
 
         api.patch(this.selectedEmailTemplate, patch, this.$t('_action.compose_craftsman_email.saved_email_template'))
-            .then(_ => this.storingTemplate = false)
+            .then(() => this.storingTemplate = false)
       } else {
         const emailTemplate = Object.assign({
           selfBcc: this.selfBcc,

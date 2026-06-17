@@ -34,10 +34,10 @@ export default {
       this.isPatching = true
       if (this.isClosed) {
         const patch = { 'closedAt': null, 'closedBy': null }
-        api.patch(this.task, patch, this.$t('_action.toggle_open_closed_task.opened')).then(_ => this.isPatching = false)
+        api.patch(this.task, patch, this.$t('_action.toggle_open_closed_task.opened')).then(() => this.isPatching = false)
       } else {
         const patch = { 'closedAt': (new Date()).toISOString(), 'closedBy': this.constructionManagerIri }
-        api.patch(this.task, patch, this.$t('_action.toggle_open_closed_task.closed')).then(_ => this.isPatching = false)
+        api.patch(this.task, patch, this.$t('_action.toggle_open_closed_task.closed')).then(() => this.isPatching = false)
       }
     }
   }

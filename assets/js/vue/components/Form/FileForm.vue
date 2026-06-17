@@ -17,13 +17,13 @@
 <script>
 
 import FormField from '../Library/FormLayout/FormField'
-import Dropzone from '../Library/FormInput/Dropzone'
+import FileDropzone from '../Library/FormInput/FileDropzone.vue'
 import {validPdfFileTypes, validSafeFileTypes} from '../../domain/api'
 import {isSafari} from "../../services/utils";
 
 export default {
   components: {
-    Dropzone,
+    Dropzone: FileDropzone,
     FormField
   },
   emits: ['update'],

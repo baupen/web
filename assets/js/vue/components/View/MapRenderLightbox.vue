@@ -36,7 +36,7 @@ export default {
     },
     query: {
       type: Object,
-      default: { }
+      required: false
     },
     preview: {
       type: Boolean,

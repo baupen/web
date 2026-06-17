@@ -54,11 +54,11 @@ export default {
     },
     mapContainers: {
       type: Array,
-      default: []
+      default: () => []
     },
     constructionManagers: {
       type: Array,
-      default: []
+      default: () => []
     },
     query: {
       type: Object,

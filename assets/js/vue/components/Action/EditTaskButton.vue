@@ -46,7 +46,7 @@ export default {
 
       this.patching = true
       api.patch(this.task, this.patch, this.$t('_action.edit_craftsman.saved'))
-          .then(_ => { this.patching = false})
+          .then(() => { this.patching = false})
     }
   }
 }

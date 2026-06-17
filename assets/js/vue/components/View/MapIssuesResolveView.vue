@@ -61,7 +61,7 @@ export default {
   props: {
     constructionManagers: {
       type: Array,
-      default: []
+      default: () => []
     },
     constructionSite: {
       type: Object,

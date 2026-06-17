@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import Lightbox from '../Library/Behaviour/Lightbox'
+import ImageLightbox from '../Library/Behaviour/ImageLightbox.vue'
 
 export default {
   components: {
-    Lightbox
+    Lightbox: ImageLightbox
   },
   props: {
     src: {

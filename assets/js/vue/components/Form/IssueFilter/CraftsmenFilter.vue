@@ -42,8 +42,9 @@ export default {
   ],
   computed: {
     orderedCraftsmen: function () {
-      return this.entities.sort((a, b) => a.trade.localeCompare(b.trade))
-          .filter(c => !c.isDeleted)
+      return this.entities
+        .filter(c => !c.isDeleted)
+        .sort((a, b) => a.trade.localeCompare(b.trade))
     }
   }
 }
