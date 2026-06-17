@@ -32,6 +32,9 @@
                             {{ "connect_app.title"|trans({}, "help") }}
                         </a>
                     </li>
+                    <a class="nav-link {% if app.request.requestUri == "/profile" %}active{% endif %}" href="{{ path("profile") }}">
+                        {{ "index.title"|trans({}, "profile") }}
+                    </a>
                     <div class="vr ms-2 me-2"></div>
                 {% endif %}
                 <a href="mailto:{{ env_support_email }}" class="nav-link">

@@ -1,0 +1,14 @@
+index:
+  description: 'Profil, Einstellungen und Passwort bearbeiten'
+  title: 'Profil'
+  profile: 'Profil'
+  edit_profile_submit: 'Kontaktdaten aktualisieren'
+  settings: 'Einstellungen'
+  settings_submit: 'Einstellungen speichern'
+  set_password: 'Passwort'
+  set_password_submit: 'Passwort setzen'
+  set_password_hint: 'Bitte verbinden Sie sich erneut mit der App, wenn Sie das Password aktualisieren.'
+  success:
+    profile_updated: 'Profil aktualisiert'
+    settings_updated: 'Einstellungen aktualisiert'
+    password_updated: 'Passwort aktualisiert'
