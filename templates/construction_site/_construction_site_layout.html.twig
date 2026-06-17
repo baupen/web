@@ -7,13 +7,6 @@
 {% endmacro %}
 {% import _self as own_macros %}
 
-{% block navigation_primary_brand %}
-    <a class="navbar-brand p-2"
-       href="{{ path("construction_site_dashboard", {"constructionSite": constructionSite.id}) }}">
-        {{ constructionSite.name }}
-    </a>
-{% endblock %}
-
 {% block navbar_content %}
     <nav class="navbar navbar-light bg-light border-bottom navbar-expand p-2">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#constructionSiteNavbar"
