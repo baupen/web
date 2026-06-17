@@ -240,14 +240,17 @@ const api = {
     return restClient.getCollection('/api/issue_events', query)
   },
   getIssueEvents: function (constructionSite, root, onlyContextualForChildren = false) {
-    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    queryString += '&root=' + iriToId(root['@id'])
-    if (onlyContextualForChildren) {
-      queryString += '&contextualForChildren=true'
+    const query = {
+      constructionSite: iriToId(constructionSite['@id']),
+      root: iriToId(root['@id']),
+      isDeleted: false
     }
-    queryString += '&isDeleted=false'
+    
+    if (onlyContextualForChildren) {
+      query.contextualForChildren = true
+    }
 
-    return restClient.getCollection('/api/issue_events', queryString)
+    return restClient.getCollection('/api/issue_events', query)
   },
   postMap: function (map, successMessage = null) {
     return apiClient.post('/api/maps', map, successMessage)
