@@ -205,7 +205,7 @@ import RegisterIssuesButton from "../Action/RegisterIssuesButton.vue";
 import AddIssueButton from "../Action/AddIssueButton.vue";
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count', 'loaded-craftsmen', 'loaded-maps', 'loaded-construction-managers', 'reset-hidden'],
+  emits: ['selected', 'query', 'queried-issue-count', 'reset-hidden'],
   components: {
     AddIssueButton,
     RegisterIssuesButton,
@@ -228,10 +228,6 @@ export default {
   },
   data() {
     return {
-      constructionManagers: null,
-      craftsmen: null,
-      maps: null,
-
       filter: null,
       filterConfiguration: null,
 
@@ -253,6 +249,18 @@ export default {
     constructionManagerIri: {
       type: String,
       required: false
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
+      required: true
     },
     view: {
       type: String,
@@ -465,32 +473,6 @@ export default {
     }
 
     this.loadIssues(this.filter ?? this.defaultFilter)
-
-    let craftsmanQuery = {}
-    if (this.presetFilter && this.presetFilter['craftsman[]']) {
-      craftsmanQuery['id[]'] = this.presetFilter['craftsman[]']
-    }
-    api.getCraftsmen(this.constructionSite, craftsmanQuery)
-        .then(craftsmen => {
-          this.craftsmen = craftsmen
-          this.$emit('loaded-craftsmen', this.craftsmen)
-        })
-
-    let mapQuery = {}
-    if (this.presetFilter && this.presetFilter['map[]']) {
-      mapQuery['id[]'] = this.presetFilter['map[]']
-    }
-    api.getMaps(this.constructionSite, mapQuery)
-        .then(maps => {
-          this.maps = maps
-          this.$emit('loaded-maps', this.maps)
-        })
-
-    api.getConstructionManagers(this.constructionSite)
-        .then(constructionManagers => {
-          this.constructionManagers = constructionManagers
-          this.$emit('loaded-construction-managers', this.constructionManagers)
-        })
   }
 }
 </script>

@@ -3,6 +3,7 @@
     <loading-indicator :spin="isLoading">
       <register-issues
           :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"
+          :maps="maps" :craftsmen="craftsmen" :construction-managers="constructionManagers"
           :initial-state-query="initialStateQuery"
       />
     </loading-indicator>
@@ -13,9 +14,11 @@
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import RegisterIssues from './components/RegisterIssues'
 import { meStore, store } from './domain/stores'
+import FilteredIssues from './components/FilteredIssues.vue'
 
 export default {
   components: {
+    FilteredIssues,
     RegisterIssues,
     LoadingIndicator
   },
@@ -23,6 +26,9 @@ export default {
     return {
       constructionManagerIri: null,
       constructionSite: null,
+      maps: null,
+      craftsmen: null,
+      constructionManagers: null,
     }
   },
   computed: {
@@ -40,6 +46,9 @@ export default {
     const me = meStore.me
     this.constructionManagerIri = me.constructionManagerIri
     this.constructionSite = store.constructionSite
+    this.maps = store.maps
+    this.craftsmen = store.craftsmen
+    this.constructionManagers = store.constructionManagers
   }
 }
 
