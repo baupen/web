@@ -22,14 +22,12 @@
 
 import {api, iriToId} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import DeleteForm from '../Form/DeleteForm'
 import LoadingIndicator from "../Library/View/LoadingIndicator.vue";
 
 export default {
   emits: ['dissociated'],
   components: {
     LoadingIndicator,
-    DeleteForm,
     ButtonWithModalConfirm
   },
   data () {

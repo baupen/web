@@ -22,7 +22,7 @@
         <p class="text-center">{{ $t('_view.no_craftsmen') }}</p>
       </td>
     </tr>
-    <tr v-else v-for="craftsman in orderedCraftsmen">
+    <tr v-else v-for="craftsman in orderedCraftsmen" :key="craftsman['@id']">
       <td>
         {{ craftsman.trade }}<br/>
         <span class="text-muted">{{ craftsman.company }}</span>

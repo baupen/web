@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { api, apiClient } from './domain/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
 import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'

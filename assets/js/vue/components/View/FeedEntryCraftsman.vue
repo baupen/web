@@ -21,7 +21,6 @@
 <script>
 
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import {constructionManagerFormatter} from '../../domain/formatters'
 import ViewLoadingIssueButton from "../Action/ViewLoadingIssueButton.vue";
 
 export default {

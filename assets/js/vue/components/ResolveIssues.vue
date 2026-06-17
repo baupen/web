@@ -72,8 +72,6 @@ import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import IssuesResolveView from './View/MapIssuesResolveView'
 import {mapTransformer} from '../domain/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
-import GenerateIssuesReport from './Action/GenerateIssuesReport'
-import ExportIssuesReportView from './Action/ExportIssuesReportView'
 import {constructionSiteFormatter} from '../domain/formatters'
 import ConstructionSiteView from './View/ConstructionSiteView'
 import ExportCraftsmanIssuesView from "./Action/ExportCraftsmanIssuesView.vue";
@@ -84,8 +82,6 @@ export default {
     IssueRegistrationFeed,
     ExportCraftsmanIssuesView,
     ConstructionSiteView,
-    ExportIssuesReportView,
-    GenerateIssuesReport,
     MapsResolveTable,
     IssuesResolveView,
     LoadingIndicatorSecondary,

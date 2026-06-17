@@ -181,14 +181,10 @@
 
 <script>
 
-import LoadingIndicator from '../Library/View/LoadingIndicator'
 import EditIssuesButton from '../Action/EditIssuesButton'
 import RemoveIssuesButton from '../Action/RemoveIssuesButton'
 import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
-import TooltipToggleIcon from '../Library/View/TooltipToggleIcon'
-import TooltipText from '../Library/View/TooltipText'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { debounce } from '../../services/utils'
 import {addNonDuplicatesById, api} from '../../domain/api'
 import {arraysAreEqual} from '../../services/algorithms'
@@ -197,34 +193,26 @@ import {filterTransformer, mapTransformer} from '../../domain/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ToggleIcon from '../Library/View/ToggleIcon'
-import AddCraftsmanButton from '../Action/AddCraftsmanButton'
 import ViewIssueButton from '../Action/ViewIssueButton'
 import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
-import RegisterIssuesButton from "../Action/RegisterIssuesButton.vue";
 import AddIssueButton from "../Action/AddIssueButton.vue";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count', 'reset-hidden'],
   components: {
     AddIssueButton,
-    RegisterIssuesButton,
     OrderCheckbox,
     OrderTableHead,
     ViewIssueButton,
-    AddCraftsmanButton,
     ToggleIcon,
     LoadingIndicatorTableBody,
     FilterIssuesButton,
     ImageLightbox,
-    DateTimeHumanReadable,
     DateHumanReadable,
-    TooltipText,
-    TooltipToggleIcon,
     CustomCheckbox,
     RemoveIssuesButton,
     EditIssuesButton,
-    LoadingIndicator
   },
   data() {
     return {

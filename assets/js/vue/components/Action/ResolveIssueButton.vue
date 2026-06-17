@@ -8,11 +8,9 @@
 </template>
 
 <script>
-import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
 import { api } from '../../domain/api'
 
 export default {
-  components: { ButtonWithModal },
   data () {
     return {
       isLoading: false

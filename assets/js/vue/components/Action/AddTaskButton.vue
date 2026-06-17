@@ -17,7 +17,6 @@ export default {
   components: {
     ButtonWithModalConfirm,
     TaskForm
-
   },
   data () {
     return {

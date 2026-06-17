@@ -3,10 +3,9 @@ import './vue/vuejs'
 
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
-// noinspection ES6UnusedImports; imports code so modals etc work
-import * as boostrap from 'bootstrap' // eslint-disable-line
+import 'bootstrap'
 
-const QRious = require('qrious')
+import QRious from 'qrious'
 
 // register some basic usability functionality
 document.addEventListener('DOMContentLoaded', () => {
@@ -53,7 +52,7 @@ function renderQRCode (token) {
 
   const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
   Array.from(authenticationTokenCanvas).forEach(element => {
-     
+
     new QRious({
       element,
       level: 'Q',

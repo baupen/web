@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { api, router } from '../../domain/api'
+import { router } from '../../domain/api'
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
 import SetMapPositionForm from "../Form/SetMapPositionForm.vue";
 

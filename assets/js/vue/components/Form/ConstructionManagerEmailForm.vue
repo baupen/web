@@ -14,11 +14,9 @@
 import { createField, requiredRule, validateField, validateFields, changedFieldValues } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import Help from '../Library/FormLayout/Help'
 
 export default {
   components: {
-    Help,
     InvalidFeedback,
     FormField
   },

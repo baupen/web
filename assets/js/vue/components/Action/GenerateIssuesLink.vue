@@ -17,11 +17,10 @@
 </template>
 
 <script>
-import { api, iriToId, maxIssuesPerReport } from '../../domain/api'
-import { filterTransformer, mapTransformer } from '../../domain/transformers'
+import { api } from '../../domain/api'
+import { filterTransformer } from '../../domain/transformers'
 
 export default {
-  components: {},
   emits: ['generation-finished'],
   data () {
     return {

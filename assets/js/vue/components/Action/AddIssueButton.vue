@@ -24,12 +24,10 @@ import {api} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssuesForm from "../Form/IssuesForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
-import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
   emits: ['added'],
   components: {
-    CustomCheckbox,
     ImageForm,
     IssuesForm,
     ButtonWithModalConfirm,

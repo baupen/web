@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import ButtonWithModal from './ButtonWithModal'
 import Modal from './Modal'
 import CustomCheckbox from "../FormInput/CustomCheckbox.vue";
 
@@ -48,7 +47,6 @@ export default {
   components: {
     CustomCheckbox,
     Modal,
-    ButtonWithModal
   },
   data() {
     return {
