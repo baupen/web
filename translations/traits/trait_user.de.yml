@@ -9,5 +9,9 @@ profile: Profil
 repeat_plain_password: 'Passwort wiederholen'
 trait:
   name: Benutzer
-  name_and_email_optional: 'Name & Telefonnummer werden zur Korrespondenz mit den Unternehmern genutzt.'
+  name_and_email_optional: 'Name & Telefonnummer werden den Unternehmern angezeigt.'
 registration_completed_at: 'Registrationsdatum'
+receive_weekly: 'Weekly empfangen'
+
+help:
+  receive_weekly: 'Sie erhalten eine wöchentliche E-Mail mit den aktuellen Aktivitäten auf Ihren Baustellen.'

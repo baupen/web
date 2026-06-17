@@ -142,7 +142,8 @@ class SecurityController extends AbstractController
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'register_confirm.submit']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator, $passwordHasher)) {
+        $error = null;
+        if ($form->isSubmitted() && $form->isValid() && self::applySetPasswordType($form->get('password'), $constructionManager, $translator, $passwordHasher, $error)) {
             $constructionManager->setAuthenticationToken();
             $constructionManager->setRegistrationCompletedNow();
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
@@ -152,6 +153,10 @@ class SecurityController extends AbstractController
             $emailService->sendAppInvitation($constructionManager);
 
             return $this->redirectToRoute('help_welcome');
+        }
+
+        if ($error) {
+            $this->addFlash('danger', $error);
         }
 
         return $this->render('security/register_confirm.html.twig', ['form' => $form->createView()]);
@@ -189,7 +194,8 @@ class SecurityController extends AbstractController
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'recover_confirm.submit']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator, $passwordHasher)) {
+        $error = null;
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator, $passwordHasher, $error)) {
             $constructionManager->setAuthenticationHash();
             $constructionManager->setAuthenticationToken();
             DoctrineHelper::persistAndFlush($registry, $constructionManager);
@@ -200,6 +206,10 @@ class SecurityController extends AbstractController
             $security->login($constructionManager, 'form_login');
 
             return $this->redirectToRoute('index');
+        }
+
+        if ($error) {
+            $this->addFlash('danger', $error);
         }
 
         return $this->render('security/recover_confirm.html.twig', ['form' => $form->createView()]);
@@ -218,19 +228,19 @@ class SecurityController extends AbstractController
         return true;
     }
 
-    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator, UserPasswordHasherInterface $passwordHasher): bool
+    public static function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator, UserPasswordHasherInterface $passwordHasher, ?string &$error = null): bool
     {
         $plainPassword = $form->get('plainPassword')->getData();
         $repeatPlainPassword = $form->get('repeatPlainPassword')->getData();
 
         if (strlen($plainPassword) < 8) {
-            $this->addFlash('danger', $translator->trans('recover_confirm.error.password_too_short', [], 'security'));
+            $error = $translator->trans('recover_confirm.error.password_too_short', [], 'security');
 
             return false;
         }
 
         if ($plainPassword !== $repeatPlainPassword) {
-            $this->addFlash('danger', $translator->trans('recover_confirm.error.passwords_do_not_match', [], 'security'));
+            $error = $translator->trans('recover_confirm.error.passwords_do_not_match', [], 'security');
 
             return false;
         }
