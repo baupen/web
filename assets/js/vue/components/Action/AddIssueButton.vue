@@ -8,11 +8,11 @@
     </template>
 
     <issues-form
-        ref="issue-form"
+        ref="issueForm"
         :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :template="template"
         mode="create" @update="post = $event" @confirm="$refs['modal'].confirm()">
       <template v-slot:before-description>
-        <image-form ref="image-form" @update="image = $event"/>
+        <image-form ref="imageForm" @update="image = $event"/>
       </template>
     </issues-form>
   </button-with-modal-confirm>
@@ -84,8 +84,13 @@ export default {
         this.posting = false
         this.$emit('added', issue)
 
-        this.$refs['issue-form'].position = undefined
-        this.$refs['image-form'].image = null
+        if (this.$refs.issueForm) {
+          this.$refs.issueForm.position = undefined
+        }
+
+        if (this.$refs.imageForm) {
+          this.$refs.imageForm.image = null
+        }
       }
 
       if (!this.image) {
