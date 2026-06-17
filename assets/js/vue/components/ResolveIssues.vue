@@ -92,8 +92,6 @@ export default {
   },
   data() {
     return {
-      constructionManagers: null,
-      maps: null,
       issuesGroupByMap: null,
       recentlyChangedIssues: null
     }
@@ -105,6 +103,14 @@ export default {
     },
     constructionSite: {
       type: Object,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
       required: true
     }
   },
@@ -153,14 +159,6 @@ export default {
     },
   },
   mounted() {
-    api.getConstructionManagers(this.constructionSite)
-        .then(constructionManagers => {
-          this.constructionManagers = constructionManagers
-        })
-
-    api.getMaps(this.constructionSite)
-        .then(maps => this.maps = maps)
-
     api.getIssuesMapGroup(this.constructionSite, this.issuesQuery)
         .then(groups => this.issuesGroupByMap = groups)
 

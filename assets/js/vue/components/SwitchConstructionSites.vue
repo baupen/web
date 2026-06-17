@@ -63,6 +63,7 @@ import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 import SwitchTasks from "./SwitchTasks.vue";
 import { api } from '../domain/api'
 import AddSampleConstructionSiteButton from './Action/AddSampleConstructionSiteButton.vue'
+import { switchStore } from '../domain/stores'
 
 export default {
   components: {
@@ -118,8 +119,7 @@ export default {
     }
   },
   mounted() {
-    api.getConstructionSites()
-        .then(constructionSites => this.constructionSites = constructionSites)
+    this.constructionSites = [...switchStore.constructionSites]
   }
 }
 </script>
