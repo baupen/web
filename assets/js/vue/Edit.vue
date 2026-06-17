@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     loading: function () {
-      return !this.constructionSite || !this.constructionManager
+      return !this.constructionSite
     }
   },
   mounted () {
