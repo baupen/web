@@ -23,7 +23,6 @@
 
 <script>
 
-import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
 import { constructionSiteFormatter } from '../../domain/formatters'
 import ImageLightbox from './ImageLightbox'
 import EditConstructionSiteButton from '../Action/EditConstructionSiteButton'
@@ -34,7 +33,6 @@ export default {
     ArchiveConstructionSiteButton,
     EditConstructionSiteButton,
     ImageLightbox,
-    TableBodyLoadingIndicator,
   },
   props: {
     constructionSite: {

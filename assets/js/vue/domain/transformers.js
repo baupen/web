@@ -477,6 +477,7 @@ const filterTransformer = {
         } else if (fieldName === 'numbers') {
           filter['number[]'] = value
         } else if (fieldName === 'constructionSite' || fieldName === 'filteredUrl' || fieldName === 'authenticationToken' || fieldName.startsWith('@')) {
+          // ignore
         } else {
           filter[fieldName] = value
         }

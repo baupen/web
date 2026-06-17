@@ -39,7 +39,6 @@
 
 <script>
 
-import ConstructionSitesEnterMasonryCard from './ConstructionSiteEnterCard'
 import IssueResolveCard from './IssueResolveCard'
 import MapRenderLightbox from './MapRenderLightbox'
 import {api, iriToId} from '../../domain/api'
@@ -50,7 +49,6 @@ export default {
     LoadingIndicatorSecondary,
     MapRenderLightbox,
     IssueResolveCard,
-    ConstructionSitesEnterMasonryCard
   },
   data() {
     return {

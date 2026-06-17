@@ -16,7 +16,7 @@
         <p class="text-center">{{ $t('_view.no_maps') }}</p>
       </td>
     </tr>
-    <tr v-else v-for="mapContainer in mapContainers">
+    <tr v-else v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']">
       <td>
         {{ '&nbsp;'.repeat(mapContainer.level*4) }}{{ mapContainer.entity.name }}
       </td>

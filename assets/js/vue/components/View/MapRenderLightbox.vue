@@ -3,14 +3,12 @@
 </template>
 
 <script>
-import Lightbox from '../Library/Behaviour/Lightbox'
 import ImageLightbox from './ImageLightbox'
-import { api, iriToId, router } from '../../domain/api'
+import { iriToId, router } from '../../domain/api'
 
 export default {
   components: {
     ImageLightbox,
-    Lightbox
   },
   props: {
     constructionSite: {

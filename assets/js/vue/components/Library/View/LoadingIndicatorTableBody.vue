@@ -8,7 +8,6 @@
 
 <script>
 import LoopingRhombusSpinner from './Base/LoopingRhombusSpinner'
-
 export default {
   components: {
     LoopingRhombusSpinner

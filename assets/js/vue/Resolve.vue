@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { api, apiClient } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import ResolveIssues from './components/ResolveIssues'
 import { meStore, store } from './domain/stores'

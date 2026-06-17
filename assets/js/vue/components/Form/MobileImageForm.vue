@@ -19,12 +19,10 @@
 <script>
 
 import FormField from '../Library/FormLayout/FormField'
-import Dropzone from '../Library/FormInput/Dropzone'
 import {validImageTypes} from '../../domain/api'
 
 export default {
   components: {
-    Dropzone,
     FormField
   },
   emits: ['update'],

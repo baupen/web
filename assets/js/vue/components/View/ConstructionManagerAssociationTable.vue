@@ -9,7 +9,7 @@
     </thead>
     <tbody>
     <table-body-loading-indicator v-if="!orderedConstructionManagers" />
-    <tr v-else v-for="constructionManager in orderedConstructionManagers">
+    <tr v-else v-for="constructionManager in orderedConstructionManagers" :key="constructionManager['@id']">
       <td>
         {{ constructionManager.email }}
         <span v-if="!constructionManager.isEnabled" class="badge bg-danger ms-2">

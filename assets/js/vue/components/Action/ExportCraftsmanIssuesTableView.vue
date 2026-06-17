@@ -11,19 +11,13 @@
 
 <script>
 
-import IssueLinkForm from '../Form/IssueLinkForm'
-import GenerateIssuesFilter from './GenerateIssuesLink'
 import {utils, writeFileXLSX} from "xlsx-js-style";
-import {api, iriToId} from "../../domain/api";
+import {api} from "../../domain/api";
 import { constructionManagerFormatter } from '../../domain/formatters'
 import { dateTimeFormatter } from '../../services/formatters'
 
 
 export default {
-  components: {
-    IssueLinkForm,
-    GenerateIssuesFilter
-  },
   data() {
     return {
       loading: false

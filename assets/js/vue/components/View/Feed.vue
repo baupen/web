@@ -1,21 +1,22 @@
 <template>
-  <template v-if="relevantGroupedEvents.length > 0" v-for="(entry, index) in relevantGroupedEvents">
-    <hr v-if="index !== 0"/>
-    <feed-entry-construction-manager
-        v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date"
-        :entries="entry.events"/>
-    <feed-entry-craftsman
-        v-if="entry.craftsman"
-        :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"
-        :construction-managers="constructionManagers" :craftsmen="craftsmen"
-        :map-containers-lookup="mapContainersLookup"
-        :craftsman="entry.craftsman" :date="entry.date" :entries="entry.events"/>
+  <template v-if="relevantGroupedEvents.length > 0">
+    <template v-for="(entry, index) in relevantGroupedEvents" :key="index">
+      <hr v-if="index !== 0"/>
+      <feed-entry-construction-manager
+          v-if="entry.constructionManager" :construction-manager="entry.constructionManager" :date="entry.date"
+          :entries="entry.events"/>
+      <feed-entry-craftsman
+          v-if="entry.craftsman"
+          :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"
+          :construction-managers="constructionManagers" :craftsmen="craftsmen"
+          :map-containers-lookup="mapContainersLookup"
+          :craftsman="entry.craftsman" :date="entry.date" :entries="entry.events"/>
+    </template>
   </template>
   <span v-else><i>{{ $t('_view.feed.no_entries') }}</i></span>
 </template>
 <script>
 
-import DateHumanReadable from "../Library/View/DateHumanReadable.vue";
 import {iriToId} from "../../domain/api";
 import FeedEntryConstructionManager from "./FeedEntryConstructionManager.vue";
 import FeedEntryCraftsman from "./FeedEntryCraftsman.vue";
@@ -25,7 +26,6 @@ export default {
   components: {
     FeedEntryCraftsman,
     FeedEntryConstructionManager,
-    DateHumanReadable,
   },
   props: {
     constructionSite: {

@@ -67,7 +67,6 @@
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import ImageLightbox from "./ImageLightbox.vue";
-import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
 import RemoveIssueEventButton from "../Action/RemoveIssueEventButton.vue";
 import EditIssueEventButton from "../Action/EditIssueEventButton.vue";
 import {entityFormatter} from "../../domain/formatters";
@@ -77,7 +76,6 @@ export default {
   components: {
     EditIssueEventButton,
     RemoveIssueEventButton,
-    ButtonWithModal,
     ImageLightbox,
     FontAwesomeIcon,
     DateTimeHumanReadable,

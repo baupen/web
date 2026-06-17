@@ -58,7 +58,6 @@ import { displaySuccess } from '../../services/notifiers'
 import EmailForm from '../Form/EmailForm'
 import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import FormField from '../Library/FormLayout/FormField'
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
@@ -66,7 +65,6 @@ export default {
   components: {
     CustomCheckbox,
     FormField,
-    CustomCheckboxField,
     ButtonWithModalConfirm,
     LoadingIndicatorSecondary,
     EmailForm,

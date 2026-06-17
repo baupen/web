@@ -23,16 +23,12 @@
 <script>
 import {api} from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import CraftsmanForm from '../Form/CraftsmanForm'
-import FormField from '../Library/FormLayout/FormField'
 import CraftsmanImportForm from '../Form/CraftsmanImportForm'
 import {displaySuccess} from '../../services/notifiers'
 
 export default {
   components: {
     CraftsmanImportForm,
-    FormField,
-    CraftsmanForm,
     ButtonWithModalConfirm
   },
   emits: ['imported'],

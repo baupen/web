@@ -7,15 +7,12 @@
 </template>
 
 <script>
-import { api, apiClient } from './domain/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import FoyerIssues from './components/FoyerIssues'
 import { meStore, store } from './domain/stores'
-import FilteredIssues from './components/FilteredIssues.vue'
 
 export default {
   components: {
-    FilteredIssues,
     FoyerIssues,
     LoadingIndicator
   },

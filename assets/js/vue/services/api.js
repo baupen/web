@@ -9,6 +9,9 @@ const httpClient = {
       responseData = await response.json()
     } catch (e) {
       // response body is not JSON
+      console.log(e)
+      displayError('Failed with unknown error')
+      throw e
     }
 
     let errorText = response.status

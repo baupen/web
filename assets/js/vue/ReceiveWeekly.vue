@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { api, apiClient } from './domain/api'
 import ToggleReceiveWeekly from './components/Action/ToggleReceiveWeekly'
 import { meStore, switchStore } from './domain/stores'
 
