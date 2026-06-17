@@ -13,9 +13,9 @@
         :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
         :initial-state="initialStateQuery"
-        @loaded-maps="maps = $event"
-        @loaded-craftsmen="craftsmen = $event"
-        @loaded-construction-managers="constructionManagers = $event"
+        :construction-managers="constructionManagers"
+        :maps="maps"
+        :craftsmen="craftsmen"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -37,9 +37,6 @@ export default {
       queriedIssuesCount: 0,
       query: {},
       selectedIssues: [],
-      constructionManagers: [],
-      maps: [],
-      craftsmen: [],
     }
   },
   props: {
@@ -49,6 +46,18 @@ export default {
     },
     constructionSite: {
       type: Object,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
       required: true
     },
     initialStateQuery: {

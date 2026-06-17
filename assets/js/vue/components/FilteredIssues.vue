@@ -9,8 +9,10 @@
     <issues-table
         view="filtered"
         :construction-site="constructionSite"
+        :constructionManagers="constructionManagers"
+        :craftsmen="craftsmen"
+        :maps="maps"
         :preset-filter="filterFromFilterEntity"
-        @loaded-maps="maps = $event"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -33,7 +35,6 @@ export default {
       queriedIssuesCount: 0,
       query: {},
       selectedIssues: [],
-      maps: [],
     }
   },
   props: {
@@ -43,6 +44,18 @@ export default {
     },
     filter: {
       type: Object,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
       required: true
     },
   },

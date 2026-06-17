@@ -8,7 +8,7 @@
   <craftsmen-statistics-table
       :construction-manager-iri="constructionManagerIri"
       :construction-site="constructionSite" :construction-managers="constructionManagers"
-      :craftsmen="craftsmen" :statistics="craftsmenStatistics"
+      :craftsmen="shownCraftsmen" :statistics="craftsmenStatistics"
       @selected="selectedCraftsmen = $event" />
 </template>
 
@@ -24,7 +24,6 @@ export default {
   },
   data () {
     return {
-      craftsmen: null,
       craftsmenStatistics: null,
       selectedCraftsmen: [],
     }
@@ -41,18 +40,24 @@ export default {
     constructionManagers: {
       type: Array,
       required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
     }
   },
   methods: {
     emailSent: function (craftsman) {
       const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === craftsman['@id'])
       statistics.lastEmailReceived = (new Date()).toISOString()
+    },
+  },
+  computed: {
+    shownCraftsmen: function () {
+      return this.craftsmen.filter(c => !c.isDeleted)
     }
   },
   mounted () {
-    api.getCraftsmen(this.constructionSite, { isDeleted: false })
-        .then(craftsmen => this.craftsmen = craftsmen)
-
     api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })
         .then(craftsmenStatistics => this.craftsmenStatistics = craftsmenStatistics)
   }

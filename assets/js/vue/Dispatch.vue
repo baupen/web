@@ -2,7 +2,7 @@
   <div id="dispatch">
     <loading-indicator :spin="!constructionSite || !constructionManagers">
       <dispatch-craftsmen :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite"
-                          :construction-managers="constructionManagers"/>
+                          :construction-managers="constructionManagers" :craftsmen="craftsmen"/>
     </loading-indicator>
   </div>
 </template>
@@ -21,7 +21,8 @@ export default {
     return {
       constructionManagerIri: null,
       constructionSite: null,
-      constructionManagers: null
+      constructionManagers: null,
+      craftsmen: null
     }
   },
   mounted () {
@@ -29,6 +30,7 @@ export default {
     this.constructionManagerIri = me.constructionManagerIri
     this.constructionSite = store.constructionSite
     this.constructionManagers = store.constructionManagers
+    this.craftsmen = store.craftsmen
   }
 }
 

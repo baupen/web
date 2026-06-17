@@ -9,6 +9,9 @@
     <issues-table
         :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
+        :construction-managers="constructionManagers"
+        :craftsmen="craftsmen"
+        :maps="maps"
         :hidden-issues="hiddenIssues"
         view="foyer"
         @reset-hidden="hiddenIssues = []"
@@ -42,7 +45,19 @@ export default {
     constructionSite: {
       type: Object,
       required: true
-    }
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
+      required: true
+    },
   },
 }
 
