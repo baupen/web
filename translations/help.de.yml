@@ -1,6 +1,6 @@
 connect_app:
   activation_code: Logincode
-  description: 'Verbinden Sie ihren Account mit der App um alle Funktionen zu nutzen.'
+  description: 'Verbinden Sie Ihren Account mit der App um alle Funktionen zu nutzen.'
   download_ios_app: 'iOS App herunterladen'
   download_android_app: 'Android App herunterladen'
   open_app: 'App öffnen'
