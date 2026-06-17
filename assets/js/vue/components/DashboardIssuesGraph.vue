@@ -32,14 +32,16 @@ export default {
       let open = []
       let inspectable = []
       let closed = []
-      let maxValue = 0
+      let maxCurrentValue = 0
+      let maxClosedValue = 0
       timeseries.forEach(entry => {
         labels.push(dateTimeFormatter.dateShort(new Date(entry.date)))
         open.push(entry.openCount)
         inspectable.push(entry.inspectableCount)
         closed.push(entry.closedCount)
 
-        maxValue = Math.max(entry.openCount + entry.inspectableCount + entry.closedCount, maxValue)
+        maxCurrentValue = Math.max(entry.inspectableCount + entry.closedCount, maxCurrentValue)
+        maxClosedValue = Math.max(entry.closedCont, maxClosedValue)
       })
 
       // if 5 issues are resolved on 01.01., then 5 is shown at 02.01., because "until then" the change happened
@@ -49,15 +51,24 @@ export default {
       labels.unshift(dateTimeFormatter.dateShort(preview))
       labels.pop()
 
-      // set max/min of graph so relevant part is visible
-      const minValue = Math.min(...closed)
-      const belowMinSpacer = Math.max((maxValue - minValue) * 0.3, 10) // reduce min so graph does not look empty
-      const exactTargetMin = Math.max(minValue - belowMinSpacer, 0) // calculate optimal min
-      const exactTargetMax = maxValue + Math.ceil((maxValue-exactTargetMin)*0.1) // add to max so graph has space to breath
+      const roundMaxNumber = (number) => {
+        if (number < 10) {
+          return 10
+        }
+
+        if (number < 100) {
+          return Math.ceil(number / 10) * 10
+        }
+
+        return Math.pow(10, Math.ceil(Math.log10(number)))
+      }
 
       // adjust to full numbers
-      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
-      const targetMax = exactTargetMax + (exactTargetMax > 1000 ? 1000-exactTargetMax % 100 : 10-exactTargetMax % 10)
+      const exactCurrentMax = Math.ceil(Math.max(...open, ...inspectable)*1.1) // add some space on top to have air to breath
+      const currentMax = roundMaxNumber(exactCurrentMax)
+
+      const exactClosedMax = Math.max(...closed) // add some space on top to have air to breath
+      const closedMax = roundMaxNumber(exactClosedMax)
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
@@ -71,6 +82,7 @@ export default {
             borderColor: '#28a745',
             backgroundColor: '#bfe5c7',
             data: closed,
+            yAxisID: 'y1',
           }, {
             label: this.$t('issue.state.to_inspect'),
             type: 'line',
@@ -109,10 +121,17 @@ export default {
               }
             },
             y: {
-              stacked: true,
-              beginAtZero: false,
-              min: targetMin,
-              max: targetMax,
+              beginAtZero: true,
+              max: currentMax,
+              ticks: {
+                autoSkipPadding: 20,
+                padding: 4
+              }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              max: closedMax,
               ticks: {
                 autoSkipPadding: 20,
                 padding: 4
