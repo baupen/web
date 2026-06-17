@@ -36,19 +36,21 @@ export default {
     }
   },
   methods: {
-    confirm: function () {
+    confirm: async function () {
       this.posting = true
-      api.postConstructionManager(this.post)
-          .then(constructionManager => {
-            const constructionManagers = this.constructionSite.constructionManagers.filter(c => c['@id'] !== constructionManager['@id'])
-            constructionManagers.push(constructionManager['@id'])
+      try {
+        const constructionManager = await api.postConstructionManager(this.post)
+        if (!this.constructionSite.constructionManagers.some(c => c === constructionManager['@id'])) {
+          const constructionManagers = [...this.constructionSite.constructionManagers, constructionManager['@id']]
+          await api.patch(this.constructionSite, { constructionManagers }, this.$t('_action.associate_construction_manager.associated'))
+          this.$emit('added', constructionManager)
+        }
 
-            api.patch(this.constructionSite, { constructionManagers }, this.$t('_action.associate_construction_manager.associated'))
-                .then(_ => {
-                  this.posting = false
-                  this.$emit('added', constructionManager)
-                })
-          })
+      } catch (e) {
+        console.log(e)
+      }
+
+      this.posting = false
     }
   }
 }

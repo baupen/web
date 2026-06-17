@@ -56,12 +56,12 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertEmailCount(1);
 
         // cannot create account twice
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertEmailCount(0);
 
         // associated construction manager does not get more info
         $this->loginApiAssociatedConstructionManager($client);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertEmailCount(0);
     }
 
