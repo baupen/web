@@ -36,8 +36,6 @@
 import {api, iriToId} from "../../domain/api";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
-import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
-import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 import {filterIssueEventsForIssue, orderIssueEvents} from "../../domain/sorters";
 import IssueEventRow from "./IssueEventRow.vue";
 import MarkIssueResolvedCheckbox from "../Action/MarkIssueResolvedCheckbox.vue";
@@ -48,8 +46,6 @@ export default {
     MarkIssueClosedCheckbox,
     MarkIssueResolvedCheckbox,
     IssueEventRow,
-    CustomCheckbox,
-    CustomCheckboxField,
     AddIssueEventButton,
     LoadingIndicatorSecondary,
   },

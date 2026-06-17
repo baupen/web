@@ -32,12 +32,10 @@ import {
 } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import Help from '../Library/FormLayout/Help'
 import {dateConfig, flatPickr, toggleAnchorValidity} from "../../services/flatpickr";
 
 export default {
   components: {
-    Help,
     InvalidFeedback,
     FormField,
     flatPickr

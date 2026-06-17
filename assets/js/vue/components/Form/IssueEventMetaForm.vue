@@ -41,11 +41,9 @@ import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateTimeConfig, flatPickr, toggleAnchorValidity} from "../../services/flatpickr";
 import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
-import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
 
 export default {
   components: {
-    ButtonWithModalConfirm,
     CustomCheckboxField,
     InvalidFeedback,
     FormField,

@@ -21,7 +21,6 @@
 import { api } from '../../domain/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
-import IssueSummaryBadges from '../View/IssueSummaryBadges'
 
 export default {
   components: {

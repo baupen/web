@@ -51,23 +51,17 @@
 import {api, iriToId} from '../../domain/api'
 import IssueEventTextForm from "../Form/IssueEventTextForm.vue";
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
-import MapForm from "../Form/MapForm.vue";
 import FileForm from "../Form/FileForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
 import MobileImageForm from "../Form/MobileImageForm.vue";
-import CustomRadioField from "../Library/FormLayout/CustomRadioField.vue";
-import ExportIssuesReportView from "./ExportIssuesReportView.vue";
-import ExportIssuesLinkView from "./ExportIssuesLinkView.vue";
 import IssueEventMetaForm from "../Form/IssueEventMetaForm.vue";
 
 export default {
   components: {
     IssueEventMetaForm,
-    ExportIssuesLinkView, ExportIssuesReportView,
-    CustomRadioField,
     ImageForm,
     MobileImageForm,
-    FileForm, MapForm,
+    FileForm,
     ButtonWithModalConfirm,
     IssueEventTextForm,
   },

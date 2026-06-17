@@ -66,14 +66,8 @@
 
 <script>
 
-import { iriToId } from '../../domain/api'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
 import CustomRadioField from '../Library/FormLayout/CustomRadioField'
-import FormField from '../Library/FormLayout/FormField'
-import ReportForm from '../Form/IssueReportForm'
-import FilterForm from '../Form/IssueLinkForm'
-import GenerateIssuesReport from './GenerateIssuesReport'
-import GenerateIssuesFilter from './GenerateIssuesLink'
 import ExportIssuesReportView from './ExportIssuesReportView'
 import ExportIssuesLinkView from './ExportIssuesLinkView'
 import ExportCraftsmanIssuesTableView from "./ExportCraftsmanIssuesTableView.vue";
@@ -84,11 +78,6 @@ export default {
     ExportCraftsmanIssuesTableView,
     ExportIssuesLinkView,
     ExportIssuesReportView,
-    GenerateIssuesFilter,
-    GenerateIssuesReport,
-    FilterForm,
-    ReportForm,
-    FormField,
     CustomRadioField,
     ButtonWithModal,
   },

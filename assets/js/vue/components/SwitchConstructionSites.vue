@@ -61,7 +61,6 @@ import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 import SwitchTasks from "./SwitchTasks.vue";
-import { api } from '../domain/api'
 import AddSampleConstructionSiteButton from './Action/AddSampleConstructionSiteButton.vue'
 import { switchStore } from '../domain/stores'
 

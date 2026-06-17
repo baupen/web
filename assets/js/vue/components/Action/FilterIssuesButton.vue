@@ -22,14 +22,12 @@
 <script>
 
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import CraftsmanForm from '../Form/CraftsmanForm'
 import IssueFilterForm from '../Form/IssueFilterForm'
 
 export default {
   emits: ['update', 'update-configuration', 'reset'],
   components: {
     IssueFilterForm,
-    CraftsmanForm,
     ButtonWithModalConfirm
   },
   data () {

@@ -6,7 +6,6 @@
 
 <script>
 
-import ButtonWithModalConfirm from './Library/Behaviour/ButtonWithModalConfirm'
 import {api} from '../domain/api'
 import {CategoryScale, Chart, Legend, LinearScale, LineController, LineElement, PointElement, Title, Tooltip} from "chart.js";
 
@@ -14,7 +13,6 @@ import { dateTimeFormatter } from '../services/formatters'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale, Tooltip)
 export default {
-  components: {ButtonWithModalConfirm},
   data() {
     return {
       chart: null
