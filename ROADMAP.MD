@@ -24,3 +24,4 @@ Technical:
 - Translations: Add missing IT strings
 - Queue: Place image warmup in queue
 - UI library: Use improve form field abstraction and modal
+- remove BASE_URI from .env of instances
