@@ -150,6 +150,7 @@
       "imported": "Unternehmer importiert",
       "all_entries_match": "Beim Import wurden keine Veränderungen zu den bereits erfassten Daten gefunden.",
       "matching_entries_found": "Anhand der E-Mail wurde ein Unternehmer identifiziert, dessen Daten aktualisiert werden. | Anhand der E-Mail wurden {count} Unternehmer identifiziert, deren Daten aktualisiert werden.",
+      "new_entries_found": "Es wurde ein neuer Unternehmer identifiziert, der hinzugefügt wird. | Es wurden {count} neue Unternehmer identifiziert, die hinzugefügt werden.",
       "title": "Excel importieren"
     },
     "mark_issue_closed": {
