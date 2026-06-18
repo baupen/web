@@ -453,8 +453,10 @@ export default {
       try {
         const persistedPayload = localStorage.getItem(this.persistFilterKey);
         const payload = JSON.parse(persistedPayload)
-        this.filterConfiguration = payload.filterConfiguration
-        this.filter = payload.filter
+        if (payload) {
+          this.filterConfiguration = payload.filterConfiguration
+          this.filter = payload.filter
+        }
       } catch (e) {
         // we do not care; simply cannot recover state
         console.log(e)
