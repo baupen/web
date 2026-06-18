@@ -390,7 +390,7 @@ export default {
         this.selectedIssues = []
       }
 
-      let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen, this.maps)
+      let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen.filter(c => !c.isDeleted), this.maps.filter(m => !m.isDeleted))
 
       // set order
       const currentOrder = this.order ? this.order : {
