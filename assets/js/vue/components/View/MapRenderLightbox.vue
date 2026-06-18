@@ -57,6 +57,8 @@ export default {
       }
 
       let query = Object.assign({}, this.query)
+      // for cache busting if the map fileUrl changes
+      query['fileUrl'] = this.map.fileUrl
       if (this.craftsman) {
         query['craftsman'] = iriToId(this.craftsman['@id']);
       }
