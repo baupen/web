@@ -137,14 +137,15 @@ const api = {
     }
     return restClient.getCollection('/api/issues', fullQuery)
   },
-  getReportLink: function (constructionSite, reportQuery, query = {}) {
+  getReportLink: async function (constructionSite, reportQuery, query = {}) {
     const fullQuery = {
       ...query,
       constructionSite: iriToId(constructionSite['@id']),
       ...reportQuery
     }
     const fullUrl = restClient._getQueryUrl('/api/issues/report', fullQuery)
-    return httpClient.request(fullUrl)
+    const response = await httpClient.request(fullUrl)
+    return response.text()
   },
   getMaps: function (constructionSite, query = {}) {
     const fullQuery = {
