@@ -44,36 +44,27 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return this.pendingChanges > 0
-    },
-    pendingChanges: function () {
-      let count = this.pendingPatch ? 1 : 0
-      count += this.file ? 1 : 0
-
-      return count
+      return !!(this.pendingPatch || this.file)
     },
     pendingPatch: function () {
       return this.patch && Object.keys(this.patch).length
     }
   },
   methods: {
-    confirm: function () {
+    confirm: async function () {
       this.patching = true
 
-      if (this.pendingPatch) {
-        api.patch(this.map, this.patch, this.$t('_action.edit_map.saved'))
-            .then(() => {
-              this.patch = null
-              this.patching = this.pendingChanges > 0
-            })
-      }
       if (this.file) {
-        api.postMapFile(this.map, this.file, this.$t('_action.edit_map.replaced_map_file'))
-            .then(() => {
-              this.file = null
-              this.patching = this.pendingChanges > 0
-            })
+        await api.postMapFile(this.map, this.file, this.$t('_action.edit_map.replaced_map_file'))
+        this.file = null
       }
+
+      if (this.pendingPatch) {
+        await api.patch(this.map, this.patch, this.$t('_action.edit_map.saved'))
+        this.patch = null
+      }
+
+      this.patching = false
     }
   }
 }
