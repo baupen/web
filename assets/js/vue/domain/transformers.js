@@ -354,8 +354,10 @@ const filterTransformer = {
       time: false
     }
   },
-  shouldIncludeCollection: function (value, collection) {
-    return value && value.length > 0 && (!collection || value.length < collection?.length)
+  filtersEverything: function (filteredEntities, availableEntities) {
+    const valueSet = new Set(filteredEntities.map(e => iriToId(e['@id'])))
+    const collectionValues = new Set(availableEntities.map(e => iriToId(e['@id'])))
+    return valueSet.difference(collectionValues).size === 0 && collectionValues.difference(valueSet).size === 0
   },
   filterToQuery: function (defaultFilter, filter, configuration, craftsmen, maps) {
     const query = Object.assign({}, defaultFilter)
@@ -383,10 +385,10 @@ const filterTransformer = {
     if (configuration.state) {
       query.state = filter.state
     }
-    if (configuration.craftsmen && this.shouldIncludeCollection(filter.craftsmen, craftsmen)) {
+    if (configuration.craftsmen && !this.filtersEverything(filter.craftsmen, craftsmen)) {
       query['craftsman[]'] = filter.craftsmen.map(e => iriToId(e['@id']))
     }
-    if (configuration.maps && this.shouldIncludeCollection(filter.maps, maps)) {
+    if (configuration.maps && !this.filtersEverything(filter.maps, maps)) {
       query['map[]'] = filter.maps.map(e => iriToId(e['@id']))
     }
 
