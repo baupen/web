@@ -90,7 +90,7 @@ const restClient = {
     const queryUrl = new URL(url, window.location.origin)
     Object.keys(query).forEach(key => {
       if (Array.isArray(query[key])) {
-        query[key].forEach(value => queryUrl.searchParams.append(key + '[]', value))
+        query[key].forEach(value => queryUrl.searchParams.append(key, value))
       } else {
         queryUrl.searchParams.append(key, query[key])
       }
