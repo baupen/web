@@ -12,7 +12,12 @@
         {{ $t('_action.import_craftsmen.matching_entries_found', { count: pendingPatch.length }) }}
       </p>
     </template>
-    <template v-else-if="importedCraftsmen">
+    <template v-if="pendingPost.length > 0">
+      <p class="alert alert-warning">
+        {{ $t('_action.import_craftsmen.new_entries_found', { count: pendingPost.length }) }}
+      </p>
+    </template>
+    <template v-if="pendingPost.length === 0 && pendingPatch.length === 0 && importedCraftsmen">
       <p class="alert alert-success">
         {{ $t('_action.import_craftsmen.all_entries_match') }}
       </p>
