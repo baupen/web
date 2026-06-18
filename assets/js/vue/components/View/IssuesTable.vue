@@ -441,7 +441,6 @@ export default {
     }
   },
   mounted() {
-
     if (this.initialState) {
       this.filter = Object.assign({}, this.defaultFilter, {
         state: this.initialState
@@ -456,6 +455,8 @@ export default {
         if (payload) {
           this.filterConfiguration = payload.filterConfiguration
           this.filter = payload.filter
+          this.filter.maps = this.maps.filter(m => !m.isDeleted && this.filter.maps.some(fm => fm['@id'] === m['@id']))
+          this.filter.craftsmen = this.craftsmen.filter(c => !c.isDeleted && this.filter.craftsmen.some(fc => fc['@id'] === c['@id']))
         }
       } catch (e) {
         // we do not care; simply cannot recover state
