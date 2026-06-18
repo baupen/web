@@ -81,12 +81,6 @@ export default {
     }
   },
   methods: {
-    setGenerationStatus: function (label, progress = 0) {
-      this.reportGenerationStatus = {
-        label,
-        progress: Math.round(progress)
-      }
-    },
     planGeneration: function () {
       this.abortRequested = false
       this.reports = []
