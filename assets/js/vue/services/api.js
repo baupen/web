@@ -161,6 +161,8 @@ const restClient = {
         }
       }
     }
+
+    instance.isDeleted = true
   }
 }
 
