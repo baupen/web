@@ -32,7 +32,7 @@ export default {
     },
     position: {
       type: Object,
-      required: true
+      default: null
     },
     inline: {
       type: Boolean,
