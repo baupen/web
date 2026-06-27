@@ -68,7 +68,6 @@ import {router} from "../../domain/api";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
-  emits: ['loaded-construction-sites'],
   components: {
     CustomCheckbox,
     ToggleAssociationConstructionSite,
