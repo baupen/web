@@ -105,7 +105,7 @@ export default {
         return null
       }
 
-      return this.orderedConstructionSites.filter(c => !c.isHidden)
+      return this.orderedConstructionSites.filter(c => !c.isHidden || c.constructionManagers.includes(this.constructionManagerIri))
     },
     orderedConstructionSites: function () {
       if (!this.constructionSites) {
