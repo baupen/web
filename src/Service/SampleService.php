@@ -6,17 +6,21 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\IssueEvent;
 use App\Entity\Map;
+use App\Helper\DoctrineHelper;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\Sample\AssetFile;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
 readonly class SampleService implements SampleServiceInterface
 {
-    public function __construct(private PathServiceInterface $pathService, private SerializerInterface $serializer, private StorageServiceInterface $storageService)
+    public function __construct(private PathServiceInterface $pathService, private SerializerInterface $serializer, private StorageServiceInterface $storageService, private ManagerRegistry $registry)
     {
     }
 
@@ -31,6 +35,9 @@ readonly class SampleService implements SampleServiceInterface
         $constructionSite = $this->serializer->deserialize($constructionSiteJson, ConstructionSite::class, 'json');
         $this->storageService->setNewFolderName($constructionSite);
 
+        $manager = $this->registry->getManager();
+        $manager->persist($constructionSite);
+
         // add construction site image
         $constructionSiteImagePath = $samplePath . DIRECTORY_SEPARATOR . 'preview.jpg';
         if (file_exists($constructionSiteImagePath)) {
@@ -41,11 +48,14 @@ readonly class SampleService implements SampleServiceInterface
         // add content
         $this->addMaps($constructionSite, $samplePath);
         $this->addCraftsmen($constructionSite, $samplePath);
-        $this->addIssues($constructionSite, $constructionManager, $samplePath);
+        $this->addIssues($manager, $constructionSite, $constructionManager, $samplePath);
 
         // add construction manager
         $constructionSite->getConstructionManagers()->add($constructionManager);
         $constructionManager->getConstructionSites()->add($constructionSite);
+
+        $manager->persist($constructionSite); // persist again for the cascade persist
+        $manager->flush();
 
         return $constructionSite;
     }
@@ -104,7 +114,7 @@ readonly class SampleService implements SampleServiceInterface
         }
     }
 
-    private function addIssues(ConstructionSite $constructionSite, ConstructionManager $constructionManager, string $path): void
+    private function addIssues(ObjectManager $manager, ConstructionSite $constructionSite, ConstructionManager $constructionManager, string $path): void
     {
         $issuesJsonPath = $path . DIRECTORY_SEPARATOR . 'issues.json';
         $issueRelationsJsonPath = $path . DIRECTORY_SEPARATOR . 'issue_relations.json';
@@ -157,6 +167,13 @@ readonly class SampleService implements SampleServiceInterface
             // add issue image
             $assetFile = new AssetFile($issueImagePath);
             $this->storageService->uploadIssueImage($assetFile, $issue);
+
+            // store, include issue events
+            $manager->persist($issue);
+            $issueEvents = IssueEvent::createFromChangedIssue(null, $issue, $constructionManager->getId());
+            foreach ($issueEvents as $issueEvent) {
+                $manager->persist($issueEvent);
+            }
         }
     }
 }
