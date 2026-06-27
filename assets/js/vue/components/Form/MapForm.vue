@@ -36,7 +36,7 @@
         <span class="d-block">
           {{ '&nbsp;'.repeat(previewMapContainers[previewIndex].level*2) }}<b>{{ previewMapContainers[previewIndex].entity.name }}</b>
         </span>
-        <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndex+1, previewIndexEnd)" :key="mapContainer.entity['@id']">
+        <span class="d-block" v-for="mapContainer in previewMapContainers.slice(previewIndex+1, previewIndexEnd+1)" :key="mapContainer.entity['@id']">
           {{ '&nbsp;'.repeat(mapContainer.level*2) }}{{ mapContainer.entity.name }}
         </span>
         <span class="d-block" v-if="previewIndexEnd < previewMapContainers.length - 1">
