@@ -36,6 +36,12 @@
                         {{ "index.title"|trans({}, "profile") }}
                     </a>
                     <div class="vr ms-2 me-2"></div>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.requestUri == "/" %}active{% endif %}" href="{{ path("index") }}">
+                            {{ "index.title"|trans({}, "index") }}
+                        </a>
+                    </li>
                 {% endif %}
                 <a href="mailto:{{ env_support_email }}" class="nav-link">
                     <i class="fal fa-envelope-open"></i>
