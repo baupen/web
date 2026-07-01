@@ -29,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false,
     security: "is_granted('ROLE_ASSOCIATED_CONSTRUCTION_MANAGER')"
 )]
 #[Get(security: 'is_granted("EMAIL_TEMPLATE_VIEW", object)')]

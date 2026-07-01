@@ -36,6 +36,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 )]
 #[GetCollection(
     provider: AuthenticatedCollectionProvider::class,
+    paginationEnabled: false
 )]
 #[Get(security: 'is_granted("CONSTRUCTION_MANAGER_VIEW", object)')]
 #[Post(denormalizationContext: ['groups' => ['construction-manager:write', 'user:write']])]
