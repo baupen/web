@@ -19,6 +19,7 @@ class Report
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         // prepare fonts
+        /** @phpstan-ignore-next-line */
         $k_PATH_FONTS = K_PATH_FONTS;
         $checkFilePath = $k_PATH_FONTS . '/.copied';
         if (!file_exists($checkFilePath)) {
