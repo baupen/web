@@ -51,7 +51,6 @@
     "dev": "encore dev",
     "watch": "encore dev --watch",
     "build": "encore production --progress",
-    "download-translations": "lokalise2 --token $LOKALISE_TOKEN --project-id 564588455cc2e87e98fb44.15262570 file download --format json --unzip-to assets/js/vue/localization --indentation 2sp --export-empty-as skip --plural-format symfony --placeholder-format icu --export-sort a_z --directory-prefix \"\"",
     "lint": "eslint assets/js; stylelint assets/css",
     "lint-fix": "eslint --fix assets/js; stylelint --fix assets/css"
   },

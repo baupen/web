@@ -66,16 +66,6 @@ You can find the auth token on the [fontawesome account page](https://fontawesom
 You need to add this auth token to all CI services too. 
 You can add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
-### Lokalise
-
-To be able to download translations, you need a lokalise API key.
-
-create a read-only api token under `https://lokalise.co/profile/#apitokens`.
-add to .bashrc
-```
-export LOKALISE_TOKEN=<token>
-```
-
 ### Testing with PHPStorm
 
 You need to configure PHPStorm to use the `symfony/phpunit-bridge` as phpunit implementation. See here: https://stackoverrun.com/de/q/13027505
