@@ -133,7 +133,7 @@ readonly class EmailService implements EmailServiceInterface
         $templatedEmail->from($from)
             ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
             ->cc(...$craftsman->getEmailCCs())
-            ->returnPath($constructionManagerAddress)
+            ->returnPath($from)
             ->replyTo($constructionManagerAddress);
 
         if ($constructionManagerInBCC) {
