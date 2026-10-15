@@ -9,12 +9,10 @@ export const debounce = function (func, wait, options) {
   let result
   let timerId
   let timeLastCall
-  let leading = false
-  let trailing = true
 
   wait = wait || 0
-  leading = !!options?.leading
-  trailing = !!options?.trailing
+  let leading = options?.leading ?? false
+  let trailing = options?.trailing ?? true
 
   function timerExpired () {
     const time = Date.now()
